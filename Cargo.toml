@@ -1,0 +1,25 @@
+[package]
+name = "mdbook-pandoc"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.47"
+env_logger = "0.10.0"
+log = "0.4.0"
+mdbook = { version = "0.4.21", default-features = false }
+once_cell = "1.0.0"
+pulldown-cmark = { version = "0.9.0", default-features = false }
+pulldown-cmark-to-cmark = "11.0.1"
+regex = "1.0.0"
+semver = "1.0.0"
+serde = { version = "1.0.0", features = ["derive"] }
+
+[dev-dependencies]
+insta = { version = "1.0.0" }
+tempfile = "3.0.0"
+tracing = { version = "0.1.0", default-features = false, features = ["std"] }
+tracing-log = "0.2.0"
+tracing-subscriber = { version = "0.3.0", default-features = false, features = ["fmt", "tracing-log"] }

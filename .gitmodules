@@ -1,0 +1,27 @@
+[submodule "books/mdBook"]
+	path = books/mdBook
+	url = ../../rust-lang/mdBook.git
+[submodule "books/cargo"]
+	path = books/cargo
+	url = ../../rust-lang/cargo.git
+[submodule "books/rust-book"]
+	path = books/rust-book
+	url = ../../rust-lang/book.git
+[submodule "books/nomicon"]
+	path = books/nomicon
+	url = ../../rust-lang/nomicon.git
+[submodule "books/rust-reference"]
+	path = books/rust-reference
+	url = ../../rust-lang/reference.git
+[submodule "books/rust-by-example"]
+	path = books/rust-by-example
+	url = ../../rust-lang/rust-by-example.git
+[submodule "books/rustc-dev-guide"]
+	path = books/rustc-dev-guide
+	url = ../../rust-lang/rustc-dev-guide.git
+[submodule "books/rust-edition-guide"]
+	path = books/rust-edition-guide
+	url = ../../rust-lang/edition-guide.git
+[submodule "books/rust-embedded"]
+	path = books/rust-embedded
+	url = ../../rust-embedded/book.git

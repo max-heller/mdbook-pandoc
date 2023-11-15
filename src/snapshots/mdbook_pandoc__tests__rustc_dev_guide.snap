@@ -1,0 +1,53 @@
+---
+source: src/lib.rs
+expression: logs
+---
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "mermaid" preprocessor installed?    
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-mermaid    
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "toc" preprocessor installed?    
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-toc    
+ INFO mdbook::book: Running the pandoc backend    
+ WARN mdbook_pandoc::preprocess: Ignoring separator    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link './index.html' in chapter 'MIR construction': Unable to canonicalize path: /Users/max/Documents/code/mdbook-pandoc/books/rustc-dev-guide/src/mir/./index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link './index.html' in chapter 'MIR construction': Unable to canonicalize path: /Users/max/Documents/code/mdbook-pandoc/books/rustc-dev-guide/src/mir/./index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link './index.html' in chapter 'MIR construction': Unable to canonicalize path: /Users/max/Documents/code/mdbook-pandoc/books/rustc-dev-guide/src/mir/./index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link './index.html' in chapter 'MIR construction': Unable to canonicalize path: /Users/max/Documents/code/mdbook-pandoc/books/rustc-dev-guide/src/mir/./index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Coinduction    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Coinduction    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Coinduction    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Coinduction    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ WARN mdbook_pandoc::preprocess: Ignoring separator    
+ WARN mdbook_pandoc::preprocess: Ignoring separator    
+Error producing PDF.
+! LaTeX Error: Too deeply nested.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.11738         \begin{itemize}
+
+Rendering failed: pandoc exited unsuccessfully
+
