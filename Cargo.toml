@@ -23,3 +23,7 @@ tempfile = "3.0.0"
 tracing = { version = "0.1.0", default-features = false, features = ["std"] }
 tracing-log = "0.2.0"
 tracing-subscriber = { version = "0.3.0", default-features = false, features = ["fmt", "tracing-log"] }
+
+[profile.dev.package]
+insta.opt-level = 3
+similar.opt-level = 3
