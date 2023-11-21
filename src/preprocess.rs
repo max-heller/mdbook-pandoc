@@ -158,11 +158,11 @@ impl<'a> Preprocessor<'a> {
             .or_else(|err| match path.extension() {
                 Some(extension) if extension == "html" => {
                     if path.file_stem().is_some_and(|name| name == "index") {
-                        path.with_file_name("README.md")
-                    } else {
-                        path.with_extension("md")
+                        if let Ok(path) = path.with_file_name("README.md").canonicalize() {
+                            return Ok(path);
+                        }
                     }
-                    .canonicalize()
+                    path.with_extension("md").canonicalize()
                 }
                 _ => Err(err),
             })
