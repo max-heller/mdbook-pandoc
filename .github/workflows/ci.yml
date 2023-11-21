@@ -27,25 +27,26 @@ jobs:
             scheme-basic
             amsfonts
             amsmath
-            lm
-            unicode-math
-            iftex
-            listings
-            fancyvrb
-            tools
+            babel
+            bookmark
             booktabs
+            fancyvrb
+            fontspec
+            geometry
             graphics
             hyperref
-            xcolor
-            soul
-            geometry
-            setspace
-            babel
-            fontspec
-            selnolig
+            iftex
+            listings
+            lm
+            lualatex-math
             parskip
+            selnolig
+            setspace
+            soul
+            tools
+            unicode-math
+            xcolor
             xurl
-            bookmark
       - name: nextest
         run: cargo nextest run
       - name: doctest
