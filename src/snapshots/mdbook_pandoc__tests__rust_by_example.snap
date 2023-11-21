@@ -3,8 +3,8 @@ source: src/lib.rs
 expression: logs
 ---
  INFO mdbook::book: Running the pandoc backend    
- WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/inline-assembly.html#abi-clobbers' in chapter 'Inline assembly': Unable to canonicalize path: /Users/max/Documents/code/mdbook-pandoc/books/rust-by-example/src/unsafe/../../reference/inline-assembly.html: No such file or directory (os error 2)    
- WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/inline-assembly.html#abi-clobbers' in chapter 'Inline assembly': Unable to canonicalize path: /Users/max/Documents/code/mdbook-pandoc/books/rust-by-example/src/unsafe/../../reference/inline-assembly.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/inline-assembly.html#abi-clobbers' in chapter 'Inline assembly': Unable to canonicalize path: $ROOT/src/unsafe/../../reference/inline-assembly.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/inline-assembly.html#abi-clobbers' in chapter 'Inline assembly': Unable to canonicalize path: $ROOT/src/unsafe/../../reference/inline-assembly.html: No such file or directory (os error 2)    
 [WARNING] Missing character: There is no 🛈 (U+1F6C8) (U+1F6C8) in font [lmroman10-regular]:+tlig;
 [WARNING] Missing character: There is no 🛈 (U+1F6C8) (U+1F6C8) in font [lmroman10-regular]:+tlig;
 [WARNING] Missing character: There is no よ (U+3088) (U+3088) in font SourceCodePro:mode=node;scri

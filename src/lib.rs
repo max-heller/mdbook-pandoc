@@ -319,7 +319,7 @@ mod tests {
                 writeln!(&mut logs, "{err:#}").unwrap()
             }
             BuildOutput {
-                logs,
+                logs: logs.replace(&self.book.root.display().to_string(), "$ROOT"),
                 dir: self.book.build_dir_for(renderer.name()),
                 _root: self._root,
             }
@@ -363,10 +363,11 @@ mod tests {
             dir: &Path,
             writer: &mut dyn fmt::Write,
         ) -> anyhow::Result<()> {
-            for entry in fs::read_dir(dir)
+            let mut entries = fs::read_dir(dir)
                 .with_context(|| format!("Unable to read directory: {}", dir.display()))?
-            {
-                let entry = entry?;
+                .collect::<Result<Vec<_>, _>>()?;
+            entries.sort_by_key(|entry| entry.path());
+            for entry in entries {
                 let path = entry.path();
                 match entry.file_type()? {
                     ty if ty.is_dir() => visualize_directory(root, path.as_ref(), writer)?,
@@ -624,10 +625,10 @@ This is an example of a footnote[^note].
         │ 
         │ \phantomsection\label{twomd}
         │ \chapter{Two}\label{twomd__two}
-        ├─ latex/src/part-1-part-two.md
-        │ `\part{part two}`{=latex}
         ├─ latex/src/one.md
         │ # One
+        ├─ latex/src/part-1-part-two.md
+        │ `\part{part two}`{=latex}
         ├─ latex/src/two.md
         │ # Two
         "###);
@@ -685,12 +686,12 @@ This is an example of a footnote[^note].
         │ \chapter{Two}\label{twomd__two}
         ├─ latex/src/one.md
         │ # One
-        ├─ latex/src/two.md
-        │ # Two
         ├─ latex/src/onepointone.md
         │ ## Top
         │ 
         │ ### Another {.unnumbered .unlisted}
+        ├─ latex/src/two.md
+        │ # Two
         "###);
     }
 
