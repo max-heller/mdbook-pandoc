@@ -8,8 +8,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: 'true'
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
@@ -58,6 +56,8 @@ jobs:
             unicode-math
             xcolor
             xurl
+      - name: Clone submodules
+        run: git submodule update --init
       - name: nextest
         run: cargo nextest run
       - name: doctest
