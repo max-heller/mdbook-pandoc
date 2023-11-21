@@ -13,10 +13,41 @@ jobs:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@nextest
+      - name: Install pandoc
+        run: |
+          curl -LsSf https://github.com/jgm/pandoc/releases/download/3.1.9/pandoc-3.1.9-linux-amd64.tar.gz | tar zxf -
+          echo "$PWD/pandoc-3.1.9/bin" >> $GITHUB_PATH
+      - name: Install TeX Live
+        uses: teatimeguest/setup-texlive-action@v3
+        with:
+          packages: >-
+            scheme-basic
+            amsfonts
+            amsmath
+            lm
+            unicode-math
+            iftex
+            listings
+            fancyvrb
+            tools
+            booktabs
+            graphics
+            hyperref
+            xcolor
+            soul
+            geometry
+            setspace
+            babel
+            fontspec
+            selnolig
+            parskip
+            xurl
+            bookmark
       - name: nextest
         run: cargo nextest run
       - name: doctest
         run: cargo test --doc
+
   clippy:
     runs-on: ubuntu-latest
 
@@ -29,6 +60,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Run clippy
         run: cargo clippy -- -D warnings
+
   rustfmt:
     runs-on: ubuntu-latest
 
