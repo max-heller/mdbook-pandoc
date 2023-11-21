@@ -109,8 +109,8 @@ impl Renderer {
         Self { logfile: None }
     }
 
-    const NAME: &str = "pandoc";
-    const CONFIG_KEY: &str = "output.pandoc";
+    const NAME: &'static str = "pandoc";
+    const CONFIG_KEY: &'static str = "output.pandoc";
 }
 
 impl mdbook::Renderer for Renderer {
