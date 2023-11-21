@@ -37,6 +37,7 @@ jobs:
             bookmark
             booktabs
             fancyvrb
+            fontawesome
             fontspec
             geometry
             graphics
@@ -44,7 +45,11 @@ jobs:
             iftex
             listings
             lm
+            luacolor
+            luatexbase
             lualatex-math
+            lua-ul
+            mdwtools
             parskip
             selnolig
             setspace
