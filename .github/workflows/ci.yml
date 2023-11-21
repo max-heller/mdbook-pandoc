@@ -19,6 +19,12 @@ jobs:
         run: |
           curl -LsSf https://github.com/jgm/pandoc/releases/download/3.1.9/pandoc-3.1.9-linux-amd64.tar.gz | tar zxf -
           echo "$PWD/pandoc-3.1.9/bin" >> $GITHUB_PATH
+      - name: Install fonts
+        run: |
+          wget -O source-code-pro.zip https://fonts.google.com/download?family=Source%20Code%20Pro
+          unzip -d source-code-pro source-code-pro.zip
+          mv source-code-pro /usr/share/fonts
+          fc-cache -fv
       - run: sudo apt-get install -y librsvg2-bin
       - name: Install TeX Live
         uses: teatimeguest/setup-texlive-action@v3
