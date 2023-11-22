@@ -16,7 +16,8 @@ A [`mdbook`](https://github.com/rust-lang/mdBook) backend supporting many output
 
 ## Getting Started
 
-The following example demonstrates configuring `mdbook-pandoc` to generate a PDF version of a book with LaTeX (which must be [installed](https://www.latex-project.org/get)).
+Instruct `mdbook` to use `mdbook-pandoc` by updating your `book.toml` file.
+The following example configures `mdbook-pandoc` to generate a PDF version of the book with LaTeX (which must be [installed](https://www.latex-project.org/get)).
 To generate other output formats, see [Configuration](#configuration).
 
 ```diff
@@ -33,20 +34,23 @@ Running `mdbook build` will write the rendered book to `pdf/output.pdf` in `mdbo
 ## Configuration
 
 Since `mdbook-pandoc` supports many different output formats through `pandoc`, it must be configured to render to one or more formats through the `[output.pandoc]` table in a book's `book.toml` file.
-Configuration is centered around *output profiles*, sets of arguments that `mdbook-pandoc` passed to `pandoc` to render a book in a particular format.
+
+Configuration is centered around *output profiles*, named sets of arguments that `mdbook-pandoc` passes to `pandoc` to render a book in a particular format.
+The output for each profile is written to a subdirectory with the same name as the profile under `mdbook-pandoc`'s top-level [build directory](https://rust-lang.github.io/mdBook/format/configuration/renderers.html#output-tables) (`book/pandoc` if multiple renderers are configured; `book` otherwise).
 
 The available settings are described below:
 
 ```toml
 [output.pandoc]
 
-[output.pandoc.profile.<name>] # arguments to pass to `pandoc` (see https://pandoc.org/MANUAL.html)
-output = "output.pdf" # output file
-pdf-engine = "pdflatex" # engine to use to produce PDF output
+[output.pandoc.profile.<name>] # set of arguments to pass to `pandoc` (see https://pandoc.org/MANUAL.html)
+output = "output.pdf" # output file (within the profile's build directory)
 to = "latex" # output format
 
-# The following settings have sane defaults and should usually not need to be overridden
+# PDF-specific settings
+pdf-engine = "pdflatex" # engine to use to produce PDF output
 
+# The following settings have sane defaults and should usually not need to be overridden
 columns = 72 # line length in characters
 file-scope = true # parse each file individually before combining
 number-sections = true # number sections headings
