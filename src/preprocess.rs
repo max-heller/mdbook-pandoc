@@ -371,10 +371,10 @@ impl<'a> Iterator for PreprocessChapter<'a> {
                         Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#)
                             .unwrap()
                     });
-                    html = FONT_AWESOME_ICON
-                        .replace_all(&html, r"`\faicon{$icon}`{=latex}")
-                        .into_owned()
-                        .into();
+                    html = match FONT_AWESOME_ICON.replace_all(&html, r"`\faicon{$icon}`{=latex}") {
+                        Cow::Borrowed(_) => html,
+                        Cow::Owned(html) => html.into(),
+                    };
                 }
                 Event::Html(html)
             }
