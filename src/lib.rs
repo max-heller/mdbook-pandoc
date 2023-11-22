@@ -109,6 +109,7 @@ impl PandocProfile {
     }
 }
 
+/// A [`mdbook`] backend supporting many output formats by relying on [`pandoc`](https://pandoc.org).
 #[derive(Default)]
 pub struct Renderer {
     logfile: Option<File>,
