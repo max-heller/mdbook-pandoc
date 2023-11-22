@@ -58,6 +58,8 @@ standalone = true # produce output with an appropriate header and footer
 table-of-contents = true # include an automatically generated table of contents
 toc-depth = 3 # number of section levels to include in table of contents
 
+# Arbitrary other arguments to pass directly to `pandoc`...
+
 [output.pandoc.profile.<name>.variables]
 # Set the pandoc variable named 'variable-name' to 'value'
 variable-name = "value"
