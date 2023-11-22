@@ -446,6 +446,7 @@ dependencies = [
  "semver",
  "serde",
  "tempfile",
+ "toml",
  "tracing",
  "tracing-log",
  "tracing-subscriber",

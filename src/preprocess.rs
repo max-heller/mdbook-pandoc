@@ -18,13 +18,17 @@ use once_cell::sync::Lazy;
 use pulldown_cmark::{CowStr, HeadingLevel};
 use regex::Regex;
 
-use crate::{markdown_extensions, PandocProfile};
+use crate::markdown_extensions;
 
 pub struct Preprocessor<'a> {
     book: &'a Book,
     source_dir: &'a Path,
     destination: Cow<'a, Path>,
-    profile: &'a PandocProfile,
+    options: Options,
+}
+
+pub struct Options {
+    pub latex: bool,
 }
 
 pub struct PreprocessedFiles<'a> {
@@ -45,13 +49,13 @@ impl<'a> Preprocessor<'a> {
         book: &'a Book,
         source_dir: &'a Path,
         destination: Cow<'a, Path>,
-        profile: &'a PandocProfile,
+        options: Options,
     ) -> Self {
         Self {
             book,
             source_dir,
             destination,
-            profile,
+            options,
         }
     }
 
@@ -262,7 +266,7 @@ impl PreprocessedFiles<'_> {
                 Ok(None)
             }
             BookItem::PartTitle(name) => {
-                if self.preprocessor.profile.is_latex() {
+                if self.preprocessor.options.latex {
                     self.part_num += 1;
                     let kebab_case_name = name
                         .replace(|c: char| c.is_whitespace() || c == '_', "-")
@@ -362,7 +366,7 @@ impl<'a> Iterator for PreprocessChapter<'a> {
                     // Actually consume the item from the iterator
                     self.parser.next();
                 }
-                if self.preprocessor.profile.is_latex() {
+                if self.preprocessor.options.latex {
                     static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
                         Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#)
                             .unwrap()

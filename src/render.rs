@@ -1,6 +1,6 @@
 use std::{
     borrow::Cow,
-    fs,
+    fmt, fs,
     path::Path,
     process::{Command, Stdio},
 };
@@ -11,13 +11,13 @@ use crate::PandocProfile;
 
 pub struct PandocRenderer<'a> {
     pandoc: Command,
-    profile: &'a PandocProfile,
+    profile: PandocProfile,
     root: &'a Path,
     destination: Cow<'a, Path>,
 }
 
 impl<'a> PandocRenderer<'a> {
-    pub fn new(profile: &'a PandocProfile, root: &'a Path, destination: Cow<'a, Path>) -> Self {
+    pub fn new(profile: PandocProfile, root: &'a Path, destination: Cow<'a, Path>) -> Self {
         Self {
             pandoc: Command::new("pandoc"),
             profile,
@@ -42,6 +42,8 @@ impl<'a> PandocRenderer<'a> {
     }
 
     pub fn render(self) -> anyhow::Result<()> {
+        let profile_is_latex = self.profile.is_latex();
+
         let PandocProfile {
             columns,
             file_scope,
@@ -52,7 +54,8 @@ impl<'a> PandocRenderer<'a> {
             to,
             table_of_contents,
             toc_depth,
-            variables,
+            rest,
+            mut variables,
         } = self.profile;
 
         let mut pandoc = self.pandoc;
@@ -107,23 +110,62 @@ impl<'a> PandocRenderer<'a> {
             pandoc.arg("--toc-depth").arg(format!("{depth}"));
         }
 
-        let default_variables = self
-            .profile
-            .is_latex()
+        let additional_variables = profile_is_latex
             .then_some([
                 // FontAwesome icons
                 ("header-includes", r"\usepackage{fontawesome}"),
             ])
             .into_iter()
             .flatten();
-
-        for (key, val) in
-            default_variables.chain(variables.iter().map(|(k, v)| (k.as_str(), v.as_str())))
-        {
+        for (key, val) in additional_variables {
             pandoc.arg("-V").arg(format!("{key}={val}"));
         }
 
-        let status = pandoc.status().context("Unable to run `pandoc`")?;
+        let default_variables = profile_is_latex
+            .then_some([("documentclass", "report")])
+            .into_iter()
+            .flatten();
+        for (key, val) in default_variables {
+            if !variables.contains_key(key) {
+                variables.insert(key.into(), val.into());
+            }
+        }
+
+        fn for_each_key_val(key: String, val: toml::Value, mut f: impl FnMut(fmt::Arguments)) {
+            let mut f = |val| match val {
+                toml::Value::Boolean(true) => f(format_args!("{key}")),
+                toml::Value::Boolean(false) => {}
+                toml::Value::String(val) => f(format_args!("{key}={val}")),
+                val => f(format_args!("{key}={val}")),
+            };
+            match val {
+                toml::Value::Array(vals) => {
+                    for val in vals {
+                        f(val)
+                    }
+                }
+                val => f(val),
+            }
+        }
+
+        for (key, val) in variables {
+            for_each_key_val(key, val, |arg| {
+                pandoc.arg("-V").arg(arg.to_string());
+            })
+        }
+
+        for (key, val) in rest {
+            for_each_key_val(key, val, |arg| {
+                pandoc.arg(format!("--{arg}"));
+            })
+        }
+
+        log::debug!("Running: {pandoc:#?}");
+
+        let status = pandoc
+            .stdin(Stdio::null())
+            .status()
+            .context("Unable to run `pandoc`")?;
         anyhow::ensure!(status.success(), "pandoc exited unsuccessfully");
 
         let outfile = outfile.strip_prefix(self.root).unwrap_or(&outfile);

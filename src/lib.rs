@@ -1,5 +1,5 @@
 use std::{
-    collections::HashMap,
+    collections::{BTreeMap, HashMap},
     fs::{self, File},
     path::PathBuf,
 };
@@ -15,7 +15,7 @@ use render::PandocRenderer;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
-pub struct Config {
+struct Config {
     #[serde(rename = "profile")]
     pub profiles: HashMap<String, PandocProfile>,
     #[serde(default = "defaults::enabled")]
@@ -24,7 +24,7 @@ pub struct Config {
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
-pub struct PandocProfile {
+struct PandocProfile {
     pub columns: Option<u16>,
     #[serde(default = "defaults::enabled")]
     pub file_scope: bool,
@@ -39,12 +39,22 @@ pub struct PandocProfile {
     pub table_of_contents: bool,
     pub toc_depth: Option<u8>,
     #[serde(default)]
-    pub variables: HashMap<String, String>,
+    pub variables: BTreeMap<String, toml::Value>,
+    #[serde(flatten)]
+    rest: BTreeMap<String, toml::Value>,
 }
 
 mod defaults {
     pub fn enabled() -> bool {
         true
+    }
+}
+
+impl PandocProfile {
+    fn preprocessor_options(&self) -> preprocess::Options {
+        preprocess::Options {
+            latex: self.is_latex(),
+        }
     }
 }
 
@@ -146,17 +156,16 @@ impl mdbook::Renderer for Renderer {
                 &ctx.book,
                 &source_dir,
                 destination.join("src").into(),
-                &profile,
+                profile.preprocessor_options(),
             );
-            let preprocessed = preprocessor.preprocess()?;
+            let mut preprocessed = preprocessor.preprocess()?;
 
             // Initialize renderer
-            let mut renderer = PandocRenderer::new(&profile, &ctx.root, destination.into());
+            let mut renderer = PandocRenderer::new(profile, &ctx.root, destination.into());
 
             // Add preprocessed book chapters to renderer
-            let preprocessed_src_dir = preprocessed.output_dir().to_owned();
-            renderer.current_dir(&preprocessed_src_dir);
-            for input in preprocessed {
+            renderer.current_dir(preprocessed.output_dir());
+            for input in &mut preprocessed {
                 renderer.input(input?);
             }
 
@@ -168,7 +177,7 @@ impl mdbook::Renderer for Renderer {
             renderer.render()?;
 
             if !cfg.keep_preprocessed {
-                fs::remove_dir_all(preprocessed_src_dir)?;
+                fs::remove_dir_all(preprocessed.output_dir())?;
             }
         }
 
@@ -210,6 +219,7 @@ mod tests {
         io::{self, Read, Seek},
         iter,
         path::Path,
+        str::FromStr,
     };
 
     use mdbook::{BookItem, Renderer as _};
@@ -225,12 +235,24 @@ mod tests {
         logfile: File,
     }
 
+    pub struct Options {
+        max_log_level: tracing::level_filters::LevelFilter,
+    }
+
     pub struct Chapter {
         chapter: mdbook::book::Chapter,
     }
 
-    impl MDBook {
-        pub fn init() -> Self {
+    impl Default for Options {
+        fn default() -> Self {
+            Self {
+                max_log_level: tracing::Level::INFO.into(),
+            }
+        }
+    }
+
+    impl Options {
+        pub fn init(self) -> MDBook {
             // Initialize a book directory
             let root = TempDir::new().unwrap();
             let mut book = mdbook::book::BookBuilder::new(root.path()).build().unwrap();
@@ -238,19 +260,41 @@ mod tests {
             // Clear out the stub chapters
             book.book.sections.clear();
 
-            Self::new(book, Some(root))
+            MDBook::new(book, Some(root), self)
+        }
+
+        pub fn load(self, path: impl Into<PathBuf>) -> MDBook {
+            MDBook::new(mdbook::MDBook::load(path).unwrap(), None, self)
+        }
+
+        pub fn max_log_level(
+            mut self,
+            max_level: impl Into<tracing::level_filters::LevelFilter>,
+        ) -> Self {
+            self.max_log_level = max_level.into();
+            self
+        }
+    }
+
+    impl MDBook {
+        pub fn init() -> Self {
+            Options::default().init()
         }
 
         pub fn load(path: impl Into<PathBuf>) -> Self {
-            Self::new(mdbook::MDBook::load(path).unwrap(), None)
+            Options::default().load(path)
         }
 
-        fn new(mut book: mdbook::MDBook, tempdir: Option<TempDir>) -> Self {
+        pub fn options() -> Options {
+            Options::default()
+        }
+
+        fn new(mut book: mdbook::MDBook, tempdir: Option<TempDir>, options: Options) -> Self {
             // Initialize logger to captures `log` output and redirect it to a tempfile
             let logfile = tempfile().unwrap();
             let _logger = tracing::subscriber::set_default(
                 tracing_subscriber::fmt()
-                    .with_max_level(tracing::Level::INFO)
+                    .with_max_level(options.max_log_level)
                     .compact()
                     .without_time()
                     .with_writer({
@@ -276,6 +320,11 @@ mod tests {
                 _logger,
                 logfile,
             }
+        }
+
+        pub fn mdbook_config(mut self, config: mdbook::Config) -> Self {
+            self.book.config = config;
+            self
         }
 
         pub fn config(mut self, config: Config) -> Self {
@@ -448,7 +497,8 @@ mod tests {
                 to: Some("latex".into()),
                 table_of_contents: true,
                 toc_depth: None,
-                variables: HashMap::from_iter([("documentclass".into(), "report".into())]),
+                variables: FromIterator::from_iter([("documentclass".into(), "report".into())]),
+                rest: Default::default(),
             }
         }
 
@@ -463,10 +513,11 @@ mod tests {
                 to: Some("latex".into()),
                 table_of_contents: true,
                 toc_depth: None,
-                variables: HashMap::from_iter([
+                variables: FromIterator::from_iter([
                     ("documentclass".into(), "report".into()),
                     ("monofont".into(), "Source Code Pro".into()),
                 ]),
+                rest: Default::default(),
             }
         }
 
@@ -482,6 +533,7 @@ mod tests {
                 table_of_contents: true,
                 toc_depth: None,
                 variables: Default::default(),
+                rest: Default::default(),
             }
         }
     }
@@ -737,6 +789,79 @@ This is an example of a footnote[^note].
         │ <i class="fa fa-print"/>
         │ ```
         "###);
+    }
+
+    #[test]
+    fn raw_opts() {
+        let cfg = r#"
+[output.pandoc.profile.test]
+output = "/dev/null"
+to = "markdown"
+verbose = true
+fail-if-warnings = false
+
+resource-path = [
+    "really-long-path",
+    "really-long-path2",
+]
+
+[output.pandoc.profile.test.variables]
+header-includes = [
+    "text1",
+    "text2",
+]
+indent = true
+colorlinks = false
+        "#;
+        let output = MDBook::options()
+            .max_log_level(tracing::Level::DEBUG)
+            .init()
+            .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+            .build();
+        insta::assert_display_snapshot!(output, @r###"
+        ├─ log output
+        │ DEBUG mdbook::book: Running the index preprocessor.    
+        │ DEBUG mdbook::book: Running the links preprocessor.    
+        │  INFO mdbook::book: Running the pandoc backend    
+        │ DEBUG mdbook_pandoc::render: Running: Command {
+        │     program: "pandoc",
+        │     args: [
+        │         "pandoc",
+        │         "-f",
+        │         "commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute",
+        │         "-o",
+        │         "/dev/null",
+        │         "-t",
+        │         "markdown",
+        │         "--file-scope",
+        │         "-N",
+        │         "-s",
+        │         "--toc",
+        │         "-V",
+        │         "header-includes=text1",
+        │         "-V",
+        │         "header-includes=text2",
+        │         "-V",
+        │         "indent",
+        │         "--resource-path=really-long-path",
+        │         "--resource-path=really-long-path2",
+        │         "--verbose",
+        │     ],
+        │     cwd: Some(
+        │         "$ROOT/book/test/src",
+        │     ),
+        │     stderr: Some(
+        │         Fd(
+        │             FileDesc(
+        │                 OwnedFd {
+        │                     fd: 6,
+        │                 },
+        │             ),
+        │         ),
+        │     ),
+        │ }    
+        │  INFO mdbook_pandoc::render: Wrote output to /dev/null    
+        "###)
     }
 
     static BOOKS: Lazy<PathBuf> = Lazy::new(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("books"));
