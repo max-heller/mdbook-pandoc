@@ -160,7 +160,17 @@ impl<'a> PandocRenderer<'a> {
             })
         }
 
-        log::debug!("Running: {pandoc:#?}");
+        struct DisplayCommand<'a>(&'a Command);
+        impl fmt::Display for DisplayCommand<'_> {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+                write!(f, "{}", self.0.get_program().to_string_lossy())?;
+                for arg in self.0.get_args() {
+                    write!(f, " {}", arg.to_string_lossy())?;
+                }
+                Ok(())
+            }
+        }
+        log::debug!("Running: {}", DisplayCommand(&pandoc));
 
         let status = pandoc
             .stdin(Stdio::null())

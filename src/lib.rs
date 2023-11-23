@@ -824,43 +824,7 @@ colorlinks = false
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
         │  INFO mdbook::book: Running the pandoc backend    
-        │ DEBUG mdbook_pandoc::render: Running: Command {
-        │     program: "pandoc",
-        │     args: [
-        │         "pandoc",
-        │         "-f",
-        │         "commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute",
-        │         "-o",
-        │         "/dev/null",
-        │         "-t",
-        │         "markdown",
-        │         "--file-scope",
-        │         "-N",
-        │         "-s",
-        │         "--toc",
-        │         "-V",
-        │         "header-includes=text1",
-        │         "-V",
-        │         "header-includes=text2",
-        │         "-V",
-        │         "indent",
-        │         "--resource-path=really-long-path",
-        │         "--resource-path=really-long-path2",
-        │         "--verbose",
-        │     ],
-        │     cwd: Some(
-        │         "$ROOT/book/test/src",
-        │     ),
-        │     stderr: Some(
-        │         Fd(
-        │             FileDesc(
-        │                 OwnedFd {
-        │                     fd: 6,
-        │                 },
-        │             ),
-        │         ),
-        │     ),
-        │ }    
+        │ DEBUG mdbook_pandoc::render: Running: pandoc -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc -V header-includes=text1 -V header-includes=text2 -V indent --resource-path=really-long-path --resource-path=really-long-path2 --verbose    
         │  INFO mdbook_pandoc::render: Wrote output to /dev/null    
         "###)
     }
