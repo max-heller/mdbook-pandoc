@@ -1,6 +1,7 @@
 # `mdbook-pandoc`
 
-A [`mdbook`](https://github.com/rust-lang/mdBook) backend supporting many output formats by relying on [`pandoc`](https://pandoc.org).
+A [`mdbook`](https://github.com/rust-lang/mdBook) backend that outsources most of the rendering process to [`pandoc`](https://pandoc.org).
+By relying on pandoc, many output formats are supported, although this project was mainly developed with LaTeX in mind.
 
 ## Installation
 
@@ -73,7 +74,18 @@ variable-name = "value"
   - [x] [Tables](https://rust-lang.github.io/mdBook/format/markdown.html#tables)
   - [x] [Task Lists](https://rust-lang.github.io/mdBook/format/markdown.html#task-lists) (e.g. `- [x] Complete task`)
   - [x] [Heading Attributes](https://rust-lang.github.io/mdBook/format/markdown.html#heading-attributes) (e.g. `# Heading { #custom-heading }`)
-- [x] Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`)
+- [x] Table of contents
+- [x] Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`) to LaTeX
+
+### Preprocessing
+
+`mdbook-pandoc` performs a brief preprocessing pass before handing off a book to pandoc:
+
+- In order to make section numbers and the generated table of contents, if applicable, mirror the chapter hierarchy defined in `SUMMARY.md`:
+  - Headings in nested chapters are shrunk one level per level of nesting
+  - All headings except for H1s are marked as unnumbered and unlisted
+- Relative links within chapters are "rebased" to be relative to the source directory so a chapter `src/foo/foo.md` can link to `src/foo/bar.md` with `[bar](bar.md)`
+  - Pandoc implements this functionality in the [`rebase_relative_paths`](https://pandoc.org/MANUAL.html#extension-rebase_relative_paths) extension, but only for native markdown links/images, so `mdbook-pandoc` reimplements it to allow for supporting raw HTML links/images in the future
 
 ### Known Issues
 
@@ -83,3 +95,17 @@ variable-name = "value"
   This is due to usage of pandoc's CommonMark parser, which doesn't yet support the functionality
   needed to wrap cell contents that is implemented in the Pandoc Markdown parser.
   See: https://github.com/jgm/commonmark-hs/issues/128
+
+### Comparison to alternatives
+
+#### Rendering to PDF
+
+- When `mdbook-pandoc` was initially written, existing `mdbook` LaTeX backends ([`mdbook-latex`](https://crates.io/crates/mdbook-latex), [`mdbook-tectonic`](https://crates.io/crates/mdbook-tectonic)) were not mature enough to render much besides the simplest books due to hand-rolling the markdown->LaTeX conversion step.
+  `mdbook-pandoc`, on the other hand, outsources this difficult step to pandoc, inheriting its maturity and configurability. 
+- "Print to PDF"-based backends like [`mdbook-pdf`](https://crates.io/crates/mdbook-latex) are more mature, but produce less aesthetically-pleasing PDFs.
+  Additionally, `mdbook-pdf` does not support intra-document links or generating a table of contents without using a [forked version of mdbook](https://github.com/rust-lang/mdBook/pull/1738).
+
+#### Rendering to other formats
+
+- By outsourcing most of the rendering process to pandoc, `mdbook-pandoc` in theory supports many different output formats.
+  Most of these have not been tested, so feedback on how it performs on non-PDF formats is very welcome!
