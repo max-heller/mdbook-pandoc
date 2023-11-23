@@ -1,4 +1,7 @@
-# `mdbook-pandoc`
+# `mdbook-pandoc` &emsp; [![Latest Version]][crates.io]
+
+[Latest Version]: https://img.shields.io/crates/v/mdbook-pandoc.svg
+[crates.io]: https://crates.io/crates/mdbook-pandoc
 
 A [`mdbook`](https://github.com/rust-lang/mdBook) backend that outsources most of the rendering process to [`pandoc`](https://pandoc.org).
 By relying on pandoc, many output formats are supported, although this project was mainly developed with LaTeX in mind.
