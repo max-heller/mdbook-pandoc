@@ -1,0 +1,124 @@
+name: Rust
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@nextest
+      - name: Install pandoc
+        run: |
+          curl -LsSf https://github.com/jgm/pandoc/releases/download/3.1.9/pandoc-3.1.9-linux-amd64.tar.gz | tar zxf -
+          echo "$PWD/pandoc-3.1.9/bin" >> $GITHUB_PATH
+      - name: Install fonts
+        run: |
+          wget -O source-code-pro.zip https://fonts.google.com/download?family=Source%20Code%20Pro
+          unzip -d source-code-pro source-code-pro.zip
+          mv source-code-pro /usr/share/fonts
+          fc-cache -fv
+      - run: sudo apt-get install -y librsvg2-bin
+      - name: Install TeX Live
+        uses: teatimeguest/setup-texlive-action@v3
+        with:
+          packages: >-
+            scheme-basic
+            amsfonts
+            amsmath
+            babel
+            bookmark
+            booktabs
+            fancyvrb
+            fontawesome
+            fontspec
+            geometry
+            graphics
+            hyperref
+            iftex
+            listings
+            lm
+            luacolor
+            luatexbase
+            lualatex-math
+            lua-ul
+            mdwtools
+            parskip
+            selnolig
+            setspace
+            soul
+            tools
+            unicode-math
+            xcolor
+            xurl
+      - name: Clone submodules
+        run: git submodule update --init
+      - name: nextest
+        run: cargo nextest run
+      - name: doctest
+        run: cargo test --doc
+      - name: Archive rendered books
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v3
+        with:
+          name: rendered-books
+          path: |
+            books/cargo/src/doc/book/pdf/book.pdf
+            books/mdBook/guide/book/pdf/book.pdf
+            books/nomicon/book/pdf/book.pdf
+            books/rust-book/book/pdf/book.pdf
+            books/rust-by-example/book/pdf/book.pdf
+            books/rust-edition-guide/book/pdf/book.pdf
+            books/rust-embedded/book/pdf/book.pdf
+            books/rust-reference/book/pdf/book.pdf
+            books/rustc-dev-guide/book/pdf/book.pdf
+
+  clippy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - name: Run clippy
+        run: cargo clippy -- -D warnings
+
+  rustfmt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          components: rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - name: Run rustfmt
+        run: cargo fmt --check
+
+  msrv:
+    runs-on: ubuntu-latest
+    container: foresterre/cargo-msrv:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify MSRV
+        run: cargo msrv verify
+
+  minimal-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+      - uses: taiki-e/install-action@cargo-hack
+      - uses: taiki-e/install-action@cargo-minimal-versions
+      - name: Verify compilation with minimal dependency versions
+        run: cargo minimal-versions check

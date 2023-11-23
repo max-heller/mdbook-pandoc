@@ -1,0 +1,264 @@
+---
+source: src/lib.rs
+expression: logs
+---
+ INFO mdbook::book: Running the pandoc backend    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/prelude/index.html' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/prelude/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/prelude/index.html' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/prelude/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/string/struct.String.html' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/string/struct.String.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/string/struct.String.html' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/string/struct.String.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/io/struct.Stdin.html' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/io/struct.Stdin.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/io/struct.Stdin.html' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/io/struct.Stdin.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/io/struct.Stdin.html#method.read_line' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/io/struct.Stdin.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/io/struct.Stdin.html#method.read_line' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/io/struct.Stdin.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/result/enum.Result.html' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/result/enum.Result.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/result/enum.Result.html' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/result/enum.Result.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/result/enum.Result.html#method.expect' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/result/enum.Result.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/result/enum.Result.html#method.expect' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/result/enum.Result.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/primitive.str.html#method.parse' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/primitive.str.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/primitive.str.html#method.parse' in chapter 'Programming a Guessing Game': Unable to canonicalize path: $ROOT/src/../std/primitive.str.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/const_eval.html' in chapter 'Variables and Mutability': Unable to canonicalize path: $ROOT/src/../reference/const_eval.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/const_eval.html' in chapter 'Variables and Mutability': Unable to canonicalize path: $ROOT/src/../reference/const_eval.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/ops/trait.Drop.html#tymethod.drop' in chapter 'What is Ownership?': Unable to canonicalize path: $ROOT/src/../std/ops/trait.Drop.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/ops/trait.Drop.html#tymethod.drop' in chapter 'What is Ownership?': Unable to canonicalize path: $ROOT/src/../std/ops/trait.Drop.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/macro.println.html' in chapter 'An Example Program Using Structs': Unable to canonicalize path: $ROOT/src/../std/macro.println.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/macro.println.html' in chapter 'An Example Program Using Structs': Unable to canonicalize path: $ROOT/src/../std/macro.println.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/macro.dbg.html' in chapter 'An Example Program Using Structs': Unable to canonicalize path: $ROOT/src/../std/macro.dbg.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/macro.dbg.html' in chapter 'An Example Program Using Structs': Unable to canonicalize path: $ROOT/src/../std/macro.dbg.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/attributes.html' in chapter 'An Example Program Using Structs': Unable to canonicalize path: $ROOT/src/../reference/attributes.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/attributes.html' in chapter 'An Example Program Using Structs': Unable to canonicalize path: $ROOT/src/../reference/attributes.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/net/enum.IpAddr.html' in chapter 'Defining an Enum': Unable to canonicalize path: $ROOT/src/../std/net/enum.IpAddr.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/net/enum.IpAddr.html' in chapter 'Defining an Enum': Unable to canonicalize path: $ROOT/src/../std/net/enum.IpAddr.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/option/enum.Option.html' in chapter 'Defining an Enum': Unable to canonicalize path: $ROOT/src/../std/option/enum.Option.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/option/enum.Option.html' in chapter 'Defining an Enum': Unable to canonicalize path: $ROOT/src/../std/option/enum.Option.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/option/enum.Option.html' in chapter 'Defining an Enum': Unable to canonicalize path: $ROOT/src/../std/option/enum.Option.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/option/enum.Option.html' in chapter 'Defining an Enum': Unable to canonicalize path: $ROOT/src/../std/option/enum.Option.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/prelude/index.html#other-preludes' in chapter 'Bringing Paths Into Scope with the use Keyword': Unable to canonicalize path: $ROOT/src/../std/prelude/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/prelude/index.html#other-preludes' in chapter 'Bringing Paths Into Scope with the use Keyword': Unable to canonicalize path: $ROOT/src/../std/prelude/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/collections/index.html' in chapter 'Common Collections': Unable to canonicalize path: $ROOT/src/../std/collections/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/collections/index.html' in chapter 'Common Collections': Unable to canonicalize path: $ROOT/src/../std/collections/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../nomicon/vec/vec.html' in chapter 'Storing Lists of Values with Vectors': Unable to canonicalize path: $ROOT/src/../nomicon/vec/vec.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../nomicon/vec/vec.html' in chapter 'Storing Lists of Values with Vectors': Unable to canonicalize path: $ROOT/src/../nomicon/vec/vec.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/vec/struct.Vec.html' in chapter 'Storing Lists of Values with Vectors': Unable to canonicalize path: $ROOT/src/../std/vec/struct.Vec.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/vec/struct.Vec.html' in chapter 'Storing Lists of Values with Vectors': Unable to canonicalize path: $ROOT/src/../std/vec/struct.Vec.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/process/trait.Termination.html' in chapter 'Recoverable Errors with Result': Unable to canonicalize path: $ROOT/src/../std/process/trait.Termination.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/process/trait.Termination.html' in chapter 'Recoverable Errors with Result': Unable to canonicalize path: $ROOT/src/../std/process/trait.Termination.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/index.html' in chapter 'Validating References with Lifetimes': Unable to canonicalize path: $ROOT/src/../reference/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/index.html' in chapter 'Validating References with Lifetimes': Unable to canonicalize path: $ROOT/src/../reference/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../unstable-book/library-features/test.html' in chapter 'How to Write Tests': Unable to canonicalize path: $ROOT/src/../unstable-book/library-features/test.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../unstable-book/library-features/test.html' in chapter 'How to Write Tests': Unable to canonicalize path: $ROOT/src/../unstable-book/library-features/test.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/option/enum.Option.html#method.unwrap_or_else' in chapter 'Closures: Anonymous Functions that Capture Their Environment': Unable to canonicalize path: $ROOT/src/../std/option/enum.Option.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/option/enum.Option.html#method.unwrap_or_else' in chapter 'Closures: Anonymous Functions that Capture Their Environment': Unable to canonicalize path: $ROOT/src/../std/option/enum.Option.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../nomicon/index.html' in chapter 'Reference Cycles Can Leak Memory': Unable to canonicalize path: $ROOT/src/../nomicon/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../nomicon/index.html' in chapter 'Reference Cycles Can Leak Memory': Unable to canonicalize path: $ROOT/src/../nomicon/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/sync/atomic/index.html' in chapter 'Shared-State Concurrency': Unable to canonicalize path: $ROOT/src/../std/sync/atomic/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/sync/atomic/index.html' in chapter 'Shared-State Concurrency': Unable to canonicalize path: $ROOT/src/../std/sync/atomic/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/sync/atomic/index.html' in chapter 'Shared-State Concurrency': Unable to canonicalize path: $ROOT/src/../std/sync/atomic/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/sync/atomic/index.html' in chapter 'Shared-State Concurrency': Unable to canonicalize path: $ROOT/src/../std/sync/atomic/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../nomicon/index.html' in chapter 'Extensible Concurrency with the Sync and Send Traits': Unable to canonicalize path: $ROOT/src/../nomicon/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../nomicon/index.html' in chapter 'Extensible Concurrency with the Sync and Send Traits': Unable to canonicalize path: $ROOT/src/../nomicon/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/items/unions.html' in chapter 'Unsafe Rust': Unable to canonicalize path: $ROOT/src/../reference/items/unions.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/items/unions.html' in chapter 'Unsafe Rust': Unable to canonicalize path: $ROOT/src/../reference/items/unions.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/macros-by-example.html' in chapter 'Macros': Unable to canonicalize path: $ROOT/src/../reference/macros-by-example.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/macros-by-example.html' in chapter 'Macros': Unable to canonicalize path: $ROOT/src/../reference/macros-by-example.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/thread/struct.Builder.html' in chapter 'Turning Our Single-Threaded Server into a Multithreaded Server': Unable to canonicalize path: $ROOT/src/../std/thread/struct.Builder.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/thread/struct.Builder.html' in chapter 'Turning Our Single-Threaded Server into a Multithreaded Server': Unable to canonicalize path: $ROOT/src/../std/thread/struct.Builder.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/thread/struct.Builder.html#method.spawn' in chapter 'Turning Our Single-Threaded Server into a Multithreaded Server': Unable to canonicalize path: $ROOT/src/../std/thread/struct.Builder.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/thread/struct.Builder.html#method.spawn' in chapter 'Turning Our Single-Threaded Server into a Multithreaded Server': Unable to canonicalize path: $ROOT/src/../std/thread/struct.Builder.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/items/unions.html' in chapter 'A - Keywords': Unable to canonicalize path: $ROOT/src/../reference/items/unions.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/items/unions.html' in chapter 'A - Keywords': Unable to canonicalize path: $ROOT/src/../reference/items/unions.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'C - Derivable Traits': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'C - Derivable Traits': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
+[WARNING] Missing character: There is no 🚨 (U+1F6A8) (U+1F6A8) in font [lmroman10-bold]:+tlig;!
+[WARNING] Missing character: There is no 👍 (U+1F44D) (U+1F44D) in font SourceCodePro:mode=node;sc
+[WARNING] Missing character: There is no ℤ (U+2124) (U+2124) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 😻 (U+1F63B) (U+1F63B) in font SourceCodePro:mode=node;sc
+[WARNING] Missing character: There is no ا (U+0627) (U+0627) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ل (U+0644) (U+0644) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no س (U+0633) (U+0633) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ل (U+0644) (U+0644) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ا (U+0627) (U+0627) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no م (U+0645) (U+0645) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ع (U+0639) (U+0639) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ل (U+0644) (U+0644) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ي (U+064A) (U+064A) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ك (U+0643) (U+0643) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no م (U+0645) (U+0645) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ש (U+05E9) (U+05E9) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ָ (U+05B8) (U+05B8) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ׁ (U+05C1) (U+05C1) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ל (U+05DC) (U+05DC) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ו (U+05D5) (U+05D5) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ֹ (U+05B9) (U+05B9) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ם (U+05DD) (U+05DD) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no न (U+0928) (U+0928) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no म (U+092E) (U+092E) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no स (U+0938) (U+0938) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ् (U+094D) (U+094D) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no त (U+0924) (U+0924) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no े (U+0947) (U+0947) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no こ (U+3053) (U+3053) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ん (U+3093) (U+3093) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no に (U+306B) (U+306B) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ち (U+3061) (U+3061) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no は (U+306F) (U+306F) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 안 (U+C548) (U+C548) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 녕 (U+B155) (U+B155) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 하 (U+D558) (U+D558) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 세 (U+C138) (U+C138) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 요 (U+C694) (U+C694) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 你 (U+4F60) (U+4F60) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 好 (U+597D) (U+597D) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ا (U+0627) (U+0627) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ل (U+0644) (U+0644) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no س (U+0633) (U+0633) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ل (U+0644) (U+0644) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ا (U+0627) (U+0627) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no م (U+0645) (U+0645) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ع (U+0639) (U+0639) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ل (U+0644) (U+0644) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ي (U+064A) (U+064A) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ك (U+0643) (U+0643) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no م (U+0645) (U+0645) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ש (U+05E9) (U+05E9) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ָ (U+05B8) (U+05B8) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ׁ (U+05C1) (U+05C1) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ל (U+05DC) (U+05DC) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ו (U+05D5) (U+05D5) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ֹ (U+05B9) (U+05B9) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ם (U+05DD) (U+05DD) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no न (U+0928) (U+0928) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no म (U+092E) (U+092E) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no स (U+0938) (U+0938) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ् (U+094D) (U+094D) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no त (U+0924) (U+0924) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no े (U+0947) (U+0947) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no こ (U+3053) (U+3053) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ん (U+3093) (U+3093) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no に (U+306B) (U+306B) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ち (U+3061) (U+3061) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no は (U+306F) (U+306F) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 안 (U+C548) (U+C548) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 녕 (U+B155) (U+B155) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 하 (U+D558) (U+D558) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 세 (U+C138) (U+C138) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 요 (U+C694) (U+C694) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 你 (U+4F60) (U+4F60) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 好 (U+597D) (U+597D) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ا (U+0627) (U+0627) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ل (U+0644) (U+0644) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no س (U+0633) (U+0633) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ل (U+0644) (U+0644) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ا (U+0627) (U+0627) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no م (U+0645) (U+0645) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ع (U+0639) (U+0639) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ل (U+0644) (U+0644) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ي (U+064A) (U+064A) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ك (U+0643) (U+0643) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no م (U+0645) (U+0645) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ש (U+05E9) (U+05E9) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ָ (U+05B8) (U+05B8) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ׁ (U+05C1) (U+05C1) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ל (U+05DC) (U+05DC) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ו (U+05D5) (U+05D5) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ֹ (U+05B9) (U+05B9) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no ם (U+05DD) (U+05DD) in font SourceCodePro:mode=node;scrip
+[WARNING] Missing character: There is no न (U+0928) (U+0928) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no म (U+092E) (U+092E) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no स (U+0938) (U+0938) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ् (U+094D) (U+094D) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no त (U+0924) (U+0924) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no े (U+0947) (U+0947) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no こ (U+3053) (U+3053) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ん (U+3093) (U+3093) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no に (U+306B) (U+306B) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ち (U+3061) (U+3061) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no は (U+306F) (U+306F) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 안 (U+C548) (U+C548) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 녕 (U+B155) (U+B155) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 하 (U+D558) (U+D558) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 세 (U+C138) (U+C138) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 요 (U+C694) (U+C694) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 你 (U+4F60) (U+4F60) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no 好 (U+597D) (U+597D) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no З (U+0417) (U+0417) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no д (U+0434) (U+0434) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no р (U+0440) (U+0440) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no а (U+0430) (U+0430) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no в (U+0432) (U+0432) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no с (U+0441) (U+0441) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no т (U+0442) (U+0442) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no в (U+0432) (U+0432) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no у (U+0443) (U+0443) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no й (U+0439) (U+0439) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no т (U+0442) (U+0442) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no е (U+0435) (U+0435) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no न (U+0928) (U+0928) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no म (U+092E) (U+092E) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no स (U+0938) (U+0938) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ् (U+094D) (U+094D) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no त (U+0924) (U+0924) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no े (U+0947) (U+0947) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no न (U+0928) (U+0928) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no म (U+092E) (U+092E) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no स (U+0938) (U+0938) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ् (U+094D) (U+094D) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no त (U+0924) (U+0924) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no े (U+0947) (U+0947) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no न (U+0928) (U+0928) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no म (U+092E) (U+092E) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no स (U+0938) (U+0938) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no ् (U+094D) (U+094D) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no त (U+0924) (U+0924) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no े (U+0947) (U+0947) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no З (U+0417) (U+0417) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no д (U+0434) (U+0434) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 简 (U+7B80) (U+7B80) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 体 (U+4F53) (U+4F53) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 中 (U+4E2D) (U+4E2D) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 文 (U+6587) (U+6587) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 正 (U+6B63) (U+6B63) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 體 (U+9AD4) (U+9AD4) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 中 (U+4E2D) (U+4E2D) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 文 (U+6587) (U+6587) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no У (U+0423) (U+0423) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no к (U+043A) (U+043A) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no р (U+0440) (U+0440) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no а (U+0430) (U+0430) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ї (U+0457) (U+0457) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no н (U+043D) (U+043D) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no с (U+0441) (U+0441) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ь (U+044C) (U+044C) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no к (U+043A) (U+043A) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no а (U+0430) (U+0430) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no Р (U+0420) (U+0420) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no у (U+0443) (U+0443) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no с (U+0441) (U+0441) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no с (U+0441) (U+0441) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no к (U+043A) (U+043A) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no и (U+0438) (U+0438) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no й (U+0439) (U+0439) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 한 (U+D55C) (U+D55C) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 국 (U+AD6D) (U+AD6D) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 어 (U+C5B4) (U+C5B4) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 日 (U+65E5) (U+65E5) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 本 (U+672C) (U+672C) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 語 (U+8A9E) (U+8A9E) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ε (U+03B5) (U+03B5) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no λ (U+03BB) (U+03BB) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no λ (U+03BB) (U+03BB) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no η (U+03B7) (U+03B7) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ν (U+03BD) (U+03BD) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ι (U+03B9) (U+03B9) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no κ (U+03BA) (U+03BA) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ή (U+03AE) (U+03AE) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ह (U+0939) (U+0939) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ि (U+093F) (U+093F) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ं (U+0902) (U+0902) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no द (U+0926) (U+0926) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ी (U+0940) (U+0940) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ไ (U+0E44) (U+0E44) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ท (U+0E17) (U+0E17) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ย (U+0E22) (U+0E22) in font [lmroman10-regular]:+tlig;!
+ INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
+

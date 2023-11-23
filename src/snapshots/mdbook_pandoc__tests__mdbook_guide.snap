@@ -1,0 +1,8 @@
+---
+source: src/lib.rs
+expression: logs
+---
+ INFO mdbook::book: Running the pandoc backend    
+ WARN mdbook_pandoc::preprocess: Ignoring separator    
+ INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
+

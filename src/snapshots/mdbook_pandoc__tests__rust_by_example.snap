@@ -1,0 +1,15 @@
+---
+source: src/lib.rs
+expression: logs
+---
+ INFO mdbook::book: Running the pandoc backend    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/inline-assembly.html#abi-clobbers' in chapter 'Inline assembly': Unable to canonicalize path: $ROOT/src/unsafe/../../reference/inline-assembly.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/inline-assembly.html#abi-clobbers' in chapter 'Inline assembly': Unable to canonicalize path: $ROOT/src/unsafe/../../reference/inline-assembly.html: No such file or directory (os error 2)    
+[WARNING] Missing character: There is no 🛈 (U+1F6C8) (U+1F6C8) in font [lmroman10-regular]:+tlig;
+[WARNING] Missing character: There is no 🛈 (U+1F6C8) (U+1F6C8) in font [lmroman10-regular]:+tlig;
+[WARNING] Missing character: There is no よ (U+3088) (U+3088) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no う (U+3046) (U+3046) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no こ (U+3053) (U+3053) in font SourceCodePro:mode=node;scri
+[WARNING] Missing character: There is no そ (U+305D) (U+305D) in font SourceCodePro:mode=node;scri
+ INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
+

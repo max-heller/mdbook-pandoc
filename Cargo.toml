@@ -1,0 +1,56 @@
+[package]
+name = "mdbook-pandoc"
+description = "A mdbook backend that outsources most of the rendering process to pandoc."
+version = "0.1.0"
+rust-version = "1.70.0"
+edition = "2021"
+authors = ["Max Heller <max.a.heller@gmail.com>"]
+license = "MIT OR Apache-2.0"
+keywords = ["mdbook", "pandoc", "pdf", "latex", "book"]
+documentation = "https://docs.rs/mdbook-pandoc"
+repository = "https://github.com/max-heller/mdbook-pandoc"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.47"
+env_logger = "0.10.0"
+log = "0.4.0"
+mdbook = { version = "0.4.21", default-features = false }
+once_cell = "1.0.0"
+pulldown-cmark = { version = "0.9.0", default-features = false }
+pulldown-cmark-to-cmark = "11.0.1"
+regex = "1.0.0"
+semver = "1.0.0"
+serde = { version = "1.0.85", features = ["derive"] }
+serde_derive = "1.0.85"
+toml = "0.5.0"
+
+[dev-dependencies]
+insta = { version = "1.0.0" }
+tempfile = "3.0.0"
+tracing = { version = "0.1.0", default-features = false, features = ["std"] }
+tracing-log = "0.2.0"
+tracing-subscriber = { version = "0.3.0", default-features = false, features = ["fmt", "tracing-log"] }
+
+[profile.dev.package]
+insta.opt-level = 3
+similar.opt-level = 3
+
+# The profile that 'cargo dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
+
+# Config for 'cargo dist'
+[workspace.metadata.dist]
+# The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
+cargo-dist-version = "0.4.3"
+# CI backends to support
+ci = ["github"]
+# The installers to generate for each app
+installers = []
+# Target platforms to build apps for (Rust target-triple syntax)
+targets = ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-unknown-linux-musl", "x86_64-pc-windows-msvc"]
+# Publish jobs to run in CI
+pr-run-mode = "plan"
