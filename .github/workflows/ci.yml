@@ -88,3 +88,10 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Run rustfmt
         run: cargo fmt --check
+
+  msrv:
+    runs-on: ubuntu-latest
+    container: foresterre/cargo-msrv:latest
+    steps:
+      - name: Verify MSRV
+        run: cargo msrv --output-format minimal verify

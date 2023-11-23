@@ -1,7 +1,14 @@
 [package]
 name = "mdbook-pandoc"
+description = "A mdbook backend that outsources most of the rendering process to pandoc."
 version = "0.1.0"
+rust-version = "1.70.0"
 edition = "2021"
+authors = ["Max Heller <max.a.heller@gmail.com>"]
+license = "MIT OR Apache-2.0"
+keywords = ["mdbook", "pandoc", "pdf", "latex", "book"]
+documentation = "https://docs.rs/mdbook-pandoc"
+repository = "https://github.com/max-heller/mdbook-pandoc"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

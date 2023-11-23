@@ -17,7 +17,7 @@ pub struct PandocRenderer<'a> {
 }
 
 impl<'a> PandocRenderer<'a> {
-    pub fn new(profile: PandocProfile, root: &'a Path, destination: Cow<'a, Path>) -> Self {
+    pub(crate) fn new(profile: PandocProfile, root: &'a Path, destination: Cow<'a, Path>) -> Self {
         Self {
             pandoc: Command::new("pandoc"),
             profile,
