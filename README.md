@@ -9,6 +9,14 @@ By relying on pandoc, many output formats are supported, although this project w
 
 - Install `mdbook-pandoc`:
 
+  To install the latest release published to [crates.io](https://crates.io/crates/mdbook-pandoc):
+
+  ```sh
+  cargo install mdbook-pandoc
+  ```
+
+  The install the latest version committed to GitHub:
+
   ```sh
   cargo install --git https://github.com/max-heller/mdbook-pandoc.git mdbook-pandoc
   ```
