@@ -95,7 +95,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Verify MSRV
-        run: cargo msrv --output-format minimal verify
+        run: cargo msrv verify
 
   minimal-versions:
     runs-on: ubuntu-latest

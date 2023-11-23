@@ -445,6 +445,7 @@ dependencies = [
  "regex",
  "semver",
  "serde",
+ "serde_derive",
  "tempfile",
  "toml",
  "tracing",
