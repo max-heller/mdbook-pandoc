@@ -79,8 +79,11 @@ jobs:
             books/rustc-dev-guide/book/pdf/book.pdf
 
   clippy:
-    runs-on: ubuntu-latest
-
+    name: Clippy (${{matrix.os}})
+    runs-on: ${{matrix.os}}-latest
+    strategy:
+      matrix:
+        os: ["ubuntu", "windows", "macos"]
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
