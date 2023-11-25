@@ -8,10 +8,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
-      - uses: Swatinem/rust-cache@v2
+      - uses: max-heller/rust-cache@cargo-manifests
       - uses: taiki-e/install-action@nextest
       - name: Install pandoc
         run: |
@@ -56,8 +58,6 @@ jobs:
             unicode-math
             xcolor
             xurl
-      - name: Clone submodules
-        run: git submodule update --init
       - name: nextest
         run: cargo nextest run
       - name: doctest
