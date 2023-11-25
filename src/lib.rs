@@ -793,6 +793,31 @@ This is an example of a footnote[^note].
     }
 
     #[test]
+    fn link_title_containing_quotes() {
+        let book = MDBook::init()
+            .config(Config::latex())
+            .chapter(Chapter::new(
+                "",
+                r#"
+[link][link-with-description]
+
+[link-with-description]: chapter.md '"foo" (bar)'
+                "#,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_display_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \href{chapter.md}{link}
+        ├─ latex/src/chapter.md
+        │ [link](chapter.md "\"foo\" (bar)")
+        "###);
+    }
+
+    #[test]
     fn raw_opts() {
         let cfg = r#"
 [output.pandoc.profile.test]
