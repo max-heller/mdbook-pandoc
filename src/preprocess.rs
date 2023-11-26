@@ -293,6 +293,7 @@ struct PreprocessChapter<'a> {
     preprocessor: &'a Preprocessor<'a>,
     chapter: &'a Chapter,
     parser: Peekable<pulldown_cmark::Parser<'a, 'a>>,
+    start_tags: Vec<pulldown_cmark::Tag<'a>>,
 }
 
 impl<'a> PreprocessChapter<'a> {
@@ -307,6 +308,7 @@ impl<'a> PreprocessChapter<'a> {
             preprocessor,
             chapter,
             parser: pulldown_cmark::Parser::new_ext(&chapter.content, options).peekable(),
+            start_tags: Default::default(),
         }
     }
 }
@@ -324,40 +326,28 @@ impl<'a> Iterator for PreprocessChapter<'a> {
                     .update_heading(self.chapter, level, id, classes)
                     .map(|(level, id, classes)| Tag::Heading(level, id, classes))
                     .unwrap_or(Tag::Paragraph);
+                self.start_tags.push(tag.clone());
                 Event::Start(tag)
             }
-            Event::End(Tag::Heading(level, id, classes)) => {
-                let tag = self
-                    .preprocessor
-                    .update_heading(self.chapter, level, id, classes)
-                    .map(|(level, id, classes)| Tag::Heading(level, id, classes))
-                    .unwrap_or(Tag::Paragraph);
-                Event::End(tag)
-            }
+            Event::End(Tag::Heading(..)) => Event::End(self.start_tags.pop().unwrap()),
             Event::Start(Tag::Link(link_ty, destination, title)) => {
                 let destination = self
                     .preprocessor
                     .normalize_link_or_leave_as_is(self.chapter, destination);
-                Event::Start(Tag::Link(link_ty, destination, title))
+                let tag = Tag::Link(link_ty, destination, title);
+                self.start_tags.push(tag.clone());
+                Event::Start(tag)
             }
-            Event::End(Tag::Link(link_ty, destination, title)) => {
-                let destination = self
-                    .preprocessor
-                    .normalize_link_or_leave_as_is(self.chapter, destination);
-                Event::End(Tag::Link(link_ty, destination, title))
-            }
+            Event::End(Tag::Link(..)) => Event::End(self.start_tags.pop().unwrap()),
             Event::Start(Tag::Image(link_ty, destination, title)) => {
                 let destination = self
                     .preprocessor
                     .normalize_link_or_leave_as_is(self.chapter, destination);
-                Event::Start(Tag::Image(link_ty, destination, title))
+                let tag = Tag::Image(link_ty, destination, title);
+                self.start_tags.push(tag.clone());
+                Event::Start(tag)
             }
-            Event::End(Tag::Image(link_ty, destination, title)) => {
-                let destination = self
-                    .preprocessor
-                    .normalize_link_or_leave_as_is(self.chapter, destination);
-                Event::End(Tag::Image(link_ty, destination, title))
-            }
+            Event::End(Tag::Image(..)) => Event::End(self.start_tags.pop().unwrap()),
             Event::Html(mut html) => {
                 while let Some(Event::Html(more)) = self.parser.peek() {
                     let mut string = html.into_string();
