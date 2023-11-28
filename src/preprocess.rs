@@ -293,6 +293,7 @@ struct PreprocessChapter<'a> {
     preprocessor: &'a Preprocessor<'a>,
     chapter: &'a Chapter,
     parser: Peekable<pulldown_cmark::Parser<'a, 'a>>,
+    start_tags: Vec<pulldown_cmark::Tag<'a>>,
 }
 
 impl<'a> PreprocessChapter<'a> {
@@ -307,6 +308,7 @@ impl<'a> PreprocessChapter<'a> {
             preprocessor,
             chapter,
             parser: pulldown_cmark::Parser::new_ext(&chapter.content, options).peekable(),
+            start_tags: Default::default(),
         }
     }
 }
@@ -318,46 +320,31 @@ impl<'a> Iterator for PreprocessChapter<'a> {
         use pulldown_cmark::{Event, Tag};
 
         Some(match self.parser.next()? {
-            Event::Start(Tag::Heading(level, id, classes)) => {
-                let tag = self
-                    .preprocessor
-                    .update_heading(self.chapter, level, id, classes)
-                    .map(|(level, id, classes)| Tag::Heading(level, id, classes))
-                    .unwrap_or(Tag::Paragraph);
+            Event::Start(tag) => {
+                let tag = match tag {
+                    Tag::Heading(level, id, classes) => self
+                        .preprocessor
+                        .update_heading(self.chapter, level, id, classes)
+                        .map(|(level, id, classes)| Tag::Heading(level, id, classes))
+                        .unwrap_or(Tag::Paragraph),
+                    Tag::Link(link_ty, destination, title) => {
+                        let destination = self
+                            .preprocessor
+                            .normalize_link_or_leave_as_is(self.chapter, destination);
+                        Tag::Link(link_ty, destination, title)
+                    }
+                    Tag::Image(link_ty, destination, title) => {
+                        let destination = self
+                            .preprocessor
+                            .normalize_link_or_leave_as_is(self.chapter, destination);
+                        Tag::Image(link_ty, destination, title)
+                    }
+                    tag => tag,
+                };
+                self.start_tags.push(tag.clone());
                 Event::Start(tag)
             }
-            Event::End(Tag::Heading(level, id, classes)) => {
-                let tag = self
-                    .preprocessor
-                    .update_heading(self.chapter, level, id, classes)
-                    .map(|(level, id, classes)| Tag::Heading(level, id, classes))
-                    .unwrap_or(Tag::Paragraph);
-                Event::End(tag)
-            }
-            Event::Start(Tag::Link(link_ty, destination, title)) => {
-                let destination = self
-                    .preprocessor
-                    .normalize_link_or_leave_as_is(self.chapter, destination);
-                Event::Start(Tag::Link(link_ty, destination, title))
-            }
-            Event::End(Tag::Link(link_ty, destination, title)) => {
-                let destination = self
-                    .preprocessor
-                    .normalize_link_or_leave_as_is(self.chapter, destination);
-                Event::End(Tag::Link(link_ty, destination, title))
-            }
-            Event::Start(Tag::Image(link_ty, destination, title)) => {
-                let destination = self
-                    .preprocessor
-                    .normalize_link_or_leave_as_is(self.chapter, destination);
-                Event::Start(Tag::Image(link_ty, destination, title))
-            }
-            Event::End(Tag::Image(link_ty, destination, title)) => {
-                let destination = self
-                    .preprocessor
-                    .normalize_link_or_leave_as_is(self.chapter, destination);
-                Event::End(Tag::Image(link_ty, destination, title))
-            }
+            Event::End(_) => Event::End(self.start_tags.pop().unwrap()),
             Event::Html(mut html) => {
                 while let Some(Event::Html(more)) = self.parser.peek() {
                     let mut string = html.into_string();
