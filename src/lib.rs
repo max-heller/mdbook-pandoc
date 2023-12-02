@@ -94,7 +94,7 @@ impl PandocProfile {
                         true
                     }
                 }
-                None => false,
+                None => true,
             }
         };
         match (self.to.as_deref(), self.output.extension()) {
