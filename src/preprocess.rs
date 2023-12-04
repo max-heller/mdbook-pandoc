@@ -15,7 +15,7 @@ use mdbook::{
     BookItem,
 };
 use once_cell::sync::Lazy;
-use pulldown_cmark::{CowStr, HeadingLevel};
+use pulldown_cmark::{CodeBlockKind, CowStr, HeadingLevel};
 use regex::Regex;
 
 use crate::markdown_extensions;
@@ -338,6 +338,19 @@ impl<'a> Iterator for PreprocessChapter<'a> {
                             .preprocessor
                             .normalize_link_or_leave_as_is(self.chapter, destination);
                         Tag::Image(link_ty, destination, title)
+                    }
+                    Tag::CodeBlock(CodeBlockKind::Fenced(info_string)) => {
+                        // MdBook supports custom attributes on Rust code blocks.
+                        // Attributes are separated by a comma, space, or tab from the 'rust' prefix.
+                        // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
+                        // This strips out the attributes.
+                        static MDBOOK_ATTRIBUTES: Lazy<Regex> =
+                            Lazy::new(|| Regex::new(r"^rust[, \t].*").unwrap());
+                        let info_string = match MDBOOK_ATTRIBUTES.replace(&info_string, "rust") {
+                            Cow::Borrowed(_) => info_string,
+                            Cow::Owned(info_string) => info_string.into(),
+                        };
+                        Tag::CodeBlock(CodeBlockKind::Fenced(info_string))
                     }
                     tag => tag,
                 };
