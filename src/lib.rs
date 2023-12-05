@@ -793,6 +793,51 @@ This is an example of a footnote[^note].
     }
 
     #[test]
+    fn mdbook_rust_code_block_attributes() {
+        let book = MDBook::init()
+            .config(Config::latex())
+            .chapter(Chapter::new(
+                "",
+                r#"
+```rust
+fn main() {}
+```
+```rust,ignore
+fn main() {}
+```
+                "#,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_display_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \begin{Shaded}
+        │ \begin{Highlighting}[]
+        │ \KeywordTok{fn}\NormalTok{ main() }\OperatorTok{\{\}}
+        │ \end{Highlighting}
+        │ \end{Shaded}
+        │ 
+        │ \begin{Shaded}
+        │ \begin{Highlighting}[]
+        │ \KeywordTok{fn}\NormalTok{ main() }\OperatorTok{\{\}}
+        │ \end{Highlighting}
+        │ \end{Shaded}
+        ├─ latex/src/chapter.md
+        │ 
+        │ ````rust
+        │ fn main() {}
+        │ ````
+        │ 
+        │ ````rust
+        │ fn main() {}
+        │ ````
+        "###);
+    }
+
+    #[test]
     fn link_title_containing_quotes() {
         let book = MDBook::init()
             .config(Config::latex())
