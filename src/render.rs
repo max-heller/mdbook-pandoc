@@ -1,7 +1,6 @@
 use std::{
-    borrow::Cow,
     fmt, fs,
-    path::Path,
+    path::{Path, PathBuf},
     process::{Command, Stdio},
 };
 
@@ -9,15 +8,15 @@ use anyhow::Context;
 
 use crate::PandocProfile;
 
-pub struct PandocRenderer<'a> {
+pub struct PandocRenderer {
     pandoc: Command,
     profile: PandocProfile,
-    root: &'a Path,
-    destination: Cow<'a, Path>,
+    root: PathBuf,
+    destination: PathBuf,
 }
 
-impl<'a> PandocRenderer<'a> {
-    pub(crate) fn new(profile: PandocProfile, root: &'a Path, destination: Cow<'a, Path>) -> Self {
+impl PandocRenderer {
+    pub(crate) fn new(profile: PandocProfile, root: PathBuf, destination: PathBuf) -> Self {
         Self {
             pandoc: Command::new("pandoc"),
             profile,

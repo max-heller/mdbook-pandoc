@@ -5,6 +5,7 @@ use std::{
 };
 
 use anyhow::{anyhow, Context as _};
+use mdbook::config::HtmlConfig;
 use serde::{Deserialize, Serialize};
 
 mod preprocess;
@@ -147,22 +148,43 @@ impl mdbook::Renderer for Renderer {
             .with_context(|| format!("Unable to deserialize {}", Self::CONFIG_KEY))?
             .ok_or(anyhow!("No {} table found", Self::CONFIG_KEY))?;
 
+        let html_cfg: Option<HtmlConfig> = ctx
+            .config
+            .get_deserialized_opt("output.html")
+            .unwrap_or_default();
+
         let source_dir = ctx.source_dir().canonicalize()?;
 
         for (name, profile) in cfg.profiles {
-            let destination = ctx.destination.join(name);
+            let destination = ctx.destination.canonicalize()?.join(name);
 
             // Preprocess book
-            let preprocessor = Preprocessor::new(
+            let mut preprocessor = Preprocessor::new(
                 &ctx.book,
                 &source_dir,
                 destination.join("src").into(),
                 profile.preprocessor_options(),
-            );
-            let mut preprocessed = preprocessor.preprocess()?;
+            )?;
+
+            if let Some(redirects) = html_cfg.as_ref().map(|cfg| &cfg.redirect) {
+                if !redirects.is_empty() {
+                    log::info!("Registering redirects in [output.html.redirect]");
+                    let redirects = redirects
+                        .iter()
+                        .map(|(src, dst)| (src.as_str(), dst.as_str()));
+                    // In tests, sort redirect map to ensure stable log output
+                    #[cfg(test)]
+                    let redirects = redirects
+                        .collect::<std::collections::BTreeMap<_, _>>()
+                        .into_iter();
+                    preprocessor.add_redirects(redirects);
+                }
+            }
+
+            let mut preprocessed = preprocessor.preprocess();
 
             // Initialize renderer
-            let mut renderer = PandocRenderer::new(profile, &ctx.root, destination.into());
+            let mut renderer = PandocRenderer::new(profile, ctx.root.canonicalize()?, destination);
 
             // Add preprocessed book chapters to renderer
             renderer.current_dir(preprocessed.output_dir());
@@ -258,8 +280,19 @@ mod tests {
             let root = TempDir::new().unwrap();
             let mut book = mdbook::book::BookBuilder::new(root.path()).build().unwrap();
 
-            // Clear out the stub chapters
-            book.book.sections.clear();
+            // Clear out the stub files
+            let src = book.source_dir();
+            fs::remove_file(src.join("SUMMARY.md")).unwrap();
+            for item in book.book.sections.drain(..) {
+                match item {
+                    BookItem::Chapter(chap) => {
+                        if let Some(path) = chap.source_path {
+                            fs::remove_file(src.join(path)).unwrap();
+                        }
+                    }
+                    BookItem::Separator | BookItem::PartTitle(_) => {}
+                }
+            }
 
             MDBook::new(book, Some(root), self)
         }
@@ -369,7 +402,10 @@ mod tests {
                 writeln!(&mut logs, "{err:#}").unwrap()
             }
             BuildOutput {
-                logs: logs.replace(&self.book.root.display().to_string(), "$ROOT"),
+                logs: logs.replace(
+                    &self.book.root.canonicalize().unwrap().display().to_string(),
+                    "$ROOT",
+                ),
                 dir: self.book.build_dir_for(renderer.name()),
                 _root: self._root,
             }
@@ -473,7 +509,7 @@ mod tests {
 
         fn pdf() -> Self {
             Config {
-                keep_preprocessed: false,
+                keep_preprocessed: true,
                 profiles: HashMap::from_iter([("pdf".into(), PandocProfile::pdf())]),
             }
         }
@@ -896,6 +932,40 @@ colorlinks = false
         │  INFO mdbook::book: Running the pandoc backend    
         │ DEBUG mdbook_pandoc::render: Running: pandoc -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc -V header-includes=text1 -V header-includes=text2 -V indent --resource-path=really-long-path --resource-path=really-long-path2 --verbose    
         │  INFO mdbook_pandoc::render: Wrote output to /dev/null    
+        "###)
+    }
+
+    #[test]
+    fn redirects() {
+        let cfg = r#"
+[output.pandoc.profile.test]
+output = "/dev/null"
+to = "markdown"
+
+[output.html.redirect]
+"/foo/bar.html" = "../new-bar.html"
+        "#;
+        let output = MDBook::options()
+            .max_log_level(tracing::Level::DEBUG)
+            .init()
+            .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+            .chapter(Chapter::new("", "[bar](foo/bar.md)", "index.md"))
+            .chapter(Chapter::new("", "", "new-bar.md"))
+            .build();
+        insta::assert_display_snapshot!(output, @r###"
+        ├─ log output
+        │ DEBUG mdbook::book: Running the index preprocessor.    
+        │ DEBUG mdbook::book: Running the links preprocessor.    
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc: Registering redirects in [output.html.redirect]    
+        │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /foo/bar.html => ../new-bar.html    
+        │ DEBUG mdbook_pandoc::preprocess: Registered redirect: $ROOT/book/test/src/foo/bar.html => new-bar.md    
+        │ DEBUG mdbook_pandoc::render: Running: pandoc index.md new-bar.md -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc    
+        │  INFO mdbook_pandoc::render: Wrote output to /dev/null    
+        ├─ test/src/foo/bar.html
+        ├─ test/src/index.md
+        │ [bar](new-bar.md)
+        ├─ test/src/new-bar.md
         "###)
     }
 

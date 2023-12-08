@@ -1,6 +1,6 @@
 use std::{
     borrow::Cow,
-    collections::hash_map::DefaultHasher,
+    collections::{hash_map::DefaultHasher, HashMap},
     fmt,
     fs::{self, File},
     hash::{Hash, Hasher},
@@ -17,6 +17,7 @@ use mdbook::{
 use once_cell::sync::Lazy;
 use pulldown_cmark::{CodeBlockKind, CowStr, HeadingLevel};
 use regex::Regex;
+use walkdir::WalkDir;
 
 use crate::markdown_extensions;
 
@@ -24,6 +25,7 @@ pub struct Preprocessor<'a> {
     book: &'a Book,
     source_dir: &'a Path,
     destination: Cow<'a, Path>,
+    redirects: HashMap<PathBuf, String>,
     options: Options,
 }
 
@@ -50,25 +52,96 @@ impl<'a> Preprocessor<'a> {
         source_dir: &'a Path,
         destination: Cow<'a, Path>,
         options: Options,
-    ) -> Self {
-        Self {
+    ) -> anyhow::Result<Self> {
+        if destination.try_exists()? {
+            fs::remove_dir_all(&destination)?;
+        }
+        fs::create_dir_all(&destination)?;
+
+        for entry in WalkDir::new(source_dir).follow_links(true) {
+            let entry = entry?;
+            let src = entry.path();
+            let dest = destination.join(src.strip_prefix(source_dir).unwrap());
+            if entry.file_type().is_dir() {
+                fs::create_dir_all(&dest)
+                    .with_context(|| format!("Unable to create directory '{}'", dest.display()))?
+            } else {
+                fs::copy(src, &dest).with_context(|| {
+                    format!("Unable to copy '{}' -> '{}'", src.display(), dest.display())
+                })?;
+            }
+        }
+
+        Ok(Self {
             book,
             source_dir,
             destination,
             options,
-        }
+            redirects: Default::default(),
+        })
     }
 
-    pub fn preprocess(self) -> anyhow::Result<PreprocessedFiles<'a>> {
-        if self.destination.try_exists()? {
-            fs::remove_dir_all(&self.destination)?;
-        }
-        fs::create_dir_all(&self.destination)?;
-        Ok(PreprocessedFiles {
+    /// Processes redirect entries in the [output.html.redirect] table
+    pub fn add_redirects<'iter>(
+        &mut self,
+        redirects: impl IntoIterator<Item = (&'iter str, &'iter str)>,
+    ) {
+        redirects
+            .into_iter()
+            .map(|entry @ (src, dst)| {
+                log::debug!("Processing redirect: {src} => {dst}");
+
+                let res = (|| {
+                    let src_rel_path = src.trim_start_matches('/');
+                    let src = self.destination.join(src_rel_path);
+
+                    let Some(parent) = src.parent() else {
+                        anyhow::bail!(
+                            "Redirect source has no parent directory: '{}'",
+                            src.display()
+                        )
+                    };
+
+                    fs::create_dir_all(parent).with_context(|| {
+                        format!("Unable to create directory '{}'", parent.display())
+                    })?;
+
+                    File::create(&src)
+                        .with_context(|| format!("Unable to create file '{}'", src.display()))?;
+
+                    Ok((src, dst))
+                })();
+                (res, entry)
+            })
+            // Create all redirect sources before resolving destinations
+            // because a redirect may reference other redirects
+            .collect::<Vec<_>>()
+            .into_iter()
+            .map(|(res, entry)| {
+                res.and_then(|(src, dst)| {
+                    let dst = self
+                        .normalize_link(src.parent().unwrap(), dst.into())
+                        .map_err(|(err, _)| err)
+                        .context("Unable to normalize redirect destination")?;
+
+                    log::debug!("Registered redirect: {} => {dst}", src.display());
+                    self.redirects.insert(src, dst.into_string());
+                    Ok(())
+                })
+                .map_err(|err| (err, entry))
+            })
+            .filter_map(Result::err)
+            .for_each(|(err, (src, dst))| {
+                log::warn!("Failed to resolve redirect: {src} => {dst}: {err:#}")
+            })
+    }
+
+    pub fn preprocess(self) -> PreprocessedFiles<'a> {
+        PreprocessedFiles {
             items: self.book.iter(),
             preprocessor: self,
             part_num: 0,
-        })
+        }
     }
 
     fn preprocess_chapter(&self, chapter: &Chapter, out: impl io::Write) -> anyhow::Result<()> {
@@ -89,11 +162,11 @@ impl<'a> Preprocessor<'a> {
         chapter: &Chapter,
         link: CowStr<'link>,
     ) -> CowStr<'link> {
-        let Some(chapter_path) = &chapter.source_path else {
+        let Some(chapter_path) = &chapter.path else {
             return link;
         };
-        let chapter_dir = self.source_dir.join(chapter_path.parent().unwrap());
-        self.normalize_link(&chapter_dir, link)
+        let chapter_dir = chapter_path.parent().unwrap();
+        self.normalize_link(chapter_dir, link)
             .unwrap_or_else(|(err, link)| {
                 log::warn!(
                     "Unable to normalize link '{}' in chapter '{}': {err:#}",
@@ -124,19 +197,32 @@ impl<'a> Preprocessor<'a> {
             } else {
                 // URI is a relative-path reference, which must be normalized
                 let path_range = ..link.find(['?', '#']).unwrap_or(link.len());
-                let relative_path = Path::new(&link[path_range]);
+                let path = chapter_dir.join(&link[path_range]);
 
                 let normalized = self
-                    .normalize_path(&chapter_dir.join(relative_path))
+                    .normalize_path(&self.source_dir.join(&path))
+                    .or_else(|err| {
+                        self.normalize_path(&self.destination.join(path))
+                            .map_err(|_| err)
+                    })
                     .and_then(|normalized| {
-                        if !normalized.exists()? {
-                            normalized.copy_to_destination()?;
+                        let path = &normalized.destination_absolute_path;
+                        if let Some(mut path) = self.redirects.get(path) {
+                            while let Some(dest) = self.redirects.get(Path::new(path)) {
+                                path = dest;
+                            }
+                            Ok(Cow::Borrowed(path))
+                        } else {
+                            if !normalized.exists()? {
+                                normalized.copy_to_destination()?;
+                            }
+                            normalized
+                                .destination_relative_path
+                                .into_os_string()
+                                .into_string()
+                                .map_err(|path| anyhow!("Path is not valid UTF8: {path:?}"))
+                                .map(Cow::Owned)
                         }
-                        normalized
-                            .destination_relative_path
-                            .into_os_string()
-                            .into_string()
-                            .map_err(|path| anyhow!("Path is not valid UTF8: {path:?}"))
                     });
                 match normalized {
                     Ok(normalized_relative_path) => {
@@ -168,11 +254,13 @@ impl<'a> Preprocessor<'a> {
                     }
                     path.with_extension("md").canonicalize()
                 }
+                Some(extension) if extension == "md" => path.with_extension("html").canonicalize(),
                 _ => Err(err),
             })
             .with_context(|| format!("Unable to canonicalize path: {}", path.display()))?;
         let destination_relative_path = absolute_path
             .strip_prefix(self.source_dir)
+            .or_else(|_| absolute_path.strip_prefix(&self.destination))
             .map(|path| path.to_path_buf())
             .unwrap_or_else(|_| {
                 let mut hasher = DefaultHasher::new();
