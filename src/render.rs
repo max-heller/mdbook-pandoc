@@ -1,6 +1,6 @@
 use std::{
     fmt, fs,
-    path::{Path, PathBuf},
+    path::Path,
     process::{Command, Stdio},
 };
 
@@ -8,15 +8,15 @@ use anyhow::Context;
 
 use crate::PandocProfile;
 
-pub struct PandocRenderer {
+pub struct PandocRenderer<'a> {
     pandoc: Command,
     profile: PandocProfile,
-    root: PathBuf,
-    destination: PathBuf,
+    root: &'a Path,
+    destination: &'a Path,
 }
 
-impl PandocRenderer {
-    pub(crate) fn new(profile: PandocProfile, root: PathBuf, destination: PathBuf) -> Self {
+impl<'a> PandocRenderer<'a> {
+    pub(crate) fn new(profile: PandocProfile, root: &'a Path, destination: &'a Path) -> Self {
         Self {
             pandoc: Command::new("pandoc"),
             profile,
@@ -60,7 +60,7 @@ impl PandocRenderer {
         let mut pandoc = self.pandoc;
 
         let outfile = {
-            fs::create_dir_all(&self.destination).with_context(|| {
+            fs::create_dir_all(self.destination).with_context(|| {
                 format!("Unable to create directory: {}", self.destination.display())
             })?;
             self.destination.join(output)

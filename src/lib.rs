@@ -153,6 +153,7 @@ impl mdbook::Renderer for Renderer {
             .get_deserialized_opt("output.html")
             .unwrap_or_default();
 
+        let root = ctx.root.canonicalize()?;
         let source_dir = ctx.source_dir().canonicalize()?;
 
         fs::create_dir_all(&ctx.destination)?;
@@ -187,7 +188,7 @@ impl mdbook::Renderer for Renderer {
             let mut preprocessed = preprocessor.preprocess();
 
             // Initialize renderer
-            let mut renderer = PandocRenderer::new(profile, ctx.root.canonicalize()?, destination);
+            let mut renderer = PandocRenderer::new(profile, &root, &destination);
 
             // Add preprocessed book chapters to renderer
             renderer.current_dir(preprocessed.output_dir());
