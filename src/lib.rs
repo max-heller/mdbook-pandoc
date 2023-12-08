@@ -512,7 +512,7 @@ mod tests {
 
         fn pdf() -> Self {
             Config {
-                keep_preprocessed: true,
+                keep_preprocessed: false,
                 profiles: HashMap::from_iter([("pdf".into(), PandocProfile::pdf())]),
             }
         }
