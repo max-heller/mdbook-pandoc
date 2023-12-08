@@ -155,8 +155,11 @@ impl mdbook::Renderer for Renderer {
 
         let source_dir = ctx.source_dir().canonicalize()?;
 
+        fs::create_dir_all(&ctx.destination)?;
+        let destination = ctx.destination.canonicalize()?;
+
         for (name, profile) in cfg.profiles {
-            let destination = ctx.destination.canonicalize()?.join(name);
+            let destination = destination.join(name);
 
             // Preprocess book
             let mut preprocessor = Preprocessor::new(
