@@ -3,7 +3,7 @@ source: src/lib.rs
 expression: logs
 ---
  INFO mdbook::book: Running the pandoc backend    
- INFO mdbook_pandoc: Registering redirects in [output.html.redirect]    
+ INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
  WARN mdbook_pandoc::preprocess: Failed to resolve redirect: /rust-2018/cargo-and-crates-io/cargo-can-use-a-local-registry-replacement.html => ../../../cargo/reference/source-replacement.html: Unable to normalize redirect destination: Unable to canonicalize path: $ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/../../../cargo/reference/source-replacement.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Failed to resolve redirect: /rust-2018/cargo-and-crates-io/cargo-check-for-faster-checking.html => ../../../cargo/commands/cargo-check.html: Unable to normalize redirect destination: Unable to canonicalize path: $ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/../../../cargo/commands/cargo-check.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Failed to resolve redirect: /rust-2018/cargo-and-crates-io/cargo-install-for-easy-installation-of-tools.html => ../../../cargo/commands/cargo-install.html: Unable to normalize redirect destination: Unable to canonicalize path: $ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/../../../cargo/commands/cargo-install.html: No such file or directory (os error 2)    

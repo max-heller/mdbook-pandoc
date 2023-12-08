@@ -7,7 +7,7 @@ expression: logs
  WARN mdbook::preprocess::cmd: The command wasn't found, is the "toc" preprocessor installed?    
  WARN mdbook::preprocess::cmd: 	Command: mdbook-toc    
  INFO mdbook::book: Running the pandoc backend    
- INFO mdbook_pandoc: Registering redirects in [output.html.redirect]    
+ INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
  WARN mdbook_pandoc::preprocess: Ignoring separator    
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Coinduction    
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Coinduction    

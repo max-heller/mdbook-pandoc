@@ -172,7 +172,7 @@ impl mdbook::Renderer for Renderer {
 
             if let Some(redirects) = html_cfg.as_ref().map(|cfg| &cfg.redirect) {
                 if !redirects.is_empty() {
-                    log::info!("Registering redirects in [output.html.redirect]");
+                    log::info!("Processing redirects in [output.html.redirect]");
                     let redirects = redirects
                         .iter()
                         .map(|(src, dst)| (src.as_str(), dst.as_str()));
@@ -962,7 +962,7 @@ to = "markdown"
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc: Registering redirects in [output.html.redirect]    
+        │  INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
         │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /foo/bar.html => ../new-bar.html    
         │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /new-bar.html => new-new-bar.html    
         │ DEBUG mdbook_pandoc::preprocess: Registered redirect: foo/bar.html => new-bar.html    

@@ -3,7 +3,7 @@ source: src/lib.rs
 expression: logs
 ---
  INFO mdbook::book: Running the pandoc backend    
- INFO mdbook_pandoc: Registering redirects in [output.html.redirect]    
+ INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'Introduction': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../book/index.html' in chapter 'Introduction': Unable to canonicalize path: $ROOT/src/../book/index.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'Introduction': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
