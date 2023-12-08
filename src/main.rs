@@ -13,6 +13,7 @@ fn main() {
 fn try_main() -> anyhow::Result<()> {
     env_logger::builder()
         .filter_level(log::LevelFilter::Info)
+        .parse_default_env()
         .init();
 
     let ctx = mdbook::renderer::RenderContext::from_json(io::stdin().lock())
