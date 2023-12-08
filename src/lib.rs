@@ -948,13 +948,14 @@ to = "markdown"
 
 [output.html.redirect]
 "/foo/bar.html" = "../new-bar.html"
+"/new-bar.html" = "new-new-bar.html"
         "#;
         let output = MDBook::options()
             .max_log_level(tracing::Level::DEBUG)
             .init()
             .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
             .chapter(Chapter::new("", "[bar](foo/bar.md)", "index.md"))
-            .chapter(Chapter::new("", "", "new-bar.md"))
+            .chapter(Chapter::new("", "", "new-new-bar.md"))
             .build();
         insta::assert_display_snapshot!(output, @r###"
         ├─ log output
@@ -963,13 +964,16 @@ to = "markdown"
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc: Registering redirects in [output.html.redirect]    
         │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /foo/bar.html => ../new-bar.html    
-        │ DEBUG mdbook_pandoc::preprocess: Registered redirect: $ROOT/book/test/src/foo/bar.html => new-bar.md    
-        │ DEBUG mdbook_pandoc::render: Running: pandoc index.md new-bar.md -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc    
+        │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /new-bar.html => new-new-bar.html    
+        │ DEBUG mdbook_pandoc::preprocess: Registered redirect: foo/bar.html => new-bar.html    
+        │ DEBUG mdbook_pandoc::preprocess: Registered redirect: new-bar.html => new-new-bar.md    
+        │ DEBUG mdbook_pandoc::render: Running: pandoc index.md new-new-bar.md -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc    
         │  INFO mdbook_pandoc::render: Wrote output to /dev/null    
         ├─ test/src/foo/bar.html
         ├─ test/src/index.md
-        │ [bar](new-bar.md)
-        ├─ test/src/new-bar.md
+        │ [bar](new-new-bar.md)
+        ├─ test/src/new-bar.html
+        ├─ test/src/new-new-bar.md
         "###)
     }
 

@@ -123,6 +123,10 @@ impl<'a> Preprocessor<'a> {
                         .normalize_link(src.parent().unwrap(), dst.into())
                         .map_err(|(err, _)| err)
                         .context("Unable to normalize redirect destination")?;
+                    let src = self
+                        .normalize_path(&src)
+                        .context("Unable to normalize redirect source")?
+                        .destination_relative_path;
 
                     log::debug!("Registered redirect: {} => {dst}", src.display());
                     self.redirects.insert(src, dst.into_string());
@@ -206,8 +210,9 @@ impl<'a> Preprocessor<'a> {
                             .map_err(|_| err)
                     })
                     .and_then(|normalized| {
-                        let path = &normalized.destination_absolute_path;
-                        if let Some(mut path) = self.redirects.get(path) {
+                        if let Some(mut path) =
+                            self.redirects.get(&normalized.destination_relative_path)
+                        {
                             while let Some(dest) = self.redirects.get(Path::new(path)) {
                                 path = dest;
                             }
