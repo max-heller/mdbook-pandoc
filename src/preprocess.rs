@@ -355,7 +355,7 @@ impl PreprocessedFiles<'_> {
                 Ok(Some(normalized.destination_relative_path))
             }
             BookItem::Separator => {
-                log::warn!("Ignoring separator");
+                log::debug!("Ignoring separator");
                 Ok(None)
             }
             BookItem::PartTitle(name) => {
