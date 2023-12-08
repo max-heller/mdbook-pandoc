@@ -26,6 +26,7 @@ semver = "1.0.0"
 serde = { version = "1.0.85", features = ["derive"] }
 serde_derive = "1.0.85"
 toml = "0.5.0"
+walkdir = "2.0.0"
 
 [dev-dependencies]
 insta = { version = "1.0.0" }

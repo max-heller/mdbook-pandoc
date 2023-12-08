@@ -3,6 +3,7 @@ source: src/lib.rs
 expression: logs
 ---
  INFO mdbook::book: Running the pandoc backend    
+ INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'Introduction': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../book/index.html' in chapter 'Introduction': Unable to canonicalize path: $ROOT/src/../book/index.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'Introduction': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
@@ -76,7 +77,6 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../core/primitive.f64.md#associatedconstant.NAN' in chapter 'Literal expressions': Unable to canonicalize path: $ROOT/src/expressions/../../core/primitive.f64.md: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../std/ops/trait.Fn.html' in chapter 'Block expressions': Unable to canonicalize path: $ROOT/src/expressions/../../std/ops/trait.Fn.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../std/future/trait.Future.html' in chapter 'Block expressions': Unable to canonicalize path: $ROOT/src/expressions/../../std/future/trait.Future.html: No such file or directory (os error 2)    
- WARN mdbook_pandoc::preprocess: Unable to normalize link '../unsafe-blocks.md' in chapter 'Block expressions': Unable to canonicalize path: $ROOT/src/expressions/../unsafe-blocks.md: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../std/ptr/macro.addr_of.html' in chapter 'Operator expressions': Unable to canonicalize path: $ROOT/src/expressions/../../std/ptr/macro.addr_of.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../std/ptr/macro.addr_of_mut.html' in chapter 'Operator expressions': Unable to canonicalize path: $ROOT/src/expressions/../../std/ptr/macro.addr_of_mut.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../std/ops/trait.Index.html' in chapter 'Array and index expressions': Unable to canonicalize path: $ROOT/src/expressions/../../std/ops/trait.Index.html: No such file or directory (os error 2)    

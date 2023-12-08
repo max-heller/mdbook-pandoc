@@ -1,5 +1,4 @@
 use std::{
-    borrow::Cow,
     fmt, fs,
     path::Path,
     process::{Command, Stdio},
@@ -13,11 +12,11 @@ pub struct PandocRenderer<'a> {
     pandoc: Command,
     profile: PandocProfile,
     root: &'a Path,
-    destination: Cow<'a, Path>,
+    destination: &'a Path,
 }
 
 impl<'a> PandocRenderer<'a> {
-    pub(crate) fn new(profile: PandocProfile, root: &'a Path, destination: Cow<'a, Path>) -> Self {
+    pub(crate) fn new(profile: PandocProfile, root: &'a Path, destination: &'a Path) -> Self {
         Self {
             pandoc: Command::new("pandoc"),
             profile,
@@ -61,7 +60,7 @@ impl<'a> PandocRenderer<'a> {
         let mut pandoc = self.pandoc;
 
         let outfile = {
-            fs::create_dir_all(&self.destination).with_context(|| {
+            fs::create_dir_all(self.destination).with_context(|| {
                 format!("Unable to create directory: {}", self.destination.display())
             })?;
             self.destination.join(output)
