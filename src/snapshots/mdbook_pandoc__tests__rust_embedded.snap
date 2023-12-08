@@ -3,7 +3,6 @@ source: src/lib.rs
 expression: logs
 ---
  INFO mdbook::book: Running the pandoc backend    
- WARN mdbook_pandoc::preprocess: Ignoring separator    
 [WARNING] Missing character: There is no 🦀 (U+1F980) (U+1F980) in font [lmroman10-regular]:+tlig;
 [WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!
 [WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!

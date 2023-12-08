@@ -8,7 +8,6 @@ expression: logs
  WARN mdbook::preprocess::cmd: 	Command: mdbook-toc    
  INFO mdbook::book: Running the pandoc backend    
  INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
- WARN mdbook_pandoc::preprocess: Ignoring separator    
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Coinduction    
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Coinduction    
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
@@ -22,8 +21,6 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Ignoring separator    
- WARN mdbook_pandoc::preprocess: Ignoring separator    
 Error producing PDF.
 ! LaTeX Error: Too deeply nested.
 
