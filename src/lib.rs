@@ -993,9 +993,12 @@ to = "markdown"
                 "chapter.md",
             ))
             .build();
-        insta::assert_display_snapshot!(book.logs, @r###"
-         INFO mdbook::book: Running the pandoc backend    
-         INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
+        insta::assert_display_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
+        ├─ pdf/book.pdf
+        │ <INVALID UTF8>
         "###);
     }
 
