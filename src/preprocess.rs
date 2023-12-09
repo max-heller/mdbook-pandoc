@@ -46,6 +46,12 @@ struct NormalizedPath {
     destination_relative_path: PathBuf,
 }
 
+#[derive(Copy, Clone)]
+enum LinkContext {
+    Link,
+    Image,
+}
+
 impl<'a> Preprocessor<'a> {
     pub fn new(
         book: &'a Book,
@@ -120,7 +126,7 @@ impl<'a> Preprocessor<'a> {
             .map(|(res, entry)| {
                 res.and_then(|(src, dst)| {
                     let dst = self
-                        .normalize_link(src.parent().unwrap(), dst.into())
+                        .normalize_link(src.parent().unwrap(), dst.into(), LinkContext::Link)
                         .map_err(|(err, _)| err)
                         .context("Unable to normalize redirect destination")?;
                     let src = self
@@ -165,12 +171,13 @@ impl<'a> Preprocessor<'a> {
         &self,
         chapter: &Chapter,
         link: CowStr<'link>,
+        ctx: LinkContext,
     ) -> CowStr<'link> {
         let Some(chapter_path) = &chapter.path else {
             return link;
         };
         let chapter_dir = chapter_path.parent().unwrap();
-        self.normalize_link(chapter_dir, link)
+        self.normalize_link(chapter_dir, link, ctx)
             .unwrap_or_else(|(err, link)| {
                 log::warn!(
                     "Unable to normalize link '{}' in chapter '{}': {err:#}",
@@ -185,13 +192,45 @@ impl<'a> Preprocessor<'a> {
         &self,
         chapter_dir: &Path,
         link: CowStr<'link>,
+        ctx: LinkContext,
     ) -> Result<CowStr<'link>, (anyhow::Error, CowStr<'link>)> {
         // URI scheme definition: https://datatracker.ietf.org/doc/html/rfc3986#section-3.1
-        static SCHEME: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-zA-Z][a-z0-9+.-]*:").unwrap());
+        static SCHEME: Lazy<Regex> =
+            Lazy::new(|| Regex::new(r"^(?P<scheme>[a-zA-Z][a-z0-9+.-]*):").unwrap());
 
-        if SCHEME.is_match(&link) {
-            // Leave URIs with schemes (e.g. https://google.com) untouched
-            Ok(link)
+        let pathbuf_to_utf8 = |path: PathBuf| {
+            path.into_os_string()
+                .into_string()
+                .map_err(|path| anyhow!("Path is not valid UTF8: {path:?}"))
+        };
+
+        let link_path_range = || ..link.find(['?', '#']).unwrap_or(link.len());
+
+        if let Some(scheme) = SCHEME.captures(&link).and_then(|caps| caps.name("scheme")) {
+            match (ctx, scheme.as_str()) {
+                (LinkContext::Image, "http" | "https") => {
+                    /// Pandoc usually downloads remote images and embeds them in documents, but it
+                    /// doesn't handle some cases--we special case those here.
+                    const PANDOC_UNSUPPORTED_IMAGE_EXTENSIONS: &[&str] = &[
+                        // e.g. https://img.shields.io/github/actions/workflow/status/rust-lang/mdBook/main.yml?style=flat-square
+                        ".yml",
+                    ];
+
+                    let path = &link[link_path_range()];
+                    if PANDOC_UNSUPPORTED_IMAGE_EXTENSIONS
+                        .iter()
+                        .any(|extension| path.ends_with(extension))
+                    {
+                        self.download_remote_image(&link)
+                            .and_then(|path| pathbuf_to_utf8(path).map(CowStr::from))
+                            .map_err(|err| (err, link))
+                    } else {
+                        Ok(link)
+                    }
+                }
+                // Leave all other URIs with schemes untouched
+                _ => Ok(link),
+            }
         } else {
             // URI is a relative-reference: https://datatracker.ietf.org/doc/html/rfc3986#section-4.2
             if link.starts_with('/') {
@@ -200,7 +239,7 @@ impl<'a> Preprocessor<'a> {
                 Ok(link)
             } else {
                 // URI is a relative-path reference, which must be normalized
-                let path_range = ..link.find(['?', '#']).unwrap_or(link.len());
+                let path_range = link_path_range();
                 let path = chapter_dir.join(&link[path_range]);
 
                 let normalized = self
@@ -221,12 +260,7 @@ impl<'a> Preprocessor<'a> {
                             if !normalized.exists()? {
                                 normalized.copy_to_destination()?;
                             }
-                            normalized
-                                .destination_relative_path
-                                .into_os_string()
-                                .into_string()
-                                .map_err(|path| anyhow!("Path is not valid UTF8: {path:?}"))
-                                .map(Cow::Owned)
+                            pathbuf_to_utf8(normalized.destination_relative_path).map(Cow::Owned)
                         }
                     });
                 match normalized {
@@ -236,6 +270,39 @@ impl<'a> Preprocessor<'a> {
                         Ok(link.into())
                     }
                     Err(err) => Err((err, link)),
+                }
+            }
+        }
+    }
+
+    fn download_remote_image(&self, link: &str) -> anyhow::Result<PathBuf> {
+        match ureq::get(link).call() {
+            Err(err) => anyhow::bail!("Unable to load remote image '{link}': {err:#}"),
+            Ok(response) => {
+                const IMAGE_CONTENT_TYPES: &[(&str, &str)] = &[("image/svg+xml", "svg")];
+                let extension = IMAGE_CONTENT_TYPES.iter().find_map(|&(ty, extension)| {
+                    (ty == response.content_type()).then_some(extension)
+                });
+                match extension {
+                    None => anyhow::bail!("Unrecognized content-type: {}", response.content_type()),
+                    Some(extension) => {
+                        let mut filename = PathBuf::from(Self::make_kebab_case(link));
+                        filename.set_extension(extension);
+                        let path = self.destination.join(filename);
+
+                        File::create(&path)
+                            .and_then(|file| {
+                                io::copy(&mut response.into_reader(), &mut io::BufWriter::new(file))
+                            })
+                            .with_context(|| {
+                                format!(
+                                    "Unable to write downloaded image from '{}' to file '{}'",
+                                    link,
+                                    path.display(),
+                                )
+                            })
+                            .map(|_| path)
+                    }
                 }
             }
         }
@@ -322,6 +389,15 @@ impl<'a> Preprocessor<'a> {
         };
         Some((level, id, classes))
     }
+
+    fn make_kebab_case(s: &str) -> String {
+        const SEPARATORS: &[char] = &['_', '/', '.', '&', '?', '='];
+        s
+            // Replace separator-like characters with hyphens
+            .replace(|c: char| c.is_whitespace() || SEPARATORS.contains(&c), "-")
+            // Strip non alphanumeric/hyphen characters
+            .replace(|c: char| !(c.is_ascii_alphanumeric() || c == '-'), "")
+    }
 }
 
 impl Iterator for PreprocessedFiles<'_> {
@@ -361,9 +437,7 @@ impl PreprocessedFiles<'_> {
             BookItem::PartTitle(name) => {
                 if self.preprocessor.options.latex {
                     self.part_num += 1;
-                    let kebab_case_name = name
-                        .replace(|c: char| c.is_whitespace() || c == '_', "-")
-                        .replace(|c: char| !(c.is_ascii_alphanumeric() || c == '-'), "");
+                    let kebab_case_name = Preprocessor::make_kebab_case(name);
                     let path =
                         PathBuf::from(format!("part-{}-{kebab_case_name}.md", self.part_num));
                     let mut file = File::options()
@@ -421,15 +495,19 @@ impl<'a> Iterator for PreprocessChapter<'a> {
                         .map(|(level, id, classes)| Tag::Heading(level, id, classes))
                         .unwrap_or(Tag::Paragraph),
                     Tag::Link(link_ty, destination, title) => {
-                        let destination = self
-                            .preprocessor
-                            .normalize_link_or_leave_as_is(self.chapter, destination);
+                        let destination = self.preprocessor.normalize_link_or_leave_as_is(
+                            self.chapter,
+                            destination,
+                            LinkContext::Link,
+                        );
                         Tag::Link(link_ty, destination, title)
                     }
                     Tag::Image(link_ty, destination, title) => {
-                        let destination = self
-                            .preprocessor
-                            .normalize_link_or_leave_as_is(self.chapter, destination);
+                        let destination = self.preprocessor.normalize_link_or_leave_as_is(
+                            self.chapter,
+                            destination,
+                            LinkContext::Image,
+                        );
                         Tag::Image(link_ty, destination, title)
                     }
                     Tag::CodeBlock(CodeBlockKind::Fenced(info_string)) => {
