@@ -106,11 +106,6 @@ variable-name = "value"
   This is due to usage of pandoc's CommonMark parser, which doesn't yet support the functionality
   needed to wrap cell contents that is implemented in the Pandoc Markdown parser.
   See: https://github.com/jgm/commonmark-hs/issues/128
-- URLs with paths that do not have standard image extensions (e.g. `.png`, `.svg`) cannot currently be used as image destinations.
-  For example, a GitHub actions badge from <shields.io> will not work:
-  ```md
-  ![Build](https://img.shields.io/github/actions/workflow/status/max-heller/mdbook-pandoc/ci.yml?style=flat-square)
-  ```
 
 ### Comparison to alternatives
 

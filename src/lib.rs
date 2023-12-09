@@ -977,6 +977,31 @@ to = "markdown"
         "###)
     }
 
+    #[test]
+    fn remote_images() {
+        let book = MDBook::init()
+            .config(Config::pdf())
+            .chapter(Chapter::new(
+                "",
+                r#"
+[![Build](https://github.com/rust-lang/mdBook/workflows/CI/badge.svg?event=push)](https://github.com/rust-lang/mdBook/actions?query=workflow%3ACI+branch%3Amaster)
+[![Build](https://img.shields.io/github/actions/workflow/status/rust-lang/mdBook/main.yml?style=flat-square)](https://github.com/rust-lang/mdBook/actions/workflows/main.yml?query=branch%3Amaster)
+[![crates.io](https://img.shields.io/crates/v/mdbook.svg)](https://crates.io/crates/mdbook)
+[![GitHub contributors](https://img.shields.io/github/contributors/rust-lang/mdBook?style=flat-square)](https://github.com/rust-lang/mdBook/graphs/contributors)
+[![GitHub stars](https://img.shields.io/github/stars/rust-lang/mdBook?style=flat-square)](https://github.com/rust-lang/mdBook/stargazers)
+                "#,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_display_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
+        ├─ pdf/book.pdf
+        │ <INVALID UTF8>
+        "###);
+    }
+
     static BOOKS: Lazy<PathBuf> = Lazy::new(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("books"));
 
     #[test]
