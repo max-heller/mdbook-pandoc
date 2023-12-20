@@ -60,3 +60,15 @@ pr-run-mode = "plan"
 # TODO: Remove once https://github.com/Swatinem/rust-cache/pull/180 is released
 # Allow modifications to generated CI workflow
 allow-dirty = ["ci"]
+
+[workspace.metadata.dist.dependencies.apt]
+pandoc = { stage = ["run"] }
+librsvg2-bin = { stage = ["run"] } # SVG support
+
+[workspace.metadata.dist.dependencies.chocolatey]
+pandoc = { stage = ["run"] }
+rsvg-convert = { stage = ["run"] } # SVG support
+
+[workspace.metadata.dist.dependencies.homebrew]
+pandoc = { stage = ["run"] }
+librsvg = { stage = ["run"] } # SVG support
