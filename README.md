@@ -86,6 +86,7 @@ variable-name = "value"
   - [x] [Task Lists](https://rust-lang.github.io/mdBook/format/markdown.html#task-lists) (e.g. `- [x] Complete task`)
   - [x] [Heading Attributes](https://rust-lang.github.io/mdBook/format/markdown.html#heading-attributes) (e.g. `# Heading { #custom-heading }`)
 - [x] Table of contents
+- [x] Take [`[output.html.redirect]`](https://rust-lang.github.io/mdBook/format/configuration/renderers.html#outputhtmlredirect) into account when resolving links
 - [x] Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`) to LaTeX
 
 ### Preprocessing
