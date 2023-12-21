@@ -241,6 +241,7 @@ fn markdown_extensions() -> impl Iterator<Item = MarkdownExtension> {
 #[cfg(test)]
 mod tests {
     use std::{
+        env,
         fmt::{self, Write},
         fs,
         io::{self, Read, Seek},
@@ -549,7 +550,11 @@ mod tests {
                 file_scope: true,
                 number_sections: true,
                 output: "book.pdf".into(),
-                pdf_engine: Some("xelatex".into()),
+                pdf_engine: Some(
+                    env::var_os("PDF_ENGINE")
+                        .map(Into::into)
+                        .unwrap_or("lualatex".into()),
+                ),
                 standalone: true,
                 to: Some("latex".into()),
                 table_of_contents: true,
