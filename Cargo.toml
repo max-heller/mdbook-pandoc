@@ -48,7 +48,7 @@ lto = "thin"
 # Config for 'cargo dist'
 [workspace.metadata.dist]
 # The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.6.0"
+cargo-dist-version = "0.6.1"
 # CI backends to support
 ci = ["github"]
 # The installers to generate for each app
@@ -56,7 +56,7 @@ installers = ["shell", "powershell"]
 # Target platforms to build apps for (Rust target-triple syntax)
 targets = ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-unknown-linux-musl", "x86_64-pc-windows-msvc"]
 # Publish jobs to run in CI
-pr-run-mode = "plan"
+pr-run-mode = "upload"
 # TODO: Remove once https://github.com/Swatinem/rust-cache/pull/180 is released
 # Allow modifications to generated CI workflow
 allow-dirty = ["ci"]
@@ -72,3 +72,18 @@ rsvg-convert = { stage = ["run"] } # SVG support
 [workspace.metadata.dist.dependencies.homebrew]
 pandoc = { stage = ["run"] }
 librsvg = { stage = ["run"] } # SVG support
+
+# Render sample books and upload to release as extra artifacts
+[[workspace.metadata.dist.extra-artifacts]]
+artifacts = [
+  "books/cargo/src/doc/book/pdf/book.pdf",
+  "books/mdBook/guide/book/pdf/book.pdf",
+  "books/nomicon/book/pdf/book.pdf",
+  "books/rust-book/book/pdf/book.pdf",
+  "books/rust-by-example/book/pdf/book.pdf",
+  "books/rust-edition-guide/book/pdf/book.pdf",
+  "books/rust-embedded/book/pdf/book.pdf",
+  "books/rust-reference/book/pdf/book.pdf",
+  "books/rustc-dev-guide/book/pdf/book.pdf",
+]
+build = ["bash", "-c", "git submodule update --init && source scripts/install-ci-deps && cargo nextest run --release"]
