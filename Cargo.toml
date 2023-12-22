@@ -86,10 +86,4 @@ artifacts = [
   "rust-reference.pdf",
   "rustc-dev-guide.pdf",
 ]
-build = [
-  "bash",
-  "-c",
-  # Use xelatex when building books since texlive-luatex is missing lua-ul.sty on Ubuntu 20.04,
-  # which cargo-dist uses for its runner
-  "git submodule update --init && source scripts/install-ci-deps && PDF_ENGINE=xelatex cargo nextest run --no-fail-fast; ./scripts/copy-books"
-]
+build = ["bash", "-c", "git submodule update --init && source scripts/install-ci-deps && ./scripts/cargo-dist-render-books"]

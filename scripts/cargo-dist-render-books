@@ -2,6 +2,10 @@
 
 set -e
 
+# Use xelatex when building books since texlive-luatex is missing lua-ul.sty on Ubuntu 20.04,
+# which cargo-dist uses for its runner
+PDF_ENGINE=xelatex cargo nextest run --no-fail-fast || true
+
 cp books/cargo/src/doc/book/pdf/book.pdf cargo-book.pdf
 cp books/mdBook/guide/book/pdf/book.pdf mdBook-guide.pdf
 cp books/nomicon/book/pdf/book.pdf nomicon.pdf
