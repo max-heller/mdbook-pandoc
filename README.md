@@ -6,6 +6,8 @@
 A [`mdbook`](https://github.com/rust-lang/mdBook) backend that outsources most of the rendering process to [`pandoc`](https://pandoc.org).
 By relying on pandoc, many output formats are supported, although this project was mainly developed with LaTeX in mind.
 
+See [Rendered Books](#rendered-books) for samples of rendered books.
+
 ## Installation
 
 - [Install `mdbook`](https://rust-lang.github.io/mdBook/guide/installation.html)
@@ -109,6 +111,23 @@ variable-name = "value"
   See: https://github.com/jgm/commonmark-hs/issues/128
 
 ### Comparison to alternatives
+
+#### Rendered books
+
+The following table links to sample books rendered with `mdbook-pandoc`.
+PDFs are rendered with LaTeX ([xelatex](https://en.wikipedia.org/wiki/XeTeX)).
+
+| Book | Rendered |
+| ---- | -------- |
+| [Cargo Book](https://doc.rust-lang.org/stable/cargo/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-cargo-book.pdf) |
+| [mdBook Guide](https://rust-lang.github.io/mdBook/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-mdBook-guide.pdf) |
+| [Rustonomicon](https://doc.rust-lang.org/nomicon/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-nomicon.pdf) |
+| [Rust Book](https://doc.rust-lang.org/book/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rust-book.pdf) |
+| [Rust by Example](https://doc.rust-lang.org/rust-by-example/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rust-by-example.pdf) |
+| [Rust Edition Guide](https://doc.rust-lang.org/edition-guide/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rust-edition-guide.pdf) |
+| [Embedded Rust Book](https://docs.rust-embedded.org/book/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rust-embedded.pdf) |
+| [Rust Reference](https://doc.rust-lang.org/reference/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rust-reference.pdf) |
+| [Rust Compiler Development Guide](https://rustc-dev-guide.rust-lang.org/) | ❌ Compilation fails |
 
 #### Rendering to PDF
 
