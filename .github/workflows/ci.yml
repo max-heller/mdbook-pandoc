@@ -21,7 +21,7 @@ jobs:
       - name: doctest
         run: cargo test --doc
       - name: Archive rendered books
-        if: github.ref == 'refs/heads/main'
+        if: github.base_ref == 'main'
         uses: actions/upload-artifact@v3
         with:
           name: rendered-books
