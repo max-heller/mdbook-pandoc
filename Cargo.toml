@@ -48,7 +48,7 @@ lto = "thin"
 # Config for 'cargo dist'
 [workspace.metadata.dist]
 # The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.6.0"
+cargo-dist-version = "0.6.1"
 # CI backends to support
 ci = ["github"]
 # The installers to generate for each app
@@ -72,3 +72,19 @@ rsvg-convert = { stage = ["run"] } # SVG support
 [workspace.metadata.dist.dependencies.homebrew]
 pandoc = { stage = ["run"] }
 librsvg = { stage = ["run"] } # SVG support
+
+# Render sample books and upload to release as extra artifacts
+[[workspace.metadata.dist.extra-artifacts]]
+artifacts = [
+  "rendered-cargo-book.pdf",
+  "rendered-mdBook-guide.pdf",
+  "rendered-nomicon.pdf",
+  "rendered-rust-book.pdf",
+  "rendered-rust-by-example.pdf",
+  "rendered-rust-edition-guide.pdf",
+  "rendered-rust-embedded.pdf",
+  "rendered-rust-reference.pdf",
+  # Currently fails to build
+  # "rendered-rustc-dev-guide.pdf",
+]
+build = ["bash", "-c", "git submodule update --init && source scripts/install-ci-deps && ./scripts/cargo-dist-render-books"]

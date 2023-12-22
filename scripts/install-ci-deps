@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -e
+
+# cargo-nextest
+curl -LsSf https://get.nexte.st/0.9/linux | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
+
+# Pandoc
+curl -LsSf https://github.com/jgm/pandoc/releases/download/3.1.9/pandoc-3.1.9-linux-amd64.tar.gz | tar zxf -
+echo "$PWD/pandoc-3.1.9/bin" >> $GITHUB_PATH
+export PATH="$PWD/pandoc-3.1.9/bin:$PATH"
+
+# rsvg-convert (SVG support)
+sudo apt-get install -y librsvg2-bin
+
+# TeX Live
+sudo apt-get install -y texlive texlive-luatex texlive-xetex texlive-fonts-extra fonts-font-awesome
+
+# Source Code Pro font
+wget -O source-code-pro.zip https://fonts.google.com/download?family=Source%20Code%20Pro
+unzip -d source-code-pro source-code-pro.zip
+rm source-code-pro.zip
+mv source-code-pro /usr/share/fonts
+fc-cache -fv
