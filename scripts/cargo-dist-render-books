@@ -14,4 +14,5 @@ cp books/rust-by-example/book/pdf/book.pdf rust-by-example.pdf
 cp books/rust-edition-guide/book/pdf/book.pdf rust-edition-guide.pdf
 cp books/rust-embedded/book/pdf/book.pdf rust-embedded.pdf
 cp books/rust-reference/book/pdf/book.pdf rust-reference.pdf
-cp books/rustc-dev-guide/book/pdf/book.pdf rustc-dev-guide.pdf
+# Currently fails to build
+# cp books/rustc-dev-guide/book/pdf/book.pdf rustc-dev-guide.pdf
