@@ -76,15 +76,15 @@ librsvg = { stage = ["run"] } # SVG support
 # Render sample books and upload to release as extra artifacts
 [[workspace.metadata.dist.extra-artifacts]]
 artifacts = [
-  "cargo-book.pdf",
-  "mdBook-guide.pdf",
-  "nomicon.pdf",
-  "rust-book.pdf",
-  "rust-by-example.pdf",
-  "rust-edition-guide.pdf",
-  "rust-embedded.pdf",
-  "rust-reference.pdf",
+  "rendered-cargo-book.pdf",
+  "rendered-mdBook-guide.pdf",
+  "rendered-nomicon.pdf",
+  "rendered-rust-book.pdf",
+  "rendered-rust-by-example.pdf",
+  "rendered-rust-edition-guide.pdf",
+  "rendered-rust-embedded.pdf",
+  "rendered-rust-reference.pdf",
   # Currently fails to build
-  # "rustc-dev-guide.pdf",
+  # "rendered-rustc-dev-guide.pdf",
 ]
 build = ["bash", "-c", "git submodule update --init && source scripts/install-ci-deps && ./scripts/cargo-dist-render-books"]

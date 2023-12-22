@@ -6,13 +6,13 @@ set -e
 # which cargo-dist uses for its runner
 PDF_ENGINE=xelatex cargo nextest run --no-fail-fast || true
 
-cp books/cargo/src/doc/book/pdf/book.pdf cargo-book.pdf
-cp books/mdBook/guide/book/pdf/book.pdf mdBook-guide.pdf
-cp books/nomicon/book/pdf/book.pdf nomicon.pdf
-cp books/rust-book/book/pdf/book.pdf rust-book.pdf
-cp books/rust-by-example/book/pdf/book.pdf rust-by-example.pdf
-cp books/rust-edition-guide/book/pdf/book.pdf rust-edition-guide.pdf
-cp books/rust-embedded/book/pdf/book.pdf rust-embedded.pdf
-cp books/rust-reference/book/pdf/book.pdf rust-reference.pdf
+cp books/cargo/src/doc/book/pdf/book.pdf rendered-cargo-book.pdf
+cp books/mdBook/guide/book/pdf/book.pdf rendered-mdBook-guide.pdf
+cp books/nomicon/book/pdf/book.pdf rendered-nomicon.pdf
+cp books/rust-book/book/pdf/book.pdf rendered-rust-book.pdf
+cp books/rust-by-example/book/pdf/book.pdf rendered-rust-by-example.pdf
+cp books/rust-edition-guide/book/pdf/book.pdf rendered-rust-edition-guide.pdf
+cp books/rust-embedded/book/pdf/book.pdf rendered-rust-embedded.pdf
+cp books/rust-reference/book/pdf/book.pdf rendered-rust-reference.pdf
 # Currently fails to build
-# cp books/rustc-dev-guide/book/pdf/book.pdf rustc-dev-guide.pdf
+# cp books/rustc-dev-guide/book/pdf/book.pdf rendered-rustc-dev-guide.pdf
