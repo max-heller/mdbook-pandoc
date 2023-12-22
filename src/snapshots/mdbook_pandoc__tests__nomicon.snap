@@ -56,11 +56,11 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/panic/fn.catch_unwind.html' in chapter 'FFI': Unable to canonicalize path: $ROOT/src/../std/panic/fn.catch_unwind.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/panic/fn.catch_unwind.html' in chapter 'FFI': Unable to canonicalize path: $ROOT/src/../std/panic/fn.catch_unwind.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../core/panic/struct.PanicInfo.html' in chapter '#[panic_handler]': Unable to canonicalize path: $ROOT/src/../core/panic/struct.PanicInfo.html: No such file or directory (os error 2)    
-[WARNING] Missing character: There is no 🙀 (U+1F640) (U+1F640) in font [lmroman10-regular]:mapping=
-[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:mapping=t
-[WARNING] Missing character: There is no Ӛ (U+04DA) (U+04DA) in font Source Code Pro Italic Black 
-[WARNING] Missing character: There is no 😿 (U+1F63F) (U+1F63F) in font Source Code Pro Italic Black
-[WARNING] Missing character: There is no 😿 (U+1F63F) (U+1F63F) in font Source Code Pro Italic Black
-[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:mapping=t
+[WARNING] Missing character: There is no 🙀 (U+1F640) (U+1F640) in font [lmroman10-regular]:+tlig;
+[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no Ӛ (U+04DA) (U+04DA) in font SourceCodePro/I:mode=node;scr
+[WARNING] Missing character: There is no 😿 (U+1F63F) (U+1F63F) in font SourceCodePro/I:mode=node;
+[WARNING] Missing character: There is no 😿 (U+1F63F) (U+1F63F) in font SourceCodePro/I:mode=node;
+[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:+tlig;!
  INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
 

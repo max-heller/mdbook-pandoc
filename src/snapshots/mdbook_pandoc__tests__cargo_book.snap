@@ -164,6 +164,6 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link 'help@crates.io' in chapter 'cargo yank': Unable to canonicalize path: $ROOT/src/commands/help@crates.io: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../edition-guide/index.html' in chapter 'Appendix: Glossary': Unable to canonicalize path: $ROOT/src/appendix/../../edition-guide/index.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/attributes/codegen.html#the-target_feature-attribute' in chapter 'Appendix: Glossary': Unable to canonicalize path: $ROOT/src/appendix/../../reference/attributes/codegen.html: No such file or directory (os error 2)    
-[WARNING] Missing character: There is no ɑ (U+0251) (U+0251) in font [lmroman10-regular]:mapping=t
+[WARNING] Missing character: There is no ɑ (U+0251) (U+0251) in font [lmroman10-regular]:+tlig;!
  INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
 
