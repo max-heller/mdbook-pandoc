@@ -41,6 +41,38 @@ impl<'a> PandocRenderer<'a> {
     }
 
     pub fn render(self) -> anyhow::Result<()> {
+        let pandoc_version = {
+            let output = Command::new("pandoc")
+                .arg("-v")
+                .output()
+                .context("Unable to run `pandoc -v`")?;
+            anyhow::ensure!(
+                output.status.success(),
+                "`pandoc -v` exited with error code {}",
+                output.status
+            );
+            let output =
+                String::from_utf8(output.stdout).context("`pandoc -v` output is not UTF8")?;
+            match output.lines().next().and_then(|line| line.split_once(' ')) {
+                Some(("pandoc", mut version)) => {
+                    // Pandoc versions can contain more than three components (e.g. a.b.c.d).
+                    // If this is the case, only consider the first three.
+                    if let Some((idx, _)) = version.match_indices('.').nth(2) {
+                        version = &version[..idx];
+                    }
+                    semver::Version::parse(version.trim()).unwrap()
+                }
+                _ => anyhow::bail!("`pandoc -v` output does not contain `pandoc VERSION`"),
+            }
+        };
+
+        if !crate::PANDOC_VERSION_REQ.matches(&pandoc_version) {
+            anyhow::bail!(
+                "mdbook-pandoc is incompatible with detected Pandoc version (requires version {}, but using {})",
+                *crate::PANDOC_VERSION_REQ, pandoc_version,
+            );
+        }
+
         let profile_is_latex = self.profile.is_latex();
 
         let PandocProfile {
@@ -75,17 +107,24 @@ impl<'a> PandocRenderer<'a> {
                     .chain([
                         // Automatically generate section labels according to GitHub's method to
                         // align with behavior of mdbook's HTML renderer
-                        "gfm_auto_identifiers",
+                        ("gfm_auto_identifiers", ">=2.0".parse().unwrap()),
                         // Enable inserting raw LaTeX
-                        "raw_attribute",
+                        ("raw_attribute", ">=2.10.1".parse().unwrap()),
                         // TODO: pandoc's `rebase_relative_paths` extension works for Markdown links and images,
                         // but not for raw HTML links and images. Switch if/when pandoc supports HTML as well.
                         // Treat paths as relative to the chapter containing them
-                        // "rebase_relative_paths",
+                        // ("rebase_relative_paths", ">=2.14".parse().unwrap()),
                     ]);
-                for extension in extensions {
-                    format.push('+');
-                    format.push_str(extension);
+                for (extension, version_req) in extensions {
+                    if version_req.matches(&pandoc_version) {
+                        format.push('+');
+                        format.push_str(extension);
+                    } else {
+                        log::warn!(
+                            "Cannot use Pandoc extension `{}`, which may result in degraded output (requires version {}, but using {})",
+                            extension, version_req, pandoc_version,
+                        );
+                    }
                 }
                 format
             })

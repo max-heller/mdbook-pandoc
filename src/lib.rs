@@ -6,6 +6,7 @@ use std::{
 
 use anyhow::{anyhow, Context as _};
 use mdbook::config::HtmlConfig;
+use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
 mod preprocess;
@@ -13,6 +14,11 @@ use preprocess::Preprocessor;
 
 mod render;
 use render::PandocRenderer;
+
+/// Defines compatible versions of Pandoc
+// commonmark input format introduced in 1.14
+static PANDOC_VERSION_REQ: Lazy<semver::VersionReq> =
+    Lazy::new(|| semver::VersionReq::parse(">=1.14").unwrap());
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -214,7 +220,7 @@ impl mdbook::Renderer for Renderer {
 
 struct MarkdownExtension {
     pulldown: pulldown_cmark::Options,
-    pandoc: &'static str,
+    pandoc: (&'static str, semver::VersionReq),
 }
 
 /// Markdown extensions enabled by mdBook.
@@ -226,16 +232,22 @@ fn markdown_extensions() -> impl Iterator<Item = MarkdownExtension> {
         // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
         // pulldown_cmark_to_cmark always generates ~~, so this is okay,
         // although it'd be good to have an option to configure this explicitly.
-        (Options::ENABLE_STRIKETHROUGH, "strikeout"),
-        (Options::ENABLE_FOOTNOTES, "footnotes"),
-        (Options::ENABLE_TABLES, "pipe_tables"),
-        (Options::ENABLE_TASKLISTS, "task_lists"),
+        (Options::ENABLE_STRIKETHROUGH, ("strikeout", "*")),
+        (Options::ENABLE_FOOTNOTES, ("footnotes", ">=2.10.1")),
+        (Options::ENABLE_TABLES, ("pipe_tables", "*")),
+        (Options::ENABLE_TASKLISTS, ("task_lists", ">=2.6")),
         // pandoc does not support `header_attributes` with commonmark
         // so use `attributes`, which is a superset
-        (Options::ENABLE_HEADING_ATTRIBUTES, "attributes"),
+        (
+            Options::ENABLE_HEADING_ATTRIBUTES,
+            ("attributes", ">=2.10.1"),
+        ),
     ]
     .into_iter()
-    .map(|(pulldown, pandoc)| MarkdownExtension { pulldown, pandoc })
+    .map(|(pulldown, (pandoc, req))| MarkdownExtension {
+        pulldown,
+        pandoc: (pandoc, req.parse().unwrap()),
+    })
 }
 
 #[cfg(test)]
