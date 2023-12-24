@@ -37,17 +37,17 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/items/unions.html' in chapter 'A - Keywords': Unable to canonicalize path: $ROOT/src/../reference/items/unions.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'C - Derivable Traits': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `ch15-02-derefmd__following-the-pointer-to-the-value-with-the-dereference-operator'
-  on page 181 undefined on input line 10842.
+  `book__pdf__src__ch15-02-derefmd__following-the-pointer-to-the-value-with-the-dereference-operator'
+  on page 181 undefined on input line 10865.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `ch06-02-matchmd__the-match-control-flow-operator' on page
-  566 undefined on input line 33682.
+  `book__pdf__src__ch06-02-matchmd__the-match-control-flow-operator'
+  on page 566 undefined on input line 33717.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `ch13-01-closuresmd__moving-captured-values-out-of-the-closure-and-the-fn-traits'
-  on page 606 undefined on input line 36050.
+  `book__pdf__src__ch13-01-closuresmd__moving-captured-values-out-of-the-closure-and-the-fn-traits'
+  on page 606 undefined on input line 36087.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `ch04-01-what-is-ownershipmd__ways-variables-and-data-interact-clone'
-  on page 654 undefined on input line 38865.
+  `book__pdf__src__ch04-01-what-is-ownershipmd__ways-variables-and-data-interact-clone'
+  on page 654 undefined on input line 38904.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no 🚨 (U+1F6A8) (U+1F6A8) in font [lmroman10-bold]:+tlig;!
 [WARNING] Missing character: There is no 👍 (U+1F44D) (U+1F44D) in font SourceCodePro:mode=node;sc

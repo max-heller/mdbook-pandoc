@@ -165,11 +165,11 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../edition-guide/index.html' in chapter 'Appendix: Glossary': Unable to canonicalize path: $ROOT/src/appendix/../../edition-guide/index.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/attributes/codegen.html#the-target_feature-attribute' in chapter 'Appendix: Glossary': Unable to canonicalize path: $ROOT/src/appendix/../../reference/attributes/codegen.html: No such file or directory (os error 2)    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `commands__cargomd__option-cargo---offline' on page 265
-  undefined on input line 18998.
+  `book__pdf__src__commands__cargomd__option-cargo---offline'
+  on page 265 undefined on input line 19222.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `commands__cargo-buildmd__option-cargo-build---keep-going'
-  on page 269 undefined on input line 19223.
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---keep-going'
+  on page 269 undefined on input line 19459.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no ɑ (U+0251) (U+0251) in font [lmroman10-regular]:+tlig;!
  INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    

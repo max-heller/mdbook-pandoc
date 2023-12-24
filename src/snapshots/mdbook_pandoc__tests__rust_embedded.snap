@@ -4,29 +4,29 @@ expression: logs
 ---
  INFO mdbook::book: Running the pandoc backend    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `design-patterns__hal__namingmd__c-crate-name' on page 95
-  undefined on input line 5740.
+  `book__pdf__src__design-patterns__hal__namingmd__c-crate-name'
+  on page 95 undefined on input line 5763.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `design-patterns__hal__interoperabilitymd__c-free' on page
-  95 undefined on input line 5750.
+  `book__pdf__src__design-patterns__hal__interoperabilitymd__c-free'
+  on page 95 undefined on input line 5773.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `design-patterns__hal__interoperabilitymd__c-reexport-pac'
-  on page 95 undefined on input line 5753.
+  `book__pdf__src__design-patterns__hal__interoperabilitymd__c-reexport-pac'
+  on page 95 undefined on input line 5776.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `design-patterns__hal__interoperabilitymd__c-hal-traits' on
-  page 95 undefined on input line 5756.
+  `book__pdf__src__design-patterns__hal__interoperabilitymd__c-hal-traits'
+  on page 95 undefined on input line 5779.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `design-patterns__hal__predictabilitymd__c-ctor' on page 95
-  undefined on input line 5766.
+  `book__pdf__src__design-patterns__hal__predictabilitymd__c-ctor'
+  on page 95 undefined on input line 5789.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `design-patterns__hal__gpiomd__c-zst-pin' on page 95
-  undefined on input line 5776.
+  `book__pdf__src__design-patterns__hal__gpiomd__c-zst-pin' on
+  page 95 undefined on input line 5799.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `design-patterns__hal__gpiomd__c-erased-pin' on page 95
-  undefined on input line 5779.
+  `book__pdf__src__design-patterns__hal__gpiomd__c-erased-pin'
+  on page 95 undefined on input line 5802.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `design-patterns__hal__gpiomd__c-pin-state' on page 95
-  undefined on input line 5782.
+  `book__pdf__src__design-patterns__hal__gpiomd__c-pin-state'
+  on page 95 undefined on input line 5805.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no 🦀 (U+1F980) (U+1F980) in font [lmroman10-regular]:+tlig;
 [WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!

@@ -24,7 +24,8 @@ use crate::markdown_extensions;
 pub struct Preprocessor<'a> {
     book: &'a Book,
     source_dir: &'a Path,
-    destination: Cow<'a, Path>,
+    destination: &'a Path,
+    destination_relative_to_root: &'a Path,
     redirects: HashMap<PathBuf, String>,
     options: Options,
 }
@@ -43,7 +44,7 @@ pub struct PreprocessedFiles<'a> {
 struct NormalizedPath {
     src_absolute_path: PathBuf,
     destination_absolute_path: PathBuf,
-    destination_relative_path: PathBuf,
+    destination_path_relative_to_root: PathBuf,
 }
 
 #[derive(Copy, Clone)]
@@ -55,14 +56,15 @@ enum LinkContext {
 impl<'a> Preprocessor<'a> {
     pub fn new(
         book: &'a Book,
+        root: &'a Path,
         source_dir: &'a Path,
-        destination: Cow<'a, Path>,
+        destination: &'a Path,
         options: Options,
     ) -> anyhow::Result<Self> {
         if destination.try_exists()? {
-            fs::remove_dir_all(&destination)?;
+            fs::remove_dir_all(destination)?;
         }
-        fs::create_dir_all(&destination)?;
+        fs::create_dir_all(destination)?;
 
         for entry in WalkDir::new(source_dir).follow_links(true) {
             let entry = entry?;
@@ -82,6 +84,7 @@ impl<'a> Preprocessor<'a> {
             book,
             source_dir,
             destination,
+            destination_relative_to_root: destination.strip_prefix(root).unwrap_or(destination),
             options,
             redirects: Default::default(),
         })
@@ -132,7 +135,7 @@ impl<'a> Preprocessor<'a> {
                     let src = self
                         .normalize_path(&src)
                         .context("Unable to normalize redirect source")?
-                        .destination_relative_path;
+                        .destination_path_relative_to_root;
 
                     log::debug!("Registered redirect: {} => {dst}", src.display());
                     self.redirects.insert(src, dst.into_string());
@@ -240,7 +243,12 @@ impl<'a> Preprocessor<'a> {
             } else {
                 // URI is a relative-path reference, which must be normalized
                 let path_range = link_path_range();
-                let path = chapter_dir.join(&link[path_range]);
+                let path = match &link[path_range] {
+                    // Internal reference within chapter
+                    "" if link.starts_with('#') => return Ok(link),
+                    path => Path::new(path),
+                };
+                let path = chapter_dir.join(path);
 
                 let normalized = self
                     .normalize_path(&self.source_dir.join(&path))
@@ -249,8 +257,9 @@ impl<'a> Preprocessor<'a> {
                             .map_err(|_| err)
                     })
                     .and_then(|normalized| {
-                        if let Some(mut path) =
-                            self.redirects.get(&normalized.destination_relative_path)
+                        if let Some(mut path) = self
+                            .redirects
+                            .get(&normalized.destination_path_relative_to_root)
                         {
                             while let Some(dest) = self.redirects.get(Path::new(path)) {
                                 path = dest;
@@ -260,7 +269,8 @@ impl<'a> Preprocessor<'a> {
                             if !normalized.exists()? {
                                 normalized.copy_to_destination()?;
                             }
-                            pathbuf_to_utf8(normalized.destination_relative_path).map(Cow::Owned)
+                            pathbuf_to_utf8(normalized.destination_path_relative_to_root)
+                                .map(Cow::Owned)
                         }
                     });
                 match normalized {
@@ -332,7 +342,7 @@ impl<'a> Preprocessor<'a> {
             .with_context(|| format!("Unable to canonicalize path: {}", path.display()))?;
         let destination_relative_path = absolute_path
             .strip_prefix(self.source_dir)
-            .or_else(|_| absolute_path.strip_prefix(&self.destination))
+            .or_else(|_| absolute_path.strip_prefix(self.destination))
             .map(|path| path.to_path_buf())
             .unwrap_or_else(|_| {
                 let mut hasher = DefaultHasher::new();
@@ -348,7 +358,9 @@ impl<'a> Preprocessor<'a> {
         Ok(NormalizedPath {
             src_absolute_path: absolute_path,
             destination_absolute_path: self.destination.join(&destination_relative_path),
-            destination_relative_path,
+            destination_path_relative_to_root: self
+                .destination_relative_to_root
+                .join(&destination_relative_path),
         })
     }
 
@@ -415,7 +427,7 @@ impl Iterator for PreprocessedFiles<'_> {
 
 impl PreprocessedFiles<'_> {
     pub fn output_dir(&self) -> &Path {
-        &self.preprocessor.destination
+        self.preprocessor.destination
     }
 
     fn preprocess_book_item(&mut self, item: &BookItem) -> anyhow::Result<Option<PathBuf>> {
@@ -428,7 +440,7 @@ impl PreprocessedFiles<'_> {
                 let normalized = self.preprocessor.normalize_path(&chapter_path)?;
                 let writer = io::BufWriter::new(normalized.create()?);
                 self.preprocessor.preprocess_chapter(chapter, writer)?;
-                Ok(Some(normalized.destination_relative_path))
+                Ok(Some(normalized.destination_path_relative_to_root))
             }
             BookItem::Separator => {
                 log::debug!("Ignoring separator");
@@ -446,7 +458,9 @@ impl PreprocessedFiles<'_> {
                         .open(self.preprocessor.destination.join(&path))
                         .with_context(|| format!("Unable to create file for part '{name}'"))?;
                     writeln!(file, r"`\part{{{name}}}`{{=latex}}")?;
-                    Ok(Some(path))
+                    Ok(Some(
+                        self.preprocessor.destination_relative_to_root.join(path),
+                    ))
                 } else {
                     log::warn!("Ignoring part separator: {}", name);
                     Ok(None)
