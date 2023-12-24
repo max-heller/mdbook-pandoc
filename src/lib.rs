@@ -2,17 +2,29 @@ use std::{
     collections::{BTreeMap, HashMap},
     fs::{self, File},
     path::PathBuf,
+    process::Command,
 };
 
 use anyhow::{anyhow, Context as _};
 use mdbook::config::HtmlConfig;
+use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
+
+mod capabilities;
+use capabilities::{Context, Pandoc};
+
+mod extensions;
 
 mod preprocess;
 use preprocess::Preprocessor;
 
 mod render;
 use render::PandocRenderer;
+
+/// Defines compatible versions of Pandoc
+// commonmark input format introduced in 1.14
+static PANDOC_VERSION_REQ: Lazy<semver::VersionReq> =
+    Lazy::new(|| semver::VersionReq::parse(">=1.14").unwrap());
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -52,16 +64,8 @@ mod defaults {
 }
 
 impl PandocProfile {
-    fn preprocessor_options(&self) -> preprocess::Options {
-        preprocess::Options {
-            latex: self.is_latex(),
-        }
-    }
-}
-
-impl PandocProfile {
     /// Determines whether the profile uses LaTeX, either by outputting it directory or rendering it to PDF.
-    fn is_latex(&self) -> bool {
+    pub fn uses_latex(&self) -> bool {
         let pdf_engine_is_latex = || {
             // Source: https://pandoc.org/MANUAL.html#option--pdf-engine
             const LATEX_ENGINES: &[&str] =
@@ -142,6 +146,37 @@ impl mdbook::Renderer for Renderer {
             );
         }
 
+        let pandoc_version = {
+            let output = Command::new("pandoc")
+                .arg("-v")
+                .output()
+                .context("Unable to run `pandoc -v`")?;
+            anyhow::ensure!(
+                output.status.success(),
+                "`pandoc -v` exited with error code {}",
+                output.status
+            );
+            let output =
+                String::from_utf8(output.stdout).context("`pandoc -v` output is not UTF8")?;
+            match output.lines().next().and_then(|line| line.split_once(' ')) {
+                Some(("pandoc", mut version)) => {
+                    // Pandoc versions can contain more than three components (e.g. a.b.c.d).
+                    // If this is the case, only consider the first three.
+                    if let Some((idx, _)) = version.match_indices('.').nth(2) {
+                        version = &version[..idx];
+                    }
+                    semver::Version::parse(version.trim()).unwrap()
+                }
+                _ => anyhow::bail!("`pandoc -v` output does not contain `pandoc VERSION`"),
+            }
+        };
+        if !PANDOC_VERSION_REQ.matches(&pandoc_version) {
+            anyhow::bail!(
+                "mdbook-pandoc is incompatible with detected Pandoc version (requires version {}, but using {})",
+                *PANDOC_VERSION_REQ, pandoc_version,
+            );
+        }
+
         let cfg: Config = ctx
             .config
             .get_deserialized_opt(Self::CONFIG_KEY)
@@ -160,6 +195,7 @@ impl mdbook::Renderer for Renderer {
         let destination = ctx.destination.canonicalize()?;
 
         for (name, profile) in cfg.profiles {
+            let mut context = Context::new(&profile, Pandoc::new(pandoc_version.clone()));
             let destination = destination.join(name);
 
             // Preprocess book
@@ -169,7 +205,7 @@ impl mdbook::Renderer for Renderer {
                 &root,
                 &source_dir,
                 &preprocessed_src,
-                profile.preprocessor_options(),
+                &mut context,
             )?;
 
             if let Some(redirects) = html_cfg.as_ref().map(|cfg| &cfg.redirect) {
@@ -203,41 +239,15 @@ impl mdbook::Renderer for Renderer {
             }
 
             // Render final output
-            renderer.render()?;
+            renderer.render(&context)?;
 
             if !cfg.keep_preprocessed {
-                fs::remove_dir_all(preprocessed.output_dir())?;
+                fs::remove_dir_all(&preprocessed_src)?;
             }
         }
 
         Ok(())
     }
-}
-
-struct MarkdownExtension {
-    pulldown: pulldown_cmark::Options,
-    pandoc: &'static str,
-}
-
-/// Markdown extensions enabled by mdBook.
-///
-/// See https://rust-lang.github.io/mdBook/format/markdown.html#extensions
-fn markdown_extensions() -> impl Iterator<Item = MarkdownExtension> {
-    use pulldown_cmark::Options;
-    [
-        // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
-        // pulldown_cmark_to_cmark always generates ~~, so this is okay,
-        // although it'd be good to have an option to configure this explicitly.
-        (Options::ENABLE_STRIKETHROUGH, "strikeout"),
-        (Options::ENABLE_FOOTNOTES, "footnotes"),
-        (Options::ENABLE_TABLES, "pipe_tables"),
-        (Options::ENABLE_TASKLISTS, "task_lists"),
-        // pandoc does not support `header_attributes` with commonmark
-        // so use `attributes`, which is a superset
-        (Options::ENABLE_HEADING_ATTRIBUTES, "attributes"),
-    ]
-    .into_iter()
-    .map(|(pulldown, pandoc)| MarkdownExtension { pulldown, pandoc })
 }
 
 #[cfg(test)]
@@ -950,7 +960,7 @@ colorlinks = false
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
         │  INFO mdbook::book: Running the pandoc backend    
-        │ DEBUG mdbook_pandoc::render: Running: pandoc -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc -V header-includes=text1 -V header-includes=text2 -V indent --resource-path=really-long-path --resource-path=really-long-path2 --verbose    
+        │ DEBUG mdbook_pandoc::render: Running: pandoc -f commonmark+gfm_auto_identifiers -o /dev/null -t markdown --file-scope -N -s --toc -V header-includes=text1 -V header-includes=text2 -V indent --resource-path=really-long-path --resource-path=really-long-path2 --verbose    
         │  INFO mdbook_pandoc::render: Wrote output to /dev/null    
         "###)
     }
@@ -983,7 +993,7 @@ to = "markdown"
         │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /new-bar.html => new-new-bar.html    
         │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/foo/bar.html => book/test/src/new-bar.html    
         │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/new-bar.html => book/test/src/new-new-bar.md    
-        │ DEBUG mdbook_pandoc::render: Running: pandoc book/test/src/index.md book/test/src/new-new-bar.md -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc    
+        │ DEBUG mdbook_pandoc::render: Running: pandoc book/test/src/index.md book/test/src/new-new-bar.md -f commonmark+gfm_auto_identifiers -o /dev/null -t markdown --file-scope -N -s --toc    
         │  INFO mdbook_pandoc::render: Wrote output to /dev/null    
         ├─ test/src/foo/bar.html
         ├─ test/src/index.md

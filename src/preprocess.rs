@@ -9,7 +9,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{anyhow, Context};
+use anyhow::{anyhow, Context as _};
 use mdbook::{
     book::{Book, BookItems, Chapter},
     BookItem,
@@ -19,7 +19,10 @@ use pulldown_cmark::{CodeBlockKind, CowStr, HeadingLevel};
 use regex::Regex;
 use walkdir::WalkDir;
 
-use crate::markdown_extensions;
+use crate::{
+    capabilities::{Availability, Context, LatexPackage, OutputFormat},
+    extensions::{mdbook_extensions, PandocExtension},
+};
 
 pub struct Preprocessor<'a> {
     book: &'a Book,
@@ -27,11 +30,7 @@ pub struct Preprocessor<'a> {
     destination: &'a Path,
     destination_relative_to_root: &'a Path,
     redirects: HashMap<PathBuf, String>,
-    options: Options,
-}
-
-pub struct Options {
-    pub latex: bool,
+    context: &'a mut Context,
 }
 
 pub struct PreprocessedFiles<'a> {
@@ -59,7 +58,7 @@ impl<'a> Preprocessor<'a> {
         root: &'a Path,
         source_dir: &'a Path,
         destination: &'a Path,
-        options: Options,
+        options: &'a mut Context,
     ) -> anyhow::Result<Self> {
         if destination.try_exists()? {
             fs::remove_dir_all(destination)?;
@@ -85,7 +84,7 @@ impl<'a> Preprocessor<'a> {
             source_dir,
             destination,
             destination_relative_to_root: destination.strip_prefix(root).unwrap_or(destination),
-            options,
+            context: options,
             redirects: Default::default(),
         })
     }
@@ -157,7 +156,11 @@ impl<'a> Preprocessor<'a> {
         }
     }
 
-    fn preprocess_chapter(&self, chapter: &Chapter, out: impl io::Write) -> anyhow::Result<()> {
+    fn preprocess_chapter(
+        &mut self,
+        chapter: &'a Chapter,
+        out: impl io::Write,
+    ) -> anyhow::Result<()> {
         let preprocessed = PreprocessChapter::new(self, chapter);
         struct IoWriteAdapter<W>(W);
         impl<W: io::Write> fmt::Write for IoWriteAdapter<W> {
@@ -425,12 +428,8 @@ impl Iterator for PreprocessedFiles<'_> {
     }
 }
 
-impl PreprocessedFiles<'_> {
-    pub fn output_dir(&self) -> &Path {
-        self.preprocessor.destination
-    }
-
-    fn preprocess_book_item(&mut self, item: &BookItem) -> anyhow::Result<Option<PathBuf>> {
+impl<'book> PreprocessedFiles<'book> {
+    fn preprocess_book_item(&mut self, item: &'book BookItem) -> anyhow::Result<Option<PathBuf>> {
         match item {
             BookItem::Chapter(chapter) => {
                 let Some(chapter_path) = &chapter.source_path else {
@@ -446,8 +445,18 @@ impl PreprocessedFiles<'_> {
                 log::debug!("Ignoring separator");
                 Ok(None)
             }
-            BookItem::PartTitle(name) => {
-                if self.preprocessor.options.latex {
+            BookItem::PartTitle(name) => match self.preprocessor.context {
+                Context {
+                    output: OutputFormat::Latex { .. },
+                    ..
+                } if matches!(
+                    self.preprocessor
+                        .context
+                        .pandoc
+                        .enable_extension(PandocExtension::RawAttribute),
+                    Availability::Available
+                ) =>
+                {
                     self.part_num += 1;
                     let kebab_case_name = Preprocessor::make_kebab_case(name);
                     let path =
@@ -461,29 +470,30 @@ impl PreprocessedFiles<'_> {
                     Ok(Some(
                         self.preprocessor.destination_relative_to_root.join(path),
                     ))
-                } else {
+                }
+                _ => {
                     log::warn!("Ignoring part separator: {}", name);
                     Ok(None)
                 }
-            }
+            },
         }
     }
 }
 
-struct PreprocessChapter<'a> {
-    preprocessor: &'a Preprocessor<'a>,
+struct PreprocessChapter<'a, 'preprocessor> {
+    preprocessor: &'preprocessor mut Preprocessor<'a>,
     chapter: &'a Chapter,
     parser: Peekable<pulldown_cmark::Parser<'a, 'a>>,
     start_tags: Vec<pulldown_cmark::Tag<'a>>,
 }
 
-impl<'a> PreprocessChapter<'a> {
-    fn new(preprocessor: &'a Preprocessor<'a>, chapter: &'a Chapter) -> Self {
+impl<'a, 'preprocessor> PreprocessChapter<'a, 'preprocessor> {
+    fn new(preprocessor: &'preprocessor mut Preprocessor<'a>, chapter: &'a Chapter) -> Self {
         // Follow mdbook Commonmark extensions
-        let options = markdown_extensions()
-            .fold(pulldown_cmark::Options::empty(), |options, extension| {
-                options | extension.pulldown
-            });
+        let options = mdbook_extensions().fold(
+            pulldown_cmark::Options::empty(),
+            |options, (extension, _)| options | extension,
+        );
 
         Self {
             preprocessor,
@@ -494,19 +504,41 @@ impl<'a> PreprocessChapter<'a> {
     }
 }
 
-impl<'a> Iterator for PreprocessChapter<'a> {
+impl<'a, 'preprocessor> Iterator for PreprocessChapter<'a, 'preprocessor> {
     type Item = pulldown_cmark::Event<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
         use pulldown_cmark::{Event, Tag};
 
+        let context = &mut self.preprocessor.context;
+
         Some(match self.parser.next()? {
             Event::Start(tag) => {
                 let tag = match tag {
+                    Tag::Strikethrough => {
+                        context.pandoc.enable_extension(PandocExtension::Strikeout);
+                        Tag::Strikethrough
+                    }
+                    Tag::FootnoteDefinition(label) => {
+                        context.pandoc.enable_extension(PandocExtension::Footnotes);
+                        Tag::FootnoteDefinition(label)
+                    }
+                    Tag::Table(alignment) => {
+                        context.pandoc.enable_extension(PandocExtension::PipeTables);
+                        Tag::Table(alignment)
+                    }
                     Tag::Heading(level, id, classes) => self
                         .preprocessor
                         .update_heading(self.chapter, level, id, classes)
-                        .map(|(level, id, classes)| Tag::Heading(level, id, classes))
+                        .map(|(level, id, classes)| {
+                            if id.is_some() || !classes.is_empty() {
+                                self.preprocessor
+                                    .context
+                                    .pandoc
+                                    .enable_extension(PandocExtension::Attributes);
+                            }
+                            Tag::Heading(level, id, classes)
+                        })
                         .unwrap_or(Tag::Paragraph),
                     Tag::Link(link_ty, destination, title) => {
                         let destination = self.preprocessor.normalize_link_or_leave_as_is(
@@ -551,17 +583,32 @@ impl<'a> Iterator for PreprocessChapter<'a> {
                     // Actually consume the item from the iterator
                     self.parser.next();
                 }
-                if self.preprocessor.options.latex {
+                let context = &mut self.preprocessor.context;
+                if let OutputFormat::Latex { packages } = &mut context.output {
                     static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
                         Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#)
                             .unwrap()
                     });
-                    html = match FONT_AWESOME_ICON.replace_all(&html, r"`\faicon{$icon}`{=latex}") {
-                        Cow::Borrowed(_) => html,
-                        Cow::Owned(html) => html.into(),
-                    };
+                    if let Availability::Available = context
+                        .pandoc
+                        .enable_extension(PandocExtension::RawAttribute)
+                    {
+                        html = match FONT_AWESOME_ICON
+                            .replace_all(&html, r"`\faicon{$icon}`{=latex}")
+                        {
+                            Cow::Borrowed(_) => html,
+                            Cow::Owned(html) => {
+                                packages.need(LatexPackage::FontAwesome);
+                                html.into()
+                            }
+                        };
+                    }
                 }
                 Event::Html(html)
+            }
+            Event::TaskListMarker(checked) => {
+                context.pandoc.enable_extension(PandocExtension::TaskLists);
+                Event::TaskListMarker(checked)
             }
             event => event,
         })

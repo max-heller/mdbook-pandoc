@@ -1,12 +1,16 @@
 use std::{
+    borrow::Cow,
     fmt, fs,
     path::Path,
     process::{Command, Stdio},
 };
 
-use anyhow::Context;
+use anyhow::Context as _;
 
-use crate::PandocProfile;
+use crate::{
+    capabilities::{Availability, Context, OutputFormat},
+    PandocProfile,
+};
 
 pub struct PandocRenderer<'a> {
     pandoc: Command,
@@ -40,9 +44,7 @@ impl<'a> PandocRenderer<'a> {
         self
     }
 
-    pub fn render(self) -> anyhow::Result<()> {
-        let profile_is_latex = self.profile.is_latex();
-
+    pub fn render(self, context: &Context) -> anyhow::Result<()> {
         let PandocProfile {
             columns,
             file_scope,
@@ -66,29 +68,27 @@ impl<'a> PandocRenderer<'a> {
             self.destination.join(output)
         };
 
-        pandoc
-            .arg("-f")
-            .arg({
-                let mut format = String::from("commonmark");
-                let extensions = crate::markdown_extensions()
-                    .map(|extension| extension.pandoc)
-                    .chain([
-                        // Automatically generate section labels according to GitHub's method to
-                        // align with behavior of mdbook's HTML renderer
-                        "gfm_auto_identifiers",
-                        // Enable inserting raw LaTeX
-                        "raw_attribute",
-                        // TODO: pandoc's `rebase_relative_paths` extension works for Markdown links and images,
-                        // but not for raw HTML links and images. Switch if/when pandoc supports HTML as well.
-                        // Treat paths as relative to the chapter containing them
-                        // "rebase_relative_paths",
-                    ]);
-                for extension in extensions {
-                    format.push('+');
-                    format.push_str(extension);
+        let format = {
+            let mut format = String::from("commonmark");
+            for (extension, availability) in context.pandoc.enabled_extensions() {
+                match availability {
+                    Availability::Available => {
+                        format.push('+');
+                        format.push_str(extension.name());
+                    }
+                    Availability::Unavailable(version_req) => {
+                        log::warn!(
+                            "Cannot use Pandoc extension `{}`, which may result in degraded output (requires version {}, but using {})",
+                            extension.name(), version_req, context.pandoc.version,
+                        );
+                    }
                 }
-                format
-            })
+            }
+            format
+        };
+
+        pandoc
+            .args(["-f", &format])
             .arg("-o")
             .arg(&outfile)
             .args(to.iter().flat_map(|to| ["-t", to]))
@@ -109,22 +109,27 @@ impl<'a> PandocRenderer<'a> {
             pandoc.arg("--toc-depth").arg(format!("{depth}"));
         }
 
-        let additional_variables = profile_is_latex
-            .then_some([
-                // FontAwesome icons
-                ("header-includes", r"\usepackage{fontawesome}"),
-            ])
-            .into_iter()
-            .flatten();
+        let mut additional_variables: Vec<(_, Cow<str>)> = vec![];
+        match &context.output {
+            OutputFormat::Latex { packages } => {
+                let include_packages = packages
+                    .needed()
+                    .map(|package| format!(r"\usepackage{{{}}}", package.name()))
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                additional_variables.push(("header-includes", include_packages.into()));
+            }
+            OutputFormat::Other => {}
+        };
         for (key, val) in additional_variables {
             pandoc.arg("-V").arg(format!("{key}={val}"));
         }
 
-        let default_variables = profile_is_latex
-            .then_some([("documentclass", "report")])
-            .into_iter()
-            .flatten();
-        for (key, val) in default_variables {
+        let default_variables = match context.output {
+            OutputFormat::Latex { .. } => [("documentclass", "report")].as_slice(),
+            OutputFormat::Other => [].as_slice(),
+        };
+        for &(key, val) in default_variables {
             if !variables.contains_key(key) {
                 variables.insert(key.into(), val.into());
             }
