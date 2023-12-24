@@ -163,10 +163,12 @@ impl mdbook::Renderer for Renderer {
             let destination = destination.join(name);
 
             // Preprocess book
+            let preprocessed_src = destination.join("src");
             let mut preprocessor = Preprocessor::new(
                 &ctx.book,
+                &root,
                 &source_dir,
-                destination.join("src").into(),
+                &preprocessed_src,
                 profile.preprocessor_options(),
             )?;
 
@@ -191,7 +193,7 @@ impl mdbook::Renderer for Renderer {
             let mut renderer = PandocRenderer::new(profile, &root, &destination);
 
             // Add preprocessed book chapters to renderer
-            renderer.current_dir(preprocessed.output_dir());
+            renderer.current_dir(&root);
             for input in &mut preprocessed {
                 renderer.input(input?);
             }
@@ -393,6 +395,15 @@ mod tests {
 
         pub fn part(mut self, name: impl Into<String>) -> Self {
             self.book.book.push_item(BookItem::PartTitle(name.into()));
+            self
+        }
+
+        pub fn file_in_root(self, path: impl AsRef<Path>, contents: &str) -> Self {
+            let path = self.book.root.join(path);
+            if let Some(parent) = path.parent() {
+                fs::create_dir_all(parent).unwrap();
+            }
+            fs::write(path, contents).unwrap();
             self
         }
 
@@ -715,14 +726,14 @@ This is an example of a footnote[^note].
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \phantomsection\label{onemd}
-        │ \chapter{One}\label{onemd__one}
+        │ \phantomsection\label{book__latex__src__onemd}
+        │ \chapter{One}\label{book__latex__src__onemd__one}
         │ 
-        │ \phantomsection\label{part-1-part-twomd}
+        │ \phantomsection\label{book__latex__src__part-1-part-twomd}
         │ \part{part two}
         │ 
-        │ \phantomsection\label{twomd}
-        │ \chapter{Two}\label{twomd__two}
+        │ \phantomsection\label{book__latex__src__twomd}
+        │ \chapter{Two}\label{book__latex__src__twomd__two}
         ├─ latex/src/one.md
         │ # One
         ├─ latex/src/part-1-part-two.md
@@ -744,15 +755,15 @@ This is an example of a footnote[^note].
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \phantomsection\label{one__onemd}
-        │ \hyperref[two__twomd]{Two}
+        │ \phantomsection\label{book__latex__src__one__onemd}
+        │ \hyperref[book__latex__src__two__twomd]{Two}
         │ 
-        │ \phantomsection\label{two__twomd}
-        │ \hyperref[one__onemd]{One}
+        │ \phantomsection\label{book__latex__src__two__twomd}
+        │ \hyperref[book__latex__src__one__onemd]{One}
         ├─ latex/src/one/one.md
-        │ [Two](two/two.md)
+        │ [Two](book/latex/src/two/two.md)
         ├─ latex/src/two/two.md
-        │ [One](one/one.md)
+        │ [One](book/latex/src/one/one.md)
         "###);
     }
 
@@ -772,16 +783,16 @@ This is an example of a footnote[^note].
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \phantomsection\label{onemd}
-        │ \chapter{One}\label{onemd__one}
+        │ \phantomsection\label{book__latex__src__onemd}
+        │ \chapter{One}\label{book__latex__src__onemd__one}
         │ 
-        │ \phantomsection\label{onepointonemd}
-        │ \section{Top}\label{onepointonemd__top}
+        │ \phantomsection\label{book__latex__src__onepointonemd}
+        │ \section{Top}\label{book__latex__src__onepointonemd__top}
         │ 
-        │ \subsection*{Another}\label{onepointonemd__another}
+        │ \subsection*{Another}\label{book__latex__src__onepointonemd__another}
         │ 
-        │ \phantomsection\label{twomd}
-        │ \chapter{Two}\label{twomd__two}
+        │ \phantomsection\label{book__latex__src__twomd}
+        │ \chapter{Two}\label{book__latex__src__twomd__two}
         ├─ latex/src/one.md
         │ # One
         ├─ latex/src/onepointone.md
@@ -901,9 +912,9 @@ fn main() {}
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \href{chapter.md}{link}
+        │ \href{book/latex/src/chapter.md}{link}
         ├─ latex/src/chapter.md
-        │ [link](chapter.md "\"foo\" (bar)")
+        │ [link](book/latex/src/chapter.md "\"foo\" (bar)")
         "###);
     }
 
@@ -970,13 +981,13 @@ to = "markdown"
         │  INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
         │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /foo/bar.html => ../new-bar.html    
         │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /new-bar.html => new-new-bar.html    
-        │ DEBUG mdbook_pandoc::preprocess: Registered redirect: foo/bar.html => new-bar.html    
-        │ DEBUG mdbook_pandoc::preprocess: Registered redirect: new-bar.html => new-new-bar.md    
-        │ DEBUG mdbook_pandoc::render: Running: pandoc index.md new-new-bar.md -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc    
+        │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/foo/bar.html => book/test/src/new-bar.html    
+        │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/new-bar.html => book/test/src/new-new-bar.md    
+        │ DEBUG mdbook_pandoc::render: Running: pandoc book/test/src/index.md book/test/src/new-new-bar.md -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc    
         │  INFO mdbook_pandoc::render: Wrote output to /dev/null    
         ├─ test/src/foo/bar.html
         ├─ test/src/index.md
-        │ [bar](new-new-bar.md)
+        │ [bar](book/test/src/new-new-bar.md)
         ├─ test/src/new-bar.html
         ├─ test/src/new-new-bar.md
         "###)
@@ -1004,6 +1015,26 @@ to = "markdown"
         │  INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
         ├─ pdf/book.pdf
         │ <INVALID UTF8>
+        "###);
+    }
+
+    #[test]
+    fn pandoc_working_dir_is_root() {
+        let cfg = r#"
+[output.pandoc.profile.foo]
+output = "foo.md"
+include-in-header = ["file-in-root"]
+        "#;
+        let book = MDBook::init()
+            .mdbook_config(cfg.parse().unwrap())
+            .file_in_root("file-in-root", "some text")
+            .build();
+        insta::assert_display_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::render: Wrote output to book/foo/foo.md    
+        ├─ foo/foo.md
+        │ some text
         "###);
     }
 
