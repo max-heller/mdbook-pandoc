@@ -9,9 +9,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{anyhow, Context};
+use anyhow::{anyhow, Context as _};
 use mdbook::{
-    book::{Book, BookItems, Chapter},
+    book::{BookItems, Chapter},
     BookItem,
 };
 use once_cell::sync::Lazy;
@@ -19,32 +19,29 @@ use pulldown_cmark::{CodeBlockKind, CowStr, HeadingLevel};
 use regex::Regex;
 use walkdir::WalkDir;
 
-use crate::markdown_extensions;
+use crate::{
+    latex,
+    pandoc::{self, OutputFormat, RenderContext},
+};
 
-pub struct Preprocessor<'a> {
-    book: &'a Book,
-    source_dir: &'a Path,
-    destination: &'a Path,
-    destination_relative_to_root: &'a Path,
+pub struct Preprocessor<'book> {
+    ctx: RenderContext<'book>,
+    preprocessed: PathBuf,
+    preprocessed_relative_to_root: PathBuf,
     redirects: HashMap<PathBuf, String>,
-    options: Options,
 }
 
-pub struct Options {
-    pub latex: bool,
-}
-
-pub struct PreprocessedFiles<'a> {
-    preprocessor: Preprocessor<'a>,
-    items: BookItems<'a>,
+pub struct Preprocess<'book> {
+    preprocessor: Preprocessor<'book>,
+    items: BookItems<'book>,
     part_num: usize,
 }
 
 #[derive(Debug)]
 struct NormalizedPath {
     src_absolute_path: PathBuf,
-    destination_absolute_path: PathBuf,
-    destination_path_relative_to_root: PathBuf,
+    preprocessed_absolute_path: PathBuf,
+    preprocessed_path_relative_to_root: PathBuf,
 }
 
 #[derive(Copy, Clone)]
@@ -53,23 +50,19 @@ enum LinkContext {
     Image,
 }
 
-impl<'a> Preprocessor<'a> {
-    pub fn new(
-        book: &'a Book,
-        root: &'a Path,
-        source_dir: &'a Path,
-        destination: &'a Path,
-        options: Options,
-    ) -> anyhow::Result<Self> {
-        if destination.try_exists()? {
-            fs::remove_dir_all(destination)?;
-        }
-        fs::create_dir_all(destination)?;
+impl<'book> Preprocessor<'book> {
+    pub fn new(ctx: RenderContext<'book>) -> anyhow::Result<Self> {
+        let preprocessed = ctx.destination.join("src");
 
-        for entry in WalkDir::new(source_dir).follow_links(true) {
+        if preprocessed.try_exists()? {
+            fs::remove_dir_all(&preprocessed)?;
+        }
+        fs::create_dir_all(&preprocessed)?;
+
+        for entry in WalkDir::new(&ctx.book.source_dir).follow_links(true) {
             let entry = entry?;
             let src = entry.path();
-            let dest = destination.join(src.strip_prefix(source_dir).unwrap());
+            let dest = preprocessed.join(src.strip_prefix(&ctx.book.source_dir).unwrap());
             if entry.file_type().is_dir() {
                 fs::create_dir_all(&dest)
                     .with_context(|| format!("Unable to create directory '{}'", dest.display()))?
@@ -81,12 +74,13 @@ impl<'a> Preprocessor<'a> {
         }
 
         Ok(Self {
-            book,
-            source_dir,
-            destination,
-            destination_relative_to_root: destination.strip_prefix(root).unwrap_or(destination),
-            options,
+            preprocessed_relative_to_root: preprocessed
+                .strip_prefix(&ctx.book.root)
+                .unwrap_or(&preprocessed)
+                .to_path_buf(),
+            preprocessed,
             redirects: Default::default(),
+            ctx,
         })
     }
 
@@ -102,7 +96,7 @@ impl<'a> Preprocessor<'a> {
 
                 let res = (|| {
                     let src_rel_path = src.trim_start_matches('/');
-                    let src = self.destination.join(src_rel_path);
+                    let src = self.preprocessed.join(src_rel_path);
 
                     let Some(parent) = src.parent() else {
                         anyhow::bail!(
@@ -135,7 +129,7 @@ impl<'a> Preprocessor<'a> {
                     let src = self
                         .normalize_path(&src)
                         .context("Unable to normalize redirect source")?
-                        .destination_path_relative_to_root;
+                        .preprocessed_path_relative_to_root;
 
                     log::debug!("Registered redirect: {} => {dst}", src.display());
                     self.redirects.insert(src, dst.into_string());
@@ -149,15 +143,19 @@ impl<'a> Preprocessor<'a> {
             })
     }
 
-    pub fn preprocess(self) -> PreprocessedFiles<'a> {
-        PreprocessedFiles {
-            items: self.book.iter(),
+    pub fn preprocess(self) -> Preprocess<'book> {
+        Preprocess {
+            items: self.ctx.book.book.iter(),
             preprocessor: self,
             part_num: 0,
         }
     }
 
-    fn preprocess_chapter(&self, chapter: &Chapter, out: impl io::Write) -> anyhow::Result<()> {
+    fn preprocess_chapter(
+        &mut self,
+        chapter: &'book Chapter,
+        out: impl io::Write,
+    ) -> anyhow::Result<()> {
         let preprocessed = PreprocessChapter::new(self, chapter);
         struct IoWriteAdapter<W>(W);
         impl<W: io::Write> fmt::Write for IoWriteAdapter<W> {
@@ -251,15 +249,15 @@ impl<'a> Preprocessor<'a> {
                 let path = chapter_dir.join(path);
 
                 let normalized = self
-                    .normalize_path(&self.source_dir.join(&path))
+                    .normalize_path(&self.ctx.book.source_dir.join(&path))
                     .or_else(|err| {
-                        self.normalize_path(&self.destination.join(path))
+                        self.normalize_path(&self.preprocessed.join(path))
                             .map_err(|_| err)
                     })
                     .and_then(|normalized| {
                         if let Some(mut path) = self
                             .redirects
-                            .get(&normalized.destination_path_relative_to_root)
+                            .get(&normalized.preprocessed_path_relative_to_root)
                         {
                             while let Some(dest) = self.redirects.get(Path::new(path)) {
                                 path = dest;
@@ -267,9 +265,9 @@ impl<'a> Preprocessor<'a> {
                             Ok(Cow::Borrowed(path))
                         } else {
                             if !normalized.exists()? {
-                                normalized.copy_to_destination()?;
+                                normalized.copy_to_preprocessed()?;
                             }
-                            pathbuf_to_utf8(normalized.destination_path_relative_to_root)
+                            pathbuf_to_utf8(normalized.preprocessed_path_relative_to_root)
                                 .map(Cow::Owned)
                         }
                     });
@@ -298,7 +296,7 @@ impl<'a> Preprocessor<'a> {
                     Some(extension) => {
                         let mut filename = PathBuf::from(Self::make_kebab_case(link));
                         filename.set_extension(extension);
-                        let path = self.destination.join(filename);
+                        let path = self.preprocessed.join(filename);
 
                         File::create(&path)
                             .and_then(|file| {
@@ -318,7 +316,7 @@ impl<'a> Preprocessor<'a> {
         }
     }
 
-    /// Converts an absolute path to a normalized form usable as a relative path within the destination directory.
+    /// Converts an absolute path to a normalized form usable as a relative path within the preprocessed source directory.
     ///
     /// The normalized form:
     /// - Is a relative path
@@ -340,9 +338,9 @@ impl<'a> Preprocessor<'a> {
                 _ => Err(err),
             })
             .with_context(|| format!("Unable to canonicalize path: {}", path.display()))?;
-        let destination_relative_path = absolute_path
-            .strip_prefix(self.source_dir)
-            .or_else(|_| absolute_path.strip_prefix(self.destination))
+        let preprocessed_relative_path = absolute_path
+            .strip_prefix(&self.ctx.book.source_dir)
+            .or_else(|_| absolute_path.strip_prefix(&self.preprocessed))
             .map(|path| path.to_path_buf())
             .unwrap_or_else(|_| {
                 let mut hasher = DefaultHasher::new();
@@ -357,15 +355,15 @@ impl<'a> Preprocessor<'a> {
 
         Ok(NormalizedPath {
             src_absolute_path: absolute_path,
-            destination_absolute_path: self.destination.join(&destination_relative_path),
-            destination_path_relative_to_root: self
-                .destination_relative_to_root
-                .join(&destination_relative_path),
+            preprocessed_absolute_path: self.preprocessed.join(&preprocessed_relative_path),
+            preprocessed_path_relative_to_root: self
+                .preprocessed_relative_to_root
+                .join(&preprocessed_relative_path),
         })
     }
 
     fn update_heading<'b>(
-        &self,
+        &mut self,
         chapter: &Chapter,
         level: HeadingLevel,
         id: Option<&'b str>,
@@ -374,7 +372,11 @@ impl<'a> Preprocessor<'a> {
         const PANDOC_UNNUMBERED_CLASS: &str = "unnumbered";
         const PANDOC_UNLISTED_CLASS: &str = "unlisted";
 
-        if !matches!(level, HeadingLevel::H1) {
+        if level != HeadingLevel::H1
+            && (self.ctx.pandoc)
+                .enable_extension(pandoc::Extension::Attributes)
+                .is_available()
+        {
             classes.push(PANDOC_UNNUMBERED_CLASS);
             classes.push(PANDOC_UNLISTED_CLASS);
         }
@@ -412,7 +414,7 @@ impl<'a> Preprocessor<'a> {
     }
 }
 
-impl Iterator for PreprocessedFiles<'_> {
+impl Iterator for Preprocess<'_> {
     type Item = anyhow::Result<PathBuf>;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -425,29 +427,29 @@ impl Iterator for PreprocessedFiles<'_> {
     }
 }
 
-impl PreprocessedFiles<'_> {
-    pub fn output_dir(&self) -> &Path {
-        self.preprocessor.destination
-    }
-
-    fn preprocess_book_item(&mut self, item: &BookItem) -> anyhow::Result<Option<PathBuf>> {
+impl<'book> Preprocess<'book> {
+    fn preprocess_book_item(&mut self, item: &'book BookItem) -> anyhow::Result<Option<PathBuf>> {
         match item {
             BookItem::Chapter(chapter) => {
                 let Some(chapter_path) = &chapter.source_path else {
                     return Ok(None);
                 };
-                let chapter_path = self.preprocessor.source_dir.join(chapter_path);
+                let chapter_path = self.preprocessor.ctx.book.source_dir.join(chapter_path);
                 let normalized = self.preprocessor.normalize_path(&chapter_path)?;
                 let writer = io::BufWriter::new(normalized.create()?);
                 self.preprocessor.preprocess_chapter(chapter, writer)?;
-                Ok(Some(normalized.destination_path_relative_to_root))
+                Ok(Some(normalized.preprocessed_path_relative_to_root))
             }
             BookItem::Separator => {
                 log::debug!("Ignoring separator");
                 Ok(None)
             }
-            BookItem::PartTitle(name) => {
-                if self.preprocessor.options.latex {
+            BookItem::PartTitle(name) => match self.preprocessor.ctx.output {
+                OutputFormat::Latex { .. }
+                    if (self.preprocessor.ctx.pandoc)
+                        .enable_extension(pandoc::Extension::RawAttribute)
+                        .is_available() =>
+                {
                     self.part_num += 1;
                     let kebab_case_name = Preprocessor::make_kebab_case(name);
                     let path =
@@ -455,47 +457,63 @@ impl PreprocessedFiles<'_> {
                     let mut file = File::options()
                         .write(true)
                         .create_new(true)
-                        .open(self.preprocessor.destination.join(&path))
+                        .open(self.preprocessor.preprocessed.join(&path))
                         .with_context(|| format!("Unable to create file for part '{name}'"))?;
                     writeln!(file, r"`\part{{{name}}}`{{=latex}}")?;
                     Ok(Some(
-                        self.preprocessor.destination_relative_to_root.join(path),
+                        self.preprocessor.preprocessed_relative_to_root.join(path),
                     ))
-                } else {
+                }
+                _ => {
                     log::warn!("Ignoring part separator: {}", name);
                     Ok(None)
                 }
-            }
+            },
         }
+    }
+
+    pub fn render_context(&self) -> &RenderContext {
+        &self.preprocessor.ctx
+    }
+
+    pub fn output_dir(&self) -> &Path {
+        &self.preprocessor.preprocessed
     }
 }
 
-struct PreprocessChapter<'a> {
-    preprocessor: &'a Preprocessor<'a>,
-    chapter: &'a Chapter,
-    parser: Peekable<pulldown_cmark::Parser<'a, 'a>>,
-    start_tags: Vec<pulldown_cmark::Tag<'a>>,
+struct PreprocessChapter<'book, 'preprocessor> {
+    preprocessor: &'preprocessor mut Preprocessor<'book>,
+    chapter: &'book Chapter,
+    parser: Peekable<pulldown_cmark::Parser<'book, 'book>>,
+    start_tags: Vec<pulldown_cmark::Tag<'book>>,
 }
 
-impl<'a> PreprocessChapter<'a> {
-    fn new(preprocessor: &'a Preprocessor<'a>, chapter: &'a Chapter) -> Self {
-        // Follow mdbook Commonmark extensions
-        let options = markdown_extensions()
-            .fold(pulldown_cmark::Options::empty(), |options, extension| {
-                options | extension.pulldown
-            });
+impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
+    fn new(preprocessor: &'preprocessor mut Preprocessor<'book>, chapter: &'book Chapter) -> Self {
+        /// Markdown extensions supported by mdBook
+        ///
+        /// See https://rust-lang.github.io/mdBook/format/markdown.html#extensions
+        const PARSER_OPTIONS: pulldown_cmark::Options = {
+            use pulldown_cmark::Options;
+            Options::empty()
+                .union(Options::ENABLE_STRIKETHROUGH)
+                .union(Options::ENABLE_FOOTNOTES)
+                .union(Options::ENABLE_TABLES)
+                .union(Options::ENABLE_TASKLISTS)
+                .union(Options::ENABLE_HEADING_ATTRIBUTES)
+        };
 
         Self {
             preprocessor,
             chapter,
-            parser: pulldown_cmark::Parser::new_ext(&chapter.content, options).peekable(),
+            parser: pulldown_cmark::Parser::new_ext(&chapter.content, PARSER_OPTIONS).peekable(),
             start_tags: Default::default(),
         }
     }
 }
 
-impl<'a> Iterator for PreprocessChapter<'a> {
-    type Item = pulldown_cmark::Event<'a>;
+impl<'book> Iterator for PreprocessChapter<'book, '_> {
+    type Item = pulldown_cmark::Event<'book>;
 
     fn next(&mut self) -> Option<Self::Item> {
         use pulldown_cmark::{Event, Tag};
@@ -503,10 +521,36 @@ impl<'a> Iterator for PreprocessChapter<'a> {
         Some(match self.parser.next()? {
             Event::Start(tag) => {
                 let tag = match tag {
+                    Tag::Strikethrough => {
+                        // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
+                        // pulldown_cmark_to_cmark always generates ~~, so this is okay,
+                        // although it'd be good to have an option to configure this explicitly.
+                        (self.preprocessor.ctx.pandoc)
+                            .enable_extension(pandoc::Extension::Strikeout);
+                        Tag::Strikethrough
+                    }
+                    Tag::FootnoteDefinition(label) => {
+                        (self.preprocessor.ctx.pandoc)
+                            .enable_extension(pandoc::Extension::Footnotes);
+                        Tag::FootnoteDefinition(label)
+                    }
+                    Tag::Table(alignment) => {
+                        (self.preprocessor.ctx.pandoc)
+                            .enable_extension(pandoc::Extension::PipeTables);
+                        Tag::Table(alignment)
+                    }
                     Tag::Heading(level, id, classes) => self
                         .preprocessor
                         .update_heading(self.chapter, level, id, classes)
-                        .map(|(level, id, classes)| Tag::Heading(level, id, classes))
+                        .map(|(level, id, classes)| {
+                            if id.is_some() || !classes.is_empty() {
+                                // pandoc does not support `header_attributes` with commonmark
+                                // so use `attributes`, which is a superset
+                                (self.preprocessor.ctx.pandoc)
+                                    .enable_extension(pandoc::Extension::Attributes);
+                            }
+                            Tag::Heading(level, id, classes)
+                        })
                         .unwrap_or(Tag::Paragraph),
                     Tag::Link(link_ty, destination, title) => {
                         let destination = self.preprocessor.normalize_link_or_leave_as_is(
@@ -551,17 +595,31 @@ impl<'a> Iterator for PreprocessChapter<'a> {
                     // Actually consume the item from the iterator
                     self.parser.next();
                 }
-                if self.preprocessor.options.latex {
+                if let OutputFormat::Latex { packages } = &mut self.preprocessor.ctx.output {
                     static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
                         Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#)
                             .unwrap()
                     });
-                    html = match FONT_AWESOME_ICON.replace_all(&html, r"`\faicon{$icon}`{=latex}") {
-                        Cow::Borrowed(_) => html,
-                        Cow::Owned(html) => html.into(),
-                    };
+                    if (self.preprocessor.ctx.pandoc)
+                        .enable_extension(pandoc::Extension::RawAttribute)
+                        .is_available()
+                    {
+                        html = match FONT_AWESOME_ICON
+                            .replace_all(&html, r"`\faicon{$icon}`{=latex}")
+                        {
+                            Cow::Borrowed(_) => html,
+                            Cow::Owned(html) => {
+                                packages.need(latex::Package::FontAwesome);
+                                html.into()
+                            }
+                        };
+                    }
                 }
                 Event::Html(html)
+            }
+            Event::TaskListMarker(checked) => {
+                (self.preprocessor.ctx.pandoc).enable_extension(pandoc::Extension::TaskLists);
+                Event::TaskListMarker(checked)
             }
             event => event,
         })
@@ -569,8 +627,8 @@ impl<'a> Iterator for PreprocessChapter<'a> {
 }
 
 impl NormalizedPath {
-    fn copy_to_destination(&self) -> anyhow::Result<()> {
-        let path = &self.destination_absolute_path;
+    fn copy_to_preprocessed(&self) -> anyhow::Result<()> {
+        let path = &self.preprocessed_absolute_path;
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)
                 .with_context(|| format!("Unable to create directory: {}", parent.display()))?;
@@ -586,11 +644,11 @@ impl NormalizedPath {
     }
 
     fn exists(&self) -> io::Result<bool> {
-        self.destination_absolute_path.try_exists()
+        self.preprocessed_absolute_path.try_exists()
     }
 
     fn create(&self) -> anyhow::Result<File> {
-        let path = &self.destination_absolute_path;
+        let path = &self.preprocessed_absolute_path;
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)
                 .with_context(|| format!("Unable to create directory: {}", parent.display()))?;

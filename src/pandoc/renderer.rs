@@ -1,27 +1,38 @@
 use std::{
+    borrow::Cow,
     fmt, fs,
-    path::Path,
+    path::{Path, PathBuf},
     process::{Command, Stdio},
 };
 
-use anyhow::Context;
+use anyhow::Context as _;
 
-use crate::PandocProfile;
+use crate::{
+    book::Book,
+    latex,
+    pandoc::{self, extension, Profile},
+};
 
-pub struct PandocRenderer<'a> {
+pub struct Renderer {
     pandoc: Command,
-    profile: PandocProfile,
-    root: &'a Path,
-    destination: &'a Path,
 }
 
-impl<'a> PandocRenderer<'a> {
-    pub(crate) fn new(profile: PandocProfile, root: &'a Path, destination: &'a Path) -> Self {
+pub struct Context<'book> {
+    pub output: OutputFormat,
+    pub pandoc: pandoc::Context,
+    pub destination: PathBuf,
+    pub book: &'book Book<'book>,
+}
+
+pub enum OutputFormat {
+    Latex { packages: latex::Packages },
+    Other,
+}
+
+impl Renderer {
+    pub(crate) fn new() -> Self {
         Self {
             pandoc: Command::new("pandoc"),
-            profile,
-            root,
-            destination,
         }
     }
 
@@ -40,10 +51,8 @@ impl<'a> PandocRenderer<'a> {
         self
     }
 
-    pub fn render(self) -> anyhow::Result<()> {
-        let profile_is_latex = self.profile.is_latex();
-
-        let PandocProfile {
+    pub fn render(self, profile: Profile, ctx: &Context) -> anyhow::Result<()> {
+        let Profile {
             columns,
             file_scope,
             number_sections,
@@ -55,40 +64,38 @@ impl<'a> PandocRenderer<'a> {
             toc_depth,
             rest,
             mut variables,
-        } = self.profile;
+        } = profile;
 
         let mut pandoc = self.pandoc;
 
         let outfile = {
-            fs::create_dir_all(self.destination).with_context(|| {
-                format!("Unable to create directory: {}", self.destination.display())
+            fs::create_dir_all(&ctx.destination).with_context(|| {
+                format!("Unable to create directory: {}", ctx.destination.display())
             })?;
-            self.destination.join(output)
+            ctx.destination.join(output)
+        };
+
+        let format = {
+            let mut format = String::from("commonmark");
+            for (extension, availability) in ctx.pandoc.enabled_extensions() {
+                match availability {
+                    extension::Availability::Available => {
+                        format.push('+');
+                        format.push_str(extension.name());
+                    }
+                    extension::Availability::Unavailable(version_req) => {
+                        log::warn!(
+                            "Cannot use Pandoc extension `{}`, which may result in degraded output (requires version {}, but using {})",
+                            extension.name(), version_req, ctx.pandoc.version,
+                        );
+                    }
+                }
+            }
+            format
         };
 
         pandoc
-            .arg("-f")
-            .arg({
-                let mut format = String::from("commonmark");
-                let extensions = crate::markdown_extensions()
-                    .map(|extension| extension.pandoc)
-                    .chain([
-                        // Automatically generate section labels according to GitHub's method to
-                        // align with behavior of mdbook's HTML renderer
-                        "gfm_auto_identifiers",
-                        // Enable inserting raw LaTeX
-                        "raw_attribute",
-                        // TODO: pandoc's `rebase_relative_paths` extension works for Markdown links and images,
-                        // but not for raw HTML links and images. Switch if/when pandoc supports HTML as well.
-                        // Treat paths as relative to the chapter containing them
-                        // "rebase_relative_paths",
-                    ]);
-                for extension in extensions {
-                    format.push('+');
-                    format.push_str(extension);
-                }
-                format
-            })
+            .args(["-f", &format])
             .arg("-o")
             .arg(&outfile)
             .args(to.iter().flat_map(|to| ["-t", to]))
@@ -109,22 +116,27 @@ impl<'a> PandocRenderer<'a> {
             pandoc.arg("--toc-depth").arg(format!("{depth}"));
         }
 
-        let additional_variables = profile_is_latex
-            .then_some([
-                // FontAwesome icons
-                ("header-includes", r"\usepackage{fontawesome}"),
-            ])
-            .into_iter()
-            .flatten();
+        let mut additional_variables: Vec<(_, Cow<str>)> = vec![];
+        match &ctx.output {
+            OutputFormat::Latex { packages } => {
+                let include_packages = packages
+                    .needed()
+                    .map(|package| format!(r"\usepackage{{{}}}", package.name()))
+                    .collect::<Vec<_>>()
+                    .join("\n");
+                additional_variables.push(("header-includes", include_packages.into()));
+            }
+            OutputFormat::Other => {}
+        };
         for (key, val) in additional_variables {
             pandoc.arg("-V").arg(format!("{key}={val}"));
         }
 
-        let default_variables = profile_is_latex
-            .then_some([("documentclass", "report")])
-            .into_iter()
-            .flatten();
-        for (key, val) in default_variables {
+        let default_variables = match ctx.output {
+            OutputFormat::Latex { .. } => [("documentclass", "report")].as_slice(),
+            OutputFormat::Other => [].as_slice(),
+        };
+        for &(key, val) in default_variables {
             if !variables.contains_key(key) {
                 variables.insert(key.into(), val.into());
             }
@@ -177,7 +189,7 @@ impl<'a> PandocRenderer<'a> {
             .context("Unable to run `pandoc`")?;
         anyhow::ensure!(status.success(), "pandoc exited unsuccessfully");
 
-        let outfile = outfile.strip_prefix(self.root).unwrap_or(&outfile);
+        let outfile = outfile.strip_prefix(&ctx.book.root).unwrap_or(&outfile);
         log::info!("Wrote output to {}", outfile.display());
 
         Ok(())

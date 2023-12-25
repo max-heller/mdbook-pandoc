@@ -1,112 +1,34 @@
 use std::{
-    collections::{BTreeMap, HashMap},
+    collections::HashMap,
     fs::{self, File},
-    path::PathBuf,
 };
 
 use anyhow::{anyhow, Context as _};
 use mdbook::config::HtmlConfig;
 use serde::{Deserialize, Serialize};
 
+mod book;
+use book::Book;
+
+mod latex;
+
+mod pandoc;
+
 mod preprocess;
 use preprocess::Preprocessor;
-
-mod render;
-use render::PandocRenderer;
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 struct Config {
     #[serde(rename = "profile")]
-    pub profiles: HashMap<String, PandocProfile>,
+    pub profiles: HashMap<String, pandoc::Profile>,
     #[serde(default = "defaults::enabled")]
     pub keep_preprocessed: bool,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "kebab-case")]
-struct PandocProfile {
-    pub columns: Option<u16>,
-    #[serde(default = "defaults::enabled")]
-    pub file_scope: bool,
-    #[serde(default = "defaults::enabled")]
-    pub number_sections: bool,
-    pub output: PathBuf,
-    pub pdf_engine: Option<PathBuf>,
-    #[serde(default = "defaults::enabled")]
-    pub standalone: bool,
-    pub to: Option<String>,
-    #[serde(default = "defaults::enabled")]
-    pub table_of_contents: bool,
-    pub toc_depth: Option<u8>,
-    #[serde(default)]
-    pub variables: BTreeMap<String, toml::Value>,
-    #[serde(flatten)]
-    rest: BTreeMap<String, toml::Value>,
 }
 
 mod defaults {
     pub fn enabled() -> bool {
         true
-    }
-}
-
-impl PandocProfile {
-    fn preprocessor_options(&self) -> preprocess::Options {
-        preprocess::Options {
-            latex: self.is_latex(),
-        }
-    }
-}
-
-impl PandocProfile {
-    /// Determines whether the profile uses LaTeX, either by outputting it directory or rendering it to PDF.
-    fn is_latex(&self) -> bool {
-        let pdf_engine_is_latex = || {
-            // Source: https://pandoc.org/MANUAL.html#option--pdf-engine
-            const LATEX_ENGINES: &[&str] =
-                &["pdflatex", "lualatex", "xelatex", "latexmk", "tectonic"];
-            const NON_LATEX_ENGINES: &[&str] = &[
-                "wkhtmltopdf",
-                "weasyprint",
-                "pagedjs-cli",
-                "prince",
-                "context",
-                "pdfroff",
-                "typst",
-            ];
-            match &self.pdf_engine {
-                Some(engine) => {
-                    if LATEX_ENGINES
-                        .iter()
-                        .any(|&latex_engine| engine.as_os_str() == latex_engine)
-                    {
-                        true
-                    } else if NON_LATEX_ENGINES
-                        .iter()
-                        .any(|&non_latex_engine| engine.as_os_str() == non_latex_engine)
-                    {
-                        false
-                    } else {
-                        log::warn!(
-                            "Assuming pdf-engine '{}' uses LaTeX; if it doesn't, specify the output format explicitly",
-                            engine.display()
-                        );
-                        true
-                    }
-                }
-                None => true,
-            }
-        };
-        match (self.to.as_deref(), self.output.extension()) {
-            (Some("latex"), _) => true,
-            (Some("pdf"), _) => pdf_engine_is_latex(),
-            (Some(_), _) => false,
-            (None, None) => false,
-            (None, Some(extension)) => {
-                extension == "tex" || (extension == "pdf" && pdf_engine_is_latex())
-            }
-        }
     }
 }
 
@@ -142,6 +64,8 @@ impl mdbook::Renderer for Renderer {
             );
         }
 
+        let pandoc_version = pandoc::check_compatibility()?;
+
         let cfg: Config = ctx
             .config
             .get_deserialized_opt(Self::CONFIG_KEY)
@@ -153,24 +77,18 @@ impl mdbook::Renderer for Renderer {
             .get_deserialized_opt("output.html")
             .unwrap_or_default();
 
-        let root = ctx.root.canonicalize()?;
-        let source_dir = ctx.source_dir().canonicalize()?;
-
-        fs::create_dir_all(&ctx.destination)?;
-        let destination = ctx.destination.canonicalize()?;
+        let book = Book::new(ctx)?;
 
         for (name, profile) in cfg.profiles {
-            let destination = destination.join(name);
+            let ctx = pandoc::RenderContext {
+                book: &book,
+                pandoc: pandoc::Context::new(pandoc_version.clone()),
+                destination: book.destination.join(name),
+                output: profile.output_format(),
+            };
 
             // Preprocess book
-            let preprocessed_src = destination.join("src");
-            let mut preprocessor = Preprocessor::new(
-                &ctx.book,
-                &root,
-                &source_dir,
-                &preprocessed_src,
-                profile.preprocessor_options(),
-            )?;
+            let mut preprocessor = Preprocessor::new(ctx)?;
 
             if let Some(redirects) = html_cfg.as_ref().map(|cfg| &cfg.redirect) {
                 if !redirects.is_empty() {
@@ -190,10 +108,10 @@ impl mdbook::Renderer for Renderer {
             let mut preprocessed = preprocessor.preprocess();
 
             // Initialize renderer
-            let mut renderer = PandocRenderer::new(profile, &root, &destination);
+            let mut renderer = pandoc::Renderer::new();
 
             // Add preprocessed book chapters to renderer
-            renderer.current_dir(&root);
+            renderer.current_dir(&book.root);
             for input in &mut preprocessed {
                 renderer.input(input?);
             }
@@ -203,7 +121,7 @@ impl mdbook::Renderer for Renderer {
             }
 
             // Render final output
-            renderer.render()?;
+            renderer.render(profile, preprocessed.render_context())?;
 
             if !cfg.keep_preprocessed {
                 fs::remove_dir_all(preprocessed.output_dir())?;
@@ -214,32 +132,6 @@ impl mdbook::Renderer for Renderer {
     }
 }
 
-struct MarkdownExtension {
-    pulldown: pulldown_cmark::Options,
-    pandoc: &'static str,
-}
-
-/// Markdown extensions enabled by mdBook.
-///
-/// See https://rust-lang.github.io/mdBook/format/markdown.html#extensions
-fn markdown_extensions() -> impl Iterator<Item = MarkdownExtension> {
-    use pulldown_cmark::Options;
-    [
-        // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
-        // pulldown_cmark_to_cmark always generates ~~, so this is okay,
-        // although it'd be good to have an option to configure this explicitly.
-        (Options::ENABLE_STRIKETHROUGH, "strikeout"),
-        (Options::ENABLE_FOOTNOTES, "footnotes"),
-        (Options::ENABLE_TABLES, "pipe_tables"),
-        (Options::ENABLE_TASKLISTS, "task_lists"),
-        // pandoc does not support `header_attributes` with commonmark
-        // so use `attributes`, which is a superset
-        (Options::ENABLE_HEADING_ATTRIBUTES, "attributes"),
-    ]
-    .into_iter()
-    .map(|(pulldown, pandoc)| MarkdownExtension { pulldown, pandoc })
-}
-
 #[cfg(test)]
 mod tests {
     use std::{
@@ -248,7 +140,7 @@ mod tests {
         fs,
         io::{self, Read, Seek},
         iter,
-        path::Path,
+        path::{Path, PathBuf},
         str::FromStr,
     };
 
@@ -519,26 +411,26 @@ mod tests {
         fn latex() -> Self {
             Self {
                 keep_preprocessed: true,
-                profiles: HashMap::from_iter([("latex".into(), PandocProfile::latex())]),
+                profiles: HashMap::from_iter([("latex".into(), pandoc::Profile::latex())]),
             }
         }
 
         fn pdf() -> Self {
             Config {
                 keep_preprocessed: false,
-                profiles: HashMap::from_iter([("pdf".into(), PandocProfile::pdf())]),
+                profiles: HashMap::from_iter([("pdf".into(), pandoc::Profile::pdf())]),
             }
         }
 
         fn markdown() -> Self {
             Self {
                 keep_preprocessed: false,
-                profiles: HashMap::from_iter([("markdown".into(), PandocProfile::markdown())]),
+                profiles: HashMap::from_iter([("markdown".into(), pandoc::Profile::markdown())]),
             }
         }
     }
 
-    impl PandocProfile {
+    impl pandoc::Profile {
         fn latex() -> Self {
             Self {
                 columns: None,
@@ -556,7 +448,7 @@ mod tests {
         }
 
         fn pdf() -> Self {
-            PandocProfile {
+            Self {
                 columns: None,
                 file_scope: true,
                 number_sections: true,
@@ -607,7 +499,7 @@ mod tests {
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/markdown/book.md    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
         │ # Getting Started
         "###);
@@ -622,7 +514,7 @@ mod tests {
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \st{test1} \st{test2}
         ├─ latex/src/chapter.md
@@ -643,7 +535,7 @@ mod tests {
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \begin{itemize}
         │ \tightlist
@@ -671,7 +563,7 @@ mod tests {
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \chapter{Heading}\label{custom-heading}
         │ 
@@ -701,7 +593,7 @@ This is an example of a footnote[^note].
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ This is an example of a footnote\footnote{This text is the contents of
         │   the footnote, which will be rendered towards the bottom.}.
@@ -724,7 +616,7 @@ This is an example of a footnote[^note].
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \phantomsection\label{book__latex__src__onemd}
         │ \chapter{One}\label{book__latex__src__onemd__one}
@@ -753,7 +645,7 @@ This is an example of a footnote[^note].
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \phantomsection\label{book__latex__src__one__onemd}
         │ \hyperref[book__latex__src__two__twomd]{Two}
@@ -781,7 +673,7 @@ This is an example of a footnote[^note].
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \phantomsection\label{book__latex__src__onemd}
         │ \chapter{One}\label{book__latex__src__onemd__one}
@@ -821,7 +713,7 @@ This is an example of a footnote[^note].
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \faicon{print} \faicon{print} \faicon{print}
         ├─ latex/src/chapter.md
@@ -840,7 +732,7 @@ This is an example of a footnote[^note].
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/markdown/book.md    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
         │ ```{=html}
         │ <i class="fa fa-print"/>
@@ -868,7 +760,7 @@ fn main() {}
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \begin{Shaded}
         │ \begin{Highlighting}[]
@@ -910,7 +802,7 @@ fn main() {}
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/latex/output.tex    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \href{book/latex/src/chapter.md}{link}
         ├─ latex/src/chapter.md
@@ -950,8 +842,8 @@ colorlinks = false
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
         │  INFO mdbook::book: Running the pandoc backend    
-        │ DEBUG mdbook_pandoc::render: Running: pandoc -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc -V header-includes=text1 -V header-includes=text2 -V indent --resource-path=really-long-path --resource-path=really-long-path2 --verbose    
-        │  INFO mdbook_pandoc::render: Wrote output to /dev/null    
+        │ DEBUG mdbook_pandoc::pandoc::renderer: Running: pandoc -f commonmark+gfm_auto_identifiers -o /dev/null -t markdown --file-scope -N -s --toc -V header-includes=text1 -V header-includes=text2 -V indent --resource-path=really-long-path --resource-path=really-long-path2 --verbose    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null    
         "###)
     }
 
@@ -983,8 +875,8 @@ to = "markdown"
         │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /new-bar.html => new-new-bar.html    
         │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/foo/bar.html => book/test/src/new-bar.html    
         │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/new-bar.html => book/test/src/new-new-bar.md    
-        │ DEBUG mdbook_pandoc::render: Running: pandoc book/test/src/index.md book/test/src/new-new-bar.md -f commonmark+strikeout+footnotes+pipe_tables+task_lists+attributes+gfm_auto_identifiers+raw_attribute -o /dev/null -t markdown --file-scope -N -s --toc    
-        │  INFO mdbook_pandoc::render: Wrote output to /dev/null    
+        │ DEBUG mdbook_pandoc::pandoc::renderer: Running: pandoc book/test/src/index.md book/test/src/new-new-bar.md -f commonmark+gfm_auto_identifiers -o /dev/null -t markdown --file-scope -N -s --toc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null    
         ├─ test/src/foo/bar.html
         ├─ test/src/index.md
         │ [bar](book/test/src/new-new-bar.md)
@@ -1012,7 +904,7 @@ to = "markdown"
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
         ├─ pdf/book.pdf
         │ <INVALID UTF8>
         "###);
@@ -1032,7 +924,7 @@ include-in-header = ["file-in-root"]
         insta::assert_display_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::render: Wrote output to book/foo/foo.md    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/foo/foo.md    
         ├─ foo/foo.md
         │ some text
         "###);
