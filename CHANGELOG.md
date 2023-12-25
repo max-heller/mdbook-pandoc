@@ -4,13 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [0.3.0] - 2023-12-25
 
-### Bug Fixes
+### Changes
 
 - [**breaking**] Run `pandoc` with mdBook root as working directory ([#34](https://github.com/max-heller/mdbook-pandoc/pull/34))
-
-### Documentation
-
-- Document that Pandoc is run from the book's root directory ([#38](https://github.com/max-heller/mdbook-pandoc/pull/38))
 
 ### Features
 
