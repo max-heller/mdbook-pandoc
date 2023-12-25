@@ -59,6 +59,9 @@ The output for each profile is written to a subdirectory with the same name as t
 
 The available settings are described below:
 
+> **Note:** Pandoc is run from the book's root directory (the directory containing `book.toml`).
+> Therefore, relative paths in the configuration (e.g. values for `include-in-header`, `reference-doc`) should be written relative to the book's root directory.
+
 ```toml
 [output.pandoc]
 
