@@ -87,8 +87,6 @@ impl mdbook::Renderer for Renderer {
                 output: profile.output_format(),
             };
 
-            let preprocessed_src = ctx.destination.join("src");
-
             // Preprocess book
             let mut preprocessor = Preprocessor::new(ctx)?;
 
@@ -117,17 +115,16 @@ impl mdbook::Renderer for Renderer {
             for input in &mut preprocessed {
                 renderer.input(input?);
             }
-            let ctx = preprocessed.into_render_context();
 
             if let Some(logfile) = &self.logfile {
                 renderer.stderr(logfile.try_clone()?);
             }
 
             // Render final output
-            renderer.render(profile, &ctx)?;
+            renderer.render(profile, preprocessed.render_context())?;
 
             if !cfg.keep_preprocessed {
-                fs::remove_dir_all(&preprocessed_src)?;
+                fs::remove_dir_all(preprocessed.output_dir())?;
             }
         }
 

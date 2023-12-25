@@ -472,8 +472,12 @@ impl<'book> Preprocess<'book> {
         }
     }
 
-    pub fn into_render_context(self) -> RenderContext<'book> {
-        self.preprocessor.ctx
+    pub fn render_context(&self) -> &RenderContext {
+        &self.preprocessor.ctx
+    }
+
+    pub fn output_dir(&self) -> &Path {
+        &self.preprocessor.preprocessed
     }
 }
 
