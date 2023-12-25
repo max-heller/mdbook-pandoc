@@ -172,5 +172,5 @@ expression: logs
   on page 269 undefined on input line 19459.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no ɑ (U+0251) (U+0251) in font [lmroman10-regular]:+tlig;!
- INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
+ INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
 

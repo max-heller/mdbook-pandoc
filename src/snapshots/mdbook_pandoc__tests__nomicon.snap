@@ -62,5 +62,5 @@ expression: logs
 [WARNING] Missing character: There is no 😿 (U+1F63F) (U+1F63F) in font SourceCodePro/I:mode=node;
 [WARNING] Missing character: There is no 😿 (U+1F63F) (U+1F63F) in font SourceCodePro/I:mode=node;
 [WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:+tlig;!
- INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
+ INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
 

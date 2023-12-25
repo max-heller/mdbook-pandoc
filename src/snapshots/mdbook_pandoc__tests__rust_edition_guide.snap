@@ -85,5 +85,5 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../cargo/reference/workspaces.html#virtual-workspace' in chapter 'Default Cargo feature resolver': Unable to canonicalize path: $ROOT/src/rust-2021/../../cargo/reference/workspaces.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../cargo/reference/resolver.html#resolver-versions' in chapter 'Default Cargo feature resolver': Unable to canonicalize path: $ROOT/src/rust-2021/../../cargo/reference/resolver.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../cargo/commands/cargo-tree.html' in chapter 'Default Cargo feature resolver': Unable to canonicalize path: $ROOT/src/rust-2021/../../cargo/commands/cargo-tree.html: No such file or directory (os error 2)    
- INFO mdbook_pandoc::render: Wrote output to book/pdf/book.pdf    
+ INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
 
