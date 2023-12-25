@@ -1,7 +1,6 @@
 use std::{
     collections::HashMap,
     fs::{self, File},
-    process::Command,
 };
 
 use anyhow::{anyhow, Context as _};
@@ -65,36 +64,7 @@ impl mdbook::Renderer for Renderer {
             );
         }
 
-        let pandoc_version = {
-            let output = Command::new("pandoc")
-                .arg("-v")
-                .output()
-                .context("Unable to run `pandoc -v`")?;
-            anyhow::ensure!(
-                output.status.success(),
-                "`pandoc -v` exited with error code {}",
-                output.status
-            );
-            let output =
-                String::from_utf8(output.stdout).context("`pandoc -v` output is not UTF8")?;
-            match output.lines().next().and_then(|line| line.split_once(' ')) {
-                Some(("pandoc", mut version)) => {
-                    // Pandoc versions can contain more than three components (e.g. a.b.c.d).
-                    // If this is the case, only consider the first three.
-                    if let Some((idx, _)) = version.match_indices('.').nth(2) {
-                        version = &version[..idx];
-                    }
-                    semver::Version::parse(version.trim()).unwrap()
-                }
-                _ => anyhow::bail!("`pandoc -v` output does not contain `pandoc VERSION`"),
-            }
-        };
-        if !pandoc::VERSION_REQ.matches(&pandoc_version) {
-            anyhow::bail!(
-                "mdbook-pandoc is incompatible with detected Pandoc version (requires version {}, but using {})",
-                *pandoc::VERSION_REQ, pandoc_version,
-            );
-        }
+        let pandoc_version = pandoc::check_compatibility()?;
 
         let cfg: Config = ctx
             .config
