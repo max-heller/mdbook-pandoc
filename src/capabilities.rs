@@ -93,6 +93,13 @@ impl Availability {
             Availability::Unavailable(version_req)
         }
     }
+
+    pub fn is_available(&self) -> bool {
+        match self {
+            Self::Available => true,
+            Self::Unavailable(_) => false,
+        }
+    }
 }
 
 impl Pandoc {

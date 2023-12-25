@@ -20,7 +20,7 @@ use regex::Regex;
 use walkdir::WalkDir;
 
 use crate::{
-    capabilities::{Availability, Context, LatexPackage, OutputFormat},
+    capabilities::{Context, LatexPackage, OutputFormat},
     extensions::{mdbook_extensions, PandocExtension},
 };
 
@@ -368,7 +368,7 @@ impl<'a> Preprocessor<'a> {
     }
 
     fn update_heading<'b>(
-        &self,
+        &mut self,
         chapter: &Chapter,
         level: HeadingLevel,
         id: Option<&'b str>,
@@ -377,7 +377,13 @@ impl<'a> Preprocessor<'a> {
         const PANDOC_UNNUMBERED_CLASS: &str = "unnumbered";
         const PANDOC_UNLISTED_CLASS: &str = "unlisted";
 
-        if !matches!(level, HeadingLevel::H1) {
+        if !matches!(level, HeadingLevel::H1)
+            && self
+                .context
+                .pandoc
+                .enable_extension(PandocExtension::Attributes)
+                .is_available()
+        {
             classes.push(PANDOC_UNNUMBERED_CLASS);
             classes.push(PANDOC_UNLISTED_CLASS);
         }
@@ -449,13 +455,12 @@ impl<'book> PreprocessedFiles<'book> {
                 Context {
                     output: OutputFormat::Latex { .. },
                     ..
-                } if matches!(
-                    self.preprocessor
-                        .context
-                        .pandoc
-                        .enable_extension(PandocExtension::RawAttribute),
-                    Availability::Available
-                ) =>
+                } if self
+                    .preprocessor
+                    .context
+                    .pandoc
+                    .enable_extension(PandocExtension::RawAttribute)
+                    .is_available() =>
                 {
                     self.part_num += 1;
                     let kebab_case_name = Preprocessor::make_kebab_case(name);
@@ -589,9 +594,10 @@ impl<'a, 'preprocessor> Iterator for PreprocessChapter<'a, 'preprocessor> {
                         Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#)
                             .unwrap()
                     });
-                    if let Availability::Available = context
+                    if context
                         .pandoc
                         .enable_extension(PandocExtension::RawAttribute)
+                        .is_available()
                     {
                         html = match FONT_AWESOME_ICON
                             .replace_all(&html, r"`\faicon{$icon}`{=latex}")
