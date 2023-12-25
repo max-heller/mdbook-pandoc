@@ -372,10 +372,8 @@ impl<'book> Preprocessor<'book> {
         const PANDOC_UNNUMBERED_CLASS: &str = "unnumbered";
         const PANDOC_UNLISTED_CLASS: &str = "unlisted";
 
-        if !matches!(level, HeadingLevel::H1)
-            && self
-                .ctx
-                .pandoc
+        if level != HeadingLevel::H1
+            && (self.ctx.pandoc)
                 .enable_extension(pandoc::Extension::Attributes)
                 .is_available()
         {
@@ -448,10 +446,7 @@ impl<'book> Preprocess<'book> {
             }
             BookItem::PartTitle(name) => match self.preprocessor.ctx.output {
                 OutputFormat::Latex { .. }
-                    if self
-                        .preprocessor
-                        .ctx
-                        .pandoc
+                    if (self.preprocessor.ctx.pandoc)
                         .enable_extension(pandoc::Extension::RawAttribute)
                         .is_available() =>
                 {
@@ -519,8 +514,6 @@ impl<'book> Iterator for PreprocessChapter<'book, '_> {
     fn next(&mut self) -> Option<Self::Item> {
         use pulldown_cmark::{Event, Tag};
 
-        let context = &mut self.preprocessor.ctx;
-
         Some(match self.parser.next()? {
             Event::Start(tag) => {
                 let tag = match tag {
@@ -528,20 +521,17 @@ impl<'book> Iterator for PreprocessChapter<'book, '_> {
                         // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
                         // pulldown_cmark_to_cmark always generates ~~, so this is okay,
                         // although it'd be good to have an option to configure this explicitly.
-                        context
-                            .pandoc
+                        (self.preprocessor.ctx.pandoc)
                             .enable_extension(pandoc::Extension::Strikeout);
                         Tag::Strikethrough
                     }
                     Tag::FootnoteDefinition(label) => {
-                        context
-                            .pandoc
+                        (self.preprocessor.ctx.pandoc)
                             .enable_extension(pandoc::Extension::Footnotes);
                         Tag::FootnoteDefinition(label)
                     }
                     Tag::Table(alignment) => {
-                        context
-                            .pandoc
+                        (self.preprocessor.ctx.pandoc)
                             .enable_extension(pandoc::Extension::PipeTables);
                         Tag::Table(alignment)
                     }
@@ -552,9 +542,7 @@ impl<'book> Iterator for PreprocessChapter<'book, '_> {
                             if id.is_some() || !classes.is_empty() {
                                 // pandoc does not support `header_attributes` with commonmark
                                 // so use `attributes`, which is a superset
-                                self.preprocessor
-                                    .ctx
-                                    .pandoc
+                                (self.preprocessor.ctx.pandoc)
                                     .enable_extension(pandoc::Extension::Attributes);
                             }
                             Tag::Heading(level, id, classes)
@@ -603,14 +591,12 @@ impl<'book> Iterator for PreprocessChapter<'book, '_> {
                     // Actually consume the item from the iterator
                     self.parser.next();
                 }
-                let context = &mut self.preprocessor.ctx;
-                if let OutputFormat::Latex { packages } = &mut context.output {
+                if let OutputFormat::Latex { packages } = &mut self.preprocessor.ctx.output {
                     static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
                         Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#)
                             .unwrap()
                     });
-                    if context
-                        .pandoc
+                    if (self.preprocessor.ctx.pandoc)
                         .enable_extension(pandoc::Extension::RawAttribute)
                         .is_available()
                     {
@@ -628,9 +614,7 @@ impl<'book> Iterator for PreprocessChapter<'book, '_> {
                 Event::Html(html)
             }
             Event::TaskListMarker(checked) => {
-                context
-                    .pandoc
-                    .enable_extension(pandoc::Extension::TaskLists);
+                (self.preprocessor.ctx.pandoc).enable_extension(pandoc::Extension::TaskLists);
                 Event::TaskListMarker(checked)
             }
             event => event,
