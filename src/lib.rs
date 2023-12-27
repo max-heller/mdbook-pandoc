@@ -85,6 +85,8 @@ impl mdbook::Renderer for Renderer {
                 pandoc: pandoc::Context::new(pandoc_version.clone()),
                 destination: book.destination.join(name),
                 output: profile.output_format(),
+                cur_list_depth: 0,
+                max_list_depth: 0,
             };
 
             // Preprocess book

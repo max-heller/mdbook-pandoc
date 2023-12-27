@@ -8,6 +8,7 @@ pub struct Packages {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Package {
     FontAwesome,
+    EnumItem,
 }
 
 impl Packages {
@@ -24,6 +25,7 @@ impl Package {
     pub fn name(&self) -> &str {
         match self {
             Self::FontAwesome => "fontawesome",
+            Self::EnumItem => "enumitem",
         }
     }
 }

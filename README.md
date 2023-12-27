@@ -135,7 +135,7 @@ PDFs are rendered with LaTeX ([xelatex](https://en.wikipedia.org/wiki/XeTeX)).
 | [Rust Edition Guide](https://doc.rust-lang.org/edition-guide/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rust-edition-guide.pdf) |
 | [Embedded Rust Book](https://docs.rust-embedded.org/book/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rust-embedded.pdf) |
 | [Rust Reference](https://doc.rust-lang.org/reference/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rust-reference.pdf) |
-| [Rust Compiler Development Guide](https://rustc-dev-guide.rust-lang.org/) | ❌ Compilation fails |
+| [Rust Compiler Development Guide](https://rustc-dev-guide.rust-lang.org/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rustc-dev-guide.pdf) |
 
 #### Rendering to PDF
 

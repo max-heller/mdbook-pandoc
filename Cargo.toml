@@ -84,7 +84,6 @@ artifacts = [
   "rendered-rust-edition-guide.pdf",
   "rendered-rust-embedded.pdf",
   "rendered-rust-reference.pdf",
-  # Currently fails to build
-  # "rendered-rustc-dev-guide.pdf",
+  "rendered-rustc-dev-guide.pdf",
 ]
 build = ["bash", "-c", "git submodule update --init && source scripts/install-ci-deps && ./scripts/cargo-dist-render-books"]

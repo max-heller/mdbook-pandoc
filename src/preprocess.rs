@@ -1,5 +1,6 @@
 use std::{
     borrow::Cow,
+    cmp,
     collections::{hash_map::DefaultHasher, HashMap},
     fmt,
     fs::{self, File},
@@ -472,8 +473,8 @@ impl<'book> Preprocess<'book> {
         }
     }
 
-    pub fn render_context(&self) -> &RenderContext {
-        &self.preprocessor.ctx
+    pub fn render_context(&mut self) -> &mut RenderContext<'book> {
+        &mut self.preprocessor.ctx
     }
 
     pub fn output_dir(&self) -> &Path {
@@ -521,6 +522,14 @@ impl<'book> Iterator for PreprocessChapter<'book, '_> {
         Some(match self.parser.next()? {
             Event::Start(tag) => {
                 let tag = match tag {
+                    Tag::List(start_number) => {
+                        self.preprocessor.ctx.cur_list_depth += 1;
+                        self.preprocessor.ctx.max_list_depth = cmp::max(
+                            self.preprocessor.ctx.max_list_depth,
+                            self.preprocessor.ctx.cur_list_depth,
+                        );
+                        Tag::List(start_number)
+                    }
                     Tag::Strikethrough => {
                         // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
                         // pulldown_cmark_to_cmark always generates ~~, so this is okay,
@@ -586,7 +595,13 @@ impl<'book> Iterator for PreprocessChapter<'book, '_> {
                 self.start_tags.push(tag.clone());
                 Event::Start(tag)
             }
-            Event::End(_) => Event::End(self.start_tags.pop().unwrap()),
+            Event::End(_) => {
+                let tag = self.start_tags.pop().unwrap();
+                if let Tag::List(_) = &tag {
+                    self.preprocessor.ctx.cur_list_depth -= 1;
+                };
+                Event::End(tag)
+            }
             Event::Html(mut html) => {
                 while let Some(Event::Html(more)) = self.parser.peek() {
                     let mut string = html.into_string();
