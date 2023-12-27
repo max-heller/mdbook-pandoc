@@ -1,7 +1,7 @@
 use std::{
     borrow::Cow,
     fmt::{self, Write},
-    fs, iter,
+    fs,
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
@@ -144,13 +144,14 @@ impl Renderer {
 \setlist[itemize,3]{{label=*}}
 
 \renewlist{{enumerate}}{{enumerate}}{{{depth}}}
-                        ",
+",
                         depth = ctx.max_list_depth,
                     );
 
                     let enumerate_labels =
-                        iter::repeat([r"\arabic*", r"\Roman*", r"\Alph*", r"\roman*", r"\alph*"])
-                            .flatten();
+                        [r"\arabic*", r"\alph*", r"\roman*", r"\Alph*", r"\Roman*"]
+                            .into_iter()
+                            .cycle();
                     for (idx, label) in enumerate_labels.take(ctx.max_list_depth).enumerate() {
                         writeln!(
                             include_before,
