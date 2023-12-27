@@ -80,3 +80,49 @@ pub fn check_compatibility() -> anyhow::Result<semver::Version> {
         ))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::{
+        io::Write,
+        process::{Command, Stdio},
+    };
+
+    // Canary to detect if Pandoc ever adds native support for lists
+    // nested more than four layers deep when rendering to LaTeX
+    #[test]
+    fn five_item_deep_list() {
+        let mut pandoc = Command::new("pandoc")
+            .args(["-t", "pdf", "-o", "-"])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .unwrap();
+        let stdin = pandoc.stdin.as_mut().unwrap();
+        writeln!(
+            stdin,
+            "
+- one
+    - two
+        - three
+            - four
+                - five
+            "
+        )
+        .unwrap();
+        let output = pandoc.wait_with_output().unwrap();
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        insta::assert_snapshot!(stderr, @r###"
+        Error producing PDF.
+        ! LaTeX Error: Too deeply nested.
+
+        See the LaTeX manual or LaTeX Companion for explanation.
+        Type  H <return>  for immediate help.
+         ...                                              
+                                                          
+        l.78         \begin{itemize}
+
+        "###);
+    }
+}

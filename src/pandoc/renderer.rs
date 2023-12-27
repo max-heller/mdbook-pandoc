@@ -1,6 +1,7 @@
 use std::{
     borrow::Cow,
-    fmt, fs,
+    fmt::{self, Write},
+    fs,
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
@@ -22,6 +23,8 @@ pub struct Context<'book> {
     pub pandoc: pandoc::Context,
     pub destination: PathBuf,
     pub book: &'book Book<'book>,
+    pub cur_list_depth: usize,
+    pub max_list_depth: usize,
 }
 
 pub enum OutputFormat {
@@ -51,7 +54,7 @@ impl Renderer {
         self
     }
 
-    pub fn render(self, profile: Profile, ctx: &Context) -> anyhow::Result<()> {
+    pub fn render(self, profile: Profile, ctx: &mut Context) -> anyhow::Result<()> {
         let Profile {
             columns,
             file_scope,
@@ -117,8 +120,49 @@ impl Renderer {
         }
 
         let mut additional_variables: Vec<(_, Cow<str>)> = vec![];
-        match &ctx.output {
+        match &mut ctx.output {
             OutputFormat::Latex { packages } => {
+                // https://www.overleaf.com/learn/latex/Lists#Lists_for_lawyers:_nesting_lists_to_an_arbitrary_depth
+                const LATEX_DEFAULT_LIST_DEPTH_LIMIT: usize = 4;
+
+                // If necessary, extend the max list depth
+                if ctx.max_list_depth > LATEX_DEFAULT_LIST_DEPTH_LIMIT {
+                    packages.need(latex::Package::EnumItem);
+
+                    let mut include_before = format!(
+                        // Source: https://tex.stackexchange.com/a/41409 and https://tex.stackexchange.com/a/304515
+                        r"
+\setlistdepth{{{depth}}}
+\renewlist{{itemize}}{{itemize}}{{{depth}}}
+
+% initially, use dots for all levels
+\setlist[itemize]{{label=$\cdot$}}
+
+% customize the first 3 levels
+\setlist[itemize,1]{{label=\textbullet}}
+\setlist[itemize,2]{{label=--}}
+\setlist[itemize,3]{{label=*}}
+
+\renewlist{{enumerate}}{{enumerate}}{{{depth}}}
+",
+                        depth = ctx.max_list_depth,
+                    );
+
+                    let enumerate_labels =
+                        [r"\arabic*", r"\alph*", r"\roman*", r"\Alph*", r"\Roman*"]
+                            .into_iter()
+                            .cycle();
+                    for (idx, label) in enumerate_labels.take(ctx.max_list_depth).enumerate() {
+                        writeln!(
+                            include_before,
+                            r"\setlist[enumerate,{}]{{label=({label})}}",
+                            idx + 1,
+                        )
+                        .unwrap();
+                    }
+                    additional_variables.push(("include-before", include_before.into()))
+                }
+
                 let include_packages = packages
                     .needed()
                     .map(|package| format!(r"\usepackage{{{}}}", package.name()))
