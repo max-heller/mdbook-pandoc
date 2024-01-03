@@ -5,6 +5,7 @@ use std::{
 
 use anyhow::{anyhow, Context as _};
 use mdbook::config::HtmlConfig;
+use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
 mod book;
@@ -53,14 +54,27 @@ impl mdbook::Renderer for Renderer {
     }
 
     fn render(&self, ctx: &mdbook::renderer::RenderContext) -> anyhow::Result<()> {
-        let compiled_mdbook_version = semver::VersionReq::parse(mdbook::MDBOOK_VERSION).unwrap();
+        // If we're compiled against mdbook version I.J.K, require ^I.J
+        // This allows using a version of mdbook with an earlier patch version as a server
+        static MDBOOK_VERSION_REQ: Lazy<semver::VersionReq> = Lazy::new(|| {
+            let compiled_mdbook_version = semver::Version::parse(mdbook::MDBOOK_VERSION).unwrap();
+            semver::VersionReq {
+                comparators: vec![semver::Comparator {
+                    op: semver::Op::Caret,
+                    major: compiled_mdbook_version.major,
+                    minor: Some(compiled_mdbook_version.minor),
+                    patch: None,
+                    pre: Default::default(),
+                }],
+            }
+        });
         let mdbook_server_version = semver::Version::parse(&ctx.version).unwrap();
-        if !compiled_mdbook_version.matches(&mdbook_server_version) {
+        if !MDBOOK_VERSION_REQ.matches(&mdbook_server_version) {
             log::warn!(
-                "{} is semver-incompatible with mdbook {} (compiled against {})",
+                "{} is semver-incompatible with mdbook {} (requires {})",
                 env!("CARGO_PKG_NAME"),
                 mdbook_server_version,
-                compiled_mdbook_version,
+                *MDBOOK_VERSION_REQ,
             );
         }
 
