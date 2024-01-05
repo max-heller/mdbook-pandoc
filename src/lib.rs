@@ -434,7 +434,7 @@ mod tests {
 
         fn pdf() -> Self {
             Config {
-                keep_preprocessed: false,
+                keep_preprocessed: true,
                 profiles: HashMap::from_iter([("pdf".into(), pandoc::Profile::pdf())]),
             }
         }
@@ -673,6 +673,98 @@ This is an example of a footnote[^note].
     }
 
     #[test]
+    fn inter_chapter_html_links() {
+        let book = MDBook::init()
+            .chapter(Chapter::new(
+                "One",
+                r#"
+inline <a href="../two/two.md">Two</a> link
+
+<a href="../two/two.md">
+    Two
+</a>
+                "#,
+                "one/one.md",
+            ))
+            .chapter(Chapter::new(
+                "Two",
+                r#"
+inline <a href="../one/one.md">One</a> link
+
+<a href="../one/one.md">
+    One
+</a>
+                "#,
+                "two/two.md",
+            ))
+            .config(Config::latex())
+            .build();
+        insta::assert_display_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \phantomsection\label{book__latex__src__one__onemd}
+        │ inline \hyperref[book__latex__src__two__twomd]{Two} link
+        │ 
+        │ \hyperref[book__latex__src__two__twomd]{Two}
+        │ 
+        │ \phantomsection\label{book__latex__src__two__twomd}
+        │ inline \hyperref[book__latex__src__one__onemd]{One} link
+        │ 
+        │ \hyperref[book__latex__src__one__onemd]{One}
+        ├─ latex/src/one/one.md
+        │ inline [Two](book/latex/src/two/two.md) link
+        │ 
+        │ [Two](book/latex/src/two/two.md)
+        ├─ latex/src/two/two.md
+        │ inline [One](book/latex/src/one/one.md) link
+        │ 
+        │ [One](book/latex/src/one/one.md)
+        "###);
+    }
+
+    #[test]
+    fn link_to_html_element_by_id() {
+        let book = MDBook::init()
+            .chapter(Chapter::new(
+                "",
+                r##"
+prefix <div id="somediv">**contents**</div> suffix
+
+inline <a href="#somediv">**markdown**</a> link
+                "##,
+                "one.md",
+            ))
+            .config(Config::latex())
+            .build();
+        insta::assert_display_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ prefix
+        │ 
+        │ \phantomsection\label{somediv}
+        │ \textbf{contents}
+        │ 
+        │ suffix
+        │ 
+        │ inline \hyperref[somediv]{\textbf{markdown}} link
+        ├─ latex/src/one.md
+        │ prefix
+        │ 
+        │ ::: {#somediv}
+        │ **contents**
+        │ :::
+        │ 
+        │ suffix
+        │ 
+        │ inline [**markdown**](#somediv) link
+        "###);
+    }
+
+    #[test]
     fn nested_chapters() {
         let book = MDBook::init()
             .chapter(Chapter::new("One", "# One", "one.md").child(Chapter::new(
@@ -730,8 +822,7 @@ This is an example of a footnote[^note].
         ├─ latex/output.tex
         │ \faicon{print} \faicon{print} \faicon{print}
         ├─ latex/src/chapter.md
-        │ `\faicon{print}`{=latex}
-        │ `\faicon{print}`{=latex}
+        │ `\faicon{print}`{=latex} `\faicon{print}`{=latex}
         │ `\faicon{print}`{=latex}
         "###);
 
@@ -747,9 +838,7 @@ This is an example of a footnote[^note].
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
-        │ ```{=html}
-        │ <i class="fa fa-print"/>
-        │ ```
+        │ `<span class="fa fa-print">`{=html}`</span>`{=html}
         "###);
     }
 
@@ -940,6 +1029,44 @@ include-in-header = ["file-in-root"]
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/foo/foo.md    
         ├─ foo/foo.md
         │ some text
+        "###);
+    }
+
+    #[test]
+    fn html_definition_lists() {
+        let book = MDBook::init()
+            .config(Config::latex())
+            .chapter(Chapter::new(
+                "",
+                r#"
+<dl>
+  <dt>Coffee</dt>
+  <dd>Black hot drink<i class="fa fa-coffee"/></dd>
+  <dt>Milk</dt>
+  <dd>White cold drink</dd>
+</dl>
+                "#,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_display_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \begin{description}
+        │ \tightlist
+        │ \item[Coffee]
+        │ Black hot drink\faicon{coffee}
+        │ \item[Milk]
+        │ White cold drink
+        │ \end{description}
+        ├─ latex/src/chapter.md
+        │ Coffee
+        │ :   Black hot drink`\faicon{coffee}`{=latex}
+        │ 
+        │ Milk
+        │ :   White cold drink
         "###);
     }
 

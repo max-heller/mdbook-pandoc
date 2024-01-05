@@ -166,10 +166,2755 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/attributes/codegen.html#the-target_feature-attribute' in chapter 'Appendix: Glossary': Unable to canonicalize path: $ROOT/src/appendix/../../reference/attributes/codegen.html: No such file or directory (os error 2)    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__commands__cargomd__option-cargo---offline'
-  on page 277 undefined on input line 19240.
+  on page 277 undefined on input line 19217.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__commands__cargo-buildmd__option-cargo-build---keep-going'
-  on page 281 undefined on input line 19477.
+  on page 281 undefined on input line 19454.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo--V' on page
+  285 undefined on input line 19660.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---version'
+  on page 285 undefined on input line 19660.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---list' on
+  page 285 undefined on input line 19663.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---explain'
+  on page 285 undefined on input line 19667.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo--v' on page
+  285 undefined on input line 19677.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---verbose'
+  on page 285 undefined on input line 19677.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo--q' on page
+  285 undefined on input line 19683.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---quiet' on
+  page 285 undefined on input line 19683.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---color' on
+  page 285 undefined on input line 19688.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---frozen'
+  on page 285 undefined on input line 19707.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---locked'
+  on page 285 undefined on input line 19707.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---offline'
+  on page 285 undefined on input line 19722.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo-+toolchain'
+  on page 286 undefined on input line 19745.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---config'
+  on page 286 undefined on input line 19752.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo--C' on page
+  286 undefined on input line 19759.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo--h' on page
+  286 undefined on input line 19778.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---help' on
+  page 286 undefined on input line 19778.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo--Z' on page
+  286 undefined on input line 19781.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-versionmd__option-cargo-version--v'
+  on page 289 undefined on input line 19952.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-versionmd__option-cargo-version---verbose'
+  on page 289 undefined on input line 19952.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---no-run'
+  on page 291 undefined on input line 20099.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---no-fail-fast'
+  on page 291 undefined on input line 20101.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench--p'
+  on page 291 undefined on input line 20129.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---package'
+  on page 291 undefined on input line 20129.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---workspace'
+  on page 291 undefined on input line 20137.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---all'
+  on page 291 undefined on input line 20139.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---exclude'
+  on page 291 undefined on input line 20142.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---lib'
+  on page 292 undefined on input line 20207.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---bin'
+  on page 292 undefined on input line 20210.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---bins'
+  on page 292 undefined on input line 20213.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---example'
+  on page 292 undefined on input line 20216.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---examples'
+  on page 292 undefined on input line 20219.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---test'
+  on page 292 undefined on input line 20222.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---tests'
+  on page 292 undefined on input line 20225.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---bench'
+  on page 293 undefined on input line 20234.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---benches'
+  on page 293 undefined on input line 20237.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---all-targets'
+  on page 293 undefined on input line 20245.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench--F'
+  on page 293 undefined on input line 20266.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---features'
+  on page 293 undefined on input line 20266.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---all-features'
+  on page 293 undefined on input line 20271.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---no-default-features'
+  on page 293 undefined on input line 20273.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---target'
+  on page 293 undefined on input line 20282.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---profile'
+  on page 293 undefined on input line 20303.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---ignore-rust-version'
+  on page 293 undefined on input line 20307.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---timings=fmts'
+  on page 294 undefined on input line 20311.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---target-dir'
+  on page 294 undefined on input line 20341.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench--v'
+  on page 294 undefined on input line 20362.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---verbose'
+  on page 294 undefined on input line 20362.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench--q'
+  on page 294 undefined on input line 20368.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---quiet'
+  on page 294 undefined on input line 20368.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---color'
+  on page 294 undefined on input line 20373.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---message-format'
+  on page 294 undefined on input line 20390.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---manifest-path'
+  on page 295 undefined on input line 20430.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---frozen'
+  on page 295 undefined on input line 20435.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---locked'
+  on page 295 undefined on input line 20435.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---offline'
+  on page 295 undefined on input line 20450.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench-+toolchain'
+  on page 296 undefined on input line 20473.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---config'
+  on page 296 undefined on input line 20480.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench--C'
+  on page 296 undefined on input line 20487.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench--h'
+  on page 296 undefined on input line 20506.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---help'
+  on page 296 undefined on input line 20506.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench--Z'
+  on page 296 undefined on input line 20509.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench--j'
+  on page 296 undefined on input line 20527.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-benchmd__option-cargo-bench---jobs'
+  on page 296 undefined on input line 20527.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build--p'
+  on page 298 undefined on input line 20626.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---package'
+  on page 298 undefined on input line 20626.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---workspace'
+  on page 298 undefined on input line 20634.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---all'
+  on page 298 undefined on input line 20636.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---exclude'
+  on page 298 undefined on input line 20639.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---lib'
+  on page 298 undefined on input line 20674.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---bin'
+  on page 299 undefined on input line 20677.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---bins'
+  on page 299 undefined on input line 20680.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---example'
+  on page 299 undefined on input line 20683.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---examples'
+  on page 299 undefined on input line 20686.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---test'
+  on page 299 undefined on input line 20689.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---tests'
+  on page 299 undefined on input line 20692.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---bench'
+  on page 299 undefined on input line 20701.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---benches'
+  on page 299 undefined on input line 20704.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---all-targets'
+  on page 299 undefined on input line 20712.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build--F'
+  on page 299 undefined on input line 20733.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---features'
+  on page 299 undefined on input line 20733.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---all-features'
+  on page 299 undefined on input line 20738.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---no-default-features'
+  on page 299 undefined on input line 20740.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---target'
+  on page 299 undefined on input line 20749.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build--r'
+  on page 300 undefined on input line 20770.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---release'
+  on page 300 undefined on input line 20770.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---profile'
+  on page 300 undefined on input line 20774.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---ignore-rust-version'
+  on page 300 undefined on input line 20778.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---timings=fmts'
+  on page 300 undefined on input line 20782.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---target-dir'
+  on page 300 undefined on input line 20811.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---out-dir'
+  on page 300 undefined on input line 20818.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build--v'
+  on page 301 undefined on input line 20835.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---verbose'
+  on page 301 undefined on input line 20835.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build--q'
+  on page 301 undefined on input line 20841.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---quiet'
+  on page 301 undefined on input line 20841.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---color'
+  on page 301 undefined on input line 20846.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---message-format'
+  on page 301 undefined on input line 20863.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---build-plan'
+  on page 301 undefined on input line 20899.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---manifest-path'
+  on page 302 undefined on input line 20917.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---frozen'
+  on page 302 undefined on input line 20922.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---locked'
+  on page 302 undefined on input line 20922.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---offline'
+  on page 302 undefined on input line 20937.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build-+toolchain'
+  on page 302 undefined on input line 20960.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---config'
+  on page 302 undefined on input line 20967.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build--C'
+  on page 302 undefined on input line 20974.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build--h'
+  on page 303 undefined on input line 20993.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---help'
+  on page 303 undefined on input line 20993.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build--Z'
+  on page 303 undefined on input line 20996.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build--j'
+  on page 303 undefined on input line 21008.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---jobs'
+  on page 303 undefined on input line 21008.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---keep-going'
+  on page 303 undefined on input line 21016.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-buildmd__option-cargo-build---future-incompat-report'
+  on page 303 undefined on input line 21031.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check--p'
+  on page 305 undefined on input line 21124.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---package'
+  on page 305 undefined on input line 21124.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---workspace'
+  on page 305 undefined on input line 21132.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---all'
+  on page 305 undefined on input line 21134.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---exclude'
+  on page 305 undefined on input line 21137.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---lib'
+  on page 305 undefined on input line 21163.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---bin'
+  on page 305 undefined on input line 21166.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---bins'
+  on page 305 undefined on input line 21169.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---example'
+  on page 305 undefined on input line 21172.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---examples'
+  on page 305 undefined on input line 21175.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---test'
+  on page 305 undefined on input line 21178.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---tests'
+  on page 305 undefined on input line 21181.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---bench'
+  on page 305 undefined on input line 21190.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---benches'
+  on page 306 undefined on input line 21193.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---all-targets'
+  on page 306 undefined on input line 21201.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check--F'
+  on page 306 undefined on input line 21222.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---features'
+  on page 306 undefined on input line 21222.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---all-features'
+  on page 306 undefined on input line 21227.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---no-default-features'
+  on page 306 undefined on input line 21229.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---target'
+  on page 306 undefined on input line 21238.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check--r'
+  on page 306 undefined on input line 21258.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---release'
+  on page 306 undefined on input line 21258.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---profile'
+  on page 306 undefined on input line 21262.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---ignore-rust-version'
+  on page 307 undefined on input line 21279.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---timings=fmts'
+  on page 307 undefined on input line 21283.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---target-dir'
+  on page 307 undefined on input line 21313.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check--v'
+  on page 307 undefined on input line 21326.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---verbose'
+  on page 307 undefined on input line 21326.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check--q'
+  on page 307 undefined on input line 21332.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---quiet'
+  on page 307 undefined on input line 21332.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---color'
+  on page 307 undefined on input line 21337.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---message-format'
+  on page 308 undefined on input line 21354.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---manifest-path'
+  on page 308 undefined on input line 21394.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---frozen'
+  on page 308 undefined on input line 21399.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---locked'
+  on page 308 undefined on input line 21399.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---offline'
+  on page 308 undefined on input line 21414.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check-+toolchain'
+  on page 309 undefined on input line 21437.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---config'
+  on page 309 undefined on input line 21444.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check--C'
+  on page 309 undefined on input line 21451.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check--h'
+  on page 309 undefined on input line 21470.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---help'
+  on page 309 undefined on input line 21470.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check--Z'
+  on page 309 undefined on input line 21473.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check--j'
+  on page 309 undefined on input line 21485.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---jobs'
+  on page 309 undefined on input line 21485.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---keep-going'
+  on page 309 undefined on input line 21493.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-checkmd__option-cargo-check---future-incompat-report'
+  on page 310 undefined on input line 21508.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean--p'
+  on page 311 undefined on input line 21589.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---package'
+  on page 311 undefined on input line 21589.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---dry-run'
+  on page 311 undefined on input line 21600.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---doc'
+  on page 311 undefined on input line 21604.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---release'
+  on page 311 undefined on input line 21607.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---profile'
+  on page 311 undefined on input line 21610.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---target-dir'
+  on page 311 undefined on input line 21613.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---target'
+  on page 311 undefined on input line 21620.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean--v'
+  on page 311 undefined on input line 21643.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---verbose'
+  on page 311 undefined on input line 21643.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean--q'
+  on page 312 undefined on input line 21649.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---quiet'
+  on page 312 undefined on input line 21649.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---color'
+  on page 312 undefined on input line 21654.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---manifest-path'
+  on page 312 undefined on input line 21673.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---frozen'
+  on page 312 undefined on input line 21678.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---locked'
+  on page 312 undefined on input line 21678.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---offline'
+  on page 312 undefined on input line 21693.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean-+toolchain'
+  on page 313 undefined on input line 21716.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---config'
+  on page 313 undefined on input line 21723.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean--C'
+  on page 313 undefined on input line 21730.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean--h'
+  on page 313 undefined on input line 21749.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean---help'
+  on page 313 undefined on input line 21749.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-cleanmd__option-cargo-clean--Z'
+  on page 313 undefined on input line 21752.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---open'
+  on page 314 undefined on input line 21821.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---no-deps'
+  on page 314 undefined on input line 21827.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---document-private-items'
+  on page 314 undefined on input line 21829.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc--p'
+  on page 314 undefined on input line 21855.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---package'
+  on page 314 undefined on input line 21855.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---workspace'
+  on page 315 undefined on input line 21863.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---all'
+  on page 315 undefined on input line 21865.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---exclude'
+  on page 315 undefined on input line 21868.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---lib'
+  on page 315 undefined on input line 21893.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---bin'
+  on page 315 undefined on input line 21896.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---bins'
+  on page 315 undefined on input line 21899.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---example'
+  on page 315 undefined on input line 21902.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---examples'
+  on page 315 undefined on input line 21905.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc--F'
+  on page 315 undefined on input line 21925.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---features'
+  on page 315 undefined on input line 21925.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---all-features'
+  on page 315 undefined on input line 21930.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---no-default-features'
+  on page 315 undefined on input line 21932.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---target'
+  on page 315 undefined on input line 21941.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc--r'
+  on page 316 undefined on input line 21962.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---release'
+  on page 316 undefined on input line 21962.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---profile'
+  on page 316 undefined on input line 21966.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---ignore-rust-version'
+  on page 316 undefined on input line 21970.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---timings=fmts'
+  on page 316 undefined on input line 21974.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---target-dir'
+  on page 316 undefined on input line 22004.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc--v'
+  on page 316 undefined on input line 22017.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---verbose'
+  on page 316 undefined on input line 22017.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc--q'
+  on page 316 undefined on input line 22023.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---quiet'
+  on page 316 undefined on input line 22023.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---color'
+  on page 317 undefined on input line 22028.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---message-format'
+  on page 317 undefined on input line 22045.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---manifest-path'
+  on page 317 undefined on input line 22085.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---frozen'
+  on page 317 undefined on input line 22090.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---locked'
+  on page 317 undefined on input line 22090.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---offline'
+  on page 317 undefined on input line 22105.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc-+toolchain'
+  on page 318 undefined on input line 22128.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---config'
+  on page 318 undefined on input line 22135.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc--C'
+  on page 318 undefined on input line 22142.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc--h'
+  on page 318 undefined on input line 22161.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---help'
+  on page 318 undefined on input line 22161.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc--Z'
+  on page 318 undefined on input line 22164.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc--j'
+  on page 318 undefined on input line 22176.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---jobs'
+  on page 318 undefined on input line 22176.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-docmd__option-cargo-doc---keep-going'
+  on page 319 undefined on input line 22184.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch---target'
+  on page 320 undefined on input line 22272.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch--v'
+  on page 320 undefined on input line 22295.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch---verbose'
+  on page 320 undefined on input line 22295.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch--q'
+  on page 320 undefined on input line 22301.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch---quiet'
+  on page 320 undefined on input line 22301.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch---color'
+  on page 320 undefined on input line 22306.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch---manifest-path'
+  on page 321 undefined on input line 22325.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch---frozen'
+  on page 321 undefined on input line 22330.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch---locked'
+  on page 321 undefined on input line 22330.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch---offline'
+  on page 321 undefined on input line 22345.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch-+toolchain'
+  on page 321 undefined on input line 22368.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch---config'
+  on page 321 undefined on input line 22375.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch--C'
+  on page 321 undefined on input line 22382.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch--h'
+  on page 322 undefined on input line 22401.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch---help'
+  on page 322 undefined on input line 22401.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fetchmd__option-cargo-fetch--Z'
+  on page 322 undefined on input line 22404.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---broken-code'
+  on page 324 undefined on input line 22537.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---edition'
+  on page 324 undefined on input line 22542.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---edition-idioms'
+  on page 324 undefined on input line 22546.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---allow-no-vcs'
+  on page 324 undefined on input line 22549.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---allow-dirty'
+  on page 324 undefined on input line 22551.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---allow-staged'
+  on page 324 undefined on input line 22553.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix--p'
+  on page 324 undefined on input line 22578.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---package'
+  on page 324 undefined on input line 22578.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---workspace'
+  on page 324 undefined on input line 22586.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---all'
+  on page 324 undefined on input line 22588.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---exclude'
+  on page 324 undefined on input line 22591.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---lib'
+  on page 325 undefined on input line 22617.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---bin'
+  on page 325 undefined on input line 22620.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---bins'
+  on page 325 undefined on input line 22623.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---example'
+  on page 325 undefined on input line 22626.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---examples'
+  on page 325 undefined on input line 22629.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---test'
+  on page 325 undefined on input line 22632.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---tests'
+  on page 325 undefined on input line 22635.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---bench'
+  on page 325 undefined on input line 22644.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---benches'
+  on page 325 undefined on input line 22647.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---all-targets'
+  on page 325 undefined on input line 22655.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix--F'
+  on page 325 undefined on input line 22676.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---features'
+  on page 325 undefined on input line 22676.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---all-features'
+  on page 326 undefined on input line 22681.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---no-default-features'
+  on page 326 undefined on input line 22683.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---target'
+  on page 326 undefined on input line 22692.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix--r'
+  on page 326 undefined on input line 22712.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---release'
+  on page 326 undefined on input line 22712.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---profile'
+  on page 326 undefined on input line 22716.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---ignore-rust-version'
+  on page 326 undefined on input line 22733.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---timings=fmts'
+  on page 326 undefined on input line 22737.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---target-dir'
+  on page 327 undefined on input line 22767.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix--v'
+  on page 327 undefined on input line 22780.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---verbose'
+  on page 327 undefined on input line 22780.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix--q'
+  on page 327 undefined on input line 22786.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---quiet'
+  on page 327 undefined on input line 22786.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---color'
+  on page 327 undefined on input line 22791.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---message-format'
+  on page 327 undefined on input line 22808.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---manifest-path'
+  on page 328 undefined on input line 22848.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---frozen'
+  on page 328 undefined on input line 22853.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---locked'
+  on page 328 undefined on input line 22853.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---offline'
+  on page 328 undefined on input line 22868.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix-+toolchain'
+  on page 328 undefined on input line 22891.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---config'
+  on page 328 undefined on input line 22898.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix--C'
+  on page 329 undefined on input line 22905.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix--h'
+  on page 329 undefined on input line 22924.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---help'
+  on page 329 undefined on input line 22924.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix--Z'
+  on page 329 undefined on input line 22927.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix--j'
+  on page 329 undefined on input line 22939.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---jobs'
+  on page 329 undefined on input line 22939.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-fixmd__option-cargo-fix---keep-going'
+  on page 329 undefined on input line 22947.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run--p'
+  on page 330 undefined on input line 23047.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---package'
+  on page 330 undefined on input line 23047.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---bin'
+  on page 331 undefined on input line 23065.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---example'
+  on page 331 undefined on input line 23068.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run--F'
+  on page 331 undefined on input line 23088.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---features'
+  on page 331 undefined on input line 23088.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---all-features'
+  on page 331 undefined on input line 23093.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---no-default-features'
+  on page 331 undefined on input line 23095.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---target'
+  on page 331 undefined on input line 23104.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run--r'
+  on page 331 undefined on input line 23125.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---release'
+  on page 331 undefined on input line 23125.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---profile'
+  on page 331 undefined on input line 23129.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---ignore-rust-version'
+  on page 331 undefined on input line 23133.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---timings=fmts'
+  on page 331 undefined on input line 23137.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---target-dir'
+  on page 332 undefined on input line 23167.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run--v'
+  on page 332 undefined on input line 23180.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---verbose'
+  on page 332 undefined on input line 23180.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run--q'
+  on page 332 undefined on input line 23186.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---quiet'
+  on page 332 undefined on input line 23186.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---color'
+  on page 332 undefined on input line 23191.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---message-format'
+  on page 332 undefined on input line 23208.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---manifest-path'
+  on page 333 undefined on input line 23248.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---frozen'
+  on page 333 undefined on input line 23253.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---locked'
+  on page 333 undefined on input line 23253.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---offline'
+  on page 333 undefined on input line 23268.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run-+toolchain'
+  on page 333 undefined on input line 23291.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---config'
+  on page 334 undefined on input line 23298.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run--C'
+  on page 334 undefined on input line 23305.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run--h'
+  on page 334 undefined on input line 23324.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---help'
+  on page 334 undefined on input line 23324.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run--Z'
+  on page 334 undefined on input line 23327.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run--j'
+  on page 334 undefined on input line 23339.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---jobs'
+  on page 334 undefined on input line 23339.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-runmd__option-cargo-run---keep-going'
+  on page 334 undefined on input line 23347.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc--p'
+  on page 336 undefined on input line 23453.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---package'
+  on page 336 undefined on input line 23453.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---lib'
+  on page 336 undefined on input line 23484.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---bin'
+  on page 336 undefined on input line 23487.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---bins'
+  on page 336 undefined on input line 23490.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---example'
+  on page 336 undefined on input line 23493.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---examples'
+  on page 336 undefined on input line 23496.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---test'
+  on page 336 undefined on input line 23499.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---tests'
+  on page 336 undefined on input line 23502.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---bench'
+  on page 336 undefined on input line 23511.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---benches'
+  on page 336 undefined on input line 23514.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---all-targets'
+  on page 337 undefined on input line 23522.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc--F'
+  on page 337 undefined on input line 23543.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---features'
+  on page 337 undefined on input line 23543.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---all-features'
+  on page 337 undefined on input line 23548.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---no-default-features'
+  on page 337 undefined on input line 23550.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---target'
+  on page 337 undefined on input line 23559.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc--r'
+  on page 337 undefined on input line 23579.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---release'
+  on page 337 undefined on input line 23579.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---profile'
+  on page 337 undefined on input line 23583.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---ignore-rust-version'
+  on page 338 undefined on input line 23609.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---timings=fmts'
+  on page 338 undefined on input line 23613.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---crate-type'
+  on page 338 undefined on input line 23639.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---target-dir'
+  on page 338 undefined on input line 23662.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc--v'
+  on page 339 undefined on input line 23675.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---verbose'
+  on page 339 undefined on input line 23675.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc--q'
+  on page 339 undefined on input line 23681.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---quiet'
+  on page 339 undefined on input line 23681.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---color'
+  on page 339 undefined on input line 23686.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---message-format'
+  on page 339 undefined on input line 23703.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---manifest-path'
+  on page 339 undefined on input line 23743.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---frozen'
+  on page 340 undefined on input line 23748.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---locked'
+  on page 340 undefined on input line 23748.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---offline'
+  on page 340 undefined on input line 23763.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc-+toolchain'
+  on page 340 undefined on input line 23786.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---config'
+  on page 340 undefined on input line 23793.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc--C'
+  on page 340 undefined on input line 23800.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc--h'
+  on page 341 undefined on input line 23819.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---help'
+  on page 341 undefined on input line 23819.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc--Z'
+  on page 341 undefined on input line 23822.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc--j'
+  on page 341 undefined on input line 23834.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---jobs'
+  on page 341 undefined on input line 23834.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---keep-going'
+  on page 341 undefined on input line 23842.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustcmd__option-cargo-rustc---future-incompat-report'
+  on page 341 undefined on input line 23857.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---open'
+  on page 342 undefined on input line 23959.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc--p'
+  on page 343 undefined on input line 23979.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---package'
+  on page 343 undefined on input line 23979.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---lib'
+  on page 343 undefined on input line 24004.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---bin'
+  on page 343 undefined on input line 24007.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---bins'
+  on page 343 undefined on input line 24010.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---example'
+  on page 343 undefined on input line 24013.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---examples'
+  on page 343 undefined on input line 24016.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---test'
+  on page 343 undefined on input line 24019.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---tests'
+  on page 343 undefined on input line 24022.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---bench'
+  on page 343 undefined on input line 24031.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---benches'
+  on page 343 undefined on input line 24034.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---all-targets'
+  on page 344 undefined on input line 24042.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc--F'
+  on page 344 undefined on input line 24063.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---features'
+  on page 344 undefined on input line 24063.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---all-features'
+  on page 344 undefined on input line 24068.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---no-default-features'
+  on page 344 undefined on input line 24070.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---target'
+  on page 344 undefined on input line 24079.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc--r'
+  on page 344 undefined on input line 24100.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---release'
+  on page 344 undefined on input line 24100.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---profile'
+  on page 344 undefined on input line 24104.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---ignore-rust-version'
+  on page 344 undefined on input line 24108.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---timings=fmts'
+  on page 344 undefined on input line 24112.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---target-dir'
+  on page 345 undefined on input line 24142.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc--v'
+  on page 345 undefined on input line 24155.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---verbose'
+  on page 345 undefined on input line 24155.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc--q'
+  on page 345 undefined on input line 24161.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---quiet'
+  on page 345 undefined on input line 24161.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---color'
+  on page 345 undefined on input line 24166.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---message-format'
+  on page 345 undefined on input line 24183.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---manifest-path'
+  on page 346 undefined on input line 24223.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---frozen'
+  on page 346 undefined on input line 24228.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---locked'
+  on page 346 undefined on input line 24228.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---offline'
+  on page 346 undefined on input line 24243.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc-+toolchain'
+  on page 346 undefined on input line 24266.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---config'
+  on page 346 undefined on input line 24273.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc--C'
+  on page 347 undefined on input line 24280.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc--h'
+  on page 347 undefined on input line 24299.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---help'
+  on page 347 undefined on input line 24299.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc--Z'
+  on page 347 undefined on input line 24302.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc--j'
+  on page 347 undefined on input line 24314.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---jobs'
+  on page 347 undefined on input line 24314.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-rustdocmd__option-cargo-rustdoc---keep-going'
+  on page 347 undefined on input line 24322.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---no-run'
+  on page 349 undefined on input line 24463.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---no-fail-fast'
+  on page 349 undefined on input line 24465.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test--p'
+  on page 350 undefined on input line 24493.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---package'
+  on page 350 undefined on input line 24493.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---workspace'
+  on page 350 undefined on input line 24501.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---all'
+  on page 350 undefined on input line 24503.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---exclude'
+  on page 350 undefined on input line 24506.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---lib'
+  on page 351 undefined on input line 24580.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---bin'
+  on page 351 undefined on input line 24583.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---bins'
+  on page 351 undefined on input line 24586.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---example'
+  on page 351 undefined on input line 24589.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---examples'
+  on page 351 undefined on input line 24592.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---test'
+  on page 351 undefined on input line 24595.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---tests'
+  on page 351 undefined on input line 24598.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---bench'
+  on page 351 undefined on input line 24607.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---benches'
+  on page 351 undefined on input line 24610.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---all-targets'
+  on page 351 undefined on input line 24618.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---doc'
+  on page 351 undefined on input line 24625.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test--F'
+  on page 352 undefined on input line 24646.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---features'
+  on page 352 undefined on input line 24646.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---all-features'
+  on page 352 undefined on input line 24651.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---no-default-features'
+  on page 352 undefined on input line 24653.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---target'
+  on page 352 undefined on input line 24662.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test--r'
+  on page 352 undefined on input line 24683.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---release'
+  on page 352 undefined on input line 24683.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---profile'
+  on page 352 undefined on input line 24687.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---ignore-rust-version'
+  on page 352 undefined on input line 24691.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---timings=fmts'
+  on page 352 undefined on input line 24695.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---target-dir'
+  on page 353 undefined on input line 24725.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test--v'
+  on page 353 undefined on input line 24746.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---verbose'
+  on page 353 undefined on input line 24746.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test--q'
+  on page 353 undefined on input line 24752.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---quiet'
+  on page 353 undefined on input line 24752.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---color'
+  on page 353 undefined on input line 24757.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---message-format'
+  on page 353 undefined on input line 24774.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---manifest-path'
+  on page 354 undefined on input line 24814.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---frozen'
+  on page 354 undefined on input line 24819.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---locked'
+  on page 354 undefined on input line 24819.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---offline'
+  on page 354 undefined on input line 24834.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test-+toolchain'
+  on page 354 undefined on input line 24857.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---config'
+  on page 354 undefined on input line 24864.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test--C'
+  on page 355 undefined on input line 24871.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test--h'
+  on page 355 undefined on input line 24890.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---help'
+  on page 355 undefined on input line 24890.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test--Z'
+  on page 355 undefined on input line 24893.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test--j'
+  on page 355 undefined on input line 24914.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---jobs'
+  on page 355 undefined on input line 24914.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-testmd__option-cargo-test---future-incompat-report'
+  on page 355 undefined on input line 24922.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-reportmd__option-cargo-report---id'
+  on page 356 undefined on input line 25012.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-reportmd__option-cargo-report--p'
+  on page 356 undefined on input line 25017.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-reportmd__option-cargo-report---package'
+  on page 356 undefined on input line 25017.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---git'
+  on page 358 undefined on input line 25138.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---branch'
+  on page 358 undefined on input line 25142.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---tag'
+  on page 358 undefined on input line 25145.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---rev'
+  on page 358 undefined on input line 25148.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---path'
+  on page 358 undefined on input line 25151.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---registry'
+  on page 358 undefined on input line 25155.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---dev'
+  on page 358 undefined on input line 25167.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---build'
+  on page 358 undefined on input line 25171.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---target'
+  on page 358 undefined on input line 25176.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---dry-run'
+  on page 358 undefined on input line 25191.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---rename'
+  on page 358 undefined on input line 25194.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---optional'
+  on page 358 undefined on input line 25197.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---no-optional'
+  on page 358 undefined on input line 25200.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---no-default-features'
+  on page 359 undefined on input line 25203.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---default-features'
+  on page 359 undefined on input line 25207.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add--F'
+  on page 359 undefined on input line 25214.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---features'
+  on page 359 undefined on input line 25214.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---ignore-rust-version'
+  on page 359 undefined on input line 25221.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add--v'
+  on page 359 undefined on input line 25238.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---verbose'
+  on page 359 undefined on input line 25238.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add--q'
+  on page 359 undefined on input line 25244.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---quiet'
+  on page 359 undefined on input line 25244.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---color'
+  on page 359 undefined on input line 25249.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---manifest-path'
+  on page 359 undefined on input line 25268.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add--p'
+  on page 359 undefined on input line 25275.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---package'
+  on page 359 undefined on input line 25275.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---frozen'
+  on page 359 undefined on input line 25278.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---locked'
+  on page 359 undefined on input line 25278.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---offline'
+  on page 360 undefined on input line 25293.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add-+toolchain'
+  on page 360 undefined on input line 25316.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---config'
+  on page 360 undefined on input line 25323.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add--C'
+  on page 360 undefined on input line 25330.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add--h'
+  on page 361 undefined on input line 25349.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add---help'
+  on page 361 undefined on input line 25349.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-addmd__option-cargo-add--Z'
+  on page 361 undefined on input line 25352.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile--v'
+  on page 362 undefined on input line 25446.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile---verbose'
+  on page 362 undefined on input line 25446.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile--q'
+  on page 362 undefined on input line 25452.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile---quiet'
+  on page 362 undefined on input line 25452.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile---color'
+  on page 362 undefined on input line 25457.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile---manifest-path'
+  on page 362 undefined on input line 25476.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile---frozen'
+  on page 362 undefined on input line 25481.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile---locked'
+  on page 362 undefined on input line 25481.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile---offline'
+  on page 362 undefined on input line 25496.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile-+toolchain'
+  on page 363 undefined on input line 25519.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile---config'
+  on page 363 undefined on input line 25526.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile--C'
+  on page 363 undefined on input line 25533.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile--h'
+  on page 363 undefined on input line 25552.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile---help'
+  on page 363 undefined on input line 25552.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-generate-lockfilemd__option-cargo-generate-lockfile--Z'
+  on page 363 undefined on input line 25555.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project---workspace'
+  on page 364 undefined on input line 25623.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project---message-format'
+  on page 364 undefined on input line 25634.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project--v'
+  on page 364 undefined on input line 25649.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project---verbose'
+  on page 364 undefined on input line 25649.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project--q'
+  on page 365 undefined on input line 25655.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project---quiet'
+  on page 365 undefined on input line 25655.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project---color'
+  on page 365 undefined on input line 25660.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project---manifest-path'
+  on page 365 undefined on input line 25680.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project-+toolchain'
+  on page 365 undefined on input line 25690.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project---config'
+  on page 365 undefined on input line 25697.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project--C'
+  on page 365 undefined on input line 25704.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project--h'
+  on page 365 undefined on input line 25723.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project---help'
+  on page 365 undefined on input line 25723.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-locate-projectmd__option-cargo-locate-project--Z'
+  on page 366 undefined on input line 25726.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---no-deps'
+  on page 373 undefined on input line 26119.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---format-version'
+  on page 373 undefined on input line 26123.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---filter-platform'
+  on page 373 undefined on input line 26127.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata--F'
+  on page 374 undefined on input line 26156.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---features'
+  on page 374 undefined on input line 26156.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---all-features'
+  on page 374 undefined on input line 26161.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---no-default-features'
+  on page 374 undefined on input line 26163.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata--v'
+  on page 374 undefined on input line 26172.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---verbose'
+  on page 374 undefined on input line 26172.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata--q'
+  on page 374 undefined on input line 26178.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---quiet'
+  on page 374 undefined on input line 26178.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---color'
+  on page 374 undefined on input line 26183.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---manifest-path'
+  on page 374 undefined on input line 26202.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---frozen'
+  on page 374 undefined on input line 26207.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---locked'
+  on page 374 undefined on input line 26207.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---offline'
+  on page 374 undefined on input line 26222.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata-+toolchain'
+  on page 375 undefined on input line 26245.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---config'
+  on page 375 undefined on input line 26252.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata--C'
+  on page 375 undefined on input line 26259.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata--h'
+  on page 375 undefined on input line 26278.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata---help'
+  on page 375 undefined on input line 26278.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-metadatamd__option-cargo-metadata--Z'
+  on page 375 undefined on input line 26281.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid--p'
+  on page 377 undefined on input line 26374.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid---package'
+  on page 377 undefined on input line 26374.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid--v'
+  on page 377 undefined on input line 26383.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid---verbose'
+  on page 377 undefined on input line 26383.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid--q'
+  on page 377 undefined on input line 26389.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid---quiet'
+  on page 377 undefined on input line 26389.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid---color'
+  on page 377 undefined on input line 26394.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid---manifest-path'
+  on page 377 undefined on input line 26413.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid---frozen'
+  on page 377 undefined on input line 26418.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid---locked'
+  on page 377 undefined on input line 26418.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid---offline'
+  on page 377 undefined on input line 26433.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid-+toolchain'
+  on page 378 undefined on input line 26456.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid---config'
+  on page 378 undefined on input line 26463.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid--C'
+  on page 378 undefined on input line 26470.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid--h'
+  on page 378 undefined on input line 26489.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid---help'
+  on page 378 undefined on input line 26489.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-pkgidmd__option-cargo-pkgid--Z'
+  on page 378 undefined on input line 26492.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---dev'
+  on page 379 undefined on input line 26571.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---build'
+  on page 379 undefined on input line 26575.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---target'
+  on page 379 undefined on input line 26580.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---dry-run'
+  on page 380 undefined on input line 26596.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove--v'
+  on page 380 undefined on input line 26605.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---verbose'
+  on page 380 undefined on input line 26605.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove--q'
+  on page 380 undefined on input line 26611.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---quiet'
+  on page 380 undefined on input line 26611.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---color'
+  on page 380 undefined on input line 26616.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---manifest-path'
+  on page 380 undefined on input line 26635.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---frozen'
+  on page 380 undefined on input line 26640.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---locked'
+  on page 380 undefined on input line 26640.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---offline'
+  on page 380 undefined on input line 26655.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove--p'
+  on page 381 undefined on input line 26682.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---package'
+  on page 381 undefined on input line 26682.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove-+toolchain'
+  on page 381 undefined on input line 26690.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---config'
+  on page 381 undefined on input line 26697.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove--C'
+  on page 381 undefined on input line 26704.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove--h'
+  on page 381 undefined on input line 26723.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove---help'
+  on page 381 undefined on input line 26723.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-removemd__option-cargo-remove--Z'
+  on page 381 undefined on input line 26726.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--i'
+  on page 383 undefined on input line 26866.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---invert'
+  on page 383 undefined on input line 26866.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---prune'
+  on page 384 undefined on input line 26884.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---depth'
+  on page 384 undefined on input line 26887.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---no-dedupe'
+  on page 384 undefined on input line 26890.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--d'
+  on page 384 undefined on input line 26897.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---duplicates'
+  on page 384 undefined on input line 26897.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--e'
+  on page 384 undefined on input line 26915.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---edges'
+  on page 384 undefined on input line 26915.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---target'
+  on page 384 undefined on input line 26941.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---charset'
+  on page 385 undefined on input line 26953.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--f'
+  on page 385 undefined on input line 26959.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---format'
+  on page 385 undefined on input line 26959.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---prefix'
+  on page 385 undefined on input line 26979.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--p'
+  on page 385 undefined on input line 27015.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---package'
+  on page 385 undefined on input line 27015.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---workspace'
+  on page 386 undefined on input line 27023.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---exclude'
+  on page 386 undefined on input line 27026.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---manifest-path'
+  on page 386 undefined on input line 27040.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---frozen'
+  on page 386 undefined on input line 27045.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---locked'
+  on page 386 undefined on input line 27045.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---offline'
+  on page 386 undefined on input line 27060.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--F'
+  on page 386 undefined on input line 27095.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---features'
+  on page 386 undefined on input line 27095.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---all-features'
+  on page 387 undefined on input line 27100.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---no-default-features'
+  on page 387 undefined on input line 27102.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--v'
+  on page 387 undefined on input line 27111.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---verbose'
+  on page 387 undefined on input line 27111.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--q'
+  on page 387 undefined on input line 27117.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---quiet'
+  on page 387 undefined on input line 27117.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---color'
+  on page 387 undefined on input line 27122.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree-+toolchain'
+  on page 387 undefined on input line 27140.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---config'
+  on page 387 undefined on input line 27147.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--C'
+  on page 387 undefined on input line 27154.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--h'
+  on page 388 undefined on input line 27173.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree---help'
+  on page 388 undefined on input line 27173.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-treemd__option-cargo-tree--Z'
+  on page 388 undefined on input line 27176.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update-specux2026'
+  on page 390 undefined on input line 27307.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---recursive'
+  on page 390 undefined on input line 27327.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---precise'
+  on page 390 undefined on input line 27331.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update--w'
+  on page 390 undefined on input line 27336.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---workspace'
+  on page 390 undefined on input line 27336.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---dry-run'
+  on page 390 undefined on input line 27341.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update--v'
+  on page 390 undefined on input line 27350.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---verbose'
+  on page 390 undefined on input line 27350.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update--q'
+  on page 390 undefined on input line 27356.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---quiet'
+  on page 390 undefined on input line 27356.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---color'
+  on page 390 undefined on input line 27361.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---manifest-path'
+  on page 391 undefined on input line 27380.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---frozen'
+  on page 391 undefined on input line 27385.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---locked'
+  on page 391 undefined on input line 27385.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---offline'
+  on page 391 undefined on input line 27400.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update-+toolchain'
+  on page 391 undefined on input line 27423.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---config'
+  on page 391 undefined on input line 27430.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update--C'
+  on page 391 undefined on input line 27437.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update--h'
+  on page 392 undefined on input line 27456.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update---help'
+  on page 392 undefined on input line 27456.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-updatemd__option-cargo-update--Z'
+  on page 392 undefined on input line 27459.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor--s'
+  on page 393 undefined on input line 27547.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---sync'
+  on page 393 undefined on input line 27547.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---no-delete'
+  on page 393 undefined on input line 27551.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---respect-source-config'
+  on page 393 undefined on input line 27554.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---versioned-dirs'
+  on page 393 undefined on input line 27558.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---manifest-path'
+  on page 393 undefined on input line 27571.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---frozen'
+  on page 393 undefined on input line 27576.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---locked'
+  on page 393 undefined on input line 27576.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---offline'
+  on page 394 undefined on input line 27591.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor--v'
+  on page 394 undefined on input line 27615.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---verbose'
+  on page 394 undefined on input line 27615.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor--q'
+  on page 394 undefined on input line 27621.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---quiet'
+  on page 394 undefined on input line 27621.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---color'
+  on page 394 undefined on input line 27626.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor-+toolchain'
+  on page 394 undefined on input line 27644.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---config'
+  on page 394 undefined on input line 27651.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor--C'
+  on page 395 undefined on input line 27658.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor--h'
+  on page 395 undefined on input line 27677.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor---help'
+  on page 395 undefined on input line 27677.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-vendormd__option-cargo-vendor--Z'
+  on page 395 undefined on input line 27680.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project--v'
+  on page 396 undefined on input line 27770.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project---verbose'
+  on page 396 undefined on input line 27770.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project--q'
+  on page 396 undefined on input line 27776.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project---quiet'
+  on page 396 undefined on input line 27776.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project---color'
+  on page 396 undefined on input line 27781.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project---manifest-path'
+  on page 396 undefined on input line 27800.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project---frozen'
+  on page 396 undefined on input line 27805.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project---locked'
+  on page 396 undefined on input line 27805.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project---offline'
+  on page 397 undefined on input line 27820.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project-+toolchain'
+  on page 397 undefined on input line 27843.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project---config'
+  on page 397 undefined on input line 27850.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project--C'
+  on page 397 undefined on input line 27857.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project--h'
+  on page 398 undefined on input line 27876.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project---help'
+  on page 398 undefined on input line 27876.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-verify-projectmd__option-cargo-verify-project--Z'
+  on page 398 undefined on input line 27879.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---bin'
+  on page 399 undefined on input line 27969.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---lib'
+  on page 399 undefined on input line 27972.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---edition'
+  on page 399 undefined on input line 27975.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---name'
+  on page 399 undefined on input line 27979.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---vcs'
+  on page 399 undefined on input line 27982.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---registry'
+  on page 399 undefined on input line 27989.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init--v'
+  on page 399 undefined on input line 28008.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---verbose'
+  on page 399 undefined on input line 28008.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init--q'
+  on page 399 undefined on input line 28014.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---quiet'
+  on page 399 undefined on input line 28014.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---color'
+  on page 400 undefined on input line 28019.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init-+toolchain'
+  on page 400 undefined on input line 28037.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---config'
+  on page 400 undefined on input line 28044.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init--C'
+  on page 400 undefined on input line 28051.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init--h'
+  on page 400 undefined on input line 28070.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init---help'
+  on page 400 undefined on input line 28070.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-initmd__option-cargo-init--Z'
+  on page 400 undefined on input line 28073.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---vers'
+  on page 403 undefined on input line 28238.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---version'
+  on page 403 undefined on input line 28238.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---git'
+  on page 403 undefined on input line 28248.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---branch'
+  on page 403 undefined on input line 28251.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---tag'
+  on page 403 undefined on input line 28254.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---rev'
+  on page 403 undefined on input line 28257.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---path'
+  on page 403 undefined on input line 28260.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---list'
+  on page 403 undefined on input line 28262.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install--f'
+  on page 403 undefined on input line 28265.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---force'
+  on page 403 undefined on input line 28265.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---no-track'
+  on page 403 undefined on input line 28270.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---bin'
+  on page 403 undefined on input line 28278.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---bins'
+  on page 403 undefined on input line 28280.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---example'
+  on page 403 undefined on input line 28283.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---examples'
+  on page 403 undefined on input line 28285.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---root'
+  on page 403 undefined on input line 28288.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---registry'
+  on page 403 undefined on input line 28291.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---index'
+  on page 403 undefined on input line 28298.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install--F'
+  on page 403 undefined on input line 28318.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---features'
+  on page 403 undefined on input line 28318.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---all-features'
+  on page 403 undefined on input line 28323.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---no-default-features'
+  on page 404 undefined on input line 28325.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---target'
+  on page 404 undefined on input line 28334.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---target-dir'
+  on page 404 undefined on input line 28354.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---debug'
+  on page 404 undefined on input line 28370.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---profile'
+  on page 404 undefined on input line 28375.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---ignore-rust-version'
+  on page 404 undefined on input line 28379.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---timings=fmts'
+  on page 404 undefined on input line 28383.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---frozen'
+  on page 405 undefined on input line 28412.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---locked'
+  on page 405 undefined on input line 28412.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---offline'
+  on page 405 undefined on input line 28427.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install--j'
+  on page 405 undefined on input line 28453.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---jobs'
+  on page 405 undefined on input line 28453.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---keep-going'
+  on page 405 undefined on input line 28461.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install--v'
+  on page 406 undefined on input line 28480.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---verbose'
+  on page 406 undefined on input line 28480.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install--q'
+  on page 406 undefined on input line 28486.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---quiet'
+  on page 406 undefined on input line 28486.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---color'
+  on page 406 undefined on input line 28491.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---message-format'
+  on page 406 undefined on input line 28508.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install-+toolchain'
+  on page 406 undefined on input line 28547.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---config'
+  on page 406 undefined on input line 28554.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install--C'
+  on page 407 undefined on input line 28561.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install--h'
+  on page 407 undefined on input line 28580.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install---help'
+  on page 407 undefined on input line 28580.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-installmd__option-cargo-install--Z'
+  on page 407 undefined on input line 28583.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---bin'
+  on page 408 undefined on input line 28665.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---lib'
+  on page 408 undefined on input line 28668.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---edition'
+  on page 408 undefined on input line 28671.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---name'
+  on page 408 undefined on input line 28675.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---vcs'
+  on page 408 undefined on input line 28678.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---registry'
+  on page 408 undefined on input line 28685.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new--v'
+  on page 409 undefined on input line 28704.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---verbose'
+  on page 409 undefined on input line 28704.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new--q'
+  on page 409 undefined on input line 28710.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---quiet'
+  on page 409 undefined on input line 28710.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---color'
+  on page 409 undefined on input line 28715.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new-+toolchain'
+  on page 409 undefined on input line 28733.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---config'
+  on page 409 undefined on input line 28740.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new--C'
+  on page 409 undefined on input line 28747.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new--h'
+  on page 409 undefined on input line 28766.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new---help'
+  on page 409 undefined on input line 28766.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-newmd__option-cargo-new--Z'
+  on page 409 undefined on input line 28769.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search---limit'
+  on page 410 undefined on input line 28834.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search---index'
+  on page 410 undefined on input line 28837.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search---registry'
+  on page 410 undefined on input line 28840.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search--v'
+  on page 411 undefined on input line 28853.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search---verbose'
+  on page 411 undefined on input line 28853.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search--q'
+  on page 411 undefined on input line 28859.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search---quiet'
+  on page 411 undefined on input line 28859.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search---color'
+  on page 411 undefined on input line 28864.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search-+toolchain'
+  on page 411 undefined on input line 28882.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search---config'
+  on page 411 undefined on input line 28889.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search--C'
+  on page 411 undefined on input line 28896.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search--h'
+  on page 411 undefined on input line 28915.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search---help'
+  on page 411 undefined on input line 28915.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-searchmd__option-cargo-search--Z'
+  on page 411 undefined on input line 28918.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall--p'
+  on page 413 undefined on input line 29007.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall---package'
+  on page 413 undefined on input line 29007.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall---bin'
+  on page 413 undefined on input line 29010.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall---root'
+  on page 413 undefined on input line 29013.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall--v'
+  on page 413 undefined on input line 29022.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall---verbose'
+  on page 413 undefined on input line 29022.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall--q'
+  on page 413 undefined on input line 29028.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall---quiet'
+  on page 413 undefined on input line 29028.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall---color'
+  on page 413 undefined on input line 29033.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall-+toolchain'
+  on page 413 undefined on input line 29051.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall---config'
+  on page 413 undefined on input line 29058.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall--C'
+  on page 413 undefined on input line 29065.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall--h'
+  on page 414 undefined on input line 29084.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall---help'
+  on page 414 undefined on input line 29084.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-uninstallmd__option-cargo-uninstall--Z'
+  on page 414 undefined on input line 29087.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login---registry'
+  on page 415 undefined on input line 29194.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login--v'
+  on page 415 undefined on input line 29207.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login---verbose'
+  on page 415 undefined on input line 29207.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login--q'
+  on page 415 undefined on input line 29213.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login---quiet'
+  on page 415 undefined on input line 29213.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login---color'
+  on page 415 undefined on input line 29218.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login-+toolchain'
+  on page 416 undefined on input line 29236.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login---config'
+  on page 416 undefined on input line 29243.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login--C'
+  on page 416 undefined on input line 29250.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login--h'
+  on page 416 undefined on input line 29269.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login---help'
+  on page 416 undefined on input line 29269.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-loginmd__option-cargo-login--Z'
+  on page 416 undefined on input line 29272.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout---registry'
+  on page 417 undefined on input line 29361.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout--v'
+  on page 418 undefined on input line 29374.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout---verbose'
+  on page 418 undefined on input line 29374.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout--q'
+  on page 418 undefined on input line 29380.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout---quiet'
+  on page 418 undefined on input line 29380.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout---color'
+  on page 418 undefined on input line 29385.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout-+toolchain'
+  on page 418 undefined on input line 29403.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout---config'
+  on page 418 undefined on input line 29410.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout--C'
+  on page 418 undefined on input line 29417.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout--h'
+  on page 419 undefined on input line 29436.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout---help'
+  on page 419 undefined on input line 29436.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-logoutmd__option-cargo-logout--Z'
+  on page 419 undefined on input line 29439.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner--a'
+  on page 420 undefined on input line 29524.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---add'
+  on page 420 undefined on input line 29524.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner--r'
+  on page 420 undefined on input line 29528.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---remove'
+  on page 420 undefined on input line 29528.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner--l'
+  on page 420 undefined on input line 29531.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---list'
+  on page 420 undefined on input line 29531.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---token'
+  on page 420 undefined on input line 29534.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---index'
+  on page 420 undefined on input line 29552.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---registry'
+  on page 420 undefined on input line 29555.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner--v'
+  on page 420 undefined on input line 29568.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---verbose'
+  on page 420 undefined on input line 29568.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner--q'
+  on page 420 undefined on input line 29574.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---quiet'
+  on page 420 undefined on input line 29574.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---color'
+  on page 420 undefined on input line 29579.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner-+toolchain'
+  on page 421 undefined on input line 29597.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---config'
+  on page 421 undefined on input line 29604.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner--C'
+  on page 421 undefined on input line 29611.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner--h'
+  on page 421 undefined on input line 29630.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner---help'
+  on page 421 undefined on input line 29630.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-ownermd__option-cargo-owner--Z'
+  on page 421 undefined on input line 29633.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package--l'
+  on page 423 undefined on input line 29785.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---list'
+  on page 423 undefined on input line 29785.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---no-verify'
+  on page 423 undefined on input line 29787.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---no-metadata'
+  on page 423 undefined on input line 29789.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---allow-dirty'
+  on page 423 undefined on input line 29792.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package--p'
+  on page 423 undefined on input line 29817.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---package'
+  on page 423 undefined on input line 29817.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---workspace'
+  on page 424 undefined on input line 29825.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---exclude'
+  on page 424 undefined on input line 29828.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---target'
+  on page 424 undefined on input line 29842.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---target-dir'
+  on page 424 undefined on input line 29863.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package--F'
+  on page 424 undefined on input line 29887.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---features'
+  on page 424 undefined on input line 29887.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---all-features'
+  on page 424 undefined on input line 29892.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---no-default-features'
+  on page 424 undefined on input line 29894.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---manifest-path'
+  on page 424 undefined on input line 29903.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---frozen'
+  on page 425 undefined on input line 29908.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---locked'
+  on page 425 undefined on input line 29908.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---offline'
+  on page 425 undefined on input line 29923.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package--j'
+  on page 425 undefined on input line 29949.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---jobs'
+  on page 425 undefined on input line 29949.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---keep-going'
+  on page 425 undefined on input line 29957.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package--v'
+  on page 425 undefined on input line 29976.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---verbose'
+  on page 425 undefined on input line 29976.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package--q'
+  on page 426 undefined on input line 29982.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---quiet'
+  on page 426 undefined on input line 29982.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---color'
+  on page 426 undefined on input line 29987.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package-+toolchain'
+  on page 426 undefined on input line 30005.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---config'
+  on page 426 undefined on input line 30012.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package--C'
+  on page 426 undefined on input line 30019.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package--h'
+  on page 426 undefined on input line 30038.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package---help'
+  on page 426 undefined on input line 30038.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-packagemd__option-cargo-package--Z'
+  on page 426 undefined on input line 30041.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---dry-run'
+  on page 428 undefined on input line 30135.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---token'
+  on page 428 undefined on input line 30138.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---no-verify'
+  on page 428 undefined on input line 30155.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---allow-dirty'
+  on page 428 undefined on input line 30157.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---index'
+  on page 428 undefined on input line 30160.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---registry'
+  on page 428 undefined on input line 30163.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish--p'
+  on page 428 undefined on input line 30187.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---package'
+  on page 428 undefined on input line 30187.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---target'
+  on page 428 undefined on input line 30198.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---target-dir'
+  on page 429 undefined on input line 30219.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish--F'
+  on page 429 undefined on input line 30243.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---features'
+  on page 429 undefined on input line 30243.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---all-features'
+  on page 429 undefined on input line 30248.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---no-default-features'
+  on page 429 undefined on input line 30250.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---manifest-path'
+  on page 429 undefined on input line 30259.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---frozen'
+  on page 429 undefined on input line 30264.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---locked'
+  on page 429 undefined on input line 30264.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---offline'
+  on page 429 undefined on input line 30279.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish--j'
+  on page 430 undefined on input line 30305.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---jobs'
+  on page 430 undefined on input line 30305.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---keep-going'
+  on page 430 undefined on input line 30313.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish--v'
+  on page 430 undefined on input line 30332.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---verbose'
+  on page 430 undefined on input line 30332.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish--q'
+  on page 430 undefined on input line 30338.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---quiet'
+  on page 430 undefined on input line 30338.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---color'
+  on page 430 undefined on input line 30343.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish-+toolchain'
+  on page 430 undefined on input line 30361.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---config'
+  on page 431 undefined on input line 30368.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish--C'
+  on page 431 undefined on input line 30375.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish--h'
+  on page 431 undefined on input line 30394.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish---help'
+  on page 431 undefined on input line 30394.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-publishmd__option-cargo-publish--Z'
+  on page 431 undefined on input line 30397.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---vers'
+  on page 433 undefined on input line 30543.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---version'
+  on page 433 undefined on input line 30543.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---undo'
+  on page 433 undefined on input line 30545.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---token'
+  on page 433 undefined on input line 30548.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---index'
+  on page 433 undefined on input line 30566.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---registry'
+  on page 433 undefined on input line 30569.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank--v'
+  on page 434 undefined on input line 30582.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---verbose'
+  on page 434 undefined on input line 30582.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank--q'
+  on page 434 undefined on input line 30588.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---quiet'
+  on page 434 undefined on input line 30588.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---color'
+  on page 434 undefined on input line 30593.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank-+toolchain'
+  on page 434 undefined on input line 30611.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---config'
+  on page 434 undefined on input line 30618.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank--C'
+  on page 434 undefined on input line 30625.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank--h'
+  on page 434 undefined on input line 30644.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank---help'
+  on page 434 undefined on input line 30644.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargo-yankmd__option-cargo-yank--Z'
+  on page 434 undefined on input line 30647.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
 

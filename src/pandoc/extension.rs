@@ -5,8 +5,11 @@ pub enum Extension {
     PipeTables,
     TaskLists,
     Attributes,
+    AutoIdentifiers,
     GfmAutoIdentifiers,
     RawAttribute,
+    DefinitionLists,
+    FencedDivs,
     // TODO: pandoc's `rebase_relative_paths` extension works for Markdown links and images,
     // but not for raw HTML links and images. Switch if/when pandoc supports HTML as well.
     /// Treat paths as relative to the chapter containing them
@@ -22,8 +25,11 @@ impl Extension {
             Extension::PipeTables => "pipe_tables",
             Extension::TaskLists => "task_lists",
             Extension::Attributes => "attributes",
+            Extension::AutoIdentifiers => "auto_identifiers",
             Extension::GfmAutoIdentifiers => "gfm_auto_identifiers",
             Extension::RawAttribute => "raw_attribute",
+            Extension::DefinitionLists => "definition_lists",
+            Extension::FencedDivs => "fenced_divs",
             Extension::RebaseRelativePaths => "rebase_relative_paths",
         }
     }
@@ -35,8 +41,11 @@ impl Extension {
             Extension::PipeTables => (0, 10, 0),
             Extension::TaskLists => (2, 6, 0),
             Extension::Attributes => (2, 10, 1),
+            Extension::AutoIdentifiers => (0, 10, 0),
             Extension::GfmAutoIdentifiers => (2, 0, 0),
             Extension::RawAttribute => (2, 10, 1),
+            Extension::DefinitionLists => (0, 10, 0),
+            Extension::FencedDivs => (2, 0, 0),
             Extension::RebaseRelativePaths => (2, 14, 0),
         };
         semver::VersionReq {

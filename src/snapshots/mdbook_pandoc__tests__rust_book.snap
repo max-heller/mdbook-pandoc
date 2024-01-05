@@ -38,16 +38,19 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'C - Derivable Traits': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch15-02-derefmd__following-the-pointer-to-the-value-with-the-dereference-operator'
-  on page 188 undefined on input line 10883.
+  on page 195 undefined on input line 10894.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__ch08-03-hash-mapsmd__siphash' on page 211
+  undefined on input line 11915.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch06-02-matchmd__the-match-control-flow-operator'
-  on page 589 undefined on input line 33735.
+  on page 599 undefined on input line 33761.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch13-01-closuresmd__moving-captured-values-out-of-the-closure-and-the-fn-traits'
-  on page 630 undefined on input line 36105.
+  on page 640 undefined on input line 36131.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch04-01-what-is-ownershipmd__ways-variables-and-data-interact-clone'
-  on page 680 undefined on input line 38922.
+  on page 690 undefined on input line 38945.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no 🚨 (U+1F6A8) (U+1F6A8) in font NotoSerif/B:mode=node;scri
 [WARNING] Missing character: There is no 👍 (U+1F44D) (U+1F44D) in font NotoSansMono:mode=node;scr
