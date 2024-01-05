@@ -7,6 +7,8 @@ pub enum Extension {
     Attributes,
     GfmAutoIdentifiers,
     RawAttribute,
+    DefinitionLists,
+    FencedDivs,
     // TODO: pandoc's `rebase_relative_paths` extension works for Markdown links and images,
     // but not for raw HTML links and images. Switch if/when pandoc supports HTML as well.
     /// Treat paths as relative to the chapter containing them
@@ -24,6 +26,8 @@ impl Extension {
             Extension::Attributes => "attributes",
             Extension::GfmAutoIdentifiers => "gfm_auto_identifiers",
             Extension::RawAttribute => "raw_attribute",
+            Extension::DefinitionLists => "definition_lists",
+            Extension::FencedDivs => "fenced_divs",
             Extension::RebaseRelativePaths => "rebase_relative_paths",
         }
     }
@@ -37,6 +41,8 @@ impl Extension {
             Extension::Attributes => (2, 10, 1),
             Extension::GfmAutoIdentifiers => (2, 0, 0),
             Extension::RawAttribute => (2, 10, 1),
+            Extension::DefinitionLists => (0, 10, 0),
+            Extension::FencedDivs => (2, 0, 0),
             Extension::RebaseRelativePaths => (2, 14, 0),
         };
         semver::VersionReq {

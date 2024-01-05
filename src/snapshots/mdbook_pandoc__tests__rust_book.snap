@@ -38,16 +38,22 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'C - Derivable Traits': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch15-02-derefmd__following-the-pointer-to-the-value-with-the-dereference-operator'
-  on page 181 undefined on input line 10865.
+  on page 186 undefined on input line 10876.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__ch08-02-stringsmd__concatenation-with-the--operator-or-the-format-macro'
+  on page 281 undefined on input line 16607.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__ch09-02-recoverable-errors-with-resultmd__a-shortcut-for-propagating-errors-the--operator'
+  on page 323 undefined on input line 19071.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch06-02-matchmd__the-match-control-flow-operator'
-  on page 566 undefined on input line 33717.
+  on page 575 undefined on input line 33748.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch13-01-closuresmd__moving-captured-values-out-of-the-closure-and-the-fn-traits'
-  on page 606 undefined on input line 36087.
+  on page 615 undefined on input line 36118.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch04-01-what-is-ownershipmd__ways-variables-and-data-interact-clone'
-  on page 654 undefined on input line 38904.
+  on page 663 undefined on input line 38932.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no 🚨 (U+1F6A8) (U+1F6A8) in font [lmroman10-bold]:+tlig;!
 [WARNING] Missing character: There is no 👍 (U+1F44D) (U+1F44D) in font SourceCodePro:mode=node;sc
