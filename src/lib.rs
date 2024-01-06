@@ -480,7 +480,9 @@ mod tests {
                 toc_depth: None,
                 variables: FromIterator::from_iter([
                     ("documentclass".into(), "report".into()),
-                    ("monofont".into(), "Source Code Pro".into()),
+                    ("mainfont".into(), "Noto Serif".into()),
+                    ("sansfont".into(), "Noto Sans".into()),
+                    ("monofont".into(), "Noto Sans Mono".into()),
                 ]),
                 rest: Default::default(),
             }
