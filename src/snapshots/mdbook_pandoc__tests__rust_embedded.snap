@@ -5,41 +5,41 @@ expression: logs
  INFO mdbook::book: Running the pandoc backend    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__namingmd__c-crate-name'
-  on page 95 undefined on input line 5763.
+  on page 97 undefined on input line 5765.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__interoperabilitymd__c-free'
-  on page 95 undefined on input line 5773.
+  on page 97 undefined on input line 5775.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__interoperabilitymd__c-reexport-pac'
-  on page 95 undefined on input line 5776.
+  on page 97 undefined on input line 5778.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__interoperabilitymd__c-hal-traits'
-  on page 95 undefined on input line 5779.
+  on page 97 undefined on input line 5781.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__predictabilitymd__c-ctor'
-  on page 95 undefined on input line 5789.
+  on page 97 undefined on input line 5791.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__gpiomd__c-zst-pin' on
-  page 95 undefined on input line 5799.
+  page 97 undefined on input line 5801.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__gpiomd__c-erased-pin'
-  on page 95 undefined on input line 5802.
+  on page 98 undefined on input line 5804.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__gpiomd__c-pin-state'
-  on page 95 undefined on input line 5805.
+  on page 98 undefined on input line 5807.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
-[WARNING] Missing character: There is no 🦀 (U+1F980) (U+1F980) in font [lmroman10-regular]:+tlig;
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no 🦀 (U+1F980) (U+1F980) in font NotoSerif:mode=node;script
+[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
 

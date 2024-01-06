@@ -23,251 +23,215 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__ice' on page
-  26 undefined on input line 1326.
+  27 undefined on input line 1328.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__conventionsmd__formatting' on page
-  40 undefined on input line 2347.
+  43 undefined on input line 2349.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__tests__addingmd__explanatory_comment'
-  on page 50 undefined on input line 3156.
+  on page 54 undefined on input line 3158.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__building__how-to-build-and-runmd__toolchain'
-  on page 99 undefined on input line 6540.
+  on page 106 undefined on input line 6542.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__gitmd__conflicts' on page 124
-  undefined on input line 8184.
+  `book__pandoc__pdf__src__gitmd__conflicts' on page 134
+  undefined on input line 8186.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__walkthroughmd__impl' on page 137
-  undefined on input line 8798.
+  `book__pandoc__pdf__src__walkthroughmd__impl' on page 147
+  undefined on input line 8800.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__conventionsmd__formatting' on page
-  155 undefined on input line 9782.
+  165 undefined on input line 9784.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__cc' on page 155
-  undefined on input line 9784.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__cio' on page 155
+  `book__pandoc__pdf__src__conventionsmd__cc' on page 165
   undefined on input line 9786.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__er' on page 155
+  `book__pandoc__pdf__src__conventionsmd__cio' on page 165
   undefined on input line 9788.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__notification-groups__aboutmd__join'
-  on page 178 undefined on input line 10754.
+  `book__pandoc__pdf__src__conventionsmd__er' on page 165
+  undefined on input line 9790.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__notification-groups__aboutmd__join'
-  on page 178 undefined on input line 10759.
+  on page 189 undefined on input line 10756.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pandoc__pdf__src__notification-groups__aboutmd__join'
+  on page 189 undefined on input line 10761.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__intrinsic' on
-  page 203 undefined on input line 12298.
+  page 215 undefined on input line 12300.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__queries__incremental-compilationmd__dag'
-  on page 219 undefined on input line 13422.
+  on page 233 undefined on input line 13424.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__querymd__adding-a-new-kind-of-query'
-  on page 229 undefined on input line 14010.
+  on page 243 undefined on input line 14012.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__generic_argumentsmd__GenericArgs'
-  on page 239 undefined on input line 14627.
+  on page 254 undefined on input line 14629.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  page 297 undefined on input line 18070.
+  page 314 undefined on input line 18072.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  page 297 undefined on input line 18098.
+  page 314 undefined on input line 18100.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__mir__indexmd__promoted' on page 300
-  undefined on input line 18333.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
-  page 301 undefined on input line 18346.
+  `book__pandoc__pdf__src__mir__indexmd__promoted' on page 318
+  undefined on input line 18335.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
-  page 301 undefined on input line 18356.
+  page 318 undefined on input line 18348.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
-  page 301 undefined on input line 18376.
+  page 318 undefined on input line 18358.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
+  page 318 undefined on input line 18378.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__placeholder'
-  on page 360 undefined on input line 22085.
+  on page 382 undefined on input line 22087.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__variancemd__addendum' on page 396
-  undefined on input line 24803.
+  `book__pandoc__pdf__src__variancemd__addendum' on page 420
+  undefined on input line 24805.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__opaque-types-impl-trait-inferencemd__Within-the-type_of-query'
-  on page 403 undefined on input line 25349.
+  on page 428 undefined on input line 25351.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__region' on
-  page 431 undefined on input line 26822.
+  page 457 undefined on input line 26824.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__inf-var' on
-  page 431 undefined on input line 26825.
+  page 457 undefined on input line 26827.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__dataflow'
-  on page 431 undefined on input line 26829.
+  on page 457 undefined on input line 26831.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 439 undefined on input line 27421.
+  on page 465 undefined on input line 27423.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__point' on
-  page 443 undefined on input line 27823.
+  page 470 undefined on input line 27825.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__borrow_check__region_inference__member_constraintsmd__collecting'
-  on page 451 undefined on input line 28388.
+  on page 478 undefined on input line 28390.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__quantified'
-  on page 452 undefined on input line 28492.
+  on page 480 undefined on input line 28494.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__variance'
-  on page 452 undefined on input line 28514.
+  on page 480 undefined on input line 28516.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 453 undefined on input line 28564.
+  on page 480 undefined on input line 28566.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__diagnosticsmd__future-incompatible'
-  on page 468 undefined on input line 29517.
+  on page 495 undefined on input line 29519.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__mono' on page
-  506 undefined on input line 32190.
+  536 undefined on input line 32192.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__def-id' on
-  page 506 undefined on input line 32204.
+  page 536 undefined on input line 32206.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__codegen-unit'
-  on page 519 undefined on input line 32928.
+  on page 549 undefined on input line 32930.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  page 572 undefined on input line 36232.
+  page 606 undefined on input line 36234.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 578 undefined on input line 36590.
+  on page 612 undefined on input line 36592.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 578 undefined on input line 36600.
+  on page 612 undefined on input line 36602.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  page 578 undefined on input line 36614.
+  page 612 undefined on input line 36616.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__TyCtxt' on
-  page 578 undefined on input line 36622.
+  page 612 undefined on input line 36624.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__cx' on page
-  578 undefined on input line 36623.
+  612 undefined on input line 36625.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__tcx' on page
-  578 undefined on input line 36624.
+  612 undefined on input line 36626.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__dataflow'
-  on page 578 undefined on input line 36632.
+  on page 612 undefined on input line 36634.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__what-is-a-debruijn-index'
-  on page 578 undefined on input line 36637.
+  on page 612 undefined on input line 36639.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__variant-idx'
-  on page 578 undefined on input line 36648.
+  on page 612 undefined on input line 36650.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__tag' on page
-  578 undefined on input line 36650.
+  612 undefined on input line 36652.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 578 undefined on input line 36682.
+  on page 612 undefined on input line 36684.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__tag' on page
-  578 undefined on input line 36797.
+  612 undefined on input line 36799.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__traits__goals-and-clausesmd__trait-ref'
-  on page 578 undefined on input line 36827.
+  on page 612 undefined on input line 36829.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__mir__indexmd__promoted' on page 578
-  undefined on input line 36830.
+  `book__pandoc__pdf__src__mir__indexmd__promoted' on page 612
+  undefined on input line 36832.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__quantified'
-  on page 578 undefined on input line 36838.
+  on page 612 undefined on input line 36840.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__discriminant'
-  on page 578 undefined on input line 36893.
+  on page 612 undefined on input line 36895.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__niche' on
-  page 578 undefined on input line 36896.
+  page 612 undefined on input line 36898.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__traits__goals-and-clausesmd__trait-ref'
-  on page 578 undefined on input line 36920.
+  on page 612 undefined on input line 36922.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__tcx' on page
-  578 undefined on input line 36928.
+  612 undefined on input line 36930.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__variance'
-  on page 578 undefined on input line 36947.
+  on page 612 undefined on input line 36949.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__discriminant'
-  on page 578 undefined on input line 36953.
+  on page 612 undefined on input line 36955.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on page 581
-  undefined on input line 36983.
+  `book__pandoc__pdf__src__hirmd__hir-id' on page 615
+  undefined on input line 36985.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on page 581
-  undefined on input line 36999.
+  `book__pandoc__pdf__src__hirmd__hir-id' on page 615
+  undefined on input line 37001.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on page 581
-  undefined on input line 37011.
+  `book__pandoc__pdf__src__hirmd__hir-id' on page 615
+  undefined on input line 37013.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on page 581
-  undefined on input line 37016.
+  `book__pandoc__pdf__src__hirmd__hir-id' on page 615
+  undefined on input line 37018.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no   (U+2003) (U+2003) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ‒ (U+2012) (U+2012) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font [lmroman10-bold]:+tlig;!
-[WARNING] Missing character: There is no ⊇ (U+2287) (U+2287) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font SourceCodePro:mode=node;scri
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font SourceCodePro:mode=node;scri
-[WARNING] Missing character: There is no ∀ (U+2200) (U+2200) in font [lmroman10-regular]:+tlig;!
-[WARNING] Missing character: There is no ∃ (U+2203) (U+2203) in font [lmroman10-regular]:+tlig;!
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
+[WARNING] Missing character: There is no ⊇ (U+2287) (U+2287) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSansMono:mode=node;scrip
+[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSansMono:mode=node;scrip
+[WARNING] Missing character: There is no ∀ (U+2200) (U+2200) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ∃ (U+2203) (U+2203) in font NotoSerif:mode=node;script=l
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pandoc/pdf/book.pdf    
 
