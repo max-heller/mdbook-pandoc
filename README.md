@@ -44,7 +44,7 @@ To generate other output formats, see [Configuration](#configuration).
 title = "My First Book"
 
 + [output.pandoc.profile.pdf]
-+ output = "output.pdf"
++ output-file = "output.pdf"
 + to = "latex"
 ```
 
@@ -54,10 +54,10 @@ Running `mdbook build` will write the rendered book to `pdf/output.pdf` in `mdbo
 
 Since `mdbook-pandoc` supports many different output formats through `pandoc`, it must be configured to render to one or more formats through the `[output.pandoc]` table in a book's `book.toml` file.
 
-Configuration is centered around *output profiles*, named sets of arguments that `mdbook-pandoc` passes to `pandoc` to render a book in a particular format.
+Configuration is centered around *output profiles*, named packages of options that `mdbook-pandoc` passes to `pandoc` as a [*defaults file*](https://pandoc.org/MANUAL.html#defaults-files) to render a book in a particular format.
 The output for each profile is written to a subdirectory with the same name as the profile under `mdbook-pandoc`'s top-level [build directory](https://rust-lang.github.io/mdBook/format/configuration/renderers.html#output-tables) (`book/pandoc` if multiple renderers are configured; `book` otherwise).
 
-The available settings are described below:
+A subset of the available options are described below:
 
 > **Note:** Pandoc is run from the book's root directory (the directory containing `book.toml`).
 > Therefore, relative paths in the configuration (e.g. values for `include-in-header`, `reference-doc`) should be written relative to the book's root directory.
@@ -65,23 +65,23 @@ The available settings are described below:
 ```toml
 [output.pandoc]
 
-[output.pandoc.profile.<name>] # set of arguments to pass to `pandoc` (see https://pandoc.org/MANUAL.html)
-output = "output.pdf" # output file (within the profile's build directory)
+[output.pandoc.profile.<name>] # options to pass to Pandoc (see https://pandoc.org/MANUAL.html#defaults-files)
+output-file = "output.pdf" # output file (within the profile's build directory)
 to = "latex" # output format
 
 # PDF-specific settings
 pdf-engine = "pdflatex" # engine to use to produce PDF output
 
-# The following settings have sane defaults and should usually not need to be overridden
-columns = 72 # line length in characters
+# `mdbook-pandoc` overrides Pandoc's defaults for the following options to better support mdBooks
 file-scope = true # parse each file individually before combining
 number-sections = true # number sections headings
 standalone = true # produce output with an appropriate header and footer
 table-of-contents = true # include an automatically generated table of contents
-toc-depth = 3 # number of section levels to include in table of contents
 
-# Arbitrary other arguments to pass directly to `pandoc`...
+# Arbitrary other Pandoc options can be specified as they would be in a Pandoc defaults file
+# (see https://pandoc.org/MANUAL.html#defaults-files) but written in TOML instead of YAML...
 
+# For example, to pass variables (https://pandoc.org/MANUAL.html#variables):
 [output.pandoc.profile.<name>.variables]
 # Set the pandoc variable named 'variable-name' to 'value'
 variable-name = "value"

@@ -449,15 +449,13 @@ mod tests {
     impl pandoc::Profile {
         fn latex() -> Self {
             Self {
-                columns: None,
                 file_scope: true,
                 number_sections: true,
-                output: PathBuf::from("output.tex"),
+                output_file: PathBuf::from("output.tex"),
                 pdf_engine: None,
                 standalone: false,
                 to: Some("latex".into()),
                 table_of_contents: true,
-                toc_depth: None,
                 variables: FromIterator::from_iter([("documentclass".into(), "report".into())]),
                 rest: Default::default(),
             }
@@ -465,10 +463,9 @@ mod tests {
 
         fn pdf() -> Self {
             Self {
-                columns: None,
                 file_scope: true,
                 number_sections: true,
-                output: "book.pdf".into(),
+                output_file: "book.pdf".into(),
                 pdf_engine: Some(
                     env::var_os("PDF_ENGINE")
                         .map(Into::into)
@@ -477,7 +474,6 @@ mod tests {
                 standalone: true,
                 to: Some("latex".into()),
                 table_of_contents: true,
-                toc_depth: None,
                 variables: FromIterator::from_iter([
                     ("documentclass".into(), "report".into()),
                     ("mainfont".into(), "Noto Serif".into()),
@@ -490,15 +486,13 @@ mod tests {
 
         fn markdown() -> Self {
             Self {
-                columns: None,
                 file_scope: true,
                 number_sections: true,
-                output: PathBuf::from("book.md"),
+                output_file: PathBuf::from("book.md"),
                 pdf_engine: None,
                 standalone: false,
                 to: Some("markdown".into()),
                 table_of_contents: true,
-                toc_depth: None,
                 variables: Default::default(),
                 rest: Default::default(),
             }
@@ -832,9 +826,9 @@ fn main() {}
     fn raw_opts() {
         let cfg = r#"
 [output.pandoc.profile.test]
-output = "/dev/null"
+output-file = "/dev/null"
 to = "markdown"
-verbose = true
+verbosity = "INFO"
 fail-if-warnings = false
 
 resource-path = [
@@ -860,7 +854,7 @@ colorlinks = false
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
         │  INFO mdbook::book: Running the pandoc backend    
-        │ DEBUG mdbook_pandoc::pandoc::renderer: Running: pandoc -f commonmark+gfm_auto_identifiers -o /dev/null -t markdown --file-scope -N -s --toc -V header-includes=text1 -V header-includes=text2 -V indent --resource-path=really-long-path --resource-path=really-long-path2 --verbose    
+        │ DEBUG mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null    
         "###)
     }
@@ -869,7 +863,7 @@ colorlinks = false
     fn redirects() {
         let cfg = r#"
 [output.pandoc.profile.test]
-output = "/dev/null"
+output-file = "/dev/null"
 to = "markdown"
 
 [output.html.redirect]
@@ -893,7 +887,7 @@ to = "markdown"
         │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /new-bar.html => new-new-bar.html    
         │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/foo/bar.html => book/test/src/new-bar.html    
         │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/new-bar.html => book/test/src/new-new-bar.md    
-        │ DEBUG mdbook_pandoc::pandoc::renderer: Running: pandoc book/test/src/index.md book/test/src/new-new-bar.md -f commonmark+gfm_auto_identifiers -o /dev/null -t markdown --file-scope -N -s --toc    
+        │ DEBUG mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null    
         ├─ test/src/foo/bar.html
         ├─ test/src/index.md
@@ -932,7 +926,7 @@ to = "markdown"
     fn pandoc_working_dir_is_root() {
         let cfg = r#"
 [output.pandoc.profile.foo]
-output = "foo.md"
+output-file = "foo.md"
 include-in-header = ["file-in-root"]
         "#;
         let book = MDBook::init()
