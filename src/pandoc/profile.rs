@@ -7,19 +7,17 @@ use super::OutputFormat;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct Profile {
-    pub columns: Option<u16>,
     #[serde(default = "defaults::enabled")]
     pub file_scope: bool,
     #[serde(default = "defaults::enabled")]
     pub number_sections: bool,
-    pub output: PathBuf,
+    pub output_file: PathBuf,
     pub pdf_engine: Option<PathBuf>,
     #[serde(default = "defaults::enabled")]
     pub standalone: bool,
     pub to: Option<String>,
     #[serde(default = "defaults::enabled")]
     pub table_of_contents: bool,
-    pub toc_depth: Option<u8>,
     #[serde(default)]
     pub variables: BTreeMap<String, toml::Value>,
     #[serde(flatten)]
@@ -81,7 +79,7 @@ impl Profile {
                 None => true,
             }
         };
-        match (self.to.as_deref(), self.output.extension()) {
+        match (self.to.as_deref(), self.output_file.extension()) {
             (Some("latex"), _) => true,
             (Some("pdf"), _) => pdf_engine_is_latex(),
             (Some(_), _) => false,

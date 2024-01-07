@@ -1,12 +1,12 @@
 use std::{
-    borrow::Cow,
-    fmt::{self, Write},
-    fs,
+    fmt::Write,
+    fs, mem,
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
 
 use anyhow::Context as _;
+use tempfile::NamedTempFile;
 
 use crate::{
     book::Book,
@@ -54,28 +54,14 @@ impl Renderer {
         self
     }
 
-    pub fn render(self, profile: Profile, ctx: &mut Context) -> anyhow::Result<()> {
-        let Profile {
-            columns,
-            file_scope,
-            number_sections,
-            output,
-            pdf_engine,
-            standalone,
-            to,
-            table_of_contents,
-            toc_depth,
-            rest,
-            mut variables,
-        } = profile;
-
+    pub fn render(self, mut profile: Profile, ctx: &mut Context) -> anyhow::Result<()> {
         let mut pandoc = self.pandoc;
 
-        let outfile = {
+        profile.output_file = {
             fs::create_dir_all(&ctx.destination).with_context(|| {
                 format!("Unable to create directory: {}", ctx.destination.display())
             })?;
-            ctx.destination.join(output)
+            ctx.destination.join(&profile.output_file)
         };
 
         let format = {
@@ -96,30 +82,20 @@ impl Renderer {
             }
             format
         };
+        pandoc.args(["-f", &format]);
 
-        pandoc
-            .args(["-f", &format])
-            .arg("-o")
-            .arg(&outfile)
-            .args(to.iter().flat_map(|to| ["-t", to]))
-            .args(file_scope.then_some("--file-scope"))
-            .args(number_sections.then_some("-N"))
-            .args(standalone.then_some("-s"))
-            .args(table_of_contents.then_some("--toc"));
-
-        if let Some(columns) = columns {
-            pandoc.arg("--columns").arg(format!("{columns}"));
+        let default_variables = match ctx.output {
+            OutputFormat::Latex { .. } => [("documentclass", "report")].as_slice(),
+            OutputFormat::Other => [].as_slice(),
+        };
+        for &(key, val) in default_variables {
+            if !profile.variables.contains_key(key) {
+                profile.variables.insert(key.into(), val.into());
+            }
         }
 
-        if let Some(engine) = pdf_engine {
-            pandoc.arg("--pdf-engine").arg(engine);
-        }
-
-        if let Some(depth) = toc_depth {
-            pandoc.arg("--toc-depth").arg(format!("{depth}"));
-        }
-
-        let mut additional_variables: Vec<(_, Cow<str>)> = vec![];
+        // Additional items to include in array-valued variables
+        let mut additional_variables = vec![];
         match &mut ctx.output {
             OutputFormat::Latex { packages } => {
                 // https://www.overleaf.com/learn/latex/Lists#Lists_for_lawyers:_nesting_lists_to_an_arbitrary_depth
@@ -160,7 +136,7 @@ impl Renderer {
                         )
                         .unwrap();
                     }
-                    additional_variables.push(("include-before", include_before.into()))
+                    additional_variables.push(("include-before", include_before))
                 }
 
                 let include_packages = packages
@@ -168,72 +144,42 @@ impl Renderer {
                     .map(|package| format!(r"\usepackage{{{}}}", package.name()))
                     .collect::<Vec<_>>()
                     .join("\n");
-                additional_variables.push(("header-includes", include_packages.into()));
+                additional_variables.push(("header-includes", include_packages));
             }
             OutputFormat::Other => {}
         };
-        for (key, val) in additional_variables {
-            pandoc.arg("-V").arg(format!("{key}={val}"));
+        // Prepend additional variables to existing variables
+        for (key, val) in additional_variables.into_iter().rev() {
+            match profile.variables.get_mut(key) {
+                None => {
+                    profile.variables.insert(key.into(), val.into());
+                }
+                Some(toml::Value::Array(arr)) => arr.insert(0, val.into()),
+                Some(existing) => {
+                    *existing = {
+                        let existing = mem::replace(existing, toml::Value::Array(vec![]));
+                        toml::Value::Array(vec![val.into(), existing])
+                    };
+                }
+            }
         }
 
-        let default_variables = match ctx.output {
-            OutputFormat::Latex { .. } => [("documentclass", "report")].as_slice(),
-            OutputFormat::Other => [].as_slice(),
+        let defaults_file = {
+            let mut file = NamedTempFile::new()?;
+            serde_yaml::to_writer(&mut file, &profile)?;
+            file
         };
-        for &(key, val) in default_variables {
-            if !variables.contains_key(key) {
-                variables.insert(key.into(), val.into());
-            }
-        }
+        pandoc.arg("-d").arg(defaults_file.path());
 
-        fn for_each_key_val(key: String, val: toml::Value, mut f: impl FnMut(fmt::Arguments)) {
-            let mut f = |val| match val {
-                toml::Value::Boolean(true) => f(format_args!("{key}")),
-                toml::Value::Boolean(false) => {}
-                toml::Value::String(val) => f(format_args!("{key}={val}")),
-                val => f(format_args!("{key}={val}")),
-            };
-            match val {
-                toml::Value::Array(vals) => {
-                    for val in vals {
-                        f(val)
-                    }
-                }
-                val => f(val),
-            }
-        }
-
-        for (key, val) in variables {
-            for_each_key_val(key, val, |arg| {
-                pandoc.arg("-V").arg(arg.to_string());
-            })
-        }
-
-        for (key, val) in rest {
-            for_each_key_val(key, val, |arg| {
-                pandoc.arg(format!("--{arg}"));
-            })
-        }
-
-        struct DisplayCommand<'a>(&'a Command);
-        impl fmt::Display for DisplayCommand<'_> {
-            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-                write!(f, "{}", self.0.get_program().to_string_lossy())?;
-                for arg in self.0.get_args() {
-                    write!(f, " {}", arg.to_string_lossy())?;
-                }
-                Ok(())
-            }
-        }
-        log::debug!("Running: {}", DisplayCommand(&pandoc));
-
+        log::debug!("Running pandoc");
         let status = pandoc
             .stdin(Stdio::null())
             .status()
             .context("Unable to run `pandoc`")?;
         anyhow::ensure!(status.success(), "pandoc exited unsuccessfully");
 
-        let outfile = outfile.strip_prefix(&ctx.book.root).unwrap_or(&outfile);
+        let outfile = &profile.output_file;
+        let outfile = outfile.strip_prefix(&ctx.book.root).unwrap_or(outfile);
         log::info!("Wrote output to {}", outfile.display());
 
         Ok(())
