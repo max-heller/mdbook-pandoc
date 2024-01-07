@@ -88,16 +88,30 @@ impl Renderer {
         let mut default_variables = vec![];
         match ctx.output {
             OutputFormat::Latex { .. } => {
-                default_variables.push(("documentclass", "report"));
-                if let Some(language) = &ctx.mdbook_cfg.book.language {
-                    default_variables.push(("lang", language));
+                default_variables.push(("documentclass", "report".into()));
+                if let Some(title) = ctx.mdbook_cfg.book.title.as_deref() {
+                    default_variables.push(("title", title.into()));
+                }
+                if let Some(description) = ctx.mdbook_cfg.book.description.as_deref() {
+                    default_variables.push(("description", description.into()));
+                }
+                default_variables.push(("author", ctx.mdbook_cfg.book.authors.clone().into()));
+                if let Some(language) = ctx.mdbook_cfg.book.language.as_deref() {
+                    default_variables.push(("lang", language.into()));
+                }
+                if let Some(text_direction) = ctx.mdbook_cfg.book.text_direction {
+                    let dir = match text_direction {
+                        mdbook::config::TextDirection::LeftToRight => "ltr",
+                        mdbook::config::TextDirection::RightToLeft => "rtl",
+                    };
+                    default_variables.push(("dir", dir.into()));
                 }
             }
             OutputFormat::Other => {}
         };
         for (key, val) in default_variables {
             if !profile.variables.contains_key(key) {
-                profile.variables.insert(key.into(), val.into());
+                profile.variables.insert(key.into(), val);
             }
         }
 
