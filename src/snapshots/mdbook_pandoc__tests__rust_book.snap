@@ -38,16 +38,16 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'C - Derivable Traits': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch15-02-derefmd__following-the-pointer-to-the-value-with-the-dereference-operator'
-  on page 188 undefined on input line 10867.
+  on page 188 undefined on input line 10881.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch06-02-matchmd__the-match-control-flow-operator'
-  on page 589 undefined on input line 33719.
+  on page 589 undefined on input line 33733.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch13-01-closuresmd__moving-captured-values-out-of-the-closure-and-the-fn-traits'
-  on page 630 undefined on input line 36089.
+  on page 630 undefined on input line 36103.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch04-01-what-is-ownershipmd__ways-variables-and-data-interact-clone'
-  on page 680 undefined on input line 38906.
+  on page 680 undefined on input line 38920.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no 🚨 (U+1F6A8) (U+1F6A8) in font NotoSerif/B:mode=node;scri
 [WARNING] Missing character: There is no 👍 (U+1F44D) (U+1F44D) in font NotoSansMono:mode=node;scr

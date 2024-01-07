@@ -166,10 +166,10 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/attributes/codegen.html#the-target_feature-attribute' in chapter 'Appendix: Glossary': Unable to canonicalize path: $ROOT/src/appendix/../../reference/attributes/codegen.html: No such file or directory (os error 2)    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__commands__cargomd__option-cargo---offline'
-  on page 277 undefined on input line 19224.
+  on page 277 undefined on input line 19238.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__commands__cargo-buildmd__option-cargo-build---keep-going'
-  on page 281 undefined on input line 19461.
+  on page 281 undefined on input line 19475.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
 
