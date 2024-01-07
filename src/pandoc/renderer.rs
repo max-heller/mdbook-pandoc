@@ -23,6 +23,7 @@ pub struct Context<'book> {
     pub pandoc: pandoc::Context,
     pub destination: PathBuf,
     pub book: &'book Book<'book>,
+    pub mdbook_cfg: &'book mdbook::Config,
     pub cur_list_depth: usize,
     pub max_list_depth: usize,
 }
@@ -84,11 +85,17 @@ impl Renderer {
         };
         pandoc.args(["-f", &format]);
 
-        let default_variables = match ctx.output {
-            OutputFormat::Latex { .. } => [("documentclass", "report")].as_slice(),
-            OutputFormat::Other => [].as_slice(),
+        let mut default_variables = vec![];
+        match ctx.output {
+            OutputFormat::Latex { .. } => {
+                default_variables.push(("documentclass", "report"));
+                if let Some(language) = &ctx.mdbook_cfg.book.language {
+                    default_variables.push(("lang", language));
+                }
+            }
+            OutputFormat::Other => {}
         };
-        for &(key, val) in default_variables {
+        for (key, val) in default_variables {
             if !profile.variables.contains_key(key) {
                 profile.variables.insert(key.into(), val.into());
             }
