@@ -141,7 +141,7 @@ PDFs are rendered with LaTeX ([xelatex](https://en.wikipedia.org/wiki/XeTeX)).
 
 - When `mdbook-pandoc` was initially written, existing `mdbook` LaTeX backends ([`mdbook-latex`](https://crates.io/crates/mdbook-latex), [`mdbook-tectonic`](https://crates.io/crates/mdbook-tectonic)) were not mature enough to render much besides the simplest books due to hand-rolling the markdown->LaTeX conversion step.
   `mdbook-pandoc`, on the other hand, outsources this difficult step to pandoc, inheriting its maturity and configurability. 
-- "Print to PDF"-based backends like [`mdbook-pdf`](https://crates.io/crates/mdbook-latex) are more mature, but produce less aesthetically-pleasing PDFs.
+- "Print to PDF"-based backends like [`mdbook-pdf`](https://crates.io/crates/mdbook-pdf) are more mature, but produce less aesthetically-pleasing PDFs.
   Additionally, `mdbook-pdf` does not support intra-document links or generating a table of contents without using a [forked version of mdbook](https://github.com/rust-lang/mdBook/pull/1738).
 
 #### Rendering to other formats
