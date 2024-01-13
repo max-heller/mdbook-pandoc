@@ -196,46 +196,46 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../alloc/alloc/trait.GlobalAlloc.html' in chapter 'The Rust runtime': Unable to canonicalize path: $ROOT/src/../alloc/alloc/trait.GlobalAlloc.html: No such file or directory (os error 2)    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__type-layoutmd__the-default-representation'
-  on page 84 undefined on input line 5417.
+  on page 84 undefined on input line 5418.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__items__enumerationsmd__unit-only-enum' on
-  page 84 undefined on input line 5436.
+  page 84 undefined on input line 5437.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__items__enumerationsmd__unit-only-enum' on
-  page 85 undefined on input line 5532.
+  page 85 undefined on input line 5533.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__items__enumerationsmd__field-less-enum' on
-  page 85 undefined on input line 5553.
+  page 85 undefined on input line 5554.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__statementsmd__let-else-restriction' on page
-  159 undefined on input line 10699.
+  159 undefined on input line 10700.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__items__enumerationsmd__unit-only-enum' on
-  page 185 undefined on input line 12670.
+  page 185 undefined on input line 12671.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__items__enumerationsmd__field-less-enum' on
-  page 185 undefined on input line 12673.
+  page 185 undefined on input line 12674.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__type-layoutmd__the-rust-representation' on
-  page 262 undefined on input line 18031.
+  page 262 undefined on input line 18032.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__type-layoutmd__the-rust-representation' on
-  page 262 undefined on input line 18062.
+  page 262 undefined on input line 18063.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__items__enumerationsmd__field-less-enum' on
-  page 266 undefined on input line 18293.
+  page 266 undefined on input line 18294.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__items__enumerationsmd__field-less-enum' on
-  page 266 undefined on input line 18306.
+  page 266 undefined on input line 18307.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__items__enumerationsmd__field-less-enum' on
-  page 266 undefined on input line 18311.
+  page 266 undefined on input line 18312.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__items__enumerationsmd__field-less-enum' on
-  page 268 undefined on input line 18419.
+  page 268 undefined on input line 18420.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__type-layoutmd__the-rust-representation' on
-  page 271 undefined on input line 18594.
+  page 271 undefined on input line 18595.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no 東 (U+6771) (U+6771) in font NotoSansMono:mode=node;scrip
 [WARNING] Missing character: There is no 京 (U+4EAC) (U+4EAC) in font NotoSansMono:mode=node;scrip

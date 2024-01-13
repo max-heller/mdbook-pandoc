@@ -363,48 +363,6 @@ impl<'book> Preprocessor<'book> {
         })
     }
 
-    fn update_heading<'b>(
-        &mut self,
-        chapter: &Chapter,
-        level: HeadingLevel,
-        id: Option<&'b str>,
-        mut classes: Vec<&'b str>,
-    ) -> Option<(HeadingLevel, Option<&'b str>, Vec<&'b str>)> {
-        const PANDOC_UNNUMBERED_CLASS: &str = "unnumbered";
-        const PANDOC_UNLISTED_CLASS: &str = "unlisted";
-
-        if level != HeadingLevel::H1
-            && (self.ctx.pandoc)
-                .enable_extension(pandoc::Extension::Attributes)
-                .is_available()
-        {
-            classes.push(PANDOC_UNNUMBERED_CLASS);
-            classes.push(PANDOC_UNLISTED_CLASS);
-        }
-
-        let shift_smaller = |level| {
-            use HeadingLevel::*;
-            match level {
-                H1 => Some(H2),
-                H2 => Some(H3),
-                H3 => Some(H4),
-                H4 => Some(H5),
-                H5 => Some(H6),
-                H6 => None,
-            }
-        };
-        let Some(level) = iter::successors(Some(level), |level| shift_smaller(*level))
-            .nth(chapter.parent_names.len())
-        else {
-            log::warn!(
-                "Heading (level {level}) converted to paragraph in chapter: {}",
-                chapter.name
-            );
-            return None;
-        };
-        Some((level, id, classes))
-    }
-
     fn make_kebab_case(s: &str) -> String {
         const SEPARATORS: &[char] = &['_', '/', '.', '&', '?', '='];
         s
@@ -487,6 +445,7 @@ struct PreprocessChapter<'book, 'preprocessor> {
     chapter: &'book Chapter,
     parser: Peekable<pulldown_cmark::Parser<'book, 'book>>,
     start_tags: Vec<pulldown_cmark::Tag<'book>>,
+    encountered_h1: bool,
 }
 
 impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
@@ -509,7 +468,59 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             chapter,
             parser: pulldown_cmark::Parser::new_ext(&chapter.content, PARSER_OPTIONS).peekable(),
             start_tags: Default::default(),
+            encountered_h1: false,
         }
+    }
+
+    fn update_heading<'b>(
+        &mut self,
+        level: HeadingLevel,
+        id: Option<&'b str>,
+        mut classes: Vec<&'b str>,
+    ) -> Option<(HeadingLevel, Option<&'b str>, Vec<&'b str>)> {
+        const PANDOC_UNNUMBERED_CLASS: &str = "unnumbered";
+        const PANDOC_UNLISTED_CLASS: &str = "unlisted";
+
+        if (self.preprocessor.ctx.pandoc)
+            .enable_extension(pandoc::Extension::Attributes)
+            .is_available()
+        {
+            if let HeadingLevel::H1 = level {
+                // Number the first H1 in each numbered chapter, mirroring mdBook
+                if self.encountered_h1 {
+                    classes.push(PANDOC_UNNUMBERED_CLASS);
+                    classes.push(PANDOC_UNLISTED_CLASS);
+                } else if self.chapter.number.is_none() {
+                    classes.push(PANDOC_UNNUMBERED_CLASS);
+                }
+                self.encountered_h1 = true;
+            } else {
+                classes.push(PANDOC_UNNUMBERED_CLASS);
+                classes.push(PANDOC_UNLISTED_CLASS);
+            }
+        }
+
+        let shift_smaller = |level| {
+            use HeadingLevel::*;
+            match level {
+                H1 => Some(H2),
+                H2 => Some(H3),
+                H3 => Some(H4),
+                H4 => Some(H5),
+                H5 => Some(H6),
+                H6 => None,
+            }
+        };
+        let Some(level) = iter::successors(Some(level), |level| shift_smaller(*level))
+            .nth(self.chapter.parent_names.len())
+        else {
+            log::warn!(
+                "Heading (level {level}) converted to paragraph in chapter: {}",
+                self.chapter.name
+            );
+            return None;
+        };
+        Some((level, id, classes))
     }
 }
 
@@ -549,8 +560,7 @@ impl<'book> Iterator for PreprocessChapter<'book, '_> {
                         Tag::Table(alignment)
                     }
                     Tag::Heading(level, id, classes) => self
-                        .preprocessor
-                        .update_heading(self.chapter, level, id, classes)
+                        .update_heading(level, id, classes)
                         .map(|(level, id, classes)| {
                             if id.is_some() || !classes.is_empty() {
                                 // pandoc does not support `header_attributes` with commonmark
