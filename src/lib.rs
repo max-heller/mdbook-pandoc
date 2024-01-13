@@ -156,7 +156,6 @@ mod tests {
         fmt::{self, Write},
         fs,
         io::{self, Read, Seek},
-        iter,
         path::{Path, PathBuf},
         str::FromStr,
     };
@@ -282,14 +281,33 @@ mod tests {
             self
         }
 
-        pub fn chapter(mut self, chapter: Chapter) -> Self {
-            let Chapter { chapter } = chapter;
-            for chapter in
-                iter::once(&chapter).chain(chapter.sub_items.iter().filter_map(|item| match item {
-                    BookItem::Chapter(chapter) => Some(chapter),
-                    _ => None,
-                }))
-            {
+        pub fn chapter(mut self, Chapter { mut chapter }: Chapter) -> Self {
+            use mdbook::book::SectionNumber;
+            let number = (self.book.book.sections.iter())
+                .filter(
+                    |item| matches!(item, BookItem::Chapter(chapter) if chapter.number.is_some()),
+                )
+                .count();
+            chapter.number = Some(SectionNumber(vec![number as u32]));
+            let mut chapters = vec![&mut chapter];
+            while let Some(chapter) = chapters.pop() {
+                let number = &chapter.number;
+                for (idx, chapter) in chapter
+                    .sub_items
+                    .iter_mut()
+                    .filter_map(|item| match item {
+                        BookItem::Chapter(chapter) => Some(chapter),
+                        _ => None,
+                    })
+                    .enumerate()
+                {
+                    if let Some(number) = number {
+                        let mut number = number.clone();
+                        number.push(idx as u32 + 1);
+                        chapter.number = Some(number);
+                    }
+                    chapters.push(chapter);
+                }
                 if let Some(path) = &chapter.path {
                     let path = self.book.source_dir().join(path);
                     if let Some(parent) = path.parent() {
