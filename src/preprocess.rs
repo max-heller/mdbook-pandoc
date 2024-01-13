@@ -152,23 +152,6 @@ impl<'book> Preprocessor<'book> {
         }
     }
 
-    fn preprocess_chapter(
-        &mut self,
-        chapter: &'book Chapter,
-        out: impl io::Write,
-    ) -> anyhow::Result<()> {
-        let preprocessed = PreprocessChapter::new(self, chapter);
-        struct IoWriteAdapter<W>(W);
-        impl<W: io::Write> fmt::Write for IoWriteAdapter<W> {
-            fn write_str(&mut self, s: &str) -> fmt::Result {
-                self.0.write_all(s.as_bytes()).map_err(|_| fmt::Error)
-            }
-        }
-        pulldown_cmark_to_cmark::cmark(preprocessed, IoWriteAdapter(out))
-            .context("Failed to write preprocessed chapter")?;
-        Ok(())
-    }
-
     fn normalize_link_or_leave_as_is<'link>(
         &self,
         chapter: &Chapter,
@@ -396,7 +379,7 @@ impl<'book> Preprocess<'book> {
                 let chapter_path = self.preprocessor.ctx.book.source_dir.join(chapter_path);
                 let normalized = self.preprocessor.normalize_path(&chapter_path)?;
                 let writer = io::BufWriter::new(normalized.create()?);
-                self.preprocessor.preprocess_chapter(chapter, writer)?;
+                self.preprocess_chapter(chapter, writer)?;
                 Ok(Some(normalized.preprocessed_path_relative_to_root))
             }
             BookItem::Separator => {
@@ -429,6 +412,35 @@ impl<'book> Preprocess<'book> {
                 }
             },
         }
+    }
+
+    fn preprocess_chapter(
+        &mut self,
+        chapter: &'book Chapter,
+        mut out: impl io::Write,
+    ) -> anyhow::Result<()> {
+        if chapter.number.is_none() && self.part_num > 0 {
+            match self.preprocessor.ctx.output {
+                OutputFormat::Latex { .. }
+                    if (self.preprocessor.ctx.pandoc)
+                        .enable_extension(pandoc::Extension::RawAttribute)
+                        .is_available() =>
+                {
+                    writeln!(out, r"`\bookmarksetup{{startatroot}}`{{=latex}}")?;
+                }
+                _ => {}
+            }
+        }
+        let preprocessed = PreprocessChapter::new(&mut self.preprocessor, chapter);
+        struct IoWriteAdapter<W>(W);
+        impl<W: io::Write> fmt::Write for IoWriteAdapter<W> {
+            fn write_str(&mut self, s: &str) -> fmt::Result {
+                self.0.write_all(s.as_bytes()).map_err(|_| fmt::Error)
+            }
+        }
+        pulldown_cmark_to_cmark::cmark(preprocessed, IoWriteAdapter(out))
+            .context("Failed to write preprocessed chapter")?;
+        Ok(())
     }
 
     pub fn render_context(&mut self) -> &mut RenderContext<'book> {
