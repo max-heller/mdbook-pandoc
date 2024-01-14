@@ -6,12 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Bug Fixes
 
-- Correctly number chapters ([#58](https://github.com/max-heller/mdbook-pandoc/pull/58))
+- Correctly number chapters in the presence of prefix/suffix chapters and multiple top-level headings per chapter ([#58](https://github.com/max-heller/mdbook-pandoc/pull/58))
 - Don't nest suffix chapters under most recent book part in PDF bookmarks ([#59](https://github.com/max-heller/mdbook-pandoc/pull/59))
 
 ### Documentation
 
-- Correct `mdbook-pdf` link ([#54](https://github.com/max-heller/mdbook-pandoc/pull/54))
+- Correct `mdbook-pdf` link in README ([#54](https://github.com/max-heller/mdbook-pandoc/pull/54))
 
 ### Miscellaneous Tasks
 
