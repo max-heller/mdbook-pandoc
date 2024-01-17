@@ -5,28 +5,28 @@ expression: logs
  INFO mdbook::book: Running the pandoc backend    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__namingmd__c-crate-name'
-  on page 99 undefined on input line 5829.
+  on page 103 undefined on input line 5834.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__interoperabilitymd__c-free'
-  on page 99 undefined on input line 5839.
+  on page 103 undefined on input line 5844.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__interoperabilitymd__c-reexport-pac'
-  on page 99 undefined on input line 5842.
+  on page 103 undefined on input line 5847.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__interoperabilitymd__c-hal-traits'
-  on page 99 undefined on input line 5845.
+  on page 103 undefined on input line 5850.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__predictabilitymd__c-ctor'
-  on page 99 undefined on input line 5855.
+  on page 103 undefined on input line 5860.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__gpiomd__c-zst-pin' on
-  page 99 undefined on input line 5865.
+  page 103 undefined on input line 5870.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__gpiomd__c-erased-pin'
-  on page 100 undefined on input line 5868.
+  on page 104 undefined on input line 5873.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__design-patterns__hal__gpiomd__c-pin-state'
-  on page 100 undefined on input line 5871.
+  on page 104 undefined on input line 5876.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no 🦀 (U+1F980) (U+1F980) in font NotoSerif:mode=node;script
 [WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l

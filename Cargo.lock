@@ -548,6 +548,7 @@ dependencies = [
 name = "mdbook-pandoc"
 version = "0.5.0"
 dependencies = [
+ "aho-corasick",
  "anyhow",
  "env_logger",
  "genawaiter",
