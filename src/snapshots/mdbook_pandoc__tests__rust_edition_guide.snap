@@ -85,5 +85,8 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../cargo/reference/workspaces.html#virtual-workspace' in chapter 'Default Cargo feature resolver': Unable to canonicalize path: $ROOT/src/rust-2021/../../cargo/reference/workspaces.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../cargo/reference/resolver.html#resolver-versions' in chapter 'Default Cargo feature resolver': Unable to canonicalize path: $ROOT/src/rust-2021/../../cargo/reference/resolver.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../cargo/commands/cargo-tree.html' in chapter 'Default Cargo feature resolver': Unable to canonicalize path: $ROOT/src/rust-2021/../../cargo/commands/cargo-tree.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../../core/ffi/struct.CStr.html' in chapter 'C-string literals': Unable to canonicalize path: $ROOT/src/rust-2021/../../core/ffi/struct.CStr.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../../core/ffi/struct.CStr.html' in chapter 'C-string literals': Unable to canonicalize path: $ROOT/src/rust-2021/../../core/ffi/struct.CStr.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/tokens.html#c-string-and-raw-c-string-literals' in chapter 'C-string literals': Unable to canonicalize path: $ROOT/src/rust-2021/../../reference/tokens.html: No such file or directory (os error 2)    
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
 

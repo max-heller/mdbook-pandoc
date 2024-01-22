@@ -9,6 +9,7 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/conditional-compilation.html' in chapter 'Specifying Dependencies': Unable to canonicalize path: $ROOT/src/reference/../../reference/conditional-compilation.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../std/primitive.char.html#method.is_alphanumeric' in chapter 'The Manifest Format': Unable to canonicalize path: $ROOT/src/reference/../../std/primitive.char.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../edition-guide/index.html' in chapter 'The Manifest Format': Unable to canonicalize path: $ROOT/src/reference/../../edition-guide/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc::preprocess: Unable to normalize link '../../rustc/lints/levels.html#capping-lints' in chapter 'The Manifest Format': Unable to canonicalize path: $ROOT/src/reference/../../rustc/lints/levels.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/attributes/testing.html#the-test-attribute' in chapter 'Cargo Targets': Unable to canonicalize path: $ROOT/src/reference/../../reference/attributes/testing.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../rustc/tests/index.html' in chapter 'Cargo Targets': Unable to canonicalize path: $ROOT/src/reference/../../rustc/tests/index.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/attributes/testing.html#the-test-attribute' in chapter 'Cargo Targets': Unable to canonicalize path: $ROOT/src/reference/../../reference/attributes/testing.html: No such file or directory (os error 2)    
@@ -166,10 +167,10 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/attributes/codegen.html#the-target_feature-attribute' in chapter 'Appendix: Glossary': Unable to canonicalize path: $ROOT/src/appendix/../../reference/attributes/codegen.html: No such file or directory (os error 2)    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__commands__cargomd__option-cargo---offline'
-  on page 277 undefined on input line 19241.
+  on page 281 undefined on input line 19469.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__commands__cargo-buildmd__option-cargo-build---keep-going'
-  on page 281 undefined on input line 19478.
+  on page 285 undefined on input line 19706.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
 
