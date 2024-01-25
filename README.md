@@ -113,10 +113,6 @@ variable-name = "value"
 
 - When rendering to PDF through LaTeX, links to chapters sometimes link to slightly before the beginning of the chapter.
   See: https://github.com/jgm/pandoc/issues/9200
-- When rendering to PDF through LaTeX, tables with long rows will overflow the width of the page.
-  This is due to usage of pandoc's CommonMark parser, which doesn't yet support the functionality
-  needed to wrap cell contents that is implemented in the Pandoc Markdown parser.
-  See: https://github.com/jgm/commonmark-hs/issues/128
 
 ### Comparison to alternatives
 
