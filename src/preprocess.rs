@@ -541,20 +541,34 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         Some((level, id, classes))
     }
 
-    fn column_widths<'table>(
-        table_rows: impl IntoIterator<Item = &'table str>,
-    ) -> impl Iterator<Item = usize> + 'table {
+    fn column_width_annotation(&self, table: &str) -> Option<String> {
+        let mut wide = false;
+        let mut rows = table.lines().inspect(|line| {
+            if line.len() > self.preprocessor.ctx.columns {
+                wide = true;
+            }
+        });
         // The second row of a table is the delimiter row
         // See: https://github.github.com/gfm/#tables-extension-
-        let delimiter_row = table_rows
-            .into_iter()
-            .nth(1)
-            .expect("table did not contain a delimiter row");
-        delimiter_row
+        let delimiter_row = rows.nth(1).expect("table did not contain a delimiter row");
+        let mut column_widths = delimiter_row
             // Cells are separated by pipes
             .split('|')
             .map(|cell| cell.chars().filter(char::is_ascii_punctuation).count())
-            .filter(|&width| width > 0)
+            .filter(|&width| width > 0);
+        // Consume iterator to finish checking for long rows
+        rows.for_each(|_| ());
+        wide.then(|| {
+            let mut annotation = String::from("<!-- mdbook-pandoc::table: ");
+            if let Some(width) = column_widths.next() {
+                write!(annotation, "{width}").unwrap();
+            }
+            for width in column_widths {
+                write!(annotation, "|{width}").unwrap();
+            }
+            write!(annotation, " -->").unwrap();
+            annotation
+        })
     }
 
     async fn preprocess(mut self, co: genawaiter::stack::Co<'_, pulldown_cmark::Event<'book>>) {
@@ -588,23 +602,9 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         Tag::Table(alignment) => {
                             (self.preprocessor.ctx.pandoc)
                                 .enable_extension(pandoc::Extension::PipeTables);
-                            let mut wide = false;
-                            let mut rows = self.chapter.content[range].lines().inspect(|line| {
-                                if line.len() > self.preprocessor.ctx.columns {
-                                    wide = true;
-                                }
-                            });
-                            let mut column_widths = Self::column_widths(&mut rows);
-                            rows.for_each(|_| ());
-                            if wide {
-                                let mut annotation = String::from("<!-- mdbook-pandoc::table: ");
-                                if let Some(width) = column_widths.next() {
-                                    write!(annotation, "{width}").unwrap();
-                                }
-                                for width in column_widths {
-                                    write!(annotation, "|{width}").unwrap();
-                                }
-                                write!(annotation, " -->").unwrap();
+                            if let Some(annotation) =
+                                self.column_width_annotation(&self.chapter.content[range])
+                            {
                                 co.yield_(Event::Html(annotation.into())).await;
                             }
                             Tag::Table(alignment)
