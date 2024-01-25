@@ -2,10 +2,10 @@ use std::{
     borrow::Cow,
     cmp,
     collections::{hash_map::DefaultHasher, HashMap},
-    fmt,
+    fmt::{self, Write as _},
     fs::{self, File},
     hash::{Hash, Hasher},
-    io::{self, Write},
+    io::{self, Write as _},
     iter::{self, Peekable},
     path::{Path, PathBuf},
 };
@@ -431,14 +431,18 @@ impl<'book> Preprocess<'book> {
                 _ => {}
             }
         }
+
         let preprocessed = PreprocessChapter::new(&mut self.preprocessor, chapter);
+        genawaiter::stack::let_gen_using!(preprocessed, |co| preprocessed.preprocess(co));
+
         struct IoWriteAdapter<W>(W);
         impl<W: io::Write> fmt::Write for IoWriteAdapter<W> {
             fn write_str(&mut self, s: &str) -> fmt::Result {
                 self.0.write_all(s.as_bytes()).map_err(|_| fmt::Error)
             }
         }
-        pulldown_cmark_to_cmark::cmark(preprocessed, IoWriteAdapter(out))
+
+        pulldown_cmark_to_cmark::cmark(preprocessed.into_iter(), IoWriteAdapter(out))
             .context("Failed to write preprocessed chapter")?;
         Ok(())
     }
@@ -455,7 +459,7 @@ impl<'book> Preprocess<'book> {
 struct PreprocessChapter<'book, 'preprocessor> {
     preprocessor: &'preprocessor mut Preprocessor<'book>,
     chapter: &'book Chapter,
-    parser: Peekable<pulldown_cmark::Parser<'book, 'book>>,
+    parser: Peekable<pulldown_cmark::OffsetIter<'book, 'book>>,
     start_tags: Vec<pulldown_cmark::Tag<'book>>,
     encountered_h1: bool,
 }
@@ -478,7 +482,9 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         Self {
             preprocessor,
             chapter,
-            parser: pulldown_cmark::Parser::new_ext(&chapter.content, PARSER_OPTIONS).peekable(),
+            parser: pulldown_cmark::Parser::new_ext(&chapter.content, PARSER_OPTIONS)
+                .into_offset_iter()
+                .peekable(),
             start_tags: Default::default(),
             encountered_h1: false,
         }
@@ -534,132 +540,167 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         };
         Some((level, id, classes))
     }
-}
 
-impl<'book> Iterator for PreprocessChapter<'book, '_> {
-    type Item = pulldown_cmark::Event<'book>;
+    fn column_widths<'table>(
+        table_rows: impl IntoIterator<Item = &'table str>,
+    ) -> impl Iterator<Item = usize> + 'table {
+        // The second row of a table is the delimiter row
+        // See: https://github.github.com/gfm/#tables-extension-
+        let delimiter_row = table_rows
+            .into_iter()
+            .nth(1)
+            .expect("table did not contain a delimiter row");
+        delimiter_row
+            // Cells are separated by pipes
+            .split('|')
+            .map(|cell| cell.chars().filter(char::is_ascii_punctuation).count())
+            .filter(|&width| width > 0)
+    }
 
-    fn next(&mut self) -> Option<Self::Item> {
+    async fn preprocess(mut self, co: genawaiter::stack::Co<'_, pulldown_cmark::Event<'book>>) {
         use pulldown_cmark::{Event, Tag};
 
-        Some(match self.parser.next()? {
-            Event::Start(tag) => {
-                let tag = match tag {
-                    Tag::List(start_number) => {
-                        self.preprocessor.ctx.cur_list_depth += 1;
-                        self.preprocessor.ctx.max_list_depth = cmp::max(
-                            self.preprocessor.ctx.max_list_depth,
-                            self.preprocessor.ctx.cur_list_depth,
-                        );
-                        Tag::List(start_number)
-                    }
-                    Tag::Strikethrough => {
-                        // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
-                        // pulldown_cmark_to_cmark always generates ~~, so this is okay,
-                        // although it'd be good to have an option to configure this explicitly.
-                        (self.preprocessor.ctx.pandoc)
-                            .enable_extension(pandoc::Extension::Strikeout);
-                        Tag::Strikethrough
-                    }
-                    Tag::FootnoteDefinition(label) => {
-                        (self.preprocessor.ctx.pandoc)
-                            .enable_extension(pandoc::Extension::Footnotes);
-                        Tag::FootnoteDefinition(label)
-                    }
-                    Tag::Table(alignment) => {
-                        (self.preprocessor.ctx.pandoc)
-                            .enable_extension(pandoc::Extension::PipeTables);
-                        Tag::Table(alignment)
-                    }
-                    Tag::Heading(level, id, classes) => self
-                        .update_heading(level, id, classes)
-                        .map(|(level, id, classes)| {
-                            if id.is_some() || !classes.is_empty() {
-                                // pandoc does not support `header_attributes` with commonmark
-                                // so use `attributes`, which is a superset
-                                (self.preprocessor.ctx.pandoc)
-                                    .enable_extension(pandoc::Extension::Attributes);
+        while let Some((event, range)) = self.parser.next() {
+            let event = match event {
+                Event::Start(tag) => {
+                    let tag = match tag {
+                        Tag::List(start_number) => {
+                            self.preprocessor.ctx.cur_list_depth += 1;
+                            self.preprocessor.ctx.max_list_depth = cmp::max(
+                                self.preprocessor.ctx.max_list_depth,
+                                self.preprocessor.ctx.cur_list_depth,
+                            );
+                            Tag::List(start_number)
+                        }
+                        Tag::Strikethrough => {
+                            // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
+                            // pulldown_cmark_to_cmark always generates ~~, so this is okay,
+                            // although it'd be good to have an option to configure this explicitly.
+                            (self.preprocessor.ctx.pandoc)
+                                .enable_extension(pandoc::Extension::Strikeout);
+                            Tag::Strikethrough
+                        }
+                        Tag::FootnoteDefinition(label) => {
+                            (self.preprocessor.ctx.pandoc)
+                                .enable_extension(pandoc::Extension::Footnotes);
+                            Tag::FootnoteDefinition(label)
+                        }
+                        Tag::Table(alignment) => {
+                            (self.preprocessor.ctx.pandoc)
+                                .enable_extension(pandoc::Extension::PipeTables);
+                            let mut wide = false;
+                            let mut rows = self.chapter.content[range].lines().inspect(|line| {
+                                if line.len() > self.preprocessor.ctx.columns {
+                                    wide = true;
+                                }
+                            });
+                            let mut column_widths = Self::column_widths(&mut rows);
+                            rows.for_each(|_| ());
+                            if wide {
+                                let mut annotation = String::from("<!-- mdbook-pandoc::table: ");
+                                if let Some(width) = column_widths.next() {
+                                    write!(annotation, "{width}").unwrap();
+                                }
+                                for width in column_widths {
+                                    write!(annotation, "|{width}").unwrap();
+                                }
+                                write!(annotation, " -->").unwrap();
+                                co.yield_(Event::Html(annotation.into())).await;
                             }
-                            Tag::Heading(level, id, classes)
-                        })
-                        .unwrap_or(Tag::Paragraph),
-                    Tag::Link(link_ty, destination, title) => {
-                        let destination = self.preprocessor.normalize_link_or_leave_as_is(
-                            self.chapter,
-                            destination,
-                            LinkContext::Link,
-                        );
-                        Tag::Link(link_ty, destination, title)
-                    }
-                    Tag::Image(link_ty, destination, title) => {
-                        let destination = self.preprocessor.normalize_link_or_leave_as_is(
-                            self.chapter,
-                            destination,
-                            LinkContext::Image,
-                        );
-                        Tag::Image(link_ty, destination, title)
-                    }
-                    Tag::CodeBlock(CodeBlockKind::Fenced(info_string)) => {
-                        // MdBook supports custom attributes on Rust code blocks.
-                        // Attributes are separated by a comma, space, or tab from the 'rust' prefix.
-                        // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
-                        // This strips out the attributes.
-                        static MDBOOK_ATTRIBUTES: Lazy<Regex> =
-                            Lazy::new(|| Regex::new(r"^rust[, \t].*").unwrap());
-                        let info_string = match MDBOOK_ATTRIBUTES.replace(&info_string, "rust") {
-                            Cow::Borrowed(_) => info_string,
-                            Cow::Owned(info_string) => info_string.into(),
-                        };
-                        Tag::CodeBlock(CodeBlockKind::Fenced(info_string))
-                    }
-                    tag => tag,
-                };
-                self.start_tags.push(tag.clone());
-                Event::Start(tag)
-            }
-            Event::End(_) => {
-                let tag = self.start_tags.pop().unwrap();
-                if let Tag::List(_) = &tag {
-                    self.preprocessor.ctx.cur_list_depth -= 1;
-                };
-                Event::End(tag)
-            }
-            Event::Html(mut html) => {
-                while let Some(Event::Html(more)) = self.parser.peek() {
-                    let mut string = html.into_string();
-                    string.push_str(more);
-                    html = string.into();
-                    // Actually consume the item from the iterator
-                    self.parser.next();
+                            Tag::Table(alignment)
+                        }
+                        Tag::Heading(level, id, classes) => self
+                            .update_heading(level, id, classes)
+                            .map(|(level, id, classes)| {
+                                if id.is_some() || !classes.is_empty() {
+                                    // pandoc does not support `header_attributes` with commonmark
+                                    // so use `attributes`, which is a superset
+                                    (self.preprocessor.ctx.pandoc)
+                                        .enable_extension(pandoc::Extension::Attributes);
+                                }
+                                Tag::Heading(level, id, classes)
+                            })
+                            .unwrap_or(Tag::Paragraph),
+                        Tag::Link(link_ty, destination, title) => {
+                            let destination = self.preprocessor.normalize_link_or_leave_as_is(
+                                self.chapter,
+                                destination,
+                                LinkContext::Link,
+                            );
+                            Tag::Link(link_ty, destination, title)
+                        }
+                        Tag::Image(link_ty, destination, title) => {
+                            let destination = self.preprocessor.normalize_link_or_leave_as_is(
+                                self.chapter,
+                                destination,
+                                LinkContext::Image,
+                            );
+                            Tag::Image(link_ty, destination, title)
+                        }
+                        Tag::CodeBlock(CodeBlockKind::Fenced(info_string)) => {
+                            // MdBook supports custom attributes on Rust code blocks.
+                            // Attributes are separated by a comma, space, or tab from the 'rust' prefix.
+                            // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
+                            // This strips out the attributes.
+                            static MDBOOK_ATTRIBUTES: Lazy<Regex> =
+                                Lazy::new(|| Regex::new(r"^rust[, \t].*").unwrap());
+                            let info_string = match MDBOOK_ATTRIBUTES.replace(&info_string, "rust")
+                            {
+                                Cow::Borrowed(_) => info_string,
+                                Cow::Owned(info_string) => info_string.into(),
+                            };
+                            Tag::CodeBlock(CodeBlockKind::Fenced(info_string))
+                        }
+                        tag => tag,
+                    };
+                    self.start_tags.push(tag.clone());
+                    Event::Start(tag)
                 }
-                if let OutputFormat::Latex { packages } = &mut self.preprocessor.ctx.output {
-                    static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
-                        Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#)
-                            .unwrap()
-                    });
-                    if (self.preprocessor.ctx.pandoc)
-                        .enable_extension(pandoc::Extension::RawAttribute)
-                        .is_available()
-                    {
-                        html = match FONT_AWESOME_ICON
-                            .replace_all(&html, r"`\faicon{$icon}`{=latex}")
+                Event::End(_) => {
+                    let tag = self.start_tags.pop().unwrap();
+                    if let Tag::List(_) = &tag {
+                        self.preprocessor.ctx.cur_list_depth -= 1;
+                    };
+                    Event::End(tag)
+                }
+                Event::Html(mut html) => {
+                    while let Some((Event::Html(more), _)) = self.parser.peek() {
+                        let mut string = html.into_string();
+                        string.push_str(more);
+                        html = string.into();
+                        // Actually consume the item from the iterator
+                        self.parser.next();
+                    }
+                    if let OutputFormat::Latex { packages } = &mut self.preprocessor.ctx.output {
+                        static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
+                            Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#)
+                                .unwrap()
+                        });
+                        if (self.preprocessor.ctx.pandoc)
+                            .enable_extension(pandoc::Extension::RawAttribute)
+                            .is_available()
                         {
-                            Cow::Borrowed(_) => html,
-                            Cow::Owned(html) => {
-                                packages.need(latex::Package::FontAwesome);
-                                html.into()
-                            }
-                        };
+                            html = match FONT_AWESOME_ICON
+                                .replace_all(&html, r"`\faicon{$icon}`{=latex}")
+                            {
+                                Cow::Borrowed(_) => html,
+                                Cow::Owned(html) => {
+                                    packages.need(latex::Package::FontAwesome);
+                                    html.into()
+                                }
+                            };
+                        }
                     }
+                    Event::Html(html)
                 }
-                Event::Html(html)
-            }
-            Event::TaskListMarker(checked) => {
-                (self.preprocessor.ctx.pandoc).enable_extension(pandoc::Extension::TaskLists);
-                Event::TaskListMarker(checked)
-            }
-            event => event,
-        })
+                Event::TaskListMarker(checked) => {
+                    (self.preprocessor.ctx.pandoc).enable_extension(pandoc::Extension::TaskLists);
+                    Event::TaskListMarker(checked)
+                }
+                event => event,
+            };
+            co.yield_(event).await;
+        }
     }
 }
 

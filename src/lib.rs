@@ -100,6 +100,7 @@ impl mdbook::Renderer for Renderer {
                 pandoc: pandoc::Context::new(pandoc_version.clone()),
                 destination: book.destination.join(name),
                 output: profile.output_format(),
+                columns: profile.columns,
                 cur_list_depth: 0,
                 max_list_depth: 0,
             };
@@ -468,6 +469,7 @@ mod tests {
     impl pandoc::Profile {
         fn latex() -> Self {
             Self {
+                columns: 72,
                 file_scope: true,
                 number_sections: true,
                 output_file: PathBuf::from("output.tex"),
@@ -482,6 +484,7 @@ mod tests {
 
         fn pdf() -> Self {
             Self {
+                columns: 72,
                 file_scope: true,
                 number_sections: true,
                 output_file: "book.pdf".into(),
@@ -505,6 +508,7 @@ mod tests {
 
         fn markdown() -> Self {
             Self {
+                columns: 72,
                 file_scope: true,
                 number_sections: true,
                 output_file: PathBuf::from("book.md"),
@@ -633,6 +637,84 @@ This is an example of a footnote[^note].
         │ 
         │ [^note]: This text is the contents of the footnote, which will be rendered
         │     towards the bottom.
+        "###);
+    }
+
+    #[test]
+    fn tables() {
+        let book = MDBook::init()
+            .chapter(Chapter::new(
+                "",
+                "
+| Header1 | Header2 |
+|---------|---------|
+| abc     | def     |
+                ",
+                "chapter.md",
+            ))
+            .config(Config::latex())
+            .build();
+        insta::assert_display_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \begin{longtable}[]{@{}ll@{}}
+        │ \toprule\noalign{}
+        │ Header1 & Header2 \\
+        │ \midrule\noalign{}
+        │ \endhead
+        │ \bottomrule\noalign{}
+        │ \endlastfoot
+        │ abc & def \\
+        │ \end{longtable}
+        ├─ latex/src/chapter.md
+        │ |Header1|Header2|
+        │ |-------|-------|
+        │ |abc|def|
+        "###);
+    }
+
+    #[test]
+    fn wide_table() {
+        let book = MDBook::init()
+            .chapter(Chapter::new(
+                "",
+                "
+| Header1 | Header2 |
+| ------- | :--------------------------------------------------------------- |
+| abc     | long long long long long long long long long long long long long |
+                ",
+                "chapter.md",
+            ))
+            .config(Config::latex())
+            .build();
+        insta::assert_display_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \begin{longtable}[]{@{}
+        │   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0986}}
+        │   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9014}}@{}}
+        │ \toprule\noalign{}
+        │ \begin{minipage}[b]{\linewidth}\raggedright
+        │ Header1
+        │ \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+        │ Header2
+        │ \end{minipage} \\
+        │ \midrule\noalign{}
+        │ \endhead
+        │ \bottomrule\noalign{}
+        │ \endlastfoot
+        │ abc & long long long long long long long long long long long long
+        │ long \\
+        │ \end{longtable}
+        ├─ latex/src/chapter.md
+        │ <!-- mdbook-pandoc::table: 7|64 -->
+        │ |Header1|Header2|
+        │ |-------|:------|
+        │ |abc|long long long long long long long long long long long long long|
         "###);
     }
 

@@ -7,6 +7,8 @@ use super::OutputFormat;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct Profile {
+    #[serde(default = "defaults::columns")]
+    pub columns: usize,
     #[serde(default = "defaults::enabled")]
     pub file_scope: bool,
     #[serde(default = "defaults::enabled")]
@@ -27,6 +29,11 @@ pub struct Profile {
 mod defaults {
     pub fn enabled() -> bool {
         true
+    }
+
+    pub fn columns() -> usize {
+        // https://pandoc.org/MANUAL.html#option--wrap
+        72
     }
 }
 
