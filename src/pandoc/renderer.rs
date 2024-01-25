@@ -1,6 +1,8 @@
 use std::{
-    fmt::Write,
-    fs, mem,
+    fmt::Write as _,
+    fs,
+    io::Write as _,
+    mem,
     path::{Path, PathBuf},
     process::{Command, Stdio},
 };
@@ -24,6 +26,7 @@ pub struct Context<'book> {
     pub destination: PathBuf,
     pub book: &'book Book<'book>,
     pub mdbook_cfg: &'book mdbook::Config,
+    pub columns: usize,
     pub cur_list_depth: usize,
     pub max_list_depth: usize,
 }
@@ -182,6 +185,27 @@ impl Renderer {
                         toml::Value::Array(vec![val.into(), existing])
                     };
                 }
+            }
+        }
+
+        let _filter_tempfile_guard: tempfile::TempPath;
+        if (ctx.pandoc.enabled_extensions).contains_key(&pandoc::Extension::PipeTables) {
+            let version_req = semver::VersionReq::parse(">=2.9.2").unwrap();
+            if version_req.matches(&ctx.pandoc.version) {
+                let mut filter = NamedTempFile::new()?;
+                write!(
+                    filter,
+                    "{}",
+                    include_str!("filters/annotate-tables-with-column-widths.lua")
+                )?;
+                pandoc.arg("--lua-filter");
+                pandoc.arg(filter.path().canonicalize()?);
+                _filter_tempfile_guard = filter.into_temp_path();
+            } else {
+                log::warn!(
+                    "Cannot wrap cell contents of tables, which may result in tables overflowing the page (requires Pandoc version {}, but using {})",
+                    version_req, ctx.pandoc.version,
+                );
             }
         }
 

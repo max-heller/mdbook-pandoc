@@ -52,12 +52,7 @@ impl Extension {
     }
 
     pub fn check_availability(&self, pandoc: &semver::Version) -> Availability {
-        let version_req = self.version_requirement();
-        if version_req.matches(pandoc) {
-            Availability::Available
-        } else {
-            Availability::Unavailable(version_req)
-        }
+        Availability::check(self.version_requirement(), pandoc)
     }
 }
 
@@ -67,6 +62,13 @@ pub enum Availability {
 }
 
 impl Availability {
+    pub fn check(version_req: semver::VersionReq, pandoc: &semver::Version) -> Self {
+        if version_req.matches(pandoc) {
+            Availability::Available
+        } else {
+            Availability::Unavailable(version_req)
+        }
+    }
     pub fn is_available(&self) -> bool {
         match self {
             Self::Available => true,
