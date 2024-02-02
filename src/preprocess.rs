@@ -2,6 +2,7 @@ use std::{
     borrow::Cow,
     cmp,
     collections::{hash_map::DefaultHasher, HashMap},
+    ffi::OsString,
     fmt::{self, Write as _},
     fs::{self, File},
     hash::{Hash, Hasher},
@@ -30,6 +31,8 @@ pub struct Preprocessor<'book> {
     preprocessed: PathBuf,
     preprocessed_relative_to_root: PathBuf,
     redirects: HashMap<PathBuf, String>,
+    hosted_html: Option<&'book str>,
+    unresolved_links: bool,
 }
 
 pub struct Preprocess<'book> {
@@ -81,6 +84,8 @@ impl<'book> Preprocessor<'book> {
                 .to_path_buf(),
             preprocessed,
             redirects: Default::default(),
+            hosted_html: Default::default(),
+            unresolved_links: false,
             ctx,
         })
     }
@@ -124,7 +129,7 @@ impl<'book> Preprocessor<'book> {
             .map(|(res, entry)| {
                 res.and_then(|(src, dst)| {
                     let dst = self
-                        .normalize_link(src.parent().unwrap(), dst.into(), LinkContext::Link)
+                        .normalize_link(&src, src.parent().unwrap(), dst.into(), LinkContext::Link)
                         .map_err(|(err, _)| err)
                         .context("Unable to normalize redirect destination")?;
                     let src = self
@@ -144,6 +149,10 @@ impl<'book> Preprocessor<'book> {
             })
     }
 
+    pub fn hosted_html(&mut self, uri: &'book str) {
+        self.hosted_html = Some(uri);
+    }
+
     pub fn preprocess(self) -> Preprocess<'book> {
         Preprocess {
             items: self.ctx.book.book.iter(),
@@ -153,7 +162,7 @@ impl<'book> Preprocessor<'book> {
     }
 
     fn normalize_link_or_leave_as_is<'link>(
-        &self,
+        &mut self,
         chapter: &Chapter,
         link: CowStr<'link>,
         ctx: LinkContext,
@@ -162,7 +171,7 @@ impl<'book> Preprocessor<'book> {
             return link;
         };
         let chapter_dir = chapter_path.parent().unwrap();
-        self.normalize_link(chapter_dir, link, ctx)
+        self.normalize_link(chapter_path, chapter_dir, link, ctx)
             .unwrap_or_else(|(err, link)| {
                 log::warn!(
                     "Unable to normalize link '{}' in chapter '{}': {err:#}",
@@ -174,7 +183,8 @@ impl<'book> Preprocessor<'book> {
     }
 
     fn normalize_link<'link>(
-        &self,
+        &mut self,
+        chapter_path: &Path,
         chapter_dir: &Path,
         link: CowStr<'link>,
         ctx: LinkContext,
@@ -183,9 +193,8 @@ impl<'book> Preprocessor<'book> {
         static SCHEME: Lazy<Regex> =
             Lazy::new(|| Regex::new(r"^(?P<scheme>[a-zA-Z][a-z0-9+.-]*):").unwrap());
 
-        let pathbuf_to_utf8 = |path: PathBuf| {
-            path.into_os_string()
-                .into_string()
+        let os_to_utf8 = |os: OsString| {
+            os.into_string()
                 .map_err(|path| anyhow!("Path is not valid UTF8: {path:?}"))
         };
 
@@ -207,7 +216,7 @@ impl<'book> Preprocessor<'book> {
                         .any(|extension| path.ends_with(extension))
                     {
                         self.download_remote_image(&link)
-                            .and_then(|path| pathbuf_to_utf8(path).map(CowStr::from))
+                            .and_then(|path| os_to_utf8(path.into_os_string()).map(CowStr::from))
                             .map_err(|err| (err, link))
                     } else {
                         Ok(link)
@@ -225,17 +234,17 @@ impl<'book> Preprocessor<'book> {
             } else {
                 // URI is a relative-path reference, which must be normalized
                 let path_range = link_path_range();
-                let path = match &link[path_range] {
+                let link_path = match &link[path_range] {
                     // Internal reference within chapter
                     "" if link.starts_with('#') => return Ok(link),
                     path => Path::new(path),
                 };
-                let path = chapter_dir.join(path);
+                let path = chapter_dir.join(link_path);
 
                 let normalized = self
                     .normalize_path(&self.ctx.book.source_dir.join(&path))
                     .or_else(|err| {
-                        self.normalize_path(&self.preprocessed.join(path))
+                        self.normalize_path(&self.preprocessed.join(&path))
                             .map_err(|_| err)
                     })
                     .and_then(|normalized| {
@@ -251,9 +260,31 @@ impl<'book> Preprocessor<'book> {
                             if !normalized.exists()? {
                                 normalized.copy_to_preprocessed()?;
                             }
-                            pathbuf_to_utf8(normalized.preprocessed_path_relative_to_root)
-                                .map(Cow::Owned)
+                            os_to_utf8(
+                                normalized
+                                    .preprocessed_path_relative_to_root
+                                    .into_os_string(),
+                            )
+                            .map(Cow::Owned)
                         }
+                    })
+                    .or_else(|err| {
+                        self.hosted_html
+                            .ok_or(err)
+                            .and_then(|uri| {
+                                let mut hosted = OsString::from(uri.trim_end_matches('/'));
+                                hosted.push("/");
+                                hosted.push(&path);
+                                let hosted = os_to_utf8(hosted)?;
+                                log::debug!(
+                                    "Unable to resolve relative path '{}' in chapter '{}', \
+                                    linking to hosted HTML book at '{hosted}'",
+                                    link_path.display(),
+                                    chapter_path.display(),
+                                );
+                                Ok(hosted)
+                            })
+                            .map(Cow::Owned)
                     });
                 match normalized {
                     Ok(normalized_relative_path) => {
@@ -261,7 +292,10 @@ impl<'book> Preprocessor<'book> {
                         link.replace_range(path_range, &normalized_relative_path);
                         Ok(link.into())
                     }
-                    Err(err) => Err((err, link)),
+                    Err(err) => {
+                        self.unresolved_links = true;
+                        Err((err, link))
+                    }
                 }
             }
         }
@@ -453,6 +487,10 @@ impl<'book> Preprocess<'book> {
 
     pub fn output_dir(&self) -> &Path {
         &self.preprocessor.preprocessed
+    }
+
+    pub fn unresolved_links(&self) -> bool {
+        self.preprocessor.unresolved_links
     }
 }
 
