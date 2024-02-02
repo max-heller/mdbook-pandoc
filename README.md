@@ -64,6 +64,7 @@ A subset of the available options are described below:
 
 ```toml
 [output.pandoc]
+hosted-html = "https://doc.rust-lang.org/book" # URL of a HTML version of the book
 
 [output.pandoc.profile.<name>] # options to pass to Pandoc (see https://pandoc.org/MANUAL.html#defaults-files)
 output-file = "output.pdf" # output file (within the profile's build directory)

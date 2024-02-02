@@ -25,6 +25,7 @@ struct Config {
     pub profiles: HashMap<String, pandoc::Profile>,
     #[serde(default = "defaults::enabled")]
     pub keep_preprocessed: bool,
+    pub hosted_html: Option<String>,
 }
 
 mod defaults {
@@ -123,6 +124,10 @@ impl mdbook::Renderer for Renderer {
                 }
             }
 
+            if let Some(uri) = cfg.hosted_html.as_deref() {
+                preprocessor.hosted_html(uri);
+            }
+
             let mut preprocessed = preprocessor.preprocess();
 
             // Initialize renderer
@@ -132,6 +137,13 @@ impl mdbook::Renderer for Renderer {
             renderer.current_dir(&book.root);
             for input in &mut preprocessed {
                 renderer.input(input?);
+            }
+
+            if preprocessed.unresolved_links() {
+                log::warn!(
+                    "Unable to resolve one or more relative links within the book, \
+                    consider setting the `hosted-html` option in `[output.pandoc]`"
+                );
             }
 
             if let Some(logfile) = &self.logfile {
@@ -448,6 +460,7 @@ mod tests {
             Self {
                 keep_preprocessed: true,
                 profiles: HashMap::from_iter([("latex".into(), pandoc::Profile::latex())]),
+                hosted_html: None,
             }
         }
 
@@ -455,6 +468,7 @@ mod tests {
             Config {
                 keep_preprocessed: false,
                 profiles: HashMap::from_iter([("pdf".into(), pandoc::Profile::pdf())]),
+                hosted_html: None,
             }
         }
 
@@ -462,6 +476,7 @@ mod tests {
             Self {
                 keep_preprocessed: false,
                 profiles: HashMap::from_iter([("markdown".into(), pandoc::Profile::markdown())]),
+                hosted_html: None,
             }
         }
     }
@@ -1056,8 +1071,13 @@ include-in-header = ["file-in-root"]
 
     #[test]
     fn cargo_book() {
-        let logs = MDBook::load(BOOKS.join("cargo/src/doc"))
-            .config(Config::pdf())
+        let logs = MDBook::options()
+            .max_log_level(tracing::Level::DEBUG)
+            .load(BOOKS.join("cargo/src/doc"))
+            .config(Config {
+                hosted_html: Some("https://doc.rust-lang.org/cargo/".into()),
+                ..Config::pdf()
+            })
             .build()
             .logs;
         insta::assert_snapshot!(logs);

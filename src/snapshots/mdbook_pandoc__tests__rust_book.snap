@@ -36,6 +36,7 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/thread/struct.Builder.html#method.spawn' in chapter 'Turning Our Single-Threaded Server into a Multithreaded Server': Unable to canonicalize path: $ROOT/src/../std/thread/struct.Builder.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../reference/items/unions.html' in chapter 'A - Keywords': Unable to canonicalize path: $ROOT/src/../reference/items/unions.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/index.html' in chapter 'C - Derivable Traits': Unable to canonicalize path: $ROOT/src/../std/index.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch15-02-derefmd__following-the-pointer-to-the-value-with-the-dereference-operator'
   on page 188 undefined on input line 10892.

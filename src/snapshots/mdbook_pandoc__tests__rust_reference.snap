@@ -195,6 +195,7 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../book/ch09-01-unrecoverable-errors-with-panic.html' in chapter 'The Rust runtime': Unable to canonicalize path: $ROOT/src/../book/ch09-01-unrecoverable-errors-with-panic.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/panic/fn.set_hook.html' in chapter 'The Rust runtime': Unable to canonicalize path: $ROOT/src/../std/panic/fn.set_hook.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../alloc/alloc/trait.GlobalAlloc.html' in chapter 'The Rust runtime': Unable to canonicalize path: $ROOT/src/../alloc/alloc/trait.GlobalAlloc.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__type-layoutmd__the-default-representation'
   on page 88 undefined on input line 5613.

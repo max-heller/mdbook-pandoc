@@ -88,5 +88,6 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../core/ffi/struct.CStr.html' in chapter 'C-string literals': Unable to canonicalize path: $ROOT/src/rust-2021/../../core/ffi/struct.CStr.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../core/ffi/struct.CStr.html' in chapter 'C-string literals': Unable to canonicalize path: $ROOT/src/rust-2021/../../core/ffi/struct.CStr.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/tokens.html#c-string-and-raw-c-string-literals' in chapter 'C-string literals': Unable to canonicalize path: $ROOT/src/rust-2021/../../reference/tokens.html: No such file or directory (os error 2)    
+ WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
 
