@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [0.5.0] - 2024-02-10
 
+### Changes
+
+- Bump minimum supported Rust version (MSRV) to 1.71
+
 ### Features
 
 - Emulate [Pandoc's cell-wrapping behavior for tables](https://pandoc.org/MANUAL.html#extension-pipe_tables) to prevent wide tables from overflowing the page ([#63](https://github.com/max-heller/mdbook-pandoc/pull/63))
