@@ -15,7 +15,7 @@ include = ["/src", "/CHANGELOG.md", "/LICENSE-*", "/README.md"]
 
 [dependencies]
 anyhow = "1.0.47"
-env_logger = "0.10.0"
+env_logger = "0.11.0"
 genawaiter = { version = "0.99.1", default-features = false }
 log = "0.4.0"
 mdbook = { version = "0.4.35", default-features = false }
