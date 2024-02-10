@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - Emulate [Pandoc's cell-wrapping behavior for tables](https://pandoc.org/MANUAL.html#extension-pipe_tables) to prevent wide tables from overflowing the page ([#63](https://github.com/max-heller/mdbook-pandoc/pull/63))
-- Added a `hosted-html` option to specify the URL of a hosted HTML version of the book. If set, relative links that can't be resolved within the book will be translated to links to the hosted version of the book. ([#66](https://github.com/max-heller/mdbook-pandoc/pull/66))
+- Added a `hosted-html` option to specify the URL of a hosted HTML version of the book. If set, relative links that can't be resolved within the book will be translated to links to the hosted version of the book ([#66](https://github.com/max-heller/mdbook-pandoc/pull/66))
 
 ## [0.4.2] - 2024-01-23
 
