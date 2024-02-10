@@ -1,8 +1,8 @@
 [package]
 name = "mdbook-pandoc"
 description = "A mdbook backend that outsources most of the rendering process to pandoc."
-version = "0.4.2"
-rust-version = "1.70.0"
+version = "0.5.0"
+rust-version = "1.71.0"
 edition = "2021"
 authors = ["Max Heller <max.a.heller@gmail.com>"]
 license = "MIT OR Apache-2.0"
@@ -15,7 +15,7 @@ include = ["/src", "/CHANGELOG.md", "/LICENSE-*", "/README.md"]
 
 [dependencies]
 anyhow = "1.0.47"
-env_logger = "0.10.0"
+env_logger = "0.11.0"
 genawaiter = { version = "0.99.1", default-features = false }
 log = "0.4.0"
 mdbook = { version = "0.4.35", default-features = false }
