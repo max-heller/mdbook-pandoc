@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.1] - 2024-02-26
+
+### Bug Fixes
+
+- Replace redirects that can't be resolved with links to hosted HTML ([#67](https://github.com/max-heller/mdbook-pandoc/pull/67))
+
 ## [0.5.0] - 2024-02-10
 
 ### Changes
