@@ -109,6 +109,10 @@ impl mdbook::Renderer for Renderer {
             // Preprocess book
             let mut preprocessor = Preprocessor::new(ctx)?;
 
+            if let Some(uri) = cfg.hosted_html.as_deref() {
+                preprocessor.hosted_html(uri);
+            }
+
             if let Some(redirects) = html_cfg.as_ref().map(|cfg| &cfg.redirect) {
                 if !redirects.is_empty() {
                     log::info!("Processing redirects in [output.html.redirect]");
@@ -122,10 +126,6 @@ impl mdbook::Renderer for Renderer {
                         .into_iter();
                     preprocessor.add_redirects(redirects);
                 }
-            }
-
-            if let Some(uri) = cfg.hosted_html.as_deref() {
-                preprocessor.hosted_html(uri);
             }
 
             let mut preprocessed = preprocessor.preprocess();
