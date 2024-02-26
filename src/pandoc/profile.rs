@@ -122,7 +122,11 @@ impl Profile {
             (Some(_), _) => false,
             (None, None) => false,
             (None, Some(extension)) => {
-                extension == "tex" || (extension == "pdf" && pdf_engine_is_latex())
+                // See https://github.com/jgm/pandoc/blob/main/src/Text/Pandoc/Format.hs
+                extension == "tex"
+                    || extension == "latex"
+                    || extension == "ltx"
+                    || (extension == "pdf" && pdf_engine_is_latex())
             }
         }
     }
