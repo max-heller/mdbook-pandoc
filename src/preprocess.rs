@@ -11,6 +11,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use aho_corasick::AhoCorasick;
 use anyhow::{anyhow, Context as _};
 use mdbook::{
     book::{BookItems, Chapter},
@@ -614,7 +615,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
 
         while let Some((event, range)) = self.parser.next() {
             let event = match event {
-                Event::Start(tag) => {
+                Event::Start(tag) => 'current_event: {
                     let tag = match tag {
                         Tag::List(start_number) => {
                             self.preprocessor.ctx.cur_list_depth += 1;
@@ -675,19 +676,93 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             );
                             Tag::Image(link_ty, destination, title)
                         }
-                        Tag::CodeBlock(CodeBlockKind::Fenced(info_string)) => {
+                        Tag::CodeBlock(CodeBlockKind::Fenced(mut info_string)) => {
                             // MdBook supports custom attributes on Rust code blocks.
                             // Attributes are separated by a comma, space, or tab from the 'rust' prefix.
                             // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
                             // This strips out the attributes.
                             static MDBOOK_ATTRIBUTES: Lazy<Regex> =
                                 Lazy::new(|| Regex::new(r"^rust[, \t].*").unwrap());
-                            let info_string = match MDBOOK_ATTRIBUTES.replace(&info_string, "rust")
+                            if let Cow::Owned(info) =
+                                MDBOOK_ATTRIBUTES.replace(&info_string, "rust")
                             {
-                                Cow::Borrowed(_) => info_string,
-                                Cow::Owned(info_string) => info_string.into(),
+                                info_string = info.into();
                             };
-                            Tag::CodeBlock(CodeBlockKind::Fenced(info_string))
+
+                            // Pandoc+fvextra only wraps long lines in code blocks with info strings
+                            if info_string.is_empty() {
+                                info_string = "text".into();
+                            }
+
+                            let code_block = Tag::CodeBlock(CodeBlockKind::Fenced(info_string));
+
+                            if let OutputFormat::Latex { .. } = self.preprocessor.ctx.output {
+                                const CODE_BLOCK_LINE_LENGTH_LIMIT: usize = 1000;
+
+                                let mut texts = vec![];
+                                let mut overly_long_line = false;
+                                for (event, _) in &mut self.parser {
+                                    match event {
+                                        Event::Text(text) => {
+                                            if text.lines().any(|line| {
+                                                line.len() > CODE_BLOCK_LINE_LENGTH_LIMIT
+                                            }) {
+                                                overly_long_line = true;
+                                            }
+                                            texts.push(text)
+                                        }
+                                        Event::End(Tag::CodeBlock(_)) => break,
+                                        event => {
+                                            co.yield_(Event::Start(code_block)).await;
+                                            for text in texts {
+                                                co.yield_(Event::Text(text)).await;
+                                            }
+                                            break 'current_event event;
+                                        }
+                                    }
+                                }
+
+                                if overly_long_line {
+                                    (self.preprocessor.ctx.pandoc)
+                                        .enable_extension(pandoc::Extension::RawAttribute);
+                                    let raw_latex =
+                                        || Tag::CodeBlock(CodeBlockKind::Fenced("{=latex}".into()));
+                                    let lines = {
+                                        let patterns = &[r"\", "{", "}", "$", "_", "^", "&", "]"];
+                                        let replace_with = &[
+                                            r"\textbackslash{}",
+                                            r"\{",
+                                            r"\}",
+                                            r"\$",
+                                            r"\_",
+                                            r"\^",
+                                            r"\&",
+                                            r"{{]}}",
+                                        ];
+                                        let ac = AhoCorasick::new(patterns).unwrap();
+                                        texts.iter().flat_map(|text| text.lines()).map(
+                                            move |text| {
+                                                let text = ac.replace_all(text, replace_with);
+                                                Event::Text(format!(r"\texttt{{{text}}}\\").into())
+                                            },
+                                        )
+                                    };
+                                    for event in iter::once(Event::Start(raw_latex())).chain(lines)
+                                    {
+                                        co.yield_(event).await
+                                    }
+                                    break 'current_event Event::End(raw_latex());
+                                } else {
+                                    for event in iter::once(Event::Start(code_block.clone()))
+                                        .chain(texts.into_iter().map(Event::Text))
+                                    {
+                                        co.yield_(event).await;
+                                    }
+                                    break 'current_event Event::End(code_block);
+                                }
+                            }
+
+                            code_block
                         }
                         tag => tag,
                     };

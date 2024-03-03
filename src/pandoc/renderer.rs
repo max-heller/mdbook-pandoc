@@ -122,6 +122,18 @@ impl Renderer {
         let mut additional_variables = vec![];
         match &mut ctx.output {
             OutputFormat::Latex { packages } => {
+                // Enable line breaking in code blocks
+                additional_variables.push((
+                    "header-includes",
+                    r"
+\IfFileExists{fvextra.sty}{% use fvextra if available to break long lines in code blocks
+  \usepackage{fvextra}
+  \fvset{breaklines}
+}{}
+"
+                    .into(),
+                ));
+
                 // https://www.overleaf.com/learn/latex/Lists#Lists_for_lawyers:_nesting_lists_to_an_arbitrary_depth
                 const LATEX_DEFAULT_LIST_DEPTH_LIMIT: usize = 4;
 
