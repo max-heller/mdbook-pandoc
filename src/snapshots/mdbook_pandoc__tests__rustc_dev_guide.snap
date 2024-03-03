@@ -27,208 +27,208 @@ expression: logs
  WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__ice' on page
-  26 undefined on input line 1356.
+  26 undefined on input line 1360.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__conventionsmd__formatting' on page
-  42 undefined on input line 2383.
+  42 undefined on input line 2393.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__tests__addingmd__explanatory_comment'
-  on page 54 undefined on input line 3245.
+  on page 54 undefined on input line 3257.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__building__how-to-build-and-runmd__toolchain'
-  on page 106 undefined on input line 6619.
+  on page 106 undefined on input line 6655.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__gitmd__conflicts' on page 135
-  undefined on input line 8304.
+  `book__pandoc__pdf__src__gitmd__conflicts' on page 136
+  undefined on input line 8348.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__walkthroughmd__impl' on page 148
-  undefined on input line 8921.
+  `book__pandoc__pdf__src__walkthroughmd__impl' on page 149
+  undefined on input line 8987.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__conventionsmd__formatting' on page
-  166 undefined on input line 9919.
+  167 undefined on input line 9985.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__cc' on page 166
-  undefined on input line 9921.
+  `book__pandoc__pdf__src__conventionsmd__cc' on page 167
+  undefined on input line 9987.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__cio' on page 166
-  undefined on input line 9923.
+  `book__pandoc__pdf__src__conventionsmd__cio' on page 167
+  undefined on input line 9989.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__er' on page 166
-  undefined on input line 9925.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__notification-groups__aboutmd__join'
-  on page 189 undefined on input line 10891.
+  `book__pandoc__pdf__src__conventionsmd__er' on page 167
+  undefined on input line 9991.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__notification-groups__aboutmd__join'
-  on page 189 undefined on input line 10896.
+  on page 191 undefined on input line 10971.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pandoc__pdf__src__notification-groups__aboutmd__join'
+  on page 191 undefined on input line 10976.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__intrinsic' on
-  page 223 undefined on input line 12864.
+  page 225 undefined on input line 12944.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__queries__incremental-compilationmd__dag'
-  on page 241 undefined on input line 13988.
+  on page 244 undefined on input line 14072.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__querymd__adding-a-new-kind-of-query'
-  on page 252 undefined on input line 14576.
+  on page 255 undefined on input line 14660.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__generic_argumentsmd__GenericArgs'
-  on page 264 undefined on input line 15193.
+  on page 267 undefined on input line 15277.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  page 331 undefined on input line 19001.
+  page 334 undefined on input line 19087.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  page 331 undefined on input line 19029.
+  page 334 undefined on input line 19115.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__mir__indexmd__promoted' on page 335
-  undefined on input line 19264.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
-  page 335 undefined on input line 19277.
+  `book__pandoc__pdf__src__mir__indexmd__promoted' on page 338
+  undefined on input line 19350.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
-  page 335 undefined on input line 19287.
+  page 338 undefined on input line 19363.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
-  page 335 undefined on input line 19307.
+  page 338 undefined on input line 19373.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
+  page 338 undefined on input line 19393.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__placeholder'
-  on page 399 undefined on input line 23020.
+  on page 402 undefined on input line 23106.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__type-inferencemd__vars' on page 416
-  undefined on input line 24272.
+  `book__pandoc__pdf__src__type-inferencemd__vars' on page 419
+  undefined on input line 24358.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 417 undefined on input line 24310.
+  on page 420 undefined on input line 24396.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__traits__canonical-queriesmd__query-response'
-  on page 418 undefined on input line 24390.
+  on page 421 undefined on input line 24476.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__traits__canonical-queriesmd__query-response'
-  on page 418 undefined on input line 24431.
+  on page 421 undefined on input line 24517.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__variancemd__addendum' on page 442
-  undefined on input line 26061.
+  `book__pandoc__pdf__src__variancemd__addendum' on page 445
+  undefined on input line 26147.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__opaque-types-impl-trait-inferencemd__Within-the-type_of-query'
-  on page 450 undefined on input line 26607.
+  on page 453 undefined on input line 26693.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__region' on
-  page 484 undefined on input line 28361.
+  page 487 undefined on input line 28449.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__inf-var' on
-  page 484 undefined on input line 28364.
+  page 487 undefined on input line 28452.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__dataflow'
-  on page 484 undefined on input line 28368.
+  on page 487 undefined on input line 28456.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 492 undefined on input line 28960.
+  on page 495 undefined on input line 29048.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__point' on
-  page 497 undefined on input line 29362.
+  page 500 undefined on input line 29450.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__borrow_check__region_inference__member_constraintsmd__collecting'
-  on page 505 undefined on input line 29927.
+  on page 508 undefined on input line 30015.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__quantified'
-  on page 507 undefined on input line 30031.
+  on page 510 undefined on input line 30119.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__variance'
-  on page 507 undefined on input line 30053.
+  on page 510 undefined on input line 30141.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 507 undefined on input line 30103.
+  on page 510 undefined on input line 30191.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__diagnosticsmd__future-incompatible'
-  on page 523 undefined on input line 31056.
+  on page 526 undefined on input line 31146.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__mono' on page
-  565 undefined on input line 33642.
+  568 undefined on input line 33736.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__def-id' on
-  page 565 undefined on input line 33656.
+  page 568 undefined on input line 33750.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__codegen-unit'
-  on page 578 undefined on input line 34372.
+  on page 581 undefined on input line 34466.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  page 637 undefined on input line 37723.
+  page 641 undefined on input line 37825.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 643 undefined on input line 38090.
+  on page 647 undefined on input line 38192.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 643 undefined on input line 38100.
+  on page 647 undefined on input line 38202.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  page 643 undefined on input line 38114.
+  page 647 undefined on input line 38216.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__TyCtxt' on
-  page 643 undefined on input line 38122.
+  page 647 undefined on input line 38224.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__cx' on page
-  643 undefined on input line 38123.
+  647 undefined on input line 38225.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__tcx' on page
-  643 undefined on input line 38124.
+  647 undefined on input line 38226.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__dataflow'
-  on page 643 undefined on input line 38132.
+  on page 647 undefined on input line 38234.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__what-is-a-debruijn-index'
-  on page 643 undefined on input line 38137.
+  on page 647 undefined on input line 38239.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__variant-idx'
-  on page 643 undefined on input line 38148.
+  on page 647 undefined on input line 38250.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__tag' on page
-  643 undefined on input line 38150.
+  647 undefined on input line 38252.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on page 643 undefined on input line 38182.
+  on page 647 undefined on input line 38284.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__tag' on page
-  643 undefined on input line 38297.
+  647 undefined on input line 38399.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__traits__goals-and-clausesmd__trait-ref'
-  on page 643 undefined on input line 38327.
+  on page 647 undefined on input line 38429.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__mir__indexmd__promoted' on page 643
-  undefined on input line 38330.
+  `book__pandoc__pdf__src__mir__indexmd__promoted' on page 647
+  undefined on input line 38432.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__quantified'
-  on page 643 undefined on input line 38338.
+  on page 647 undefined on input line 38440.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__discriminant'
-  on page 643 undefined on input line 38393.
+  on page 647 undefined on input line 38495.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__niche' on
-  page 643 undefined on input line 38396.
+  page 647 undefined on input line 38498.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__traits__goals-and-clausesmd__trait-ref'
-  on page 643 undefined on input line 38420.
+  on page 647 undefined on input line 38522.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__tcx' on page
-  643 undefined on input line 38428.
+  647 undefined on input line 38530.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__variance'
-  on page 643 undefined on input line 38447.
+  on page 647 undefined on input line 38549.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__discriminant'
-  on page 643 undefined on input line 38453.
+  on page 647 undefined on input line 38555.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on page 702
-  undefined on input line 38501.
+  `book__pandoc__pdf__src__hirmd__hir-id' on page 706
+  undefined on input line 38603.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on page 702
-  undefined on input line 38517.
+  `book__pandoc__pdf__src__hirmd__hir-id' on page 706
+  undefined on input line 38619.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on page 702
-  undefined on input line 38529.
+  `book__pandoc__pdf__src__hirmd__hir-id' on page 706
+  undefined on input line 38631.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on page 702
-  undefined on input line 38534.
+  `book__pandoc__pdf__src__hirmd__hir-id' on page 706
+  undefined on input line 38636.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no 🔑 (U+1F511) (U+1F511) in font NotoSerif:mode=node;script
 [WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif:mode=node;script=l

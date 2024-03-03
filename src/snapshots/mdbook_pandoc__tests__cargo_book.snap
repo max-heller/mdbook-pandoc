@@ -170,10 +170,10 @@ DEBUG mdbook_pandoc::preprocess: Unable to resolve relative path '../../referenc
 DEBUG mdbook_pandoc::pandoc::renderer: Running pandoc    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__commands__cargomd__option-cargo---offline'
-  on page 290 undefined on input line 19567.
+  on page 290 undefined on input line 19579.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__commands__cargo-buildmd__option-cargo-build---keep-going'
-  on page 294 undefined on input line 19805.
+  on page 294 undefined on input line 19817.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
 
