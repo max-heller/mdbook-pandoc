@@ -175,6 +175,7 @@ mod tests {
 
     use mdbook::{BookItem, Renderer as _};
     use once_cell::sync::Lazy;
+    use regex::Regex;
     use tempfile::{tempfile, TempDir};
 
     use super::*;
@@ -357,11 +358,21 @@ mod tests {
             if let Err(err) = res {
                 writeln!(&mut logs, "{err:#}").unwrap()
             }
+
+            let root = self.book.root.canonicalize().unwrap();
+            let re = Regex::new(&format!(
+                r"(?P<root>{})|(?P<line>line \d+)|(?P<page>page \d+)",
+                root.display()
+            ))
+            .unwrap();
+            let logs = re.replace_all(&logs, |caps: &regex::Captures| {
+                (caps.name("root").map(|_| "$ROOT"))
+                    .or_else(|| caps.name("line").map(|_| "$LINE"))
+                    .or_else(|| caps.name("page").map(|_| "$PAGE"))
+                    .unwrap()
+            });
             BuildOutput {
-                logs: logs.replace(
-                    &self.book.root.canonicalize().unwrap().display().to_string(),
-                    "$ROOT",
-                ),
+                logs: logs.into(),
                 dir: self.book.build_dir_for(renderer.name()),
                 _root: self._root,
             }

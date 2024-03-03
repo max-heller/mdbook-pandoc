@@ -39,16 +39,16 @@ expression: logs
  WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch15-02-derefmd__following-the-pointer-to-the-value-with-the-dereference-operator'
-  on page 195 undefined on input line 10897.
+  on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch06-02-matchmd__the-match-control-flow-operator'
-  on page 612 undefined on input line 33749.
+  on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch13-01-closuresmd__moving-captured-values-out-of-the-closure-and-the-fn-traits'
-  on page 655 undefined on input line 36119.
+  on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__ch04-01-what-is-ownershipmd__ways-variables-and-data-interact-clone'
-  on page 709 undefined on input line 38984.
+  on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no 🚨 (U+1F6A8) (U+1F6A8) in font NotoSerif/B:mode=node;scri
 [WARNING] Missing character: There is no 👍 (U+1F44D) (U+1F44D) in font NotoSansMono:mode=node;scr
