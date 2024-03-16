@@ -2,6 +2,9 @@
 
 set -e
 
+# Update apt package lists
+sudo apt-get update
+
 # cargo-nextest
 curl -LsSf https://get.nexte.st/0.9/linux | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
 
