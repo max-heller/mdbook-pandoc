@@ -630,7 +630,7 @@ mod tests {
         │ 
         │ \hyperref[custom-heading]{heading}
         ├─ latex/src/chapter.md
-        │ # Heading {#custom-heading}
+        │ # Heading { #custom-heading }
         │ 
         │ [heading](#custom-heading)
         "###);
@@ -829,7 +829,7 @@ This is an example of a footnote[^note].
         ├─ latex/src/onepointone.md
         │ ## Top
         │ 
-        │ ### Another {.unnumbered .unlisted}
+        │ ### Another { .unnumbered .unlisted }
         ├─ latex/src/two.md
         │ # Two
         "###);
@@ -990,6 +990,7 @@ fn main() {}
         │ \href{book/latex/src/chapter.md}{link}
         ├─ latex/src/chapter.md
         │ [link](book/latex/src/chapter.md "\"foo\" (bar)")
+        │ 
         "###);
     }
 

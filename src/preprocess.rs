@@ -18,7 +18,7 @@ use mdbook::{
     BookItem,
 };
 use once_cell::sync::Lazy;
-use pulldown_cmark::{CodeBlockKind, CowStr, HeadingLevel};
+use pulldown_cmark::{CodeBlockKind, CowStr, HeadingLevel, LinkType};
 use regex::Regex;
 use walkdir::WalkDir;
 
@@ -130,7 +130,13 @@ impl<'book> Preprocessor<'book> {
             .map(|(res, entry)| {
                 res.and_then(|(src, dst)| {
                     let dst = self
-                        .normalize_link(&src, src.parent().unwrap(), dst.into(), LinkContext::Link)
+                        .normalize_link(
+                            &src,
+                            src.parent().unwrap(),
+                            LinkType::Autolink,
+                            dst.into(),
+                            LinkContext::Link,
+                        )
                         .map_err(|(err, _)| err)
                         .context("Unable to normalize redirect destination")?;
                     let src = self
@@ -165,6 +171,7 @@ impl<'book> Preprocessor<'book> {
     fn normalize_link_or_leave_as_is<'link>(
         &mut self,
         chapter: &Chapter,
+        link_type: LinkType,
         link: CowStr<'link>,
         ctx: LinkContext,
     ) -> CowStr<'link> {
@@ -172,7 +179,7 @@ impl<'book> Preprocessor<'book> {
             return link;
         };
         let chapter_dir = chapter_path.parent().unwrap();
-        self.normalize_link(chapter_path, chapter_dir, link, ctx)
+        self.normalize_link(chapter_path, chapter_dir, link_type, link, ctx)
             .unwrap_or_else(|(err, link)| {
                 log::warn!(
                     "Unable to normalize link '{}' in chapter '{}': {err:#}",
@@ -187,9 +194,18 @@ impl<'book> Preprocessor<'book> {
         &mut self,
         chapter_path: &Path,
         chapter_dir: &Path,
+        link_type: LinkType,
         link: CowStr<'link>,
         ctx: LinkContext,
     ) -> Result<CowStr<'link>, (anyhow::Error, CowStr<'link>)> {
+        use LinkType::*;
+        match link_type {
+            // Don't try to normalize emails
+            Email => return Ok(link),
+            Inline | Reference | ReferenceUnknown | Collapsed | CollapsedUnknown | Shortcut
+            | ShortcutUnknown | Autolink => {}
+        }
+
         // URI scheme definition: https://datatracker.ietf.org/doc/html/rfc3986#section-3.1
         static SCHEME: Lazy<Regex> =
             Lazy::new(|| Regex::new(r"^(?P<scheme>[a-zA-Z][a-z0-9+.-]*):").unwrap());
@@ -498,8 +514,8 @@ impl<'book> Preprocess<'book> {
 struct PreprocessChapter<'book, 'preprocessor> {
     preprocessor: &'preprocessor mut Preprocessor<'book>,
     chapter: &'book Chapter,
-    parser: Peekable<pulldown_cmark::OffsetIter<'book, 'book>>,
-    start_tags: Vec<pulldown_cmark::Tag<'book>>,
+    parser: Peekable<pulldown_cmark::OffsetIter<'book, pulldown_cmark::DefaultBrokenLinkCallback>>,
+    matching_tags: Vec<pulldown_cmark::TagEnd>,
     encountered_h1: bool,
 }
 
@@ -524,7 +540,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             parser: pulldown_cmark::Parser::new_ext(&chapter.content, PARSER_OPTIONS)
                 .into_offset_iter()
                 .peekable(),
-            start_tags: Default::default(),
+            matching_tags: Default::default(),
             encountered_h1: false,
         }
     }
@@ -532,9 +548,8 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
     fn update_heading<'b>(
         &mut self,
         level: HeadingLevel,
-        id: Option<&'b str>,
-        mut classes: Vec<&'b str>,
-    ) -> Option<(HeadingLevel, Option<&'b str>, Vec<&'b str>)> {
+        mut classes: Vec<CowStr<'b>>,
+    ) -> Option<(HeadingLevel, Vec<CowStr<'b>>)> {
         const PANDOC_UNNUMBERED_CLASS: &str = "unnumbered";
         const PANDOC_UNLISTED_CLASS: &str = "unlisted";
 
@@ -545,15 +560,15 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             if let HeadingLevel::H1 = level {
                 // Number the first H1 in each numbered chapter, mirroring mdBook
                 if self.encountered_h1 {
-                    classes.push(PANDOC_UNNUMBERED_CLASS);
-                    classes.push(PANDOC_UNLISTED_CLASS);
+                    classes.push(PANDOC_UNNUMBERED_CLASS.into());
+                    classes.push(PANDOC_UNLISTED_CLASS.into());
                 } else if self.chapter.number.is_none() {
-                    classes.push(PANDOC_UNNUMBERED_CLASS);
+                    classes.push(PANDOC_UNNUMBERED_CLASS.into());
                 }
                 self.encountered_h1 = true;
             } else {
-                classes.push(PANDOC_UNNUMBERED_CLASS);
-                classes.push(PANDOC_UNLISTED_CLASS);
+                classes.push(PANDOC_UNNUMBERED_CLASS.into());
+                classes.push(PANDOC_UNLISTED_CLASS.into());
             }
         }
 
@@ -577,7 +592,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             );
             return None;
         };
-        Some((level, id, classes))
+        Some((level, classes))
     }
 
     fn column_width_annotation(&self, table: &str) -> Option<String> {
@@ -611,7 +626,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
     }
 
     async fn preprocess(mut self, co: genawaiter::stack::Co<'_, pulldown_cmark::Event<'book>>) {
-        use pulldown_cmark::{Event, Tag};
+        use pulldown_cmark::{Event, Tag, TagEnd};
 
         while let Some((event, range)) = self.parser.next() {
             let event = match event {
@@ -644,37 +659,71 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             if let Some(annotation) =
                                 self.column_width_annotation(&self.chapter.content[range])
                             {
+                                co.yield_(Event::Start(Tag::HtmlBlock)).await;
                                 co.yield_(Event::Html(annotation.into())).await;
+                                co.yield_(Event::End(TagEnd::HtmlBlock)).await;
                             }
                             Tag::Table(alignment)
                         }
-                        Tag::Heading(level, id, classes) => self
-                            .update_heading(level, id, classes)
-                            .map(|(level, id, classes)| {
+                        Tag::Heading {
+                            level,
+                            id,
+                            classes,
+                            attrs,
+                        } => self
+                            .update_heading(level, classes)
+                            .map(|(level, classes)| {
                                 if id.is_some() || !classes.is_empty() {
                                     // pandoc does not support `header_attributes` with commonmark
                                     // so use `attributes`, which is a superset
                                     (self.preprocessor.ctx.pandoc)
                                         .enable_extension(pandoc::Extension::Attributes);
                                 }
-                                Tag::Heading(level, id, classes)
+                                Tag::Heading {
+                                    level,
+                                    id,
+                                    classes,
+                                    attrs,
+                                }
                             })
                             .unwrap_or(Tag::Paragraph),
-                        Tag::Link(link_ty, destination, title) => {
-                            let destination = self.preprocessor.normalize_link_or_leave_as_is(
+                        Tag::Link {
+                            link_type,
+                            dest_url,
+                            title,
+                            id,
+                        } => {
+                            let dest_url = self.preprocessor.normalize_link_or_leave_as_is(
                                 self.chapter,
-                                destination,
+                                link_type,
+                                dest_url,
                                 LinkContext::Link,
                             );
-                            Tag::Link(link_ty, destination, title)
+                            Tag::Link {
+                                link_type,
+                                dest_url,
+                                title,
+                                id,
+                            }
                         }
-                        Tag::Image(link_ty, destination, title) => {
-                            let destination = self.preprocessor.normalize_link_or_leave_as_is(
+                        Tag::Image {
+                            link_type,
+                            dest_url,
+                            title,
+                            id,
+                        } => {
+                            let dest_url = self.preprocessor.normalize_link_or_leave_as_is(
                                 self.chapter,
-                                destination,
+                                link_type,
+                                dest_url,
                                 LinkContext::Image,
                             );
-                            Tag::Image(link_ty, destination, title)
+                            Tag::Image {
+                                link_type,
+                                dest_url,
+                                title,
+                                id,
+                            }
                         }
                         Tag::CodeBlock(CodeBlockKind::Fenced(mut info_string)) => {
                             // MdBook supports custom attributes on Rust code blocks.
@@ -711,7 +760,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                             }
                                             texts.push(text)
                                         }
-                                        Event::End(Tag::CodeBlock(_)) => break,
+                                        Event::End(TagEnd::CodeBlock) => break,
                                         event => {
                                             co.yield_(Event::Start(code_block)).await;
                                             for text in texts {
@@ -726,7 +775,8 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                     (self.preprocessor.ctx.pandoc)
                                         .enable_extension(pandoc::Extension::RawAttribute);
                                     let raw_latex =
-                                        || Tag::CodeBlock(CodeBlockKind::Fenced("{=latex}".into()));
+                                        Tag::CodeBlock(CodeBlockKind::Fenced("{=latex}".into()));
+                                    let raw_latex_end = raw_latex.to_end();
                                     let lines = {
                                         let patterns = &[r"\", "{", "}", "$", "_", "^", "&", "]"];
                                         let replace_with = &[
@@ -747,18 +797,18 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                             },
                                         )
                                     };
-                                    for event in iter::once(Event::Start(raw_latex())).chain(lines)
-                                    {
+                                    for event in iter::once(Event::Start(raw_latex)).chain(lines) {
                                         co.yield_(event).await
                                     }
-                                    break 'current_event Event::End(raw_latex());
+                                    break 'current_event Event::End(raw_latex_end);
                                 } else {
-                                    for event in iter::once(Event::Start(code_block.clone()))
+                                    let end_tag = code_block.to_end();
+                                    for event in iter::once(Event::Start(code_block))
                                         .chain(texts.into_iter().map(Event::Text))
                                     {
                                         co.yield_(event).await;
                                     }
-                                    break 'current_event Event::End(code_block);
+                                    break 'current_event Event::End(end_tag);
                                 }
                             }
 
@@ -766,15 +816,15 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         }
                         tag => tag,
                     };
-                    self.start_tags.push(tag.clone());
+                    self.matching_tags.push(tag.to_end());
                     Event::Start(tag)
                 }
                 Event::End(_) => {
-                    let tag = self.start_tags.pop().unwrap();
-                    if let Tag::List(_) = &tag {
+                    let end = self.matching_tags.pop().unwrap();
+                    if let TagEnd::List(_) = &end {
                         self.preprocessor.ctx.cur_list_depth -= 1;
-                    };
-                    Event::End(tag)
+                    }
+                    Event::End(end)
                 }
                 Event::Html(mut html) => {
                     while let Some((Event::Html(more), _)) = self.parser.peek() {
@@ -784,27 +834,19 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         // Actually consume the item from the iterator
                         self.parser.next();
                     }
-                    if let OutputFormat::Latex { packages } = &mut self.preprocessor.ctx.output {
-                        static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
-                            Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#)
-                                .unwrap()
-                        });
-                        if (self.preprocessor.ctx.pandoc)
-                            .enable_extension(pandoc::Extension::RawAttribute)
-                            .is_available()
-                        {
-                            html = match FONT_AWESOME_ICON
-                                .replace_all(&html, r"`\faicon{$icon}`{=latex}")
-                            {
-                                Cow::Borrowed(_) => html,
-                                Cow::Owned(html) => {
-                                    packages.need(latex::Package::FontAwesome);
-                                    html.into()
-                                }
-                            };
-                        }
-                    }
+                    html = self.preprocess_contiguous_html(html);
                     Event::Html(html)
+                }
+                Event::InlineHtml(mut html) => {
+                    while let Some((Event::InlineHtml(more), _)) = self.parser.peek() {
+                        let mut string = html.into_string();
+                        string.push_str(more);
+                        html = string.into();
+                        // Actually consume the item from the iterator
+                        self.parser.next();
+                    }
+                    html = self.preprocess_contiguous_html(html);
+                    Event::InlineHtml(html)
                 }
                 Event::TaskListMarker(checked) => {
                     (self.preprocessor.ctx.pandoc).enable_extension(pandoc::Extension::TaskLists);
@@ -814,6 +856,27 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             };
             co.yield_(event).await;
         }
+    }
+
+    fn preprocess_contiguous_html(&mut self, mut html: CowStr<'book>) -> CowStr<'book> {
+        if let OutputFormat::Latex { packages } = &mut self.preprocessor.ctx.output {
+            static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
+                Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#).unwrap()
+            });
+            if (self.preprocessor.ctx.pandoc)
+                .enable_extension(pandoc::Extension::RawAttribute)
+                .is_available()
+            {
+                html = match FONT_AWESOME_ICON.replace_all(&html, r"`\faicon{$icon}`{=latex}") {
+                    Cow::Borrowed(_) => html,
+                    Cow::Owned(html) => {
+                        packages.need(latex::Package::FontAwesome);
+                        html.into()
+                    }
+                };
+            }
+        }
+        html
     }
 }
 
