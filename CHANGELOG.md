@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2024-03-16
+
+### Bug Fixes
+
+- Replace redirects that can't be resolved with links to hosted HTML ([#67](https://github.com/max-heller/mdbook-pandoc/pull/67))
+- Run `apt-get update` before installing packages ([#71](https://github.com/max-heller/mdbook-pandoc/pull/71))
+
+### Features
+
+- Wrap long lines in code blocks ([#60](https://github.com/max-heller/mdbook-pandoc/pull/60))
+- [**breaking**] Upgrade `pulldown-cmark` to 0.10 ([#70](https://github.com/max-heller/mdbook-pandoc/pull/70))
+
 ## [0.5.0] - 2024-02-10
 
 ### Changes
