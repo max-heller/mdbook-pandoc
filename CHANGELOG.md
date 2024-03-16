@@ -7,12 +7,14 @@ All notable changes to this project will be documented in this file.
 ### Bug Fixes
 
 - Replace redirects that can't be resolved with links to hosted HTML ([#67](https://github.com/max-heller/mdbook-pandoc/pull/67))
-- Run `apt-get update` before installing packages ([#71](https://github.com/max-heller/mdbook-pandoc/pull/71))
 
 ### Features
 
+- [**breaking**] Upgrade `pulldown-cmark` to 0.10 and `pulldown-cmark-to-cmark` to 12.0 ([#70](https://github.com/max-heller/mdbook-pandoc/pull/70))
+
+  This is not an API-breaking change but involves significant changes to the Commonmark parser and renderer and may therefore result in changes to rendered books.
+
 - Wrap long lines in code blocks ([#60](https://github.com/max-heller/mdbook-pandoc/pull/60))
-- [**breaking**] Upgrade `pulldown-cmark` to 0.10 ([#70](https://github.com/max-heller/mdbook-pandoc/pull/70))
 
 ## [0.5.0] - 2024-02-10
 
