@@ -557,7 +557,7 @@ mod tests {
                 "getting-started.md",
             ))
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
@@ -572,7 +572,7 @@ mod tests {
             .chapter(Chapter::new("", "~test1~ ~~test2~~", "chapter.md"))
             .config(Config::latex())
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -593,7 +593,7 @@ mod tests {
             ))
             .config(Config::latex())
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -621,7 +621,7 @@ mod tests {
             ))
             .config(Config::latex())
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -651,7 +651,7 @@ This is an example of a footnote[^note].
             ))
             .config(Config::latex())
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -680,7 +680,7 @@ This is an example of a footnote[^note].
             ))
             .config(Config::latex())
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -715,7 +715,7 @@ This is an example of a footnote[^note].
             ))
             .config(Config::latex())
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -752,7 +752,7 @@ This is an example of a footnote[^note].
             .chapter(Chapter::new("", "# Two", "two.md"))
             .config(Config::latex())
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -781,7 +781,7 @@ This is an example of a footnote[^note].
             .chapter(Chapter::new("Two", "[One](../one/one.md)", "two/two.md"))
             .config(Config::latex())
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -809,7 +809,7 @@ This is an example of a footnote[^note].
             .chapter(Chapter::new("Two", "# Two", "two.md"))
             .config(Config::latex())
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -849,7 +849,7 @@ This is an example of a footnote[^note].
                 "chapter.md",
             ))
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -868,7 +868,7 @@ This is an example of a footnote[^note].
                 "chapter.md",
             ))
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
@@ -893,7 +893,7 @@ This is an example of a footnote[^note].
             .config(Config::pdf())
             .chapter(Chapter::new("", content, "chapter.md"))
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
@@ -914,7 +914,7 @@ $ rustc json_error_demo.rs --error-format json
             .config(Config::pdf())
             .chapter(Chapter::new("", content, "chapter.md"))
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
@@ -940,7 +940,7 @@ fn main() {}
                 "chapter.md",
             ))
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -982,7 +982,7 @@ fn main() {}
                 "chapter.md",
             ))
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -1021,7 +1021,7 @@ colorlinks = false
             .init()
             .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
             .build();
-        insta::assert_display_snapshot!(output, @r###"
+        insta::assert_snapshot!(output, @r###"
         ├─ log output
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
@@ -1049,7 +1049,7 @@ to = "markdown"
             .chapter(Chapter::new("", "[bar](foo/bar.md)", "index.md"))
             .chapter(Chapter::new("", "", "new-new-bar.md"))
             .build();
-        insta::assert_display_snapshot!(output, @r###"
+        insta::assert_snapshot!(output, @r###"
         ├─ log output
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
@@ -1085,7 +1085,7 @@ to = "markdown"
                 "chapter.md",
             ))
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
@@ -1105,7 +1105,7 @@ include-in-header = ["file-in-root"]
             .mdbook_config(cfg.parse().unwrap())
             .file_in_root("file-in-root", "some text")
             .build();
-        insta::assert_display_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/foo/foo.md    
@@ -1199,6 +1199,6 @@ include-in-header = ["file-in-root"]
             .config(Config::pdf())
             .build()
             .logs;
-        insta::assert_display_snapshot!(logs);
+        insta::assert_snapshot!(logs);
     }
 }
