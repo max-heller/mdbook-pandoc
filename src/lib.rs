@@ -27,22 +27,18 @@ struct Config {
     pub keep_preprocessed: bool,
     pub hosted_html: Option<String>,
     /// Code block related configuration.
+    #[serde(default = "Default::default")]
     pub code: CodeConfig,
 }
 
 /// Configuration for tweaking how code blocks are rendered.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 struct CodeConfig {
-    #[serde(default = "defaults::disabled")]
     pub show_hidden_lines: bool,
 }
 
 mod defaults {
-    pub fn disabled() -> bool {
-        false
-    }
-
     pub fn enabled() -> bool {
         true
     }
@@ -376,7 +372,7 @@ mod tests {
 
             let root = self.book.root.canonicalize().unwrap();
             let re = Regex::new(&format!(
-                r"(?P<root>{})|(?P<line>line \d+)|(?P<page>page \d+)",
+                r"(?P<root>{})|(?P<line>line\s+\d+)|(?P<page>page\s+\d+)",
                 root.display()
             ))
             .unwrap();
