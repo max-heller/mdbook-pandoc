@@ -753,7 +753,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                 _ => None,
                             };
                             match hidden_line_prefix {
-                                Some(prefix) if !self.preprocessor.ctx.show_hidden_lines => {
+                                Some(prefix) if !self.preprocessor.ctx.code.show_hidden_lines => {
                                     let mut code = String::with_capacity(
                                         texts.iter().map(|text| text.len()).sum(),
                                     );

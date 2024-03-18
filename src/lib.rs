@@ -26,6 +26,14 @@ struct Config {
     #[serde(default = "defaults::enabled")]
     pub keep_preprocessed: bool,
     pub hosted_html: Option<String>,
+    /// Code block related configuration.
+    pub code: CodeConfig,
+}
+
+/// Configuration for tweaking how code blocks are rendered.
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+struct CodeConfig {
     #[serde(default = "defaults::disabled")]
     pub show_hidden_lines: bool,
 }
@@ -110,7 +118,7 @@ impl mdbook::Renderer for Renderer {
                 columns: profile.columns,
                 cur_list_depth: 0,
                 max_list_depth: 0,
-                show_hidden_lines: cfg.show_hidden_lines,
+                code: &cfg.code,
             };
 
             // Preprocess book
@@ -474,30 +482,36 @@ mod tests {
     }
 
     impl Config {
+        fn default() -> Self {
+            Self {
+                keep_preprocessed: false,
+                profiles: Default::default(),
+                hosted_html: None,
+                code: CodeConfig {
+                    show_hidden_lines: false,
+                },
+            }
+        }
+
         fn latex() -> Self {
             Self {
                 keep_preprocessed: true,
                 profiles: HashMap::from_iter([("latex".into(), pandoc::Profile::latex())]),
-                hosted_html: None,
-                show_hidden_lines: false,
+                ..Self::default()
             }
         }
 
         fn pdf() -> Self {
             Config {
-                keep_preprocessed: false,
                 profiles: HashMap::from_iter([("pdf".into(), pandoc::Profile::pdf())]),
-                hosted_html: None,
-                show_hidden_lines: false,
+                ..Self::default()
             }
         }
 
         fn markdown() -> Self {
             Self {
-                keep_preprocessed: false,
                 profiles: HashMap::from_iter([("markdown".into(), pandoc::Profile::markdown())]),
-                hosted_html: None,
-                show_hidden_lines: false,
+                ..Self::default()
             }
         }
     }
@@ -914,7 +928,9 @@ println!("Hello, world!");
         "###);
         let book = MDBook::init()
             .config(Config {
-                show_hidden_lines: true,
+                code: CodeConfig {
+                    show_hidden_lines: true,
+                },
                 ..Config::markdown()
             })
             .chapter(Chapter::new("", content, "chapter.md"))
