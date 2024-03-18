@@ -738,39 +738,51 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                 info_string = info.into();
                             };
 
+                            let mut texts = vec![];
+                            for (event, _) in &mut self.parser {
+                                match event {
+                                    Event::Text(text) => texts.push(text),
+                                    Event::End(TagEnd::CodeBlock) => break,
+                                    event => panic!("Code blocks should contain only literal text, but encountered {event:?}"),
+                                }
+                            }
+
+                            let hidden_line_prefix = match info_string.as_ref() {
+                                "rust" => Some('#'),
+                                // TODO: respect [output.html.code.hidelines]
+                                _ => None,
+                            };
+                            match hidden_line_prefix {
+                                Some(prefix) if !self.preprocessor.ctx.show_hidden_lines => {
+                                    let mut code = String::with_capacity(
+                                        texts.iter().map(|text| text.len()).sum(),
+                                    );
+                                    for text in texts.drain(..) {
+                                        for line in text
+                                            .lines()
+                                            .filter(|line| !line.trim_start().starts_with(prefix))
+                                        {
+                                            code.push_str(line);
+                                            code.push('\n');
+                                        }
+                                    }
+                                    texts.push(code.into());
+                                }
+                                _ => {}
+                            }
+
                             // Pandoc+fvextra only wraps long lines in code blocks with info strings
                             if info_string.is_empty() {
                                 info_string = "text".into();
                             }
 
-                            let code_block = Tag::CodeBlock(CodeBlockKind::Fenced(info_string));
-
                             if let OutputFormat::Latex { .. } = self.preprocessor.ctx.output {
                                 const CODE_BLOCK_LINE_LENGTH_LIMIT: usize = 1000;
 
-                                let mut texts = vec![];
-                                let mut overly_long_line = false;
-                                for (event, _) in &mut self.parser {
-                                    match event {
-                                        Event::Text(text) => {
-                                            if text.lines().any(|line| {
-                                                line.len() > CODE_BLOCK_LINE_LENGTH_LIMIT
-                                            }) {
-                                                overly_long_line = true;
-                                            }
-                                            texts.push(text)
-                                        }
-                                        Event::End(TagEnd::CodeBlock) => break,
-                                        event => {
-                                            co.yield_(Event::Start(code_block)).await;
-                                            for text in texts {
-                                                co.yield_(Event::Text(text)).await;
-                                            }
-                                            break 'current_event event;
-                                        }
-                                    }
-                                }
-
+                                let overly_long_line = texts.iter().any(|text| {
+                                    text.lines()
+                                        .any(|line| line.len() > CODE_BLOCK_LINE_LENGTH_LIMIT)
+                                });
                                 if overly_long_line {
                                     (self.preprocessor.ctx.pandoc)
                                         .enable_extension(pandoc::Extension::RawAttribute);
@@ -801,18 +813,17 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                         co.yield_(event).await
                                     }
                                     break 'current_event Event::End(raw_latex_end);
-                                } else {
-                                    let end_tag = code_block.to_end();
-                                    for event in iter::once(Event::Start(code_block))
-                                        .chain(texts.into_iter().map(Event::Text))
-                                    {
-                                        co.yield_(event).await;
-                                    }
-                                    break 'current_event Event::End(end_tag);
                                 }
                             }
 
-                            code_block
+                            let code_block = Tag::CodeBlock(CodeBlockKind::Fenced(info_string));
+                            let end_tag = code_block.to_end();
+                            for event in iter::once(Event::Start(code_block))
+                                .chain(texts.into_iter().map(Event::Text))
+                            {
+                                co.yield_(event).await;
+                            }
+                            break 'current_event Event::End(end_tag);
                         }
                         tag => tag,
                     };

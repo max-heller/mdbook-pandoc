@@ -26,9 +26,15 @@ struct Config {
     #[serde(default = "defaults::enabled")]
     pub keep_preprocessed: bool,
     pub hosted_html: Option<String>,
+    #[serde(default = "defaults::disabled")]
+    pub show_hidden_lines: bool,
 }
 
 mod defaults {
+    pub fn disabled() -> bool {
+        false
+    }
+
     pub fn enabled() -> bool {
         true
     }
@@ -104,6 +110,7 @@ impl mdbook::Renderer for Renderer {
                 columns: profile.columns,
                 cur_list_depth: 0,
                 max_list_depth: 0,
+                show_hidden_lines: cfg.show_hidden_lines,
             };
 
             // Preprocess book
@@ -472,6 +479,7 @@ mod tests {
                 keep_preprocessed: true,
                 profiles: HashMap::from_iter([("latex".into(), pandoc::Profile::latex())]),
                 hosted_html: None,
+                show_hidden_lines: false,
             }
         }
 
@@ -480,6 +488,7 @@ mod tests {
                 keep_preprocessed: false,
                 profiles: HashMap::from_iter([("pdf".into(), pandoc::Profile::pdf())]),
                 hosted_html: None,
+                show_hidden_lines: false,
             }
         }
 
@@ -488,6 +497,7 @@ mod tests {
                 keep_preprocessed: false,
                 profiles: HashMap::from_iter([("markdown".into(), pandoc::Profile::markdown())]),
                 hosted_html: None,
+                show_hidden_lines: false,
             }
         }
     }
@@ -875,6 +885,50 @@ This is an example of a footnote[^note].
         ├─ markdown/book.md
         │ ```{=html}
         │ <i class="fa fa-print"/>
+        │ ```
+        "###);
+    }
+
+    #[test]
+    fn code_block_with_hidden_lines() {
+        let content = r#"
+```rust
+# fn main() {
+    # // another hidden line
+println!("Hello, world!");
+# }
+```
+        "#;
+        let book = MDBook::init()
+            .config(Config::markdown())
+            .chapter(Chapter::new("", content, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ ``` rust
+        │ println!("Hello, world!");
+        │ ```
+        "###);
+        let book = MDBook::init()
+            .config(Config {
+                show_hidden_lines: true,
+                ..Config::markdown()
+            })
+            .chapter(Chapter::new("", content, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ ``` rust
+        │ # fn main() {
+        │     # // another hidden line
+        │ println!("Hello, world!");
+        │ # }
         │ ```
         "###);
     }

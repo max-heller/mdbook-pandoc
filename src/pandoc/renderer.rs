@@ -29,6 +29,7 @@ pub struct Context<'book> {
     pub columns: usize,
     pub cur_list_depth: usize,
     pub max_list_depth: usize,
+    pub show_hidden_lines: bool,
 }
 
 pub enum OutputFormat {
