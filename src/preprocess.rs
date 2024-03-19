@@ -748,9 +748,11 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             }
 
                             let hidden_line_prefix = match info_string.as_ref() {
-                                "rust" => Some('#'),
-                                // TODO: respect [output.html.code.hidelines]
-                                _ => None,
+                                "rust" => Some("#"),
+                                // Respect [output.html.code.hidelines]
+                                lang => self.preprocessor.ctx.html.and_then(|html| {
+                                    html.code.hidelines.get(lang).map(|prefix| prefix.as_str())
+                                }),
                             };
                             match hidden_line_prefix {
                                 Some(prefix) if !self.preprocessor.ctx.code.show_hidden_lines => {

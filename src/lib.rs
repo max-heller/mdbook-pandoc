@@ -115,6 +115,7 @@ impl mdbook::Renderer for Renderer {
                 cur_list_depth: 0,
                 max_list_depth: 0,
                 code: &cfg.code,
+                html: html_cfg.as_ref(),
             };
 
             // Preprocess book
@@ -941,6 +942,60 @@ println!("Hello, world!");
         │     # // another hidden line
         │ println!("Hello, world!");
         │ # }
+        │ ```
+        "###);
+    }
+
+    #[test]
+    fn non_rust_code_block_with_hidden_lines() {
+        let content = r#"
+```python
+~hidden()
+nothidden():
+~    hidden()
+    ~hidden()
+    nothidden()
+```
+        "#;
+        let cfg = r#"
+[output.html.code.hidelines]
+python = "~"
+        "#;
+        let book = MDBook::init()
+            .mdbook_config(cfg.parse().unwrap())
+            .config(Config::markdown())
+            .chapter(Chapter::new("", content, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ ``` python
+        │ nothidden():
+        │     nothidden()
+        │ ```
+        "###);
+        let book = MDBook::init()
+            .config(Config {
+                code: CodeConfig {
+                    show_hidden_lines: true,
+                },
+                ..Config::markdown()
+            })
+            .chapter(Chapter::new("", content, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ ``` python
+        │ ~hidden()
+        │ nothidden():
+        │ ~    hidden()
+        │     ~hidden()
+        │     nothidden()
         │ ```
         "###);
     }
