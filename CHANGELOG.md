@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.1] - 2024-03-19
+
+### Features
+
+- Hide/show hidden lines in code blocks ([#76](https://github.com/max-heller/mdbook-pandoc/pull/76))
+
 ## [0.6.0] - 2024-03-16
 
 ### Bug Fixes
