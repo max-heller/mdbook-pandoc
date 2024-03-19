@@ -1001,6 +1001,33 @@ python = "~"
     }
 
     #[test]
+    fn code_block_hidelines_override() {
+        let content = r#"
+```python,hidelines=!!!
+!!!hidden()
+nothidden():
+!!!    hidden()
+    !!!hidden()
+    nothidden()
+```
+        "#;
+        let book = MDBook::init()
+            .config(Config::markdown())
+            .chapter(Chapter::new("", content, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ ``` python
+        │ nothidden():
+        │     nothidden()
+        │ ```
+        "###);
+    }
+
+    #[test]
     fn code_block_with_very_long_line() {
         let long_line = str::repeat("long ", 1000);
         let content = format!(

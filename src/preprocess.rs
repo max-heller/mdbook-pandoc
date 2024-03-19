@@ -726,17 +726,29 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             }
                         }
                         Tag::CodeBlock(CodeBlockKind::Fenced(mut info_string)) => {
-                            // MdBook supports custom attributes on Rust code blocks.
-                            // Attributes are separated by a comma, space, or tab from the 'rust' prefix.
+                            // MdBook supports custom attributes in code block info strings.
+                            // Attributes are separated by a comma, space, or tab from the language name.
                             // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
-                            // This strips out the attributes.
-                            static MDBOOK_ATTRIBUTES: Lazy<Regex> =
-                                Lazy::new(|| Regex::new(r"^rust[, \t].*").unwrap());
-                            if let Cow::Owned(info) =
-                                MDBOOK_ATTRIBUTES.replace(&info_string, "rust")
-                            {
-                                info_string = info.into();
+                            // This processes and strips out the attributes.
+                            let (language, mut attributes) = {
+                                let mut parts =
+                                    info_string.split([',', ' ', '\t']).map(|part| part.trim());
+                                (parts.next(), parts)
                             };
+
+                            // https://rust-lang.github.io/mdBook/format/mdbook.html?highlight=hide#hiding-code-lines
+                            let hidelines_override =
+                                attributes.find_map(|attr| attr.strip_prefix("hidelines="));
+                            let hidden_line_prefix = hidelines_override.or_else(|| {
+                                let lang = language?;
+                                // Respect [output.html.code.hidelines]
+                                let html = self.preprocessor.ctx.html;
+                                html.and_then(|html| Some(html.code.hidelines.get(lang)?.as_str()))
+                                    .or(match lang {
+                                        "rust" => Some("#"),
+                                        _ => None,
+                                    })
+                            });
 
                             let mut texts = vec![];
                             for (event, _) in &mut self.parser {
@@ -747,13 +759,6 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                 }
                             }
 
-                            let hidden_line_prefix = match info_string.as_ref() {
-                                "rust" => Some("#"),
-                                // Respect [output.html.code.hidelines]
-                                lang => self.preprocessor.ctx.html.and_then(|html| {
-                                    html.code.hidelines.get(lang).map(|prefix| prefix.as_str())
-                                }),
-                            };
                             match hidden_line_prefix {
                                 Some(prefix) if !self.preprocessor.ctx.code.show_hidden_lines => {
                                     let mut code = String::with_capacity(
@@ -774,9 +779,8 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             }
 
                             // Pandoc+fvextra only wraps long lines in code blocks with info strings
-                            if info_string.is_empty() {
-                                info_string = "text".into();
-                            }
+                            // so fall back to "text"
+                            info_string = language.unwrap_or("text").to_owned().into();
 
                             if let OutputFormat::Latex { .. } = self.preprocessor.ctx.output {
                                 const CODE_BLOCK_LINE_LENGTH_LIMIT: usize = 1000;
