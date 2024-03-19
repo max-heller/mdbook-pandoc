@@ -726,51 +726,69 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             }
                         }
                         Tag::CodeBlock(CodeBlockKind::Fenced(mut info_string)) => {
-                            // MdBook supports custom attributes on Rust code blocks.
-                            // Attributes are separated by a comma, space, or tab from the 'rust' prefix.
+                            // MdBook supports custom attributes in code block info strings.
+                            // Attributes are separated by a comma, space, or tab from the language name.
                             // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
-                            // This strips out the attributes.
-                            static MDBOOK_ATTRIBUTES: Lazy<Regex> =
-                                Lazy::new(|| Regex::new(r"^rust[, \t].*").unwrap());
-                            if let Cow::Owned(info) =
-                                MDBOOK_ATTRIBUTES.replace(&info_string, "rust")
-                            {
-                                info_string = info.into();
+                            // This processes and strips out the attributes.
+                            let (language, mut attributes) = {
+                                let mut parts =
+                                    info_string.split([',', ' ', '\t']).map(|part| part.trim());
+                                (parts.next(), parts)
                             };
 
-                            // Pandoc+fvextra only wraps long lines in code blocks with info strings
-                            if info_string.is_empty() {
-                                info_string = "text".into();
+                            // https://rust-lang.github.io/mdBook/format/mdbook.html?highlight=hide#hiding-code-lines
+                            let hidelines_override =
+                                attributes.find_map(|attr| attr.strip_prefix("hidelines="));
+                            let hidden_line_prefix = hidelines_override.or_else(|| {
+                                let lang = language?;
+                                // Respect [output.html.code.hidelines]
+                                let html = self.preprocessor.ctx.html;
+                                html.and_then(|html| Some(html.code.hidelines.get(lang)?.as_str()))
+                                    .or(match lang {
+                                        "rust" => Some("#"),
+                                        _ => None,
+                                    })
+                            });
+
+                            let mut texts = vec![];
+                            for (event, _) in &mut self.parser {
+                                match event {
+                                    Event::Text(text) => texts.push(text),
+                                    Event::End(TagEnd::CodeBlock) => break,
+                                    event => panic!("Code blocks should contain only literal text, but encountered {event:?}"),
+                                }
                             }
 
-                            let code_block = Tag::CodeBlock(CodeBlockKind::Fenced(info_string));
+                            match hidden_line_prefix {
+                                Some(prefix) if !self.preprocessor.ctx.code.show_hidden_lines => {
+                                    let mut code = String::with_capacity(
+                                        texts.iter().map(|text| text.len()).sum(),
+                                    );
+                                    for text in texts.drain(..) {
+                                        for line in text
+                                            .lines()
+                                            .filter(|line| !line.trim_start().starts_with(prefix))
+                                        {
+                                            code.push_str(line);
+                                            code.push('\n');
+                                        }
+                                    }
+                                    texts.push(code.into());
+                                }
+                                _ => {}
+                            }
+
+                            // Pandoc+fvextra only wraps long lines in code blocks with info strings
+                            // so fall back to "text"
+                            info_string = language.unwrap_or("text").to_owned().into();
 
                             if let OutputFormat::Latex { .. } = self.preprocessor.ctx.output {
                                 const CODE_BLOCK_LINE_LENGTH_LIMIT: usize = 1000;
 
-                                let mut texts = vec![];
-                                let mut overly_long_line = false;
-                                for (event, _) in &mut self.parser {
-                                    match event {
-                                        Event::Text(text) => {
-                                            if text.lines().any(|line| {
-                                                line.len() > CODE_BLOCK_LINE_LENGTH_LIMIT
-                                            }) {
-                                                overly_long_line = true;
-                                            }
-                                            texts.push(text)
-                                        }
-                                        Event::End(TagEnd::CodeBlock) => break,
-                                        event => {
-                                            co.yield_(Event::Start(code_block)).await;
-                                            for text in texts {
-                                                co.yield_(Event::Text(text)).await;
-                                            }
-                                            break 'current_event event;
-                                        }
-                                    }
-                                }
-
+                                let overly_long_line = texts.iter().any(|text| {
+                                    text.lines()
+                                        .any(|line| line.len() > CODE_BLOCK_LINE_LENGTH_LIMIT)
+                                });
                                 if overly_long_line {
                                     (self.preprocessor.ctx.pandoc)
                                         .enable_extension(pandoc::Extension::RawAttribute);
@@ -801,18 +819,17 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                         co.yield_(event).await
                                     }
                                     break 'current_event Event::End(raw_latex_end);
-                                } else {
-                                    let end_tag = code_block.to_end();
-                                    for event in iter::once(Event::Start(code_block))
-                                        .chain(texts.into_iter().map(Event::Text))
-                                    {
-                                        co.yield_(event).await;
-                                    }
-                                    break 'current_event Event::End(end_tag);
                                 }
                             }
 
-                            code_block
+                            let code_block = Tag::CodeBlock(CodeBlockKind::Fenced(info_string));
+                            let end_tag = code_block.to_end();
+                            for event in iter::once(Event::Start(code_block))
+                                .chain(texts.into_iter().map(Event::Text))
+                            {
+                                co.yield_(event).await;
+                            }
+                            break 'current_event Event::End(end_tag);
                         }
                         tag => tag,
                     };

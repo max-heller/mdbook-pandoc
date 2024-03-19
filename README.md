@@ -66,6 +66,11 @@ A subset of the available options are described below:
 [output.pandoc]
 hosted-html = "https://doc.rust-lang.org/book" # URL of a HTML version of the book
 
+[output.pandoc.code]
+# Display hidden lines in code blocks (e.g., lines in Rust blocks prefixed by '#').
+# See https://rust-lang.github.io/mdBook/format/mdbook.html?highlight=hidden#hiding-code-lines
+show-hidden-lines = false
+
 [output.pandoc.profile.<name>] # options to pass to Pandoc (see https://pandoc.org/MANUAL.html#defaults-files)
 output-file = "output.pdf" # output file (within the profile's build directory)
 to = "latex" # output format

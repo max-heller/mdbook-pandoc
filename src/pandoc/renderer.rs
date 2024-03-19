@@ -14,6 +14,7 @@ use crate::{
     book::Book,
     latex,
     pandoc::{self, extension, Profile},
+    CodeConfig,
 };
 
 pub struct Renderer {
@@ -29,6 +30,8 @@ pub struct Context<'book> {
     pub columns: usize,
     pub cur_list_depth: usize,
     pub max_list_depth: usize,
+    pub html: Option<&'book mdbook::config::HtmlConfig>,
+    pub(crate) code: &'book CodeConfig,
 }
 
 pub enum OutputFormat {

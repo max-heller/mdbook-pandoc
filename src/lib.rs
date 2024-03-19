@@ -26,6 +26,16 @@ struct Config {
     #[serde(default = "defaults::enabled")]
     pub keep_preprocessed: bool,
     pub hosted_html: Option<String>,
+    /// Code block related configuration.
+    #[serde(default = "Default::default")]
+    pub code: CodeConfig,
+}
+
+/// Configuration for tweaking how code blocks are rendered.
+#[derive(Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+struct CodeConfig {
+    pub show_hidden_lines: bool,
 }
 
 mod defaults {
@@ -104,6 +114,8 @@ impl mdbook::Renderer for Renderer {
                 columns: profile.columns,
                 cur_list_depth: 0,
                 max_list_depth: 0,
+                code: &cfg.code,
+                html: html_cfg.as_ref(),
             };
 
             // Preprocess book
@@ -361,7 +373,7 @@ mod tests {
 
             let root = self.book.root.canonicalize().unwrap();
             let re = Regex::new(&format!(
-                r"(?P<root>{})|(?P<line>line \d+)|(?P<page>page \d+)",
+                r"(?P<root>{})|(?P<line>line\s+\d+)|(?P<page>page\s+\d+)",
                 root.display()
             ))
             .unwrap();
@@ -467,27 +479,36 @@ mod tests {
     }
 
     impl Config {
+        fn default() -> Self {
+            Self {
+                keep_preprocessed: false,
+                profiles: Default::default(),
+                hosted_html: None,
+                code: CodeConfig {
+                    show_hidden_lines: false,
+                },
+            }
+        }
+
         fn latex() -> Self {
             Self {
                 keep_preprocessed: true,
                 profiles: HashMap::from_iter([("latex".into(), pandoc::Profile::latex())]),
-                hosted_html: None,
+                ..Self::default()
             }
         }
 
         fn pdf() -> Self {
             Config {
-                keep_preprocessed: false,
                 profiles: HashMap::from_iter([("pdf".into(), pandoc::Profile::pdf())]),
-                hosted_html: None,
+                ..Self::default()
             }
         }
 
         fn markdown() -> Self {
             Self {
-                keep_preprocessed: false,
                 profiles: HashMap::from_iter([("markdown".into(), pandoc::Profile::markdown())]),
-                hosted_html: None,
+                ..Self::default()
             }
         }
     }
@@ -875,6 +896,133 @@ This is an example of a footnote[^note].
         ├─ markdown/book.md
         │ ```{=html}
         │ <i class="fa fa-print"/>
+        │ ```
+        "###);
+    }
+
+    #[test]
+    fn code_block_with_hidden_lines() {
+        let content = r#"
+```rust
+# fn main() {
+    # // another hidden line
+println!("Hello, world!");
+# }
+```
+        "#;
+        let book = MDBook::init()
+            .config(Config::markdown())
+            .chapter(Chapter::new("", content, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ ``` rust
+        │ println!("Hello, world!");
+        │ ```
+        "###);
+        let book = MDBook::init()
+            .config(Config {
+                code: CodeConfig {
+                    show_hidden_lines: true,
+                },
+                ..Config::markdown()
+            })
+            .chapter(Chapter::new("", content, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ ``` rust
+        │ # fn main() {
+        │     # // another hidden line
+        │ println!("Hello, world!");
+        │ # }
+        │ ```
+        "###);
+    }
+
+    #[test]
+    fn non_rust_code_block_with_hidden_lines() {
+        let content = r#"
+```python
+~hidden()
+nothidden():
+~    hidden()
+    ~hidden()
+    nothidden()
+```
+        "#;
+        let cfg = r#"
+[output.html.code.hidelines]
+python = "~"
+        "#;
+        let book = MDBook::init()
+            .mdbook_config(cfg.parse().unwrap())
+            .config(Config::markdown())
+            .chapter(Chapter::new("", content, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ ``` python
+        │ nothidden():
+        │     nothidden()
+        │ ```
+        "###);
+        let book = MDBook::init()
+            .config(Config {
+                code: CodeConfig {
+                    show_hidden_lines: true,
+                },
+                ..Config::markdown()
+            })
+            .chapter(Chapter::new("", content, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ ``` python
+        │ ~hidden()
+        │ nothidden():
+        │ ~    hidden()
+        │     ~hidden()
+        │     nothidden()
+        │ ```
+        "###);
+    }
+
+    #[test]
+    fn code_block_hidelines_override() {
+        let content = r#"
+```python,hidelines=!!!
+!!!hidden()
+nothidden():
+!!!    hidden()
+    !!!hidden()
+    nothidden()
+```
+        "#;
+        let book = MDBook::init()
+            .config(Config::markdown())
+            .chapter(Chapter::new("", content, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ ``` python
+        │ nothidden():
+        │     nothidden()
         │ ```
         "###);
     }
