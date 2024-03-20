@@ -221,24 +221,4 @@ expression: logs
   `book__pandoc__pdf__src__hirmd__hir-id' on $PAGE
   undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
-[WARNING] Missing character: There is no 🔑 (U+1F511) (U+1F511) in font NotoSerif:mode=node;script
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ❌ (U+274C) (U+274C) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSerif/B:mode=node;script
-[WARNING] Missing character: There is no ⊇ (U+2287) (U+2287) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no ✅ (U+2705) (U+2705) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no ∀ (U+2200) (U+2200) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∃ (U+2203) (U+2203) in font NotoSerif:mode=node;script=l
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pandoc/pdf/book.pdf

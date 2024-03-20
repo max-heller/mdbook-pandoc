@@ -58,8 +58,4 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../std/panic/fn.catch_unwind.html' in chapter 'FFI': Unable to canonicalize path: $ROOT/src/../std/panic/fn.catch_unwind.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc::preprocess: Unable to normalize link '../core/panic/struct.PanicInfo.html' in chapter '#[panic_handler]': Unable to canonicalize path: $ROOT/src/../core/panic/struct.PanicInfo.html: No such file or directory (os error 2)    
  WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
-[WARNING] Missing character: There is no 🙀 (U+1F640) (U+1F640) in font NotoSerif:mode=node;script
-[WARNING] Missing character: There is no 😿 (U+1F63F) (U+1F63F) in font NotoSansMono:mode=node;scr
-[WARNING] Missing character: There is no 😿 (U+1F63F) (U+1F63F) in font NotoSansMono:mode=node;scr
- INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
-
+ INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf

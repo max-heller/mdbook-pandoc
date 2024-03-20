@@ -50,9 +50,6 @@ expression: logs
   `book__pdf__src__ch04-01-what-is-ownershipmd__ways-variables-and-data-interact-clone'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
-[WARNING] Missing character: There is no 🚨 (U+1F6A8) (U+1F6A8) in font NotoSerif/B:mode=node;scri
-[WARNING] Missing character: There is no 👍 (U+1F44D) (U+1F44D) in font NotoSansMono:mode=node;scr
-[WARNING] Missing character: There is no 😻 (U+1F63B) (U+1F63B) in font NotoSansMono:mode=node;scr
 [WARNING] Missing character: There is no ا (U+0627) (U+0627) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no ل (U+0644) (U+0644) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no س (U+0633) (U+0633) in font NotoSansMono:mode=node;script
@@ -77,18 +74,6 @@ expression: logs
 [WARNING] Missing character: There is no ् (U+094D) (U+094D) in font NotoSansMono:mode=node;scrip
 [WARNING] Missing character: There is no त (U+0924) (U+0924) in font NotoSansMono:mode=node;scrip
 [WARNING] Missing character: There is no े (U+0947) (U+0947) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no こ (U+3053) (U+3053) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no ん (U+3093) (U+3093) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no に (U+306B) (U+306B) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no ち (U+3061) (U+3061) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no は (U+306F) (U+306F) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no 안 (U+C548) (U+C548) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no 녕 (U+B155) (U+B155) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no 하 (U+D558) (U+D558) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no 세 (U+C138) (U+C138) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no 요 (U+C694) (U+C694) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no 你 (U+4F60) (U+4F60) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no 好 (U+597D) (U+597D) in font NotoSansMono:mode=node;scrip
 [WARNING] Missing character: There is no न (U+0928) (U+0928) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no म (U+092E) (U+092E) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no स (U+0938) (U+0938) in font NotoSerif:mode=node;script=l
@@ -107,20 +92,6 @@ expression: logs
 [WARNING] Missing character: There is no ् (U+094D) (U+094D) in font NotoSansMono:mode=node;scrip
 [WARNING] Missing character: There is no त (U+0924) (U+0924) in font NotoSansMono:mode=node;scrip
 [WARNING] Missing character: There is no े (U+0947) (U+0947) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no 简 (U+7B80) (U+7B80) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 体 (U+4F53) (U+4F53) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 中 (U+4E2D) (U+4E2D) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 文 (U+6587) (U+6587) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 正 (U+6B63) (U+6B63) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 體 (U+9AD4) (U+9AD4) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 中 (U+4E2D) (U+4E2D) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 文 (U+6587) (U+6587) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 한 (U+D55C) (U+D55C) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 국 (U+AD6D) (U+AD6D) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 어 (U+C5B4) (U+C5B4) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 日 (U+65E5) (U+65E5) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 本 (U+672C) (U+672C) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no 語 (U+8A9E) (U+8A9E) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ह (U+0939) (U+0939) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ि (U+093F) (U+093F) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ं (U+0902) (U+0902) in font NotoSerif:mode=node;script=l

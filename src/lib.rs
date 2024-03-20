@@ -189,6 +189,7 @@ mod tests {
     use once_cell::sync::Lazy;
     use regex::Regex;
     use tempfile::{tempfile, TempDir};
+    use toml::toml;
 
     use super::*;
 
@@ -479,93 +480,64 @@ mod tests {
     }
 
     impl Config {
-        fn default() -> Self {
-            Self {
-                keep_preprocessed: false,
-                profiles: Default::default(),
-                hosted_html: None,
-                code: CodeConfig {
-                    show_hidden_lines: false,
-                },
-            }
-        }
-
         fn latex() -> Self {
-            Self {
-                keep_preprocessed: true,
-                profiles: HashMap::from_iter([("latex".into(), pandoc::Profile::latex())]),
-                ..Self::default()
+            toml! {
+                [profile.latex]
+                output-file = "output.tex"
+                standalone = false
+
+                [profile.latex.variables]
+                documentclass = "report"
             }
+            .try_into()
+            .unwrap()
         }
 
         fn pdf() -> Self {
-            Config {
-                profiles: HashMap::from_iter([("pdf".into(), pandoc::Profile::pdf())]),
-                ..Self::default()
+            let mut config = toml! {
+                keep-preprocessed = false
+
+                [profile.pdf]
+                output-file = "book.pdf"
+                to = "latex"
+
+                [profile.pdf.variables]
+                documentclass = "report"
+                mainfont = "Noto Serif"
+                sansfont = "Noto Sans"
+                monofont = "Noto Sans Mono"
+                mainfontfallback = [
+                  "NotoColorEmoji:mode=harf",
+                  "NotoSansMath:",
+                  "NotoSerifCJKSC:",
+                ]
+                monofontfallback = [
+                  "NotoColorEmoji:mode=harf",
+                  "NotoSansMath:",
+                  "NotoSansMonoCJKSC:",
+                ]
+                geometry = ["margin=1.25in"]
             }
+            .try_into::<Self>()
+            .unwrap();
+            config.profiles.get_mut("pdf").unwrap().pdf_engine = Some(
+                env::var_os("PDF_ENGINE")
+                    .map(Into::into)
+                    .unwrap_or("lualatex".into()),
+            );
+            config
         }
 
         fn markdown() -> Self {
-            Self {
-                profiles: HashMap::from_iter([("markdown".into(), pandoc::Profile::markdown())]),
-                ..Self::default()
-            }
-        }
-    }
+            toml! {
+                keep-preprocessed = false
 
-    impl pandoc::Profile {
-        fn latex() -> Self {
-            Self {
-                columns: 72,
-                file_scope: true,
-                number_sections: true,
-                output_file: PathBuf::from("output.tex"),
-                pdf_engine: None,
-                standalone: false,
-                to: Some("latex".into()),
-                table_of_contents: true,
-                variables: FromIterator::from_iter([("documentclass".into(), "report".into())]),
-                rest: Default::default(),
+                [profile.markdown]
+                output-file = "book.md"
+                standalone = false
             }
-        }
-
-        fn pdf() -> Self {
-            Self {
-                columns: 72,
-                file_scope: true,
-                number_sections: true,
-                output_file: "book.pdf".into(),
-                pdf_engine: Some(
-                    env::var_os("PDF_ENGINE")
-                        .map(Into::into)
-                        .unwrap_or("lualatex".into()),
-                ),
-                standalone: true,
-                to: Some("latex".into()),
-                table_of_contents: true,
-                variables: FromIterator::from_iter([
-                    ("documentclass".into(), "report".into()),
-                    ("mainfont".into(), "Noto Serif".into()),
-                    ("sansfont".into(), "Noto Sans".into()),
-                    ("monofont".into(), "Noto Sans Mono".into()),
-                ]),
-                rest: Default::default(),
-            }
-        }
-
-        fn markdown() -> Self {
-            Self {
-                columns: 72,
-                file_scope: true,
-                number_sections: true,
-                output_file: PathBuf::from("book.md"),
-                pdf_engine: None,
-                standalone: false,
-                to: Some("markdown".into()),
-                table_of_contents: true,
-                variables: Default::default(),
-                rest: Default::default(),
-            }
+            .try_into()
+            .unwrap()
         }
     }
 

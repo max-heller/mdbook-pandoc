@@ -28,18 +28,8 @@ expression: logs
   `book__pdf__src__design-patterns__hal__gpiomd__c-pin-state'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
-[WARNING] Missing character: There is no 🦀 (U+1F980) (U+1F980) in font NotoSerif:mode=node;script
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ✓ (U+2713) (U+2713) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
- INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
-
+ INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf

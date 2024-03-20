@@ -238,38 +238,4 @@ expression: logs
   `book__pdf__src__type-layoutmd__the-rust-representation' on
   $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
-[WARNING] Missing character: There is no 東 (U+6771) (U+6771) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no 京 (U+4EAC) (U+4EAC) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no ≤ (U+2264) (U+2264) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ≤ (U+2264) (U+2264) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ≤ (U+2264) (U+2264) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ≤ (U+2264) (U+2264) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ≤ (U+2264) (U+2264) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ≤ (U+2264) (U+2264) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∪ (U+222A) (U+222A) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ⊇ (U+2287) (U+2287) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∈ (U+2208) (U+2208) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ⊇ (U+2287) (U+2287) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∈ (U+2208) (U+2208) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∪ (U+222A) (U+222A) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∩ (U+2229) (U+2229) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∈ (U+2208) (U+2208) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∪ (U+222A) (U+222A) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∪ (U+222A) (U+222A) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∈ (U+2208) (U+2208) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∉ (U+2209) (U+2209) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∈ (U+2208) (U+2208) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∪ (U+222A) (U+222A) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∪ (U+222A) (U+222A) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∈ (U+2208) (U+2208) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∪ (U+222A) (U+222A) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∪ (U+222A) (U+222A) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∈ (U+2208) (U+2208) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∪ (U+222A) (U+222A) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ∩ (U+2229) (U+2229) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ⊈ (U+2288) (U+2288) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ⊆ (U+2286) (U+2286) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ⊈ (U+2288) (U+2288) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ⊈ (U+2288) (U+2288) in font NotoSerif:mode=node;script=l
-[WARNING] Missing character: There is no ⊆ (U+2286) (U+2286) in font NotoSerif:mode=node;script=l
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf

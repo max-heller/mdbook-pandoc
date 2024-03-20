@@ -7,9 +7,4 @@ expression: logs
  WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
 [WARNING] Missing character: There is no 🛈 (U+1F6C8) (U+1F6C8) in font NotoSerif:mode=node;script
 [WARNING] Missing character: There is no 🛈 (U+1F6C8) (U+1F6C8) in font NotoSerif:mode=node;script
-[WARNING] Missing character: There is no よ (U+3088) (U+3088) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no う (U+3046) (U+3046) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no こ (U+3053) (U+3053) in font NotoSansMono:mode=node;scrip
-[WARNING] Missing character: There is no そ (U+305D) (U+305D) in font NotoSansMono:mode=node;scrip
- INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
-
+ INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf
