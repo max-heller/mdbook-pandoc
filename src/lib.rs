@@ -494,12 +494,13 @@ mod tests {
         }
 
         fn pdf() -> Self {
-            let mut config = toml! {
+            toml! {
                 keep-preprocessed = false
 
                 [profile.pdf]
                 output-file = "book.pdf"
                 to = "latex"
+                pdf-engine = "lualatex"
 
                 [profile.pdf.variables]
                 documentclass = "report"
@@ -519,13 +520,7 @@ mod tests {
                 geometry = ["margin=1.25in"]
             }
             .try_into::<Self>()
-            .unwrap();
-            config.profiles.get_mut("pdf").unwrap().pdf_engine = Some(
-                env::var_os("PDF_ENGINE")
-                    .map(Into::into)
-                    .unwrap_or("lualatex".into()),
-            );
-            config
+            .unwrap()
         }
 
         fn markdown() -> Self {
