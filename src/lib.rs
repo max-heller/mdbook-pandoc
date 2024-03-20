@@ -560,6 +560,26 @@ mod tests {
     }
 
     #[test]
+    fn broken_links() {
+        let book = MDBook::init()
+            .chapter(Chapter::new(
+                "Getting Started",
+                "[broken link](foobarbaz)",
+                "getting-started.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  WARN mdbook_pandoc::preprocess: Unable to normalize link 'foobarbaz' in chapter 'Getting Started': Unable to canonicalize path: $ROOT/src/foobarbaz: No such file or directory (os error 2)    
+        │  WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ [broken link](foobarbaz)
+        "###);
+    }
+
+    #[test]
     fn strikethrough() {
         let book = MDBook::init()
             .chapter(Chapter::new("", "~test1~ ~~test2~~", "chapter.md"))
