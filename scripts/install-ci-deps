@@ -17,7 +17,7 @@ export PATH="$PWD/pandoc-3.1.11/bin:$PATH"
 sudo apt-get install -y librsvg2-bin
 
 # TeX Live and fonts
-sudo apt-get install -y texlive texlive-luatex texlive-xetex texlive-fonts-extra fonts-font-awesome fonts-noto
+sudo apt-get install -y texlive texlive-luatex texlive-xetex texlive-fonts-extra texlive-lang-cjk fonts-font-awesome fonts-noto
 
 # mdBook preprocessors needed by example books
 cargo install mdbook-i18n-helpers --locked
