@@ -13,6 +13,7 @@ use std::{
 
 use aho_corasick::AhoCorasick;
 use anyhow::{anyhow, Context as _};
+use log::log;
 use mdbook::{
     book::{BookItems, Chapter},
     BookItem,
@@ -293,7 +294,13 @@ impl<'book> Preprocessor<'book> {
                                 hosted.push("/");
                                 hosted.push(&path);
                                 let hosted = os_to_utf8(hosted)?;
-                                log::debug!(
+                                log!(
+                                    // In tests, log at a higher level to detect link breakage
+                                    if cfg!(test) {
+                                        log::Level::Info
+                                    } else {
+                                        log::Level::Debug
+                                    },
                                     "Unable to resolve relative path '{}' in chapter '{}', \
                                     linking to hosted HTML book at '{hosted}'",
                                     link_path.display(),

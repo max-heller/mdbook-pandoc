@@ -3,8 +3,7 @@ source: src/lib.rs
 expression: logs
 ---
  INFO mdbook::book: Running the pandoc backend    
- WARN mdbook_pandoc::preprocess: Unable to normalize link '../../reference/inline-assembly.html#abi-clobbers' in chapter 'Inline assembly': Unable to canonicalize path: $ROOT/src/unsafe/../../reference/inline-assembly.html: No such file or directory (os error 2)    
- WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
+ INFO mdbook_pandoc::preprocess: Unable to resolve relative path '../../reference/inline-assembly.html' in chapter 'unsafe/asm.md', linking to hosted HTML book at 'https://doc.rust-lang.org/rust-by-example/unsafe/../../reference/inline-assembly.html'    
 [WARNING] Missing character: There is no 🛈 (U+1F6C8) (U+1F6C8) in font NotoSerif:mode=node;script
 [WARNING] Missing character: There is no 🛈 (U+1F6C8) (U+1F6C8) in font NotoSerif:mode=node;script
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf
