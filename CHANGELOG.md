@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.2] - 2024-03-21
+
+### Changes
+
+- Upgrade `pulldown-cmark-to-cmark` to 13.0 ([#77](https://github.com/max-heller/mdbook-pandoc/pull/77))
+
+### Documentation
+
+- Improve rendering of example books ([#79](https://github.com/max-heller/mdbook-pandoc/pull/79))
+
 ## [0.6.1] - 2024-03-19
 
 ### Features
