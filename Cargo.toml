@@ -64,6 +64,8 @@ installers = ["shell", "powershell"]
 targets = ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-unknown-linux-musl", "x86_64-pc-windows-msvc"]
 # Publish jobs to run in CI
 pr-run-mode = "plan"
+# TODO: When cargo-dist allows specifying custom runners for the global artifacts job, remove this
+allow-dirty = ["ci"]
 
 [workspace.metadata.dist.dependencies.apt]
 pandoc = { stage = ["run"] }

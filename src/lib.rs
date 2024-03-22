@@ -189,6 +189,7 @@ mod tests {
     use once_cell::sync::Lazy;
     use regex::Regex;
     use tempfile::{tempfile, TempDir};
+    use toml::toml;
 
     use super::*;
 
@@ -479,93 +480,59 @@ mod tests {
     }
 
     impl Config {
-        fn default() -> Self {
-            Self {
-                keep_preprocessed: false,
-                profiles: Default::default(),
-                hosted_html: None,
-                code: CodeConfig {
-                    show_hidden_lines: false,
-                },
-            }
-        }
-
         fn latex() -> Self {
-            Self {
-                keep_preprocessed: true,
-                profiles: HashMap::from_iter([("latex".into(), pandoc::Profile::latex())]),
-                ..Self::default()
+            toml! {
+                [profile.latex]
+                output-file = "output.tex"
+                standalone = false
+
+                [profile.latex.variables]
+                documentclass = "report"
             }
+            .try_into()
+            .unwrap()
         }
 
         fn pdf() -> Self {
-            Config {
-                profiles: HashMap::from_iter([("pdf".into(), pandoc::Profile::pdf())]),
-                ..Self::default()
+            toml! {
+                keep-preprocessed = false
+
+                [profile.pdf]
+                output-file = "book.pdf"
+                to = "latex"
+                pdf-engine = "lualatex"
+
+                [profile.pdf.variables]
+                documentclass = "report"
+                mainfont = "Noto Serif"
+                sansfont = "Noto Sans"
+                monofont = "Noto Sans Mono"
+                mainfontfallback = [
+                  "NotoColorEmoji:mode=harf",
+                  "NotoSansMath:",
+                  "NotoSerifCJKSC:",
+                ]
+                monofontfallback = [
+                  "NotoColorEmoji:mode=harf",
+                  "NotoSansMath:",
+                  "NotoSansMonoCJKSC:",
+                ]
+                geometry = ["margin=1.25in"]
             }
+            .try_into()
+            .unwrap()
         }
 
         fn markdown() -> Self {
-            Self {
-                profiles: HashMap::from_iter([("markdown".into(), pandoc::Profile::markdown())]),
-                ..Self::default()
-            }
-        }
-    }
+            toml! {
+                keep-preprocessed = false
 
-    impl pandoc::Profile {
-        fn latex() -> Self {
-            Self {
-                columns: 72,
-                file_scope: true,
-                number_sections: true,
-                output_file: PathBuf::from("output.tex"),
-                pdf_engine: None,
-                standalone: false,
-                to: Some("latex".into()),
-                table_of_contents: true,
-                variables: FromIterator::from_iter([("documentclass".into(), "report".into())]),
-                rest: Default::default(),
+                [profile.markdown]
+                output-file = "book.md"
+                standalone = false
             }
-        }
-
-        fn pdf() -> Self {
-            Self {
-                columns: 72,
-                file_scope: true,
-                number_sections: true,
-                output_file: "book.pdf".into(),
-                pdf_engine: Some(
-                    env::var_os("PDF_ENGINE")
-                        .map(Into::into)
-                        .unwrap_or("lualatex".into()),
-                ),
-                standalone: true,
-                to: Some("latex".into()),
-                table_of_contents: true,
-                variables: FromIterator::from_iter([
-                    ("documentclass".into(), "report".into()),
-                    ("mainfont".into(), "Noto Serif".into()),
-                    ("sansfont".into(), "Noto Sans".into()),
-                    ("monofont".into(), "Noto Sans Mono".into()),
-                ]),
-                rest: Default::default(),
-            }
-        }
-
-        fn markdown() -> Self {
-            Self {
-                columns: 72,
-                file_scope: true,
-                number_sections: true,
-                output_file: PathBuf::from("book.md"),
-                pdf_engine: None,
-                standalone: false,
-                to: Some("markdown".into()),
-                table_of_contents: true,
-                variables: Default::default(),
-                rest: Default::default(),
-            }
+            .try_into()
+            .unwrap()
         }
     }
 
@@ -584,6 +551,26 @@ mod tests {
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
         │ # Getting Started
+        "###);
+    }
+
+    #[test]
+    fn broken_links() {
+        let book = MDBook::init()
+            .chapter(Chapter::new(
+                "Getting Started",
+                "[broken link](foobarbaz)",
+                "getting-started.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  WARN mdbook_pandoc::preprocess: Unable to normalize link 'foobarbaz' in chapter 'Getting Started': Unable to canonicalize path: $ROOT/src/foobarbaz: No such file or directory (os error 2)    
+        │  WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ [broken link](foobarbaz)
         "###);
     }
 
@@ -1267,7 +1254,10 @@ include-in-header = ["file-in-root"]
     #[test]
     fn mdbook_guide() {
         let logs = MDBook::load(BOOKS.join("mdBook/guide"))
-            .config(Config::pdf())
+            .config(Config {
+                hosted_html: Some("https://rust-lang.github.io/mdBook/".into()),
+                ..Config::pdf()
+            })
             .build()
             .logs;
         insta::assert_snapshot!(logs);
@@ -1290,7 +1280,10 @@ include-in-header = ["file-in-root"]
     #[test]
     fn rust_book() {
         let logs = MDBook::load(BOOKS.join("rust-book"))
-            .config(Config::pdf())
+            .config(Config {
+                hosted_html: Some("https://doc.rust-lang.org/book/".into()),
+                ..Config::pdf()
+            })
             .build()
             .logs;
         insta::assert_snapshot!(logs);
@@ -1299,7 +1292,10 @@ include-in-header = ["file-in-root"]
     #[test]
     fn nomicon() {
         let logs = MDBook::load(BOOKS.join("nomicon"))
-            .config(Config::pdf())
+            .config(Config {
+                hosted_html: Some("https://doc.rust-lang.org/nomicon/".into()),
+                ..Config::pdf()
+            })
             .build()
             .logs;
         insta::assert_snapshot!(logs);
@@ -1308,7 +1304,10 @@ include-in-header = ["file-in-root"]
     #[test]
     fn rust_by_example() {
         let logs = MDBook::load(BOOKS.join("rust-by-example"))
-            .config(Config::pdf())
+            .config(Config {
+                hosted_html: Some("https://doc.rust-lang.org/rust-by-example/".into()),
+                ..Config::pdf()
+            })
             .build()
             .logs;
         insta::assert_snapshot!(logs);
@@ -1317,7 +1316,10 @@ include-in-header = ["file-in-root"]
     #[test]
     fn rust_edition_guide() {
         let logs = MDBook::load(BOOKS.join("rust-edition-guide"))
-            .config(Config::pdf())
+            .config(Config {
+                hosted_html: Some("https://doc.rust-lang.org/edition-guide/".into()),
+                ..Config::pdf()
+            })
             .build()
             .logs;
         insta::assert_snapshot!(logs);
@@ -1326,7 +1328,10 @@ include-in-header = ["file-in-root"]
     #[test]
     fn rust_embedded() {
         let logs = MDBook::load(BOOKS.join("rust-embedded"))
-            .config(Config::pdf())
+            .config(Config {
+                hosted_html: Some("https://docs.rust-embedded.org/book/".into()),
+                ..Config::pdf()
+            })
             .build()
             .logs;
         insta::assert_snapshot!(logs);
@@ -1335,7 +1340,10 @@ include-in-header = ["file-in-root"]
     #[test]
     fn rust_reference() {
         let logs = MDBook::load(BOOKS.join("rust-reference"))
-            .config(Config::pdf())
+            .config(Config {
+                hosted_html: Some("https://doc.rust-lang.org/reference/".into()),
+                ..Config::pdf()
+            })
             .build()
             .logs;
         insta::assert_snapshot!(logs);
@@ -1344,7 +1352,10 @@ include-in-header = ["file-in-root"]
     #[test]
     fn rustc_dev_guide() {
         let logs = MDBook::load(BOOKS.join("rustc-dev-guide"))
-            .config(Config::pdf())
+            .config(Config {
+                hosted_html: Some("https://rustc-dev-guide.rust-lang.org/".into()),
+                ..Config::pdf()
+            })
             .build()
             .logs;
         insta::assert_snapshot!(logs);

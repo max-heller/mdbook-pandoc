@@ -125,7 +125,7 @@ variable-name = "value"
 #### Rendered books
 
 The following table links to sample books rendered with `mdbook-pandoc`.
-PDFs are rendered with LaTeX ([xelatex](https://en.wikipedia.org/wiki/XeTeX)).
+PDFs are rendered with LaTeX ([LuaTeX](https://en.wikipedia.org/wiki/LuaTeX)).
 
 | Book | Rendered |
 | ---- | -------- |
