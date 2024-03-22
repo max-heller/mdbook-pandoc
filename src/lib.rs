@@ -519,7 +519,7 @@ mod tests {
                 ]
                 geometry = ["margin=1.25in"]
             }
-            .try_into::<Self>()
+            .try_into()
             .unwrap()
         }
 
