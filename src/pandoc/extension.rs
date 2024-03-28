@@ -1,3 +1,5 @@
+use super::Version;
+
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Extension {
     Strikeout,
@@ -15,6 +17,7 @@ pub enum Extension {
 }
 
 impl Extension {
+    /// The name of the extension.
     pub const fn name(&self) -> &str {
         match self {
             Extension::Strikeout => "strikeout",
@@ -28,7 +31,8 @@ impl Extension {
         }
     }
 
-    fn version_requirement(&self) -> semver::VersionReq {
+    /// Returns the pandoc version that added support for this extension.
+    fn introduced_in(&self) -> Version {
         let (major, minor, patch) = match self {
             Extension::Strikeout => (0, 10, 0),
             Extension::Footnotes => (2, 10, 1),
@@ -39,40 +43,33 @@ impl Extension {
             Extension::RawAttribute => (2, 10, 1),
             Extension::RebaseRelativePaths => (2, 14, 0),
         };
-        semver::VersionReq {
-            comparators: vec![semver::Comparator {
-                // Assumes that pandoc doesn't remove extensions once it has added them
-                op: semver::Op::GreaterEq,
-                major,
-                minor: Some(minor),
-                patch: Some(patch),
-                pre: semver::Prerelease::EMPTY,
-            }],
+        Version {
+            major,
+            minor,
+            patch,
         }
     }
 
-    pub fn check_availability(&self, pandoc: &semver::Version) -> Availability {
-        Availability::check(self.version_requirement(), pandoc)
+    pub fn check_availability(&self, pandoc: &Version) -> Availability {
+        let introduced_in = self.introduced_in();
+        if *pandoc >= introduced_in {
+            Availability::Available
+        } else {
+            Availability::Unavailable { introduced_in }
+        }
     }
 }
 
 pub enum Availability {
     Available,
-    Unavailable(semver::VersionReq),
+    Unavailable { introduced_in: Version },
 }
 
 impl Availability {
-    pub fn check(version_req: semver::VersionReq, pandoc: &semver::Version) -> Self {
-        if version_req.matches(pandoc) {
-            Availability::Available
-        } else {
-            Availability::Unavailable(version_req)
-        }
-    }
     pub fn is_available(&self) -> bool {
         match self {
             Self::Available => true,
-            Self::Unavailable(_) => false,
+            Self::Unavailable { .. } => false,
         }
     }
 }
