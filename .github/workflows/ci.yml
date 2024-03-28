@@ -4,7 +4,15 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            install-deps-script: ./scripts/install-ci-deps
+          - os: windows-latest
+            install-deps-script: .\scripts\install-ci-deps-windows
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
@@ -15,16 +23,16 @@ jobs:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
       - name: Install dependencies
-        run: ./scripts/install-ci-deps
-      - name: nextest
-        run: cargo nextest run
-      - name: doctest
-        run: cargo test --doc
+        run: ${{ matrix.install-deps-script }}
+      - name: Run tests
+        run: |
+          cargo nextest run
+          cargo test --doc
       - name: Archive rendered books
         if: github.base_ref == 'main'
         uses: actions/upload-artifact@v3
         with:
-          name: rendered-books
+          name: rendered-books-${{ matrix.os }}
           path: |
             books/cargo/src/doc/book/pdf/book.pdf
             books/mdBook/guide/book/pdf/book.pdf

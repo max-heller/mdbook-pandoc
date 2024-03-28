@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# cargo-nextest
+curl -LsSf https://get.nexte.st/0.9/windows-tar | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
+
+# Pandoc
+choco install --yes pandoc --version=3.1.12.3
+
+# rsvg-convert (SVG support)
+choco install --yes rsvg-convert
+
+# TeX Live and fonts
+choco install --yes miktex.install --params '"/Set:complete"'
+choco install --yes noto
+
+# mdBook preprocessors needed by example books
+cargo install mdbook-i18n-helpers --locked
