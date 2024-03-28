@@ -1,7 +1,6 @@
-use std::{collections::BTreeMap, process::Command};
+use std::{collections::BTreeMap, fmt, num::ParseIntError, process::Command, str::FromStr};
 
 use anyhow::{anyhow, Context as _};
-use once_cell::sync::Lazy;
 
 pub mod extension;
 pub use extension::Extension;
@@ -12,18 +11,48 @@ pub use profile::Profile;
 mod renderer;
 pub use renderer::{Context as RenderContext, OutputFormat, Renderer};
 
-/// Defines compatible versions of Pandoc
-pub static VERSION_REQ: Lazy<semver::VersionReq> =
+/// Minimum compatible version of Pandoc
+const MINIMUM_VERSION: Version =
     // commonmark input format introduced in 1.14
-    Lazy::new(|| semver::VersionReq::parse(">=1.14").unwrap());
+    Version {
+        major: 1,
+        minor: 14,
+        patch: 0,
+    };
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Version {
+    major: u64,
+    minor: u64,
+    patch: u64,
+}
+
+impl fmt::Display for Version {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}.{}.{}", self.major, self.minor, self.patch)
+    }
+}
+
+impl FromStr for Version {
+    type Err = ParseIntError;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let mut components = s.split('.').map(|component| component.parse());
+        let mut next_component = || components.next().unwrap_or(Ok(0));
+        Ok(Self {
+            major: next_component()?,
+            minor: next_component()?,
+            patch: next_component()?,
+        })
+    }
+}
 
 pub struct Context {
-    pub version: semver::Version,
+    pub version: Version,
     enabled_extensions: BTreeMap<Extension, extension::Availability>,
 }
 
 impl Context {
-    pub fn new(version: semver::Version) -> Self {
+    pub fn new(version: Version) -> Self {
         let mut this = Self {
             enabled_extensions: Default::default(),
             version,
@@ -47,7 +76,7 @@ impl Context {
     }
 }
 
-pub fn check_compatibility() -> anyhow::Result<semver::Version> {
+pub fn check_compatibility() -> anyhow::Result<Version> {
     let version = {
         let output = Command::new("pandoc")
             .arg("-v")
@@ -60,23 +89,19 @@ pub fn check_compatibility() -> anyhow::Result<semver::Version> {
         );
         let output = String::from_utf8(output.stdout).context("`pandoc -v` output is not UTF8")?;
         match output.lines().next().and_then(|line| line.split_once(' ')) {
-            Some(("pandoc", mut version)) => {
-                // Pandoc versions can contain more than three components (e.g. a.b.c.d).
-                // If this is the case, only consider the first three.
-                if let Some((idx, _)) = version.match_indices('.').nth(2) {
-                    version = &version[..idx];
-                }
-                semver::Version::parse(version.trim()).unwrap()
-            }
+            Some((_, version)) => version
+                .trim()
+                .parse()
+                .with_context(|| format!("failed to parse Pandoc version '{version}'"))?,
             _ => anyhow::bail!("`pandoc -v` output does not contain `pandoc VERSION`"),
         }
     };
-    if VERSION_REQ.matches(&version) {
+    if version >= MINIMUM_VERSION {
         Ok(version)
     } else {
         Err(anyhow!(
-            "mdbook-pandoc is incompatible with detected Pandoc version (requires version {}, but using {})",
-            *VERSION_REQ, version,
+            "mdbook-pandoc is incompatible with detected Pandoc version \
+            (requires at least {MINIMUM_VERSION}, but using {version})"
         ))
     }
 }
@@ -87,6 +112,8 @@ mod tests {
         io::Write,
         process::{Command, Stdio},
     };
+
+    use super::*;
 
     // Canary to detect if Pandoc ever adds native support for lists
     // nested more than four layers deep when rendering to LaTeX
@@ -124,5 +151,15 @@ mod tests {
         l.78         \begin{itemize}
 
         "###);
+    }
+
+    #[test]
+    fn versions() {
+        let a = Version::from_str("2.10").unwrap();
+        let b = Version::from_str("2.12.1").unwrap();
+        let c = Version::from_str("3.1.12.3").unwrap();
+        assert!(a < b);
+        assert!(b < c);
+        assert!(a < c);
     }
 }
