@@ -23,6 +23,7 @@ jobs:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
       - name: Install dependencies
+        shell: bash
         run: ${{ matrix.install-deps-script }}
       - name: Run tests
         run: |
