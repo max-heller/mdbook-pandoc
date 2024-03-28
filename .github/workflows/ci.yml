@@ -11,7 +11,7 @@ jobs:
           - os: ubuntu-latest
             install-deps-script: ./scripts/install-ci-deps
           - os: windows-latest
-            install-deps-script: .\scripts\install-ci-deps-windows
+            install-deps-script: ./scripts/install-ci-deps-windows
     runs-on: ${{ matrix.os }}
 
     steps:
