@@ -10,7 +10,7 @@ choco install --yes pandoc --version=3.1.12.3
 choco install --yes rsvg-convert
 
 # TeX Live and fonts
-choco install --yes miktex.install --params '"/Set:complete"'
+choco install --yes miktex
 choco install --yes noto
 
 # mdBook preprocessors needed by example books
