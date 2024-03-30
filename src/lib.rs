@@ -108,7 +108,7 @@ impl mdbook::Renderer for Renderer {
             let ctx = pandoc::RenderContext {
                 book: &book,
                 mdbook_cfg: &ctx.config,
-                pandoc: pandoc::Context::new(pandoc_version.clone()),
+                pandoc: pandoc::Context::new(pandoc_version),
                 destination: book.destination.join(name),
                 output: profile.output_format(),
                 columns: profile.columns,

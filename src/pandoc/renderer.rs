@@ -13,7 +13,7 @@ use tempfile::NamedTempFile;
 use crate::{
     book::Book,
     latex,
-    pandoc::{self, extension, Profile},
+    pandoc::{self, extension, Profile, Version},
     CodeConfig,
 };
 
@@ -79,10 +79,11 @@ impl Renderer {
                         format.push('+');
                         format.push_str(extension.name());
                     }
-                    extension::Availability::Unavailable(version_req) => {
+                    extension::Availability::Unavailable { introduced_in } => {
                         log::warn!(
-                            "Cannot use Pandoc extension `{}`, which may result in degraded output (requires version {}, but using {})",
-                            extension.name(), version_req, ctx.pandoc.version,
+                            "Cannot use Pandoc extension `{}`, which may result in degraded output \
+                            (introduced in version {}, but using {})",
+                            extension.name(), introduced_in, ctx.pandoc.version,
                         );
                     }
                 }
@@ -205,8 +206,12 @@ impl Renderer {
 
         let _filter_tempfile_guard: tempfile::TempPath;
         if (ctx.pandoc.enabled_extensions).contains_key(&pandoc::Extension::PipeTables) {
-            let version_req = semver::VersionReq::parse(">=2.9.2").unwrap();
-            if version_req.matches(&ctx.pandoc.version) {
+            let introduced_in = Version {
+                major: 2,
+                minor: 9,
+                patch: 2,
+            };
+            if ctx.pandoc.version >= introduced_in {
                 let mut filter = NamedTempFile::new()?;
                 write!(
                     filter,
@@ -219,7 +224,7 @@ impl Renderer {
             } else {
                 log::warn!(
                     "Cannot wrap cell contents of tables, which may result in tables overflowing the page (requires Pandoc version {}, but using {})",
-                    version_req, ctx.pandoc.version,
+                    introduced_in, ctx.pandoc.version,
                 );
             }
         }
