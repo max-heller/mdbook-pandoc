@@ -23,12 +23,12 @@ jobs:
           toolchain: stable
       - uses: Swatinem/rust-cache@v2
       - name: Install dependencies
-        shell: bash
         run: ${{ matrix.install-deps-script }}
-      - name: Run tests
-        run: |
-          cargo nextest run
-          cargo test --doc
+        shell: bash
+      - name: nextest
+        run: cargo nextest run
+      - name: doctest
+        run: cargo test --doc
       - name: Archive rendered books
         if: github.base_ref == 'main'
         uses: actions/upload-artifact@v3
