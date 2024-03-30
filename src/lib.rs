@@ -375,7 +375,7 @@ mod tests {
             let root = self.book.root.canonicalize().unwrap();
             let re = Regex::new(&format!(
                 r"(?P<root>{})|(?P<line>line\s+\d+)|(?P<page>page\s+\d+)",
-                root.display()
+                root.display().to_string().replace('\\', r"\\")
             ))
             .unwrap();
             let logs = re.replace_all(&logs, |caps: &regex::Captures| {
