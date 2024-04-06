@@ -8,6 +8,7 @@ use std::{
 };
 
 use anyhow::Context as _;
+use normpath::PathExt;
 use tempfile::NamedTempFile;
 
 use crate::{
@@ -219,7 +220,7 @@ impl Renderer {
                     include_str!("filters/annotate-tables-with-column-widths.lua")
                 )?;
                 pandoc.arg("--lua-filter");
-                pandoc.arg(filter.path().canonicalize()?);
+                pandoc.arg(filter.path().normalize()?.as_path());
                 _filter_tempfile_guard = filter.into_temp_path();
             } else {
                 log::warn!(
