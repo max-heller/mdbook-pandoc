@@ -18,6 +18,7 @@ use mdbook::{
     book::{BookItems, Chapter},
     BookItem,
 };
+use normpath::PathExt;
 use once_cell::sync::Lazy;
 use pulldown_cmark::{CodeBlockKind, CowStr, HeadingLevel, LinkType};
 use regex::Regex;
@@ -366,20 +367,21 @@ impl<'book> Preprocessor<'book> {
     /// - Uniquely corresponds to the file at the original path
     fn normalize_path(&self, path: &Path) -> anyhow::Result<NormalizedPath> {
         let absolute_path = path
-            .canonicalize()
+            .normalize()
             .or_else(|err| match path.extension() {
                 Some(extension) if extension == "html" => {
                     if path.file_stem().is_some_and(|name| name == "index") {
-                        if let Ok(path) = path.with_file_name("README.md").canonicalize() {
+                        if let Ok(path) = path.with_file_name("README.md").normalize() {
                             return Ok(path);
                         }
                     }
-                    path.with_extension("md").canonicalize()
+                    path.with_extension("md").normalize()
                 }
-                Some(extension) if extension == "md" => path.with_extension("html").canonicalize(),
+                Some(extension) if extension == "md" => path.with_extension("html").normalize(),
                 _ => Err(err),
             })
-            .with_context(|| format!("Unable to canonicalize path: {}", path.display()))?;
+            .with_context(|| format!("Unable to normalize path: {}", path.display()))?
+            .into_path_buf();
         let preprocessed_relative_path = absolute_path
             .strip_prefix(&self.ctx.book.source_dir)
             .or_else(|_| absolute_path.strip_prefix(&self.preprocessed))

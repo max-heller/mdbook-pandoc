@@ -186,6 +186,7 @@ mod tests {
     };
 
     use mdbook::{BookItem, Renderer as _};
+    use normpath::PathExt;
     use once_cell::sync::Lazy;
     use regex::Regex;
     use tempfile::{tempfile, TempDir};
@@ -372,7 +373,7 @@ mod tests {
                 writeln!(&mut logs, "{err:#}").unwrap()
             }
 
-            let root = self.book.root.canonicalize().unwrap();
+            let root = self.book.root.normalize().unwrap().into_path_buf();
             let re = Regex::new(&format!(
                 r"(?P<root>{})|(?P<line>line\s+\d+)|(?P<page>page\s+\d+)",
                 root.display()
@@ -566,7 +567,7 @@ mod tests {
         insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  WARN mdbook_pandoc::preprocess: Unable to normalize link 'foobarbaz' in chapter 'Getting Started': Unable to canonicalize path: $ROOT/src/foobarbaz: No such file or directory (os error 2)    
+        │  WARN mdbook_pandoc::preprocess: Unable to normalize link 'foobarbaz' in chapter 'Getting Started': Unable to normalize path: $ROOT/src/foobarbaz: No such file or directory (os error 2)    
         │  WARN mdbook_pandoc: Unable to resolve one or more relative links within the book, consider setting the `hosted-html` option in `[output.pandoc]`    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
