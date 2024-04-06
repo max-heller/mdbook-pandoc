@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.3] - 2024-03-29
+
+### Bug Fixes
+
+- Correctly parse `pandoc` versions with fewer than three components ([#82](https://github.com/max-heller/mdbook-pandoc/pull/82))
+
 ## [0.6.2] - 2024-03-21
 
 ### Changes
