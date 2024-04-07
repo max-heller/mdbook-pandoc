@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.4] - 2024-04-07
+
+### Bug Fixes
+
+- Fix `withBinaryFile` errors on Windows by normalizing paths with `normpath` instead of `std::fs::canonicalize()` ([#84](https://github.com/max-heller/mdbook-pandoc/pull/84))
+
+
 ## [0.6.3] - 2024-03-29
 
 ### Bug Fixes
