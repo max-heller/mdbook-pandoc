@@ -13,10 +13,10 @@ pub use renderer::{Context as RenderContext, OutputFormat, Renderer};
 
 /// Minimum compatible version of Pandoc
 const MINIMUM_VERSION: Version =
-    // commonmark input format introduced in 1.14
+    // Defaults files introduced in 2.8
     Version {
-        major: 1,
-        minor: 14,
+        major: 2,
+        minor: 8,
         patch: 0,
     };
 
