@@ -8,6 +8,7 @@ use std::{
     hash::{Hash, Hasher},
     io::{self, Write as _},
     iter::{self, Peekable},
+    ops::Range,
     path::{Path, PathBuf},
 };
 
@@ -502,8 +503,13 @@ impl<'book> Preprocess<'book> {
             }
         }
 
-        pulldown_cmark_to_cmark::cmark(preprocessed.into_iter(), IoWriteAdapter(out))
-            .context("Failed to write preprocessed chapter")?;
+        pulldown_cmark_to_cmark::cmark_with_source_range_and_options(
+            preprocessed.into_iter(),
+            &chapter.content,
+            IoWriteAdapter(out),
+            Default::default(),
+        )
+        .context("Failed to write preprocessed chapter")?;
         Ok(())
     }
 
@@ -634,7 +640,10 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         })
     }
 
-    async fn preprocess(mut self, co: genawaiter::stack::Co<'_, pulldown_cmark::Event<'book>>) {
+    async fn preprocess(
+        mut self,
+        co: genawaiter::stack::Co<'_, (pulldown_cmark::Event<'book>, Option<Range<usize>>)>,
+    ) {
         use pulldown_cmark::{Event, Tag, TagEnd};
 
         while let Some((event, range)) = self.parser.next() {
@@ -666,11 +675,11 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             (self.preprocessor.ctx.pandoc)
                                 .enable_extension(pandoc::Extension::PipeTables);
                             if let Some(annotation) =
-                                self.column_width_annotation(&self.chapter.content[range])
+                                self.column_width_annotation(&self.chapter.content[range.clone()])
                             {
-                                co.yield_(Event::Start(Tag::HtmlBlock)).await;
-                                co.yield_(Event::Html(annotation.into())).await;
-                                co.yield_(Event::End(TagEnd::HtmlBlock)).await;
+                                co.yield_((Event::Start(Tag::HtmlBlock), None)).await;
+                                co.yield_((Event::Html(annotation.into()), None)).await;
+                                co.yield_((Event::End(TagEnd::HtmlBlock), None)).await;
                             }
                             Tag::Table(alignment)
                         }
@@ -825,7 +834,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                         )
                                     };
                                     for event in iter::once(Event::Start(raw_latex)).chain(lines) {
-                                        co.yield_(event).await
+                                        co.yield_((event, None)).await
                                     }
                                     break 'current_event Event::End(raw_latex_end);
                                 }
@@ -836,7 +845,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             for event in iter::once(Event::Start(code_block))
                                 .chain(texts.into_iter().map(Event::Text))
                             {
-                                co.yield_(event).await;
+                                co.yield_((event, None)).await;
                             }
                             break 'current_event Event::End(end_tag);
                         }
@@ -880,7 +889,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 }
                 event => event,
             };
-            co.yield_(event).await;
+            co.yield_((event, Some(range))).await;
         }
     }
 
