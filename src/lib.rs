@@ -535,6 +535,19 @@ mod tests {
             .try_into()
             .unwrap()
         }
+
+        fn pandoc() -> Self {
+            toml! {
+                keep-preprocessed = false
+
+                [profile.markdown]
+                output-file = "pandoc-ir"
+                to = "native"
+                standalone = false
+            }
+            .try_into()
+            .unwrap()
+        }
     }
 
     #[test]
@@ -1127,6 +1140,28 @@ fn main() {}
         ├─ latex/src/chapter.md
         │ [link](book/latex/src/chapter.md "\"foo\" (bar)")
         │ 
+        "###);
+    }
+
+    #[test]
+    fn preserve_escapes() {
+        let output = MDBook::init()
+            .config(Config::pandoc())
+            .chapter(Chapter::new("", "[Prefix @fig:1] [-@fig:1]", "chapter.md"))
+            .build();
+        insta::assert_snapshot!(output, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+        ├─ markdown/pandoc-ir
+        │ [ Para
+        │     [ Str "[Prefix"
+        │     , Space
+        │     , Str "@fig:1]"
+        │     , Space
+        │     , Str "[-@fig:1]"
+        │     ]
+        │ ]
         "###);
     }
 
