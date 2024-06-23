@@ -779,13 +779,10 @@ This is an example of a footnote[^note].
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \phantomsection\label{book__latex__src__onemd}
         │ \chapter{One}\label{book__latex__src__onemd__one}
         │ 
-        │ \phantomsection\label{book__latex__src__part-1-part-twomd}
         │ \part{part two}
         │ 
-        │ \phantomsection\label{book__latex__src__twomd}
         │ \chapter{Two}\label{book__latex__src__twomd__two}
         ├─ latex/src/one.md
         │ # One
@@ -798,25 +795,50 @@ This is an example of a footnote[^note].
 
     #[test]
     fn inter_chapter_links() {
-        let book = MDBook::init()
-            .chapter(Chapter::new("One", "[Two](../two/two.md)", "one/one.md"))
-            .chapter(Chapter::new("Two", "[One](../one/one.md)", "two/two.md"))
+        let book = MDBook::options()
+            .max_log_level(tracing::Level::TRACE)
+            .init()
+            .chapter(Chapter::new(
+                "One",
+                "# One\n[Two](../two/two.md)",
+                "one/one.md",
+            ))
+            .chapter(Chapter::new(
+                "Two",
+                "# Two\n[One](../one/one.md)\n[Three](../three.md)",
+                "two/two.md",
+            ))
+            .chapter(Chapter::new("Three", "", "three.md"))
             .config(Config::latex())
             .build();
         insta::assert_snapshot!(book, @r###"
         ├─ log output
+        │ DEBUG mdbook::book: Running the index preprocessor.    
+        │ DEBUG mdbook::book: Running the links preprocessor.    
         │  INFO mdbook::book: Running the pandoc backend    
+        │  WARN mdbook_pandoc::preprocess: Failed to determine suitable anchor for beginning of chapter 'Three'--does it contain any headings?    
+        │  WARN mdbook_pandoc::preprocess: Unable to normalize link '../three.md' in chapter 'Two': failed to link to beginning of chapter    
+        │ DEBUG mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \phantomsection\label{book__latex__src__one__onemd}
-        │ \hyperref[book__latex__src__two__twomd]{Two}
+        │ \chapter{One}\label{book__latex__src__one__onemd__one}
         │ 
-        │ \phantomsection\label{book__latex__src__two__twomd}
-        │ \hyperref[book__latex__src__one__onemd]{One}
+        │ \hyperref[book__latex__src__two__twomd__two]{Two}
+        │ 
+        │ \chapter{Two}\label{book__latex__src__two__twomd__two}
+        │ 
+        │ \hyperref[book__latex__src__one__onemd__one]{One}
+        │ \href{../three.md}{Three}
         ├─ latex/src/one/one.md
-        │ [Two](book/latex/src/two/two.md)
+        │ # One
+        │ 
+        │ [Two](book/latex/src/two/two.md#two)
+        ├─ latex/src/three.md
         ├─ latex/src/two/two.md
-        │ [One](book/latex/src/one/one.md)
+        │ # Two
+        │ 
+        │ [One](book/latex/src/one/one.md#one)
+        │ [Three](../three.md)
         "###);
     }
 
@@ -836,15 +858,12 @@ This is an example of a footnote[^note].
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \phantomsection\label{book__latex__src__onemd}
         │ \chapter{One}\label{book__latex__src__onemd__one}
         │ 
-        │ \phantomsection\label{book__latex__src__onepointonemd}
         │ \section{Top}\label{book__latex__src__onepointonemd__top}
         │ 
         │ \subsection*{Another}\label{book__latex__src__onepointonemd__another}
         │ 
-        │ \phantomsection\label{book__latex__src__twomd}
         │ \chapter{Two}\label{book__latex__src__twomd__two}
         ├─ latex/src/one.md
         │ # One

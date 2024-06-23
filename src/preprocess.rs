@@ -37,12 +37,24 @@ pub struct Preprocessor<'book> {
     redirects: HashMap<PathBuf, String>,
     hosted_html: Option<&'book str>,
     unresolved_links: bool,
+    chapters: HashMap<&'book Path, (&'book Chapter, Option<ChapterAnchors>)>,
 }
 
 pub struct Preprocess<'book> {
     preprocessor: Preprocessor<'book>,
     items: BookItems<'book>,
     part_num: usize,
+}
+
+#[derive(Default)]
+struct ChapterAnchors {
+    /// Anchor to the beginning of the chapter, usable as a link fragment.
+    beginning: Option<String>,
+}
+
+enum DestinationPath<'a> {
+    WithinBook(NormalizedPath),
+    External(Cow<'a, str>),
 }
 
 #[derive(Debug)]
@@ -81,6 +93,18 @@ impl<'book> Preprocessor<'book> {
             }
         }
 
+        let mut chapters = HashMap::new();
+        for section in ctx.book.book.iter() {
+            if let BookItem::Chapter(
+                chapter @ Chapter {
+                    path: Some(path), ..
+                },
+            ) = section
+            {
+                chapters.insert(path.as_path(), (chapter, Default::default()));
+            }
+        }
+
         Ok(Self {
             preprocessed_relative_to_root: preprocessed
                 .strip_prefix(&ctx.book.root)
@@ -90,6 +114,7 @@ impl<'book> Preprocessor<'book> {
             redirects: Default::default(),
             hosted_html: Default::default(),
             unresolved_links: false,
+            chapters,
             ctx,
         })
     }
@@ -261,7 +286,7 @@ impl<'book> Preprocessor<'book> {
                 };
                 let path = chapter_dir.join(link_path);
 
-                let normalized = self
+                let normalized_path = self
                     .normalize_path(&self.ctx.book.source_dir.join(&path))
                     .or_else(|err| {
                         self.normalize_path(&self.preprocessed.join(&path))
@@ -275,22 +300,91 @@ impl<'book> Preprocessor<'book> {
                             while let Some(dest) = self.redirects.get(Path::new(path)) {
                                 path = dest;
                             }
-                            Ok(Cow::Borrowed(path))
+                            Ok(DestinationPath::External(Cow::Borrowed(path)))
                         } else {
                             if !normalized.exists()? {
                                 normalized.copy_to_preprocessed()?;
                             }
-                            os_to_utf8(
-                                normalized
-                                    .preprocessed_path_relative_to_root
-                                    .into_os_string(),
-                            )
-                            .map(Cow::Owned)
+                            Ok(DestinationPath::WithinBook(normalized))
                         }
-                    })
-                    .or_else(|err| {
+                    });
+                let normalized_link = match normalized_path {
+                    Err(err) => Err((err, link)),
+                    Ok(normalized_path) => {
+                        let (normalized_path, add_anchor) = match normalized_path {
+                            DestinationPath::External(path) => (path, None),
+                            DestinationPath::WithinBook(normalized_path) => {
+                                // Check whether link is anchored (points to a section within a document)
+                                let already_anchored = link[path_range.end..].contains('#');
+
+                                // As of version 3.2, pandoc no longer generates an anchor at the beginning
+                                // of each file, so we need to find alternate destination for chapter links
+                                let add_anchor = if already_anchored {
+                                    None
+                                } else {
+                                    let chapter = normalized_path
+                                        .src_absolute_path
+                                        .strip_prefix(&self.ctx.book.source_dir)
+                                        .ok()
+                                        .and_then(|relative_path| {
+                                            self.chapters.get_mut(relative_path)
+                                        });
+                                    match chapter {
+                                        None => {
+                                            log::trace!(
+                                                "Not a chapter: {}",
+                                                normalized_path
+                                                    .preprocessed_path_relative_to_root
+                                                    .display()
+                                            );
+                                            None
+                                        }
+                                        Some((chapter, anchors)) => {
+                                            match Self::chapter_anchor(chapter, anchors) {
+                                                Ok(Some(anchor)) => Some(anchor),
+                                                Err(err) => return Err((err, link)),
+                                                Ok(None) => {
+                                                    return Err((
+                                                        anyhow!(
+                                                        "failed to link to beginning of chapter"
+                                                    ),
+                                                        link,
+                                                    ))
+                                                }
+                                            }
+                                        }
+                                    }
+                                };
+
+                                match os_to_utf8(
+                                    normalized_path
+                                        .preprocessed_path_relative_to_root
+                                        .into_os_string(),
+                                ) {
+                                    Ok(path) => (path.into(), add_anchor),
+                                    Err(err) => return Err((err, link)),
+                                }
+                            }
+                        };
+
+                        let mut link = link.into_string();
+                        link.replace_range(path_range, &normalized_path);
+
+                        if let Some(anchor) = add_anchor {
+                            link.push('#');
+                            link.push_str(anchor);
+                        }
+
+                        Ok(link.into())
+                    }
+                };
+                normalized_link
+                    .or_else(|(err, original_link)| {
                         self.hosted_html
-                            .ok_or(err)
+                            .ok_or_else(|| {
+                                self.unresolved_links = true;
+                                err
+                            })
                             .and_then(|uri| {
                                 let mut hosted = OsString::from(uri.trim_end_matches('/'));
                                 hosted.push("/");
@@ -303,28 +397,74 @@ impl<'book> Preprocessor<'book> {
                                     } else {
                                         log::Level::Debug
                                     },
-                                    "Unable to resolve relative path '{}' in chapter '{}', \
+                                    "Failed to resolve link '{original_link}' in chapter '{}', \
                                     linking to hosted HTML book at '{hosted}'",
-                                    link_path.display(),
                                     chapter_path.display(),
                                 );
                                 Ok(hosted)
                             })
                             .map(Cow::Owned)
-                    });
-                match normalized {
-                    Ok(normalized_relative_path) => {
-                        let mut link = link.into_string();
-                        link.replace_range(path_range, &normalized_relative_path);
-                        Ok(link.into())
+                            .map_err(|err| (err, original_link))
+                    })
+                    .map(CowStr::from)
+            }
+        }
+    }
+
+    fn chapter_anchor<'anchors>(
+        chapter: &Chapter,
+        anchors: &'anchors mut Option<ChapterAnchors>,
+    ) -> anyhow::Result<Option<&'anchors str>> {
+        let anchors = anchors.get_or_insert_with(|| {
+            use pulldown_cmark::{Event, Options, Parser, Tag, TagEnd};
+            let mut parser = Parser::new_ext(&chapter.content, Options::ENABLE_HEADING_ATTRIBUTES);
+            let beginning = 'beginning: {
+                let heading_id = loop {
+                    let Some(event) = parser.next() else {
+                        break 'beginning None;
+                    };
+                    if let Event::Start(Tag::Heading { id, .. }) = event {
+                        break id;
                     }
-                    Err(err) => {
-                        self.unresolved_links = true;
-                        Err((err, link))
+                };
+                let anchor = match heading_id {
+                    Some(id) => id.to_string(),
+                    None => Self::make_gfm_identifier(
+                        parser.take_while(|event| !matches!(event, Event::End(TagEnd::Heading(_)))),
+                    ),
+                };
+                Some(anchor)
+            };
+            if beginning.is_none() {
+                log::warn!(
+                    "Failed to determine suitable anchor for beginning of chapter '{}'\
+                    --does it contain any headings?",
+                    chapter.name,
+                );
+            }
+            ChapterAnchors { beginning }
+        });
+        Ok(anchors.beginning.as_deref())
+    }
+
+    /// Generates a GitHub Markdown-flavored identifier for a heading with the provided content.
+    fn make_gfm_identifier<'source>(
+        content: impl IntoIterator<Item = pulldown_cmark::Event<'source>>,
+    ) -> String {
+        let mut id = String::new();
+        for event in content {
+            if let pulldown_cmark::Event::Text(text) = event {
+                for c in text.chars() {
+                    match c {
+                        ' ' => id.push('-'),
+                        c @ ('-' | '_') => id.push(c),
+                        c if c.is_alphanumeric() => id.extend(c.to_lowercase()),
+                        _ => {}
                     }
                 }
             }
         }
+        id
     }
 
     fn download_remote_image(&self, link: &str) -> anyhow::Result<PathBuf> {
@@ -943,5 +1083,55 @@ impl NormalizedPath {
                 .with_context(|| format!("Unable to create directory: {}", parent.display()))?;
         }
         File::create(path).with_context(|| format!("Unable to create file: {}", path.display()))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Preprocessor;
+
+    #[test]
+    fn gfm_identifiers() {
+        use pulldown_cmark::{Event, Tag, TagEnd};
+        let convert = |source| {
+            let mut parser = pulldown_cmark::Parser::new(source);
+            assert!(matches!(
+                parser.next().unwrap(),
+                Event::Start(Tag::Heading { .. })
+            ));
+            Preprocessor::make_gfm_identifier(
+                parser.take_while(|event| !matches!(event, Event::End(TagEnd::Heading(_)))),
+            )
+        };
+        assert_eq!(convert("# hello"), "hello");
+        insta::assert_debug_snapshot!(
+            [
+                "# Heading	Identifier",
+                "# Heading identifiers in HTML",
+                "# Maître d'hôtel",
+                "# *Dogs*?--in *my* house?",
+                "# [HTML], [S5], or [RTF]?",
+                "# 3. Applications",
+                "# 33",
+                "# With _ Underscores_In It",
+                "# has-hyphens",
+                "# Unicode Σ"
+            ]
+            .map(convert),
+            @r###"
+            [
+                "headingidentifier",
+                "heading-identifiers-in-html",
+                "maître-dhôtel",
+                "dogs--in-my-house",
+                "html-s5-or-rtf",
+                "3-applications",
+                "33",
+                "with-_-underscores_in-it",
+                "has-hyphens",
+                "unicode-σ",
+            ]
+            "###
+        );
     }
 }
