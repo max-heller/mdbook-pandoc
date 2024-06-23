@@ -116,9 +116,7 @@ impl Renderer {
                         log::warn!(
                             "Cannot use Pandoc extension `{}`, which may result in degraded output \
                             (introduced in version {}, but using {})",
-                            extension.name(),
-                            introduced_in,
-                            ctx.pandoc.version,
+                            extension.name(), introduced_in, ctx.pandoc.version,
                         );
                     }
                 }
