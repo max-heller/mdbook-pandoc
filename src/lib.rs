@@ -914,9 +914,7 @@ This is an example of a footnote[^note].
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
-        │ ```{=html}
         │ <i class="fa fa-print"/>
-        │ ```
         "###);
     }
 
