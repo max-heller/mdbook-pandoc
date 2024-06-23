@@ -63,6 +63,21 @@ impl Renderer {
         self
     }
 
+    /// Parses a Pandoc format string possibly containing extension modifiers into the format name
+    /// and an iterator of extensions.
+    ///
+    /// For example, splits "commonmark+foo-bar" into "commonmark" and ["foo", "bar"].
+    fn parse_format(format: &str) -> (&str, impl Iterator<Item = &str>) {
+        const ENABLED: char = '+';
+        const DISABLED: char = '-';
+        let mut parts = format.split([ENABLED, DISABLED]);
+        let format = parts
+            .next()
+            .expect("str::split() always returns at least one item");
+        let extensions = parts;
+        (format, extensions)
+    }
+
     pub fn render(self, mut profile: Profile, ctx: &mut Context) -> anyhow::Result<()> {
         let mut pandoc = self.pandoc;
 
@@ -74,66 +89,23 @@ impl Renderer {
         };
 
         profile.from = Some({
-            let (mut enabled_extensions, mut disabled_extensions) =
-                (HashSet::new(), HashSet::new());
             let mut format;
+            let mut explicitly_configured_extensions = HashSet::new();
+            // Check if the profile has specified an explicit source format.
+            // If so, respect its extension configuration
             match profile.from {
                 None => format = String::from("commonmark"),
                 Some(from) => {
                     format = from;
-
-                    enum Extension {
-                        Enabled,
-                        Disabled,
-                    }
-
-                    impl Extension {
-                        pub const fn as_str(&self) -> &str {
-                            match self {
-                                Self::Enabled => "+",
-                                Self::Disabled => "-",
-                            }
-                        }
-                    }
-
-                    let mut matches = {
-                        const ENABLED: char = '+';
-                        const DISABLED: char = '-';
-                        format
-                            .match_indices([ENABLED, DISABLED])
-                            .map(|(idx, modifier)| {
-                                const ENABLED: &str = Extension::Enabled.as_str();
-                                const DISABLED: &str = Extension::Disabled.as_str();
-                                let modifier = match modifier {
-                                    ENABLED => Extension::Enabled,
-                                    DISABLED => Extension::Disabled,
-                                    _ => unreachable!(),
-                                };
-                                (idx, modifier)
-                            })
-                    };
-                    if let Some((idx, modifier)) = matches.next() {
-                        let _format = &format[..idx]; // e.g. "commonmark"
-
-                        let mut process = |modifier, extension| match modifier {
-                            Extension::Enabled => enabled_extensions.insert(extension),
-                            Extension::Disabled => disabled_extensions.insert(extension),
-                        };
-                        let mut modifier = modifier;
-                        let mut start = idx + modifier.as_str().len();
-                        for (idx, next_modifier) in matches {
-                            process(modifier, &format[start..idx]);
-                            modifier = next_modifier;
-                            start = idx + modifier.as_str().len();
-                        }
-                        process(modifier, &format[start..]);
-                    }
+                    let (_, extensions) = Self::parse_format(&format);
+                    explicitly_configured_extensions.extend(extensions);
                 }
             };
+            // Don't redundantly enable extensions or enable an explicitly disabled extension
             ctx.pandoc.retain_extensions(|extension| {
-                let name = extension.name();
-                !(enabled_extensions.contains(name) || disabled_extensions.contains(name))
+                !explicitly_configured_extensions.contains(extension.name())
             });
+            // Enable additional extensions
             for (extension, availability) in ctx.pandoc.enabled_extensions() {
                 match availability {
                     extension::Availability::Available => {
@@ -298,7 +270,11 @@ impl Renderer {
         };
         pandoc.arg("-d").arg(defaults_file.path());
 
-        log::debug!("Running pandoc");
+        if log::log_enabled!(log::Level::Trace) {
+            log::trace!("Running pandoc with profile: {profile:#?}");
+        } else {
+            log::debug!("Running pandoc");
+        }
         let status = pandoc
             .stdin(Stdio::null())
             .status()

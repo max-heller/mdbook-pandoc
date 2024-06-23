@@ -201,10 +201,12 @@ mod tests {
         logfile: File,
     }
 
+    #[derive(Clone, Copy)]
     pub struct Options {
         max_log_level: tracing::level_filters::LevelFilter,
     }
 
+    #[derive(Clone)]
     pub struct Chapter {
         chapter: mdbook::book::Chapter,
     }
@@ -307,6 +309,10 @@ mod tests {
         pub fn config(mut self, config: Config) -> Self {
             self.book.config.set(Renderer::CONFIG_KEY, config).unwrap();
             self
+        }
+
+        pub fn toml_config(self, toml: toml::map::Map<String, toml::Value>) -> Self {
+            self.config(toml.try_into().expect("invalid config"))
         }
 
         pub fn chapter(mut self, Chapter { mut chapter }: Chapter) -> Self {
@@ -797,25 +803,6 @@ This is an example of a footnote[^note].
     }
 
     #[test]
-    fn docx_bookmarks() {
-        let book = MDBook::init()
-            .chapter(Chapter::new("", "# One", "one.md"))
-            .config(
-                toml! {
-                    keep-preprocessed = false
-
-                    [profile.markdown]
-                    output-file = "book.docx"
-                    from = "markdown-auto_identifiers"
-                }
-                .try_into()
-                .unwrap(),
-            )
-            .build();
-        insta::assert_snapshot!(book, @r###""###);
-    }
-
-    #[test]
     fn inter_chapter_links() {
         let book = MDBook::init()
             .chapter(Chapter::new("One", "[Two](../two/two.md)", "one/one.md"))
@@ -1185,6 +1172,50 @@ fn main() {}
     }
 
     #[test]
+    /// Respect enabled/disabled extensions in Pandoc's `from` option
+    fn extension_overrides() {
+        let opts = MDBook::options().max_log_level(tracing::Level::TRACE);
+        let chapter = Chapter::new("", "# Chapter", "chapter.md");
+        let default = opts
+            .init()
+            .toml_config(toml! {
+                keep-preprocessed = false
+
+                [profile.markdown]
+                output-file = "book.md"
+                standalone = false
+            })
+            .chapter(chapter.clone())
+            .build();
+        let with_overrides = opts
+            .init()
+            .toml_config(toml! {
+                keep-preprocessed = false
+
+                [profile.markdown]
+                output-file = "book.md"
+                standalone = false
+                from = "commonmark-gfm_auto_identifiers+attributes"
+            })
+            .chapter(chapter)
+            .build();
+        let diff = similar::TextDiff::from_lines(&default.to_string(), &with_overrides.to_string())
+            .unified_diff()
+            .to_string();
+        insta::assert_snapshot!(diff, @r###"
+        @@ -10,7 +10,7 @@
+         │     pdf_engine: None,
+         │     standalone: false,
+         │     from: Some(
+        -│         "commonmark+attributes+gfm_auto_identifiers",
+        +│         "commonmark-gfm_auto_identifiers+attributes",
+         │     ),
+         │     to: None,
+         │     table_of_contents: true,
+        "###);
+    }
+
+    #[test]
     fn raw_opts() {
         let cfg = r#"
 [output.pandoc.profile.test]
@@ -1207,7 +1238,7 @@ indent = true
 colorlinks = false
         "#;
         let output = MDBook::options()
-            .max_log_level(tracing::Level::DEBUG)
+            .max_log_level(tracing::Level::TRACE)
             .init()
             .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
             .build();
@@ -1216,7 +1247,57 @@ colorlinks = false
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
         │  INFO mdbook::book: Running the pandoc backend    
-        │ DEBUG mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │ TRACE mdbook_pandoc::pandoc::renderer: Running pandoc with profile: Profile {
+        │     columns: 72,
+        │     file_scope: true,
+        │     number_sections: true,
+        │     output_file: "/dev/null",
+        │     pdf_engine: None,
+        │     standalone: true,
+        │     from: Some(
+        │         "commonmark+gfm_auto_identifiers",
+        │     ),
+        │     to: Some(
+        │         "markdown",
+        │     ),
+        │     table_of_contents: true,
+        │     variables: {
+        │         "colorlinks": Boolean(
+        │             false,
+        │         ),
+        │         "header-includes": Array(
+        │             [
+        │                 String(
+        │                     "text1",
+        │                 ),
+        │                 String(
+        │                     "text2",
+        │                 ),
+        │             ],
+        │         ),
+        │         "indent": Boolean(
+        │             true,
+        │         ),
+        │     },
+        │     rest: {
+        │         "fail-if-warnings": Boolean(
+        │             false,
+        │         ),
+        │         "resource-path": Array(
+        │             [
+        │                 String(
+        │                     "really-long-path",
+        │                 ),
+        │                 String(
+        │                     "really-long-path2",
+        │                 ),
+        │             ],
+        │         ),
+        │         "verbosity": String(
+        │             "INFO",
+        │         ),
+        │     },
+        │ }    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null    
         "###)
     }
