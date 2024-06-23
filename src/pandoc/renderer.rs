@@ -1,4 +1,5 @@
 use std::{
+    collections::HashSet,
     fmt::Write as _,
     fs,
     io::Write as _,
@@ -72,8 +73,67 @@ impl Renderer {
             ctx.destination.join(&profile.output_file)
         };
 
-        let format = {
-            let mut format = String::from("commonmark");
+        profile.from = Some({
+            let (mut enabled_extensions, mut disabled_extensions) =
+                (HashSet::new(), HashSet::new());
+            let mut format;
+            match profile.from {
+                None => format = String::from("commonmark"),
+                Some(from) => {
+                    format = from;
+
+                    enum Extension {
+                        Enabled,
+                        Disabled,
+                    }
+
+                    impl Extension {
+                        pub const fn as_str(&self) -> &str {
+                            match self {
+                                Self::Enabled => "+",
+                                Self::Disabled => "-",
+                            }
+                        }
+                    }
+
+                    let mut matches = {
+                        const ENABLED: char = '+';
+                        const DISABLED: char = '-';
+                        format
+                            .match_indices([ENABLED, DISABLED])
+                            .map(|(idx, modifier)| {
+                                const ENABLED: &str = Extension::Enabled.as_str();
+                                const DISABLED: &str = Extension::Disabled.as_str();
+                                let modifier = match modifier {
+                                    ENABLED => Extension::Enabled,
+                                    DISABLED => Extension::Disabled,
+                                    _ => unreachable!(),
+                                };
+                                (idx, modifier)
+                            })
+                    };
+                    if let Some((idx, modifier)) = matches.next() {
+                        let _format = &format[..idx]; // e.g. "commonmark"
+
+                        let mut process = |modifier, extension| match modifier {
+                            Extension::Enabled => enabled_extensions.insert(extension),
+                            Extension::Disabled => disabled_extensions.insert(extension),
+                        };
+                        let mut modifier = modifier;
+                        let mut start = idx + modifier.as_str().len();
+                        for (idx, next_modifier) in matches {
+                            process(modifier, &format[start..idx]);
+                            modifier = next_modifier;
+                            start = idx + modifier.as_str().len();
+                        }
+                        process(modifier, &format[start..]);
+                    }
+                }
+            };
+            ctx.pandoc.retain_extensions(|extension| {
+                let name = extension.name();
+                !(enabled_extensions.contains(name) || disabled_extensions.contains(name))
+            });
             for (extension, availability) in ctx.pandoc.enabled_extensions() {
                 match availability {
                     extension::Availability::Available => {
@@ -84,14 +144,15 @@ impl Renderer {
                         log::warn!(
                             "Cannot use Pandoc extension `{}`, which may result in degraded output \
                             (introduced in version {}, but using {})",
-                            extension.name(), introduced_in, ctx.pandoc.version,
+                            extension.name(),
+                            introduced_in,
+                            ctx.pandoc.version,
                         );
                     }
                 }
             }
             format
-        };
-        pandoc.args(["-f", &format]);
+        });
 
         let mut default_variables = vec![];
         match ctx.output {

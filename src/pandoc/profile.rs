@@ -17,6 +17,7 @@ pub struct Profile {
     pub pdf_engine: Option<PathBuf>,
     #[serde(default = "defaults::enabled")]
     pub standalone: bool,
+    pub from: Option<String>,
     pub to: Option<String>,
     #[serde(default = "defaults::enabled")]
     pub table_of_contents: bool,

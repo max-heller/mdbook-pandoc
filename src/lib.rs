@@ -797,6 +797,25 @@ This is an example of a footnote[^note].
     }
 
     #[test]
+    fn docx_bookmarks() {
+        let book = MDBook::init()
+            .chapter(Chapter::new("", "# One", "one.md"))
+            .config(
+                toml! {
+                    keep-preprocessed = false
+
+                    [profile.markdown]
+                    output-file = "book.docx"
+                    from = "markdown-auto_identifiers"
+                }
+                .try_into()
+                .unwrap(),
+            )
+            .build();
+        insta::assert_snapshot!(book, @r###""###);
+    }
+
+    #[test]
     fn inter_chapter_links() {
         let book = MDBook::init()
             .chapter(Chapter::new("One", "[Two](../two/two.md)", "one/one.md"))
