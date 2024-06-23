@@ -1141,6 +1141,8 @@ fn main() {}
             .chapter(Chapter::new(
                 "",
                 r#"
+# Chapter Foo
+
 [link][link-with-description]
 
 [link-with-description]: chapter.md '"foo" (bar)'
