@@ -809,7 +809,7 @@ This is an example of a footnote[^note].
             ))
             .chapter(Chapter::new(
                 "Two",
-                "# Two\n[One](../one/one.md)\n[Three](../three.md)",
+                "# Two\n[One](../one/one.md)\n[also one](/one/one.md)\n[Three](../three.md)",
                 "two/two.md",
             ))
             .chapter(Chapter::new("Three", "", "three.md"))
@@ -829,6 +829,7 @@ This is an example of a footnote[^note].
         │ \chapter{Two}\label{book__latex__src__two__twomd__two}
         │ 
         │ \hyperref[book__latex__src__one__onemd__one]{One}
+        │ \hyperref[book__latex__src__one__onemd__one]{also one}
         │ \href{../three.md}{Three}
         ├─ latex/src/one/one.md
         │ # One
@@ -839,6 +840,7 @@ This is an example of a footnote[^note].
         │ # Two
         │ 
         │ [One](book/latex/src/one/one.md#one)
+        │ [also one](book/latex/src/one/one.md#one)
         │ [Three](../three.md)
         "###);
     }

@@ -23,6 +23,7 @@ expression: logs
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
+ INFO mdbook_pandoc::preprocess: Unable to resolve relative path '/home/matthew/rust/compiler/rustc_hir_analysis/src/coherence/unsafety.rs' in chapter 'unsafety-checking.md', linking to hosted HTML book at 'https://rustc-dev-guide.rust-lang.org/$ROOT/book/pandoc/pdf/src/home/matthew/rust/compiler/rustc_hir_analysis/src/coherence/unsafety.rs'    
  INFO mdbook_pandoc::preprocess: Unable to resolve relative path '../guides/editions.md' in chapter 'diagnostics.md', linking to hosted HTML book at 'https://rustc-dev-guide.rust-lang.org/../guides/editions.md'    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__ice' on $PAGE undefined on input $LINE.

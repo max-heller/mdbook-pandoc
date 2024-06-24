@@ -267,19 +267,23 @@ impl<'book> Preprocessor<'book> {
             }
         } else {
             // URI is a relative-reference: https://datatracker.ietf.org/doc/html/rfc3986#section-4.2
-            if link.starts_with('/') {
-                // URI is a network-path reference or absolute-path reference;
-                // leave both untouched
+            if link.starts_with("//") {
+                // URI is a network-path reference; leave it untouched
                 Ok(link)
             } else {
-                // URI is a relative-path reference, which must be normalized
+                // URI is an absolute-path or relative-path reference, which must be resolved
+                // relative to the book root or the current chapter's directory, respectively
                 let path_range = link_path_range();
                 let link_path = match &link[path_range] {
                     // Internal reference within chapter
                     "" if link.starts_with('#') => return Ok(link),
                     path => Path::new(path),
                 };
-                let path = chapter_dir.join(link_path);
+                let path = if let Ok(relative_to_root) = link_path.strip_prefix("/") {
+                    self.preprocessed.join(relative_to_root)
+                } else {
+                    chapter_dir.join(link_path)
+                };
 
                 enum LinkDestination<'a> {
                     PartiallyResolved(NormalizedPath),
