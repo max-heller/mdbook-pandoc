@@ -834,7 +834,11 @@ This is an example of a footnote[^note].
     fn inter_chapter_links() {
         let book = MDBook::init()
             .chapter(Chapter::new("One", "[Two](../two/two.md)", "one/one.md"))
-            .chapter(Chapter::new("Two", "[One](../one/one.md)", "two/two.md"))
+            .chapter(Chapter::new(
+                "Two",
+                "[One](../one/one.md)\n[also one](/one/one.md)",
+                "two/two.md",
+            ))
             .config(Config::latex())
             .build();
         insta::assert_snapshot!(book, @r###"
@@ -847,10 +851,12 @@ This is an example of a footnote[^note].
         │ 
         │ \phantomsection\label{book__latex__src__two__twomd}
         │ \hyperref[book__latex__src__one__onemd]{One}
+        │ \hyperref[book__latex__src__one__onemd]{also one}
         ├─ latex/src/one/one.md
         │ [Two](book/latex/src/two/two.md)
         ├─ latex/src/two/two.md
         │ [One](book/latex/src/one/one.md)
+        │ [also one](book/latex/src/one/one.md)
         "###);
     }
 
