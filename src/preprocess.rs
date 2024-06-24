@@ -52,11 +52,6 @@ struct ChapterAnchors {
     beginning: Option<String>,
 }
 
-enum DestinationPath<'a> {
-    WithinBook(NormalizedPath),
-    External(Cow<'a, str>),
-}
-
 #[derive(Debug)]
 struct NormalizedPath {
     src_absolute_path: PathBuf,
@@ -286,6 +281,11 @@ impl<'book> Preprocessor<'book> {
                 };
                 let path = chapter_dir.join(link_path);
 
+                enum LinkDestination<'a> {
+                    PartiallyResolved(NormalizedPath),
+                    FullyResolved(Cow<'a, str>),
+                }
+
                 let normalized_path = self
                     .normalize_path(&self.ctx.book.source_dir.join(&path))
                     .or_else(|err| {
@@ -300,20 +300,20 @@ impl<'book> Preprocessor<'book> {
                             while let Some(dest) = self.redirects.get(Path::new(path)) {
                                 path = dest;
                             }
-                            Ok(DestinationPath::External(Cow::Borrowed(path)))
+                            Ok(LinkDestination::FullyResolved(Cow::Borrowed(path)))
                         } else {
                             if !normalized.exists()? {
                                 normalized.copy_to_preprocessed()?;
                             }
-                            Ok(DestinationPath::WithinBook(normalized))
+                            Ok(LinkDestination::PartiallyResolved(normalized))
                         }
                     });
                 let normalized_link = match normalized_path {
                     Err(err) => Err((err, link)),
                     Ok(normalized_path) => {
                         let (normalized_path, add_anchor) = match normalized_path {
-                            DestinationPath::External(path) => (path, None),
-                            DestinationPath::WithinBook(normalized_path) => {
+                            LinkDestination::FullyResolved(path) => (path, None),
+                            LinkDestination::PartiallyResolved(normalized_path) => {
                                 // Check whether link is anchored (points to a section within a document)
                                 let already_anchored = link[path_range.end..].contains('#');
 
@@ -323,8 +323,8 @@ impl<'book> Preprocessor<'book> {
                                     None
                                 } else {
                                     let chapter = normalized_path
-                                        .src_absolute_path
-                                        .strip_prefix(&self.ctx.book.source_dir)
+                                        .preprocessed_path_relative_to_root
+                                        .strip_prefix(&self.preprocessed_relative_to_root)
                                         .ok()
                                         .and_then(|relative_path| {
                                             self.chapters.get_mut(relative_path)
