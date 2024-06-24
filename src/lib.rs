@@ -1150,6 +1150,30 @@ fn main() {}
     }
 
     #[test]
+    fn single_chapter_with_explicit_self_link() {
+        let book = MDBook::init()
+            .config(Config::latex())
+            .chapter(Chapter::new(
+                "Chapter One",
+                "[link](chapter.md)",
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \phantomsection\label{book__latex__src__chaptermd}
+        │ \hyperref[book__latex__src__chaptermd]{link}
+        │ 
+        │ \phantomsection\label{book__latex__dummy}
+        ├─ latex/src/chapter.md
+        │ [link](book/latex/src/chapter.md)
+        "###);
+    }
+
+    #[test]
     fn preserve_escapes() {
         let output = MDBook::init()
             .config(Config::pandoc())

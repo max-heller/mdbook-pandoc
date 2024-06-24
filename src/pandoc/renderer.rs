@@ -21,6 +21,7 @@ use crate::{
 
 pub struct Renderer {
     pandoc: Command,
+    num_inputs: usize,
 }
 
 pub struct Context<'book> {
@@ -45,6 +46,7 @@ impl Renderer {
     pub(crate) fn new() -> Self {
         Self {
             pandoc: Command::new("pandoc"),
+            num_inputs: 0,
         }
     }
 
@@ -60,6 +62,7 @@ impl Renderer {
 
     pub fn input(&mut self, input: impl AsRef<Path>) -> &mut Self {
         self.pandoc.arg(input.as_ref());
+        self.num_inputs += 1;
         self
     }
 
@@ -267,6 +270,22 @@ impl Renderer {
             file
         };
         pandoc.arg("-d").arg(defaults_file.path());
+
+        // --file-scope only works if there are at least two files, so if there is only one file,
+        // add an additionaly empty file to convince Pandoc to perform its link adjustment pass
+        let _dummy_tempfile_guard: tempfile::TempPath;
+        if self.num_inputs == 1 {
+            let dummy = tempfile::Builder::new()
+                .prefix("dummy")
+                .rand_bytes(0)
+                .tempfile_in(&ctx.destination)?;
+            let path = dummy
+                .path()
+                .normalize()
+                .context("failed to normalize dummy file path")?;
+            pandoc.arg(path.as_path().strip_prefix(&ctx.book.root).unwrap());
+            _dummy_tempfile_guard = dummy.into_temp_path();
+        }
 
         if log::log_enabled!(log::Level::Trace) {
             log::trace!("Running pandoc with profile: {profile:#?}");
