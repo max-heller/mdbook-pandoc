@@ -1,4 +1,5 @@
 use std::{
+    collections::HashSet,
     fmt::Write as _,
     fs,
     io::Write as _,
@@ -62,6 +63,21 @@ impl Renderer {
         self
     }
 
+    /// Parses a Pandoc format string possibly containing extension modifiers into the format name
+    /// and an iterator of extensions.
+    ///
+    /// For example, splits "commonmark+foo-bar" into "commonmark" and ["foo", "bar"].
+    fn parse_format(format: &str) -> (&str, impl Iterator<Item = &str>) {
+        const ENABLED: char = '+';
+        const DISABLED: char = '-';
+        let mut parts = format.split([ENABLED, DISABLED]);
+        let format = parts
+            .next()
+            .expect("str::split() always returns at least one item");
+        let extensions = parts;
+        (format, extensions)
+    }
+
     pub fn render(self, mut profile: Profile, ctx: &mut Context) -> anyhow::Result<()> {
         let mut pandoc = self.pandoc;
 
@@ -72,8 +88,24 @@ impl Renderer {
             ctx.destination.join(&profile.output_file)
         };
 
-        let format = {
-            let mut format = String::from("commonmark");
+        profile.from = Some({
+            let mut format;
+            let mut explicitly_configured_extensions = HashSet::new();
+            // Check if the profile has specified an explicit source format.
+            // If so, respect its extension configuration
+            match profile.from {
+                None => format = String::from("commonmark"),
+                Some(from) => {
+                    format = from;
+                    let (_, extensions) = Self::parse_format(&format);
+                    explicitly_configured_extensions.extend(extensions);
+                }
+            };
+            // Don't redundantly enable extensions or enable an explicitly disabled extension
+            ctx.pandoc.retain_extensions(|extension| {
+                !explicitly_configured_extensions.contains(extension.name())
+            });
+            // Enable additional extensions
             for (extension, availability) in ctx.pandoc.enabled_extensions() {
                 match availability {
                     extension::Availability::Available => {
@@ -90,8 +122,7 @@ impl Renderer {
                 }
             }
             format
-        };
-        pandoc.args(["-f", &format]);
+        });
 
         let mut default_variables = vec![];
         match ctx.output {
@@ -237,7 +268,11 @@ impl Renderer {
         };
         pandoc.arg("-d").arg(defaults_file.path());
 
-        log::debug!("Running pandoc");
+        if log::log_enabled!(log::Level::Trace) {
+            log::trace!("Running pandoc with profile: {profile:#?}");
+        } else {
+            log::debug!("Running pandoc");
+        }
         let status = pandoc
             .stdin(Stdio::null())
             .status()

@@ -69,6 +69,10 @@ impl Context {
             .or_insert_with(|| extension.check_availability(&self.version))
     }
 
+    pub fn retain_extensions(&mut self, mut f: impl FnMut(&Extension) -> bool) {
+        self.enabled_extensions.retain(|extension, _| f(extension))
+    }
+
     pub fn enabled_extensions(
         &self,
     ) -> impl Iterator<Item = (&Extension, &extension::Availability)> + '_ {
