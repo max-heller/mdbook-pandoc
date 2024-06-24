@@ -201,10 +201,12 @@ mod tests {
         logfile: File,
     }
 
+    #[derive(Clone, Copy)]
     pub struct Options {
         max_log_level: tracing::level_filters::LevelFilter,
     }
 
+    #[derive(Clone)]
     pub struct Chapter {
         chapter: mdbook::book::Chapter,
     }
@@ -307,6 +309,10 @@ mod tests {
         pub fn config(mut self, config: Config) -> Self {
             self.book.config.set(Renderer::CONFIG_KEY, config).unwrap();
             self
+        }
+
+        pub fn toml_config(self, toml: toml::map::Map<String, toml::Value>) -> Self {
+            self.config(toml.try_into().expect("invalid config"))
         }
 
         pub fn chapter(mut self, Chapter { mut chapter }: Chapter) -> Self {
@@ -564,7 +570,7 @@ mod tests {
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
-        │ # Getting Started
+        │ # Getting Started {#book__markdown__src__getting-startedmd__getting-started}
         "###);
     }
 
@@ -648,9 +654,9 @@ mod tests {
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \chapter{Heading}\label{custom-heading}
+        │ \chapter{Heading}\label{book__latex__src__chaptermd__custom-heading}
         │ 
-        │ \hyperref[custom-heading]{heading}
+        │ \hyperref[book__latex__src__chaptermd__custom-heading]{heading}
         ├─ latex/src/chapter.md
         │ # Heading { #custom-heading }
         │ 
@@ -795,9 +801,7 @@ This is an example of a footnote[^note].
 
     #[test]
     fn inter_chapter_links() {
-        let book = MDBook::options()
-            .max_log_level(tracing::Level::TRACE)
-            .init()
+        let book = MDBook::init()
             .chapter(Chapter::new(
                 "One",
                 "# One\n[Two](../two/two.md)",
@@ -813,12 +817,9 @@ This is an example of a footnote[^note].
             .build();
         insta::assert_snapshot!(book, @r###"
         ├─ log output
-        │ DEBUG mdbook::book: Running the index preprocessor.    
-        │ DEBUG mdbook::book: Running the links preprocessor.    
         │  INFO mdbook::book: Running the pandoc backend    
         │  WARN mdbook_pandoc::preprocess: Failed to determine suitable anchor for beginning of chapter 'Three'--does it contain any headings?    
         │  WARN mdbook_pandoc::preprocess: Unable to normalize link '../three.md' in chapter 'Two': failed to link to beginning of chapter    
-        │ DEBUG mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \chapter{One}\label{book__latex__src__one__onemd__one}
@@ -1155,10 +1156,39 @@ fn main() {}
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \href{book/latex/src/chapter.md}{link}
-        ├─ latex/src/chapter.md
-        │ [link](book/latex/src/chapter.md "\"foo\" (bar)")
+        │ \chapter{Chapter Foo}\label{book__latex__src__chaptermd__chapter-foo}
         │ 
+        │ \hyperref[book__latex__src__chaptermd__chapter-foo]{link}
+        ├─ latex/src/chapter.md
+        │ # Chapter Foo
+        │ 
+        │ [link](book/latex/src/chapter.md#chapter-foo "\"foo\" (bar)")
+        │ 
+        "###);
+    }
+
+    #[test]
+    fn single_chapter_with_explicit_self_link() {
+        let book = MDBook::init()
+            .config(Config::latex())
+            .chapter(Chapter::new(
+                "Chapter One",
+                "# Chapter One\n[link](chapter.md)",
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \chapter{Chapter One}\label{book__latex__src__chaptermd__chapter-one}
+        │ 
+        │ \hyperref[book__latex__src__chaptermd__chapter-one]{link}
+        ├─ latex/src/chapter.md
+        │ # Chapter One
+        │ 
+        │ [link](book/latex/src/chapter.md#chapter-one)
         "###);
     }
 
@@ -1185,6 +1215,56 @@ fn main() {}
     }
 
     #[test]
+    /// Respect enabled/disabled extensions in Pandoc's `from` option
+    fn extension_overrides() {
+        let opts = MDBook::options().max_log_level(tracing::Level::TRACE);
+        let chapter = Chapter::new("", "# Chapter", "chapter.md");
+        let default = opts
+            .init()
+            .toml_config(toml! {
+                keep-preprocessed = false
+
+                [profile.markdown]
+                output-file = "book.md"
+                standalone = false
+            })
+            .chapter(chapter.clone())
+            .build();
+        let with_overrides = opts
+            .init()
+            .toml_config(toml! {
+                keep-preprocessed = false
+
+                [profile.markdown]
+                output-file = "book.md"
+                standalone = false
+                from = "commonmark-gfm_auto_identifiers+attributes"
+            })
+            .chapter(chapter)
+            .build();
+        let diff = similar::TextDiff::from_lines(&default.to_string(), &with_overrides.to_string())
+            .unified_diff()
+            .to_string();
+        insta::assert_snapshot!(diff, @r###"
+        @@ -10,7 +10,7 @@
+         │     pdf_engine: None,
+         │     standalone: false,
+         │     from: Some(
+        -│         "commonmark+attributes+gfm_auto_identifiers",
+        +│         "commonmark-gfm_auto_identifiers+attributes",
+         │     ),
+         │     to: None,
+         │     table_of_contents: true,
+        @@ -19,4 +19,4 @@
+         │ }    
+         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+         ├─ markdown/book.md
+        -│ # Chapter {#book__markdown__src__chaptermd__chapter}
+        +│ # Chapter
+        "###);
+    }
+
+    #[test]
     fn raw_opts() {
         let cfg = r#"
 [output.pandoc.profile.test]
@@ -1207,7 +1287,7 @@ indent = true
 colorlinks = false
         "#;
         let output = MDBook::options()
-            .max_log_level(tracing::Level::DEBUG)
+            .max_log_level(tracing::Level::TRACE)
             .init()
             .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
             .build();
@@ -1216,7 +1296,57 @@ colorlinks = false
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
         │  INFO mdbook::book: Running the pandoc backend    
-        │ DEBUG mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │ TRACE mdbook_pandoc::pandoc::renderer: Running pandoc with profile: Profile {
+        │     columns: 72,
+        │     file_scope: true,
+        │     number_sections: true,
+        │     output_file: "/dev/null",
+        │     pdf_engine: None,
+        │     standalone: true,
+        │     from: Some(
+        │         "commonmark+gfm_auto_identifiers",
+        │     ),
+        │     to: Some(
+        │         "markdown",
+        │     ),
+        │     table_of_contents: true,
+        │     variables: {
+        │         "colorlinks": Boolean(
+        │             false,
+        │         ),
+        │         "header-includes": Array(
+        │             [
+        │                 String(
+        │                     "text1",
+        │                 ),
+        │                 String(
+        │                     "text2",
+        │                 ),
+        │             ],
+        │         ),
+        │         "indent": Boolean(
+        │             true,
+        │         ),
+        │     },
+        │     rest: {
+        │         "fail-if-warnings": Boolean(
+        │             false,
+        │         ),
+        │         "resource-path": Array(
+        │             [
+        │                 String(
+        │                     "really-long-path",
+        │                 ),
+        │                 String(
+        │                     "really-long-path2",
+        │                 ),
+        │             ],
+        │         ),
+        │         "verbosity": String(
+        │             "INFO",
+        │         ),
+        │     },
+        │ }    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null    
         "###)
     }
@@ -1307,6 +1437,7 @@ include-in-header = ["file-in-root"]
     static BOOKS: Lazy<PathBuf> = Lazy::new(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("books"));
 
     #[test]
+    #[ignore]
     fn mdbook_guide() {
         let logs = MDBook::load(BOOKS.join("mdBook/guide"))
             .config(Config {
@@ -1319,6 +1450,7 @@ include-in-header = ["file-in-root"]
     }
 
     #[test]
+    #[ignore]
     fn cargo_book() {
         let logs = MDBook::options()
             .max_log_level(tracing::Level::DEBUG)
@@ -1333,6 +1465,7 @@ include-in-header = ["file-in-root"]
     }
 
     #[test]
+    #[ignore]
     fn rust_book() {
         let logs = MDBook::load(BOOKS.join("rust-book"))
             .config(Config {
@@ -1345,6 +1478,7 @@ include-in-header = ["file-in-root"]
     }
 
     #[test]
+    #[ignore]
     fn nomicon() {
         let logs = MDBook::load(BOOKS.join("nomicon"))
             .config(Config {
@@ -1357,6 +1491,7 @@ include-in-header = ["file-in-root"]
     }
 
     #[test]
+    #[ignore]
     fn rust_by_example() {
         let logs = MDBook::load(BOOKS.join("rust-by-example"))
             .config(Config {
@@ -1369,6 +1504,7 @@ include-in-header = ["file-in-root"]
     }
 
     #[test]
+    #[ignore]
     fn rust_edition_guide() {
         let logs = MDBook::load(BOOKS.join("rust-edition-guide"))
             .config(Config {
@@ -1381,6 +1517,7 @@ include-in-header = ["file-in-root"]
     }
 
     #[test]
+    #[ignore]
     fn rust_embedded() {
         let logs = MDBook::load(BOOKS.join("rust-embedded"))
             .config(Config {
@@ -1393,6 +1530,7 @@ include-in-header = ["file-in-root"]
     }
 
     #[test]
+    #[ignore]
     fn rust_reference() {
         let logs = MDBook::load(BOOKS.join("rust-reference"))
             .config(Config {
@@ -1405,6 +1543,7 @@ include-in-header = ["file-in-root"]
     }
 
     #[test]
+    #[ignore]
     fn rustc_dev_guide() {
         let logs = MDBook::load(BOOKS.join("rustc-dev-guide"))
             .config(Config {

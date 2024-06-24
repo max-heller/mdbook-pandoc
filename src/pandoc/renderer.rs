@@ -1,4 +1,5 @@
 use std::{
+    collections::HashSet,
     fmt::Write as _,
     fs,
     io::Write as _,
@@ -20,6 +21,7 @@ use crate::{
 
 pub struct Renderer {
     pandoc: Command,
+    num_inputs: usize,
 }
 
 pub struct Context<'book> {
@@ -44,6 +46,7 @@ impl Renderer {
     pub(crate) fn new() -> Self {
         Self {
             pandoc: Command::new("pandoc"),
+            num_inputs: 0,
         }
     }
 
@@ -59,7 +62,23 @@ impl Renderer {
 
     pub fn input(&mut self, input: impl AsRef<Path>) -> &mut Self {
         self.pandoc.arg(input.as_ref());
+        self.num_inputs += 1;
         self
+    }
+
+    /// Parses a Pandoc format string possibly containing extension modifiers into the format name
+    /// and an iterator of extensions.
+    ///
+    /// For example, splits "commonmark+foo-bar" into "commonmark" and ["foo", "bar"].
+    fn parse_format(format: &str) -> (&str, impl Iterator<Item = &str>) {
+        const ENABLED: char = '+';
+        const DISABLED: char = '-';
+        let mut parts = format.split([ENABLED, DISABLED]);
+        let format = parts
+            .next()
+            .expect("str::split() always returns at least one item");
+        let extensions = parts;
+        (format, extensions)
     }
 
     pub fn render(self, mut profile: Profile, ctx: &mut Context) -> anyhow::Result<()> {
@@ -72,8 +91,24 @@ impl Renderer {
             ctx.destination.join(&profile.output_file)
         };
 
-        let format = {
-            let mut format = String::from("commonmark");
+        profile.from = Some({
+            let mut format;
+            let mut explicitly_configured_extensions = HashSet::new();
+            // Check if the profile has specified an explicit source format.
+            // If so, respect its extension configuration
+            match profile.from {
+                None => format = String::from("commonmark"),
+                Some(from) => {
+                    format = from;
+                    let (_, extensions) = Self::parse_format(&format);
+                    explicitly_configured_extensions.extend(extensions);
+                }
+            };
+            // Don't redundantly enable extensions or enable an explicitly disabled extension
+            ctx.pandoc.retain_extensions(|extension| {
+                !explicitly_configured_extensions.contains(extension.name())
+            });
+            // Enable additional extensions
             for (extension, availability) in ctx.pandoc.enabled_extensions() {
                 match availability {
                     extension::Availability::Available => {
@@ -90,8 +125,7 @@ impl Renderer {
                 }
             }
             format
-        };
-        pandoc.args(["-f", &format]);
+        });
 
         let mut default_variables = vec![];
         match ctx.output {
@@ -237,7 +271,27 @@ impl Renderer {
         };
         pandoc.arg("-d").arg(defaults_file.path());
 
-        log::debug!("Running pandoc");
+        // --file-scope only works if there are at least two files, so if there is only one file,
+        // add an additionaly empty file to convince Pandoc to perform its link adjustment pass
+        let _dummy_tempfile_guard: tempfile::TempPath;
+        if self.num_inputs == 1 {
+            let dummy = tempfile::Builder::new()
+                .prefix("dummy")
+                .rand_bytes(0)
+                .tempfile_in(&ctx.destination)?;
+            let path = dummy
+                .path()
+                .normalize()
+                .context("failed to normalize dummy file path")?;
+            pandoc.arg(path.as_path().strip_prefix(&ctx.book.root).unwrap());
+            _dummy_tempfile_guard = dummy.into_temp_path();
+        }
+
+        if log::log_enabled!(log::Level::Trace) {
+            log::trace!("Running pandoc with profile: {profile:#?}");
+        } else {
+            log::debug!("Running pandoc");
+        }
         let status = pandoc
             .stdin(Stdio::null())
             .status()

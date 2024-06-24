@@ -79,6 +79,7 @@ to = "latex" # output format
 pdf-engine = "pdflatex" # engine to use to produce PDF output
 
 # `mdbook-pandoc` overrides Pandoc's defaults for the following options to better support mdBooks
+from = "commonmark" # source format; extensions enabled/disabled through this option are preserved
 file-scope = true # parse each file individually before combining
 number-sections = true # number sections headings
 standalone = true # produce output with an appropriate header and footer
