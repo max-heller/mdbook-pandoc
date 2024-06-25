@@ -118,8 +118,8 @@ variable-name = "value"
 
 ### Known Issues
 
-- When rendering to PDF through LaTeX, links to chapters sometimes link to slightly before the beginning of the chapter.
-  See: https://github.com/jgm/pandoc/issues/9200
+- Linking to a chapter does not work unless the chapter contains a heading with a non-empty identifier (either auto-generated or explicitly specified).
+  See: https://github.com/max-heller/mdbook-pandoc/pull/100
 
 ### Comparison to alternatives
 
