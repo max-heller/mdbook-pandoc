@@ -70,6 +70,19 @@ enum LinkContext {
     Image,
 }
 
+#[derive(Debug)]
+struct UnresolvableRemoteImage {
+    err: ureq::Error,
+}
+
+impl fmt::Display for UnresolvableRemoteImage {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "could not fetch remote image: {:#}", self.err)
+    }
+}
+
+impl std::error::Error for UnresolvableRemoteImage {}
+
 impl<'book> Preprocessor<'book> {
     pub fn new(ctx: RenderContext<'book>) -> anyhow::Result<Self> {
         let preprocessed = ctx.destination.join("src");
@@ -451,7 +464,7 @@ impl<'book> Preprocessor<'book> {
 
     fn download_remote_image(&self, link: &str) -> anyhow::Result<PathBuf> {
         match ureq::get(link).call() {
-            Err(err) => anyhow::bail!("Unable to load remote image '{link}': {err:#}"),
+            Err(err) => Err(UnresolvableRemoteImage { err }.into()),
             Ok(response) => {
                 const IMAGE_CONTENT_TYPES: &[(&str, &str)] = &[("image/svg+xml", "svg")];
                 let extension = IMAGE_CONTENT_TYPES.iter().find_map(|&(ty, extension)| {
@@ -768,7 +781,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
     ) {
         use pulldown_cmark::{Event, Tag, TagEnd};
 
-        while let Some((event, range)) = self.parser.next() {
+        'events: while let Some((event, range)) = self.parser.next() {
             let event = match event {
                 Event::Start(tag) => 'current_event: {
                     let tag = match tag {
@@ -852,12 +865,39 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             title,
                             id,
                         } => {
-                            let dest_url = self.preprocessor.normalize_link_or_leave_as_is(
-                                self.chapter,
-                                link_type,
-                                dest_url,
-                                LinkContext::Image,
-                            );
+                            let resolved = match self.chapter.path.as_ref() {
+                                None => Err((anyhow!("chapter has no path"), dest_url)),
+                                Some(chapter_path) => {
+                                    let chapter_dir = chapter_path.parent().unwrap();
+                                    self.preprocessor.normalize_link(
+                                        chapter_path,
+                                        chapter_dir,
+                                        link_type,
+                                        dest_url,
+                                        LinkContext::Image,
+                                    )
+                                }
+                            };
+                            let dest_url = match resolved {
+                                Ok(link) => link,
+                                Err((err, link)) => {
+                                    log::warn!(
+                                        "Failed to resolve image link '{link}' in chapter '{}': {err:#}",
+                                        self.chapter.name,
+                                    );
+                                    if err.downcast_ref::<UnresolvableRemoteImage>().is_some() {
+                                        log::warn!("Replacing image with description");
+                                        for (event, range) in &mut self.parser {
+                                            match event {
+                                                Event::End(TagEnd::Image) => break,
+                                                event => co.yield_((event, Some(range))).await,
+                                            }
+                                        }
+                                        continue 'events;
+                                    }
+                                    link
+                                }
+                            };
                             Tag::Image {
                                 link_type,
                                 dest_url,
