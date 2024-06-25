@@ -48,13 +48,13 @@ pub struct Preprocess<'book> {
 
 struct IndexedChapter<'book> {
     chapter: &'book Chapter,
-    anchors: Option<ChapterAnchors>,
+    anchors: Option<ChapterAnchors<'book>>,
 }
 
 #[derive(Default, Debug)]
-struct ChapterAnchors {
+struct ChapterAnchors<'book> {
     /// Anchor to the beginning of the chapter, usable as a link fragment.
-    beginning: Option<String>,
+    beginning: Option<CowStr<'book>>,
 }
 
 #[derive(Debug)]
@@ -349,17 +349,24 @@ impl<'book> Preprocessor<'book> {
                                             );
                                             None
                                         }
-                                        Some(IndexedChapter { chapter, anchors }) => {
-                                            match Self::chapter_anchor(chapter, anchors) {
-                                                Ok(Some(anchor)) => Some(anchor),
-                                                Err(err) => return Err((err, link)),
-                                                Ok(None) => {
-                                                    return Err((
-                                                        anyhow!(
+                                        Some(IndexedChapter {
+                                            chapter,
+                                            ref mut anchors,
+                                        }) => {
+                                            let anchors = match anchors {
+                                                Some(anchors) => anchors,
+                                                None => match ChapterAnchors::new(chapter) {
+                                                    Ok(found) => anchors.insert(found),
+                                                    Err(err) => return Err((err, link)),
+                                                },
+                                            };
+                                            match &anchors.beginning {
+                                                Some(anchor) => Some(anchor),
+                                                None => {
+                                                    let err = anyhow!(
                                                         "failed to link to beginning of chapter"
-                                                    ),
-                                                        link,
-                                                    ))
+                                                    );
+                                                    return Err((err, link));
                                                 }
                                             }
                                         }
@@ -419,42 +426,6 @@ impl<'book> Preprocessor<'book> {
                     .map(CowStr::from)
             }
         }
-    }
-
-    fn chapter_anchor<'anchors>(
-        chapter: &Chapter,
-        anchors: &'anchors mut Option<ChapterAnchors>,
-    ) -> anyhow::Result<Option<&'anchors str>> {
-        let anchors = anchors.get_or_insert_with(|| {
-            use pulldown_cmark::{Event, Options, Parser, Tag, TagEnd};
-            let mut parser = Parser::new_ext(&chapter.content, Options::ENABLE_HEADING_ATTRIBUTES);
-            let beginning = 'beginning: {
-                let heading_id = loop {
-                    let Some(event) = parser.next() else {
-                        break 'beginning None;
-                    };
-                    if let Event::Start(Tag::Heading { id, .. }) = event {
-                        break id;
-                    }
-                };
-                let anchor = match heading_id {
-                    Some(id) => id.to_string(),
-                    None => Self::make_gfm_identifier(
-                        parser.take_while(|event| !matches!(event, Event::End(TagEnd::Heading(_)))),
-                    ),
-                };
-                Some(anchor)
-            };
-            if beginning.is_none() {
-                log::warn!(
-                    "Failed to determine suitable anchor for beginning of chapter '{}'\
-                    --does it contain any headings?",
-                    chapter.name,
-                );
-            }
-            ChapterAnchors { beginning }
-        });
-        Ok(anchors.beginning.as_deref())
     }
 
     /// Generates a GitHub Markdown-flavored identifier for a heading with the provided content.
@@ -1063,6 +1034,37 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             }
         }
         html
+    }
+}
+
+impl<'book> ChapterAnchors<'book> {
+    /// Searches for tags in the provided chapter with identifiers that can be used as link anchors.
+    fn new(chapter: &'book Chapter) -> anyhow::Result<Self> {
+        use pulldown_cmark::{Event, Options, Parser, Tag, TagEnd};
+        let mut parser = Parser::new_ext(&chapter.content, Options::ENABLE_HEADING_ATTRIBUTES);
+        let beginning = 'beginning: {
+            let heading_id = loop {
+                let Some(event) = parser.next() else {
+                    break 'beginning None;
+                };
+                if let Event::Start(Tag::Heading { id, .. }) = event {
+                    break id;
+                }
+            };
+            Some(heading_id.unwrap_or_else(|| {
+                let heading_contents =
+                    parser.take_while(|event| !matches!(event, Event::End(TagEnd::Heading(_))));
+                Preprocessor::make_gfm_identifier(heading_contents).into()
+            }))
+        };
+        if beginning.is_none() {
+            log::warn!(
+                "Failed to determine suitable anchor for beginning of chapter '{}'\
+                --does it contain any headings?",
+                chapter.name,
+            );
+        }
+        Ok(Self { beginning })
     }
 }
 
