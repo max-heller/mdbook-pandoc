@@ -37,7 +37,7 @@ pub struct Preprocessor<'book> {
     redirects: HashMap<PathBuf, String>,
     hosted_html: Option<&'book str>,
     unresolved_links: bool,
-    chapters: HashMap<&'book Path, (&'book Chapter, Option<ChapterAnchors>)>,
+    chapters: HashMap<&'book Path, IndexedChapter<'book>>,
 }
 
 pub struct Preprocess<'book> {
@@ -46,7 +46,12 @@ pub struct Preprocess<'book> {
     part_num: usize,
 }
 
-#[derive(Default)]
+struct IndexedChapter<'book> {
+    chapter: &'book Chapter,
+    anchors: Option<ChapterAnchors>,
+}
+
+#[derive(Default, Debug)]
 struct ChapterAnchors {
     /// Anchor to the beginning of the chapter, usable as a link fragment.
     beginning: Option<String>,
@@ -92,11 +97,16 @@ impl<'book> Preprocessor<'book> {
         for section in ctx.book.book.iter() {
             if let BookItem::Chapter(
                 chapter @ Chapter {
-                    path: Some(path), ..
+                    source_path: Some(path),
+                    ..
                 },
             ) = section
             {
-                chapters.insert(path.as_path(), (chapter, Default::default()));
+                let chapter = IndexedChapter {
+                    chapter,
+                    anchors: Default::default(),
+                };
+                chapters.insert(path.as_path(), chapter);
             }
         }
 
@@ -326,24 +336,20 @@ impl<'book> Preprocessor<'book> {
                                 let add_anchor = if already_anchored {
                                     None
                                 } else {
-                                    let chapter = normalized_path
+                                    let relative_path = normalized_path
                                         .preprocessed_path_relative_to_root
                                         .strip_prefix(&self.preprocessed_relative_to_root)
-                                        .ok()
-                                        .and_then(|relative_path| {
-                                            self.chapters.get_mut(relative_path)
-                                        });
+                                        .unwrap();
+                                    let chapter = self.chapters.get_mut(relative_path);
                                     match chapter {
                                         None => {
                                             log::trace!(
-                                                "Not a chapter: {}",
-                                                normalized_path
-                                                    .preprocessed_path_relative_to_root
-                                                    .display()
+                                                "Not recognized as a chapter: {}",
+                                                relative_path.display(),
                                             );
                                             None
                                         }
-                                        Some((chapter, anchors)) => {
+                                        Some(IndexedChapter { chapter, anchors }) => {
                                             match Self::chapter_anchor(chapter, anchors) {
                                                 Ok(Some(anchor)) => Some(anchor),
                                                 Err(err) => return Err((err, link)),
@@ -456,8 +462,9 @@ impl<'book> Preprocessor<'book> {
         content: impl IntoIterator<Item = pulldown_cmark::Event<'source>>,
     ) -> String {
         let mut id = String::new();
+        use pulldown_cmark::Event;
         for event in content {
-            if let pulldown_cmark::Event::Text(text) = event {
+            if let Event::Text(text) | Event::Code(text) = event {
                 for c in text.chars() {
                     match c {
                         ' ' => id.push('-'),
@@ -1090,6 +1097,15 @@ impl NormalizedPath {
     }
 }
 
+impl fmt::Debug for IndexedChapter<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("IndexedChapter")
+            .field("chapter", &self.chapter.name)
+            .field("anchors", &self.anchors)
+            .finish_non_exhaustive()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Preprocessor;
@@ -1119,7 +1135,8 @@ mod tests {
                 "# 33",
                 "# With _ Underscores_In It",
                 "# has-hyphens",
-                "# Unicode Σ"
+                "# Unicode Σ",
+                "# Running `mdbook` in Continuous Integration",
             ]
             .map(convert),
             @r###"
@@ -1134,6 +1151,7 @@ mod tests {
                 "with-_-underscores_in-it",
                 "has-hyphens",
                 "unicode-σ",
+                "running-mdbook-in-continuous-integration",
             ]
             "###
         );
