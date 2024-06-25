@@ -77,7 +77,12 @@ struct UnresolvableRemoteImage {
 
 impl fmt::Display for UnresolvableRemoteImage {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "could not fetch remote image: {:#}", self.err)
+        if cfg!(test) {
+            // in tests, print less verbose error message to be consistent across operating systems
+            write!(f, "could not fetch remote image: {}", self.err.kind())
+        } else {
+            write!(f, "could not fetch remote image: {}", self.err)
+        }
     }
 }
 

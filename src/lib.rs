@@ -1439,7 +1439,7 @@ to = "markdown"
         insta::assert_snapshot!(book, @r###"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
-        │  WARN mdbook_pandoc::preprocess: Failed to resolve image link 'https://doesnotexist.fake/main.yml?style=flat-square' in chapter 'Some Chapter': could not fetch remote image: https://doesnotexist.fake/main.yml?style=flat-square: Dns Failed: resolve dns name 'doesnotexist.fake:443': failed to lookup address information: nodename nor servname provided, or not known    
+        │  WARN mdbook_pandoc::preprocess: Failed to resolve image link 'https://doesnotexist.fake/main.yml?style=flat-square' in chapter 'Some Chapter': could not fetch remote image: Dns Failed    
         │  WARN mdbook_pandoc::preprocess: Replacing image with description    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
