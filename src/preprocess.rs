@@ -1093,7 +1093,9 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         for node in html5gum::Tokenizer::new(html.as_ref()).infallible() {
             match node {
                 html5gum::Token::StartTag(start) => {
-                    self.open_html_tags.push(start.name);
+                    if !start.self_closing {
+                        self.open_html_tags.push(start.name);
+                    }
                 }
                 html5gum::Token::EndTag(end) => match self.open_html_tags.last() {
                     Some(tag) if *tag == end.name => {
