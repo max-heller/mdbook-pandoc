@@ -1217,6 +1217,63 @@ fn main() {}
     }
 
     #[test]
+    fn matched_html_tags() {
+        let output = MDBook::init()
+            .config(Config::pandoc())
+            .chapter(Chapter::new(
+                "Chapter",
+                "
+<details>
+<summary>
+
+## Heading
+
+text
+
+</summary>
+<p>
+
+more **markdown**
+
+</p>
+</details>
+
+outside divs
+            ",
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(output, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+        ├─ markdown/pandoc-ir
+        │ [ RawBlock (Format "html") "<details>\n<summary>\n"
+        │ , Div
+        │     ( "" , [ "details" ] , [] )
+        │     [ Div
+        │         ( "" , [ "summary" ] , [] )
+        │         [ Header
+        │             2
+        │             ( "book__markdown__src__chaptermd__heading"
+        │             , [ "unnumbered" , "unlisted" ]
+        │             , []
+        │             )
+        │             [ Str "Heading" ]
+        │         , Para [ Str "text" ]
+        │         ]
+        │     , RawBlock (Format "html") "</summary>\n<p>\n"
+        │     , Div
+        │         ( "" , [ "p" ] , [] )
+        │         [ Para [ Str "more" , Space , Strong [ Str "markdown" ] ] ]
+        │     ]
+        │ , RawBlock (Format "html") "</p>\n</details>\n"
+        │ , Para [ Str "outside" , Space , Str "divs" ]
+        │ ]
+        "###);
+    }
+
+    #[test]
     /// Respect enabled/disabled extensions in Pandoc's `from` option
     fn extension_overrides() {
         let opts = MDBook::options().max_log_level(tracing::Level::TRACE);

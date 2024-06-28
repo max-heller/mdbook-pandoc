@@ -18,6 +18,7 @@ aho-corasick = "1.0.0"
 anyhow = "1.0.47"
 env_logger = "0.11.0"
 genawaiter = { version = "0.99.1", default-features = false }
+html5gum = "0.5.7"
 log = "0.4.0"
 mdbook = { version = "0.4.35", default-features = false }
 normpath = "1.0.0"
