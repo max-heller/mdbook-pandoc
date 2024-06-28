@@ -672,6 +672,7 @@ struct PreprocessChapter<'book, 'preprocessor> {
     parser: Peekable<pulldown_cmark::OffsetIter<'book, pulldown_cmark::DefaultBrokenLinkCallback>>,
     matching_tags: Vec<pulldown_cmark::TagEnd>,
     encountered_h1: bool,
+    open_html_tags: Vec<html5gum::HtmlString>,
 }
 
 impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
@@ -697,6 +698,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 .peekable(),
             matching_tags: Default::default(),
             encountered_h1: false,
+            open_html_tags: Vec::new(),
         }
     }
 
@@ -1036,8 +1038,10 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         // Actually consume the item from the iterator
                         self.parser.next();
                     }
-                    html = self.preprocess_contiguous_html(html);
-                    Event::Html(html)
+                    for event in self.preprocess_contiguous_html(html, Event::Html) {
+                        co.yield_((event, None)).await
+                    }
+                    continue 'events;
                 }
                 Event::InlineHtml(mut html) => {
                     while let Some((Event::InlineHtml(more), _)) = self.parser.peek() {
@@ -1047,8 +1051,10 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         // Actually consume the item from the iterator
                         self.parser.next();
                     }
-                    html = self.preprocess_contiguous_html(html);
-                    Event::InlineHtml(html)
+                    for event in self.preprocess_contiguous_html(html, Event::InlineHtml) {
+                        co.yield_((event, None)).await
+                    }
+                    continue 'events;
                 }
                 Event::TaskListMarker(checked) => {
                     (self.preprocessor.ctx.pandoc).enable_extension(pandoc::Extension::TaskLists);
@@ -1060,7 +1066,11 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         }
     }
 
-    fn preprocess_contiguous_html(&mut self, mut html: CowStr<'book>) -> CowStr<'book> {
+    fn preprocess_contiguous_html(
+        &mut self,
+        mut html: CowStr<'book>,
+        wrap_html: impl FnOnce(CowStr<'book>) -> pulldown_cmark::Event,
+    ) -> impl Iterator<Item = pulldown_cmark::Event<'book>> + '_ {
         if let OutputFormat::Latex { packages } = &mut self.preprocessor.ctx.output {
             static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
                 Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#).unwrap()
@@ -1078,7 +1088,60 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 };
             }
         }
-        html
+        let already_open_tags = self.open_html_tags.len();
+        let mut still_open_tags = self.open_html_tags.len();
+        for node in html5gum::Tokenizer::new(html.as_ref()).infallible() {
+            match node {
+                html5gum::Token::StartTag(start) => {
+                    self.open_html_tags.push(start.name);
+                }
+                html5gum::Token::EndTag(end) => match self.open_html_tags.last() {
+                    Some(tag) if *tag == end.name => {
+                        self.open_html_tags.pop();
+                        still_open_tags = still_open_tags.min(self.open_html_tags.len());
+                    }
+                    _ => {}
+                },
+                _ => {}
+            }
+        }
+        use pulldown_cmark::Event;
+        let mut fenced_divs_available = || {
+            self.preprocessor
+                .ctx
+                .pandoc
+                .enable_extension(pandoc::Extension::FencedDivs)
+                .is_available()
+        };
+        let close_divs = {
+            let closed_tags = already_open_tags - still_open_tags;
+            (closed_tags > 0 && fenced_divs_available())
+                .then(|| {
+                    iter::once(Event::Text("\n\n".into()))
+                        .chain((0..closed_tags).map(|_| Event::Text(":::\n\n".into())))
+                        .chain(iter::once(Event::Text("\n\n".into())))
+                })
+                .into_iter()
+                .flatten()
+        };
+        let open_divs = {
+            let opened_tags = &self.open_html_tags[still_open_tags..];
+            (!opened_tags.is_empty() && fenced_divs_available())
+                .then(|| {
+                    iter::once(Event::Text("\n\n".into()))
+                        .chain(opened_tags.iter().map(|tag| {
+                            Event::Text(
+                                format!("::: {}\n\n", String::from_utf8_lossy(&tag.0)).into(),
+                            )
+                        }))
+                        .chain(iter::once(Event::Text("\n\n".into())))
+                })
+                .into_iter()
+                .flatten()
+        };
+        close_divs
+            .chain(iter::once(wrap_html(html)))
+            .chain(open_divs)
     }
 }
 
