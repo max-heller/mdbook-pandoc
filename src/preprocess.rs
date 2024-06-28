@@ -1066,6 +1066,62 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         }
     }
 
+    /// Preprocess a block of HTML.
+    ///
+    /// # Font Awesome icons
+    ///
+    /// To support Font Awesome icons represented in the source as HTML tags, which performs a pass
+    /// to replace such tags with appropriate alternatives for the output format.
+    ///
+    /// # Preserving document structure
+    ///
+    /// Pandoc doesn't take raw HTML blocks into account when dividing a document into sections
+    /// for e.g. EPUB conversion. This can become problematic when the structure of the document
+    /// that Pandoc infers differs from the actual structure as determined by raw HTML blocks.
+    ///
+    /// Take for instance the following source:
+    ///
+    /// ```md
+    /// <details>
+    ///
+    /// ## Heading
+    ///
+    /// text
+    ///
+    /// </details>
+    /// ```
+    ///
+    /// Pandoc interprets this as:
+    ///
+    /// ```md
+    /// <details>
+    ///
+    /// ## Heading
+    ///
+    /// <div>
+    /// text
+    ///
+    /// </details>
+    /// </div>
+    /// ```
+    ///
+    /// which breaks the resulting EPUB because `</details>` is misplaced.
+    ///
+    /// As part of this preprocessing pass, we proactively insert divs to divide the source as:
+    ///
+    /// ```md
+    /// <details>
+    /// <div>
+    ///
+    /// ## Heading
+    ///
+    /// text
+    ///
+    /// </div>
+    /// </details>
+    /// ```
+    ///
+    /// This ensures that Pandoc processes the structure properly and the resulting EPUB is valid.
     fn preprocess_contiguous_html(
         &mut self,
         mut html: CowStr<'book>,
@@ -1088,6 +1144,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 };
             }
         }
+
         let already_open_tags = self.open_html_tags.len();
         let mut still_open_tags = self.open_html_tags.len();
         for node in html5gum::Tokenizer::new(html.as_ref()).infallible() {
