@@ -2,6 +2,10 @@
 source: src/lib.rs
 expression: logs
 ---
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "trpl-listing" preprocessor installed?    
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-trpl-listing    
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "trpl-note" preprocessor installed?    
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-trpl-note    
  INFO mdbook::book: Running the pandoc backend    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/prelude/index.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/prelude/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/string/struct.String.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/string/struct.String.html'    
@@ -61,11 +65,8 @@ expression: logs
 [WARNING] Missing character: There is no ك (U+0643) (U+0643) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no م (U+0645) (U+0645) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no ש (U+05E9) (U+05E9) in font NotoSansMono:mode=node;script
-[WARNING] Missing character: There is no ָ (U+05B8) (U+05B8) in font NotoSansMono:mode=node;script
-[WARNING] Missing character: There is no ׁ (U+05C1) (U+05C1) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no ל (U+05DC) (U+05DC) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no ו (U+05D5) (U+05D5) in font NotoSansMono:mode=node;script
-[WARNING] Missing character: There is no ֹ (U+05B9) (U+05B9) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no ם (U+05DD) (U+05DD) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no न (U+0928) (U+0928) in font NotoSansMono:mode=node;scrip
 [WARNING] Missing character: There is no म (U+092E) (U+092E) in font NotoSansMono:mode=node;scrip

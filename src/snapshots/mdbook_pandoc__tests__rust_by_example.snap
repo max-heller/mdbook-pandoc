@@ -3,7 +3,6 @@ source: src/lib.rs
 expression: logs
 ---
  INFO mdbook::book: Running the pandoc backend    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/inline-assembly.html#abi-clobbers' in chapter 'unsafe/asm.md', linking to hosted HTML book at 'https://doc.rust-lang.org/rust-by-example/unsafe/../../reference/inline-assembly.html'    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__std__result__question_markmd' on $PAGE
   undefined on input $LINE.

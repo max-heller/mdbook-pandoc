@@ -2,6 +2,8 @@
 source: src/lib.rs
 expression: logs
 ---
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "spec" preprocessor installed?    
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-spec    
  INFO mdbook::book: Running the pandoc backend    
  INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/index.html'    
@@ -10,8 +12,10 @@ expression: logs
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../rustc/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../rustc/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../cargo/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../cargo/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../cargo/reference/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../cargo/reference/index.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/macro.include.md' in chapter 'input-format.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/macro.include.md'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/macro.include_str.md' in chapter 'input-format.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/macro.include_str.md'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/macro.include_bytes.md' in chapter 'input-format.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/macro.include_bytes.md'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../rustdoc/the-doc-attribute.html' in chapter 'comments.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../rustdoc/the-doc-attribute.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/ffi/struct.CStr.html' in chapter 'tokens.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../core/ffi/struct.CStr.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../cargo/reference/build-scripts.html' in chapter 'procedural-macros.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../cargo/reference/build-scripts.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/macro.compile_error.html' in chapter 'procedural-macros.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/macro.compile_error.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../proc_macro/index.html' in chapter 'procedural-macros.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../proc_macro/index.html'    
@@ -60,6 +64,7 @@ expression: logs
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/lints/levels.html#via-compiler-flag' in chapter 'attributes/diagnostics.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/attributes/../../rustc/lints/levels.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/lints/levels.html#capping-lints' in chapter 'attributes/diagnostics.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/attributes/../../rustc/lints/levels.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustdoc/lints.html' in chapter 'attributes/diagnostics.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/attributes/../../rustdoc/lints.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/fmt/index.html' in chapter 'attributes/diagnostics.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/attributes/../../std/fmt/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/arch/macro.is_x86_feature_detected.html' in chapter 'attributes/codegen.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/attributes/../../std/arch/macro.is_x86_feature_detected.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/arch/macro.is_aarch64_feature_detected.html' in chapter 'attributes/codegen.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/attributes/../../std/arch/macro.is_aarch64_feature_detected.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/codegen-options/index.html#target-cpu' in chapter 'attributes/codegen.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/attributes/../../rustc/codegen-options/index.html'    
@@ -69,6 +74,11 @@ expression: logs
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/panic/struct.Location.html#method.caller' in chapter 'attributes/codegen.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/attributes/../../core/panic/struct.Location.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/intrinsics/fn.caller_location.html' in chapter 'attributes/codegen.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/attributes/../../core/intrinsics/fn.caller_location.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/boxed/struct.Box.html' in chapter 'expressions.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/boxed/struct.Box.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/primitive.u8.md#method.from_str_radix' in chapter 'expressions/literal-expr.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/expressions/../../core/primitive.u8.md'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/primitive.u8.md#method.from_str_radix' in chapter 'expressions/literal-expr.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/expressions/../../core/primitive.u8.md'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/primitive.u32.md#method.from_str_radix' in chapter 'expressions/literal-expr.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/expressions/../../core/primitive.u32.md'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/ffi/struct.CStr.html' in chapter 'expressions/literal-expr.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/expressions/../../core/ffi/struct.CStr.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/ffi/struct.CStr.html' in chapter 'expressions/literal-expr.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/expressions/../../core/ffi/struct.CStr.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/primitive.u128.md#method.from_str_radix' in chapter 'expressions/literal-expr.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/expressions/../../core/primitive.u128.md'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/primitive.f32.md#method.from_str' in chapter 'expressions/literal-expr.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/expressions/../../core/primitive.f32.md'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/primitive.f64.md#method.from_str' in chapter 'expressions/literal-expr.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/expressions/../../core/primitive.f64.md'    
@@ -151,6 +161,7 @@ expression: logs
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/panic/trait.UnwindSafe.html' in chapter 'special-types-and-traits.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/panic/trait.UnwindSafe.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/panic/trait.RefUnwindSafe.html' in chapter 'special-types-and-traits.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/panic/trait.RefUnwindSafe.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/marker/trait.Sized.html' in chapter 'special-types-and-traits.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/marker/trait.Sized.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../items/enumerations.mdr' in chapter 'names/scopes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../items/enumerations.mdr'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/boxed/struct.Box.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../std/boxed/struct.Box.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/prelude/rust_2015/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../std/prelude/rust_2015/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/prelude/rust_2015/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../core/prelude/rust_2015/index.html'    
