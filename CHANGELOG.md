@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2024-07-10
+
+### Bug Fixes
+
+- Minimum `pandoc` version is actually 2.8, not 1.14 ([#90](https://github.com/max-heller/mdbook-pandoc/pull/90))
+- Resolve links correctly when book contains exactly one chapter ([#101](https://github.com/max-heller/mdbook-pandoc/pull/101))
+- Correctly resolve absolute-path links to be relative to book root ([#103](https://github.com/max-heller/mdbook-pandoc/pull/103))
+- [**breaking**] Work around Pandoc 3.2+ breaking links to chapters ([#100](https://github.com/max-heller/mdbook-pandoc/pull/100))
+- Replace unresolvable remote images with their descriptions ([#105](https://github.com/max-heller/mdbook-pandoc/pull/105))
+- Fix EPUB conversion with HTML elements spanning multiple blocks ([#106](https://github.com/max-heller/mdbook-pandoc/pull/106))
+
+### Changes
+
+- Raise minimum supported Rust version to 1.74 ([#104](https://github.com/max-heller/mdbook-pandoc/pull/104))
+
+### Features
+
+- Preserve escape characters (or lack thereof) from Markdown source ([#95](https://github.com/max-heller/mdbook-pandoc/pull/95))
+- Allow overriding source format and extensions through Pandoc's `from` option ([#98](https://github.com/max-heller/mdbook-pandoc/pull/98))
+- `disabled` flag to disable rendering even if `mdbook-pandoc` is available ([#93](https://github.com/max-heller/mdbook-pandoc/pull/93))
+
+### Miscellaneous Tasks
+
+- Fix date in CHANGELOG ([#86](https://github.com/max-heller/mdbook-pandoc/pull/86))
+- Update `cargo-dist` ([#92](https://github.com/max-heller/mdbook-pandoc/pull/92))
+- Update example rendered books ([#107](https://github.com/max-heller/mdbook-pandoc/pull/107))
+
+
 ## [0.6.4] - 2024-04-07
 
 ### Bug Fixes
