@@ -21,7 +21,7 @@ use preprocess::Preprocessor;
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 struct Config {
-    #[serde(rename = "profile")]
+    #[serde(rename = "profile", default = "Default::default")]
     pub profiles: HashMap<String, pandoc::Profile>,
     #[serde(default = "defaults::enabled")]
     pub keep_preprocessed: bool,
@@ -29,6 +29,9 @@ struct Config {
     /// Code block related configuration.
     #[serde(default = "Default::default")]
     pub code: CodeConfig,
+    /// Skip running the renderer.
+    #[serde(default = "Default::default")]
+    pub disabled: bool,
 }
 
 /// Configuration for tweaking how code blocks are rendered.
@@ -96,6 +99,11 @@ impl mdbook::Renderer for Renderer {
             .get_deserialized_opt(Self::CONFIG_KEY)
             .with_context(|| format!("Unable to deserialize {}", Self::CONFIG_KEY))?
             .ok_or(anyhow!("No {} table found", Self::CONFIG_KEY))?;
+
+        if cfg.disabled {
+            log::info!("Skipping rendering since `disabled` is set");
+            return Ok(());
+        }
 
         let html_cfg: Option<HtmlConfig> = ctx
             .config
@@ -1407,6 +1415,22 @@ colorlinks = false
         │     },
         │ }    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null    
+        "###)
+    }
+
+    #[test]
+    fn disabled() {
+        let cfg = r#"
+[output.pandoc]
+disabled = true
+        "#;
+        let output = MDBook::init()
+            .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+            .build();
+        insta::assert_snapshot!(output, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc: Skipping rendering since `disabled` is set    
         "###)
     }
 
