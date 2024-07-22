@@ -92,8 +92,6 @@ impl mdbook::Renderer for Renderer {
             );
         }
 
-        let pandoc_version = pandoc::check_compatibility()?;
-
         let cfg: Config = ctx
             .config
             .get_deserialized_opt(Self::CONFIG_KEY)
@@ -104,6 +102,8 @@ impl mdbook::Renderer for Renderer {
             log::info!("Skipping rendering since `disabled` is set");
             return Ok(());
         }
+
+        let pandoc_version = pandoc::check_compatibility()?;
 
         let html_cfg: Option<HtmlConfig> = ctx
             .config
