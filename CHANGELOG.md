@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.1] - 2024-07-22
+
+### Bug Fixes
+
+- Check for `disabled = true` before invoking `pandoc` ([#108](https://github.com/max-heller/mdbook-pandoc/pull/108))
+
+
 ## [0.7.0] - 2024-07-10
 
 ### Bug Fixes
