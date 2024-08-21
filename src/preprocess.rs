@@ -16,6 +16,7 @@ use std::{
 use anyhow::{anyhow, Context};
 use ego_tree::NodeId;
 use html5ever::{expanded_name, local_name, ns, tendril::format_tendril};
+use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use log::log;
 use mdbook::{
     book::{BookItems, Chapter},
@@ -25,12 +26,12 @@ use normpath::PathExt;
 use once_cell::sync::Lazy;
 use pulldown_cmark::{CowStr, Event, HeadingLevel, LinkType, Tag, TagEnd};
 use regex::Regex;
-use walkdir::WalkDir;
 
 use crate::{
     latex,
     pandoc::{self, native::ColWidth, OutputFormat, RenderContext},
     MarkdownConfig, MarkdownExtensionConfig,
+    book::Book,
 };
 
 mod code;
@@ -82,22 +83,8 @@ impl<'book> Preprocessor<'book> {
         }
         fs::create_dir_all(&preprocessed)?;
 
-        for entry in WalkDir::new(&ctx.book.source_dir).follow_links(true) {
-            let entry = entry?;
-            let src = entry.path();
-            if src.starts_with(ctx.book.destination.as_path()) {
-                continue;
-            }
-            let dest = preprocessed.join(src.strip_prefix(&ctx.book.source_dir).unwrap());
-            if entry.file_type().is_dir() {
-                fs::create_dir_all(&dest)
-                    .with_context(|| format!("Unable to create directory '{}'", dest.display()))?
-            } else {
-                fs::copy(src, &dest).with_context(|| {
-                    format!("Unable to copy '{}' -> '{}'", src.display(), dest.display())
-                })?;
-            }
-        }
+        let ignore = build_ignore(ctx.book)?;
+        copy_recursive(ctx.book.destination.as_path(), &ctx.book.source_dir, &preprocessed, &ignore)?;
 
         let mut chapters = HashMap::new();
         for section in ctx.book.book.iter() {
@@ -1222,6 +1209,75 @@ impl fmt::Debug for IndexedChapter<'_> {
             .field("anchors", &self.anchors)
             .finish_non_exhaustive()
     }
+}
+
+fn copy_recursive(dest_dir: &Path, src: &Path, dst: &Path, ignore: &Gitignore) -> anyhow::Result<()> {
+    for e in src
+        .read_dir()
+        .with_context(|| format!("Unable to read directory {src:#?}"))?
+    {
+        let cur = e?.path();
+
+        if cur.starts_with(dest_dir) {
+            continue;
+        }
+
+        if ignore.matched(&cur, cur.is_dir()).is_ignore() {
+            continue;
+        }
+
+        if cur.is_dir() {
+            let dir = dst.join(cur.strip_prefix(src).unwrap());
+
+            fs::create_dir_all(&dir)
+                .with_context(|| format!("Unable to create directory {dir:#?}"))?;
+
+            copy_recursive(dest_dir, &cur, &dir, ignore)?;
+        } else {
+            let dst = dst.join(cur.strip_prefix(src).unwrap());
+
+            fs::copy(cur, &dst).with_context(|| {
+                format!("Unable to copy '{}' -> '{}'", src.display(), dst.display())
+            })?;
+        }
+    }
+
+    Ok(())
+}
+
+fn build_ignore(book: &Book) -> anyhow::Result<Gitignore> {
+    let root = book.root.canonicalize()?;
+    let mut src = book.source_dir.canonicalize()?;
+
+    let mut builder = GitignoreBuilder::new(&src);
+
+    let mdbook_ignore = src.join(".mdbookignore");
+    if mdbook_ignore.exists() {
+        if let Some(err) = builder.add(mdbook_ignore) {
+            log::warn!("Unable to load '.mdbookignore' file: {err}");
+        }
+    }
+
+    loop {
+        let git_ignore = src.join(".gitignore");
+        if git_ignore.exists() {
+            if let Some(err) = builder.add(git_ignore) {
+                log::warn!("Unable to load '.gitignore' file: {err}");
+            }
+        }
+
+        if src == root {
+            break;
+        }
+
+        let Some(parent) = src.parent() else {
+            break;
+        };
+
+        src = parent.canonicalize()?;
+    }
+
+    Ok(builder.build()?)
 }
 
 #[cfg(test)]
