@@ -21,6 +21,7 @@ chrono = { version = "0.4.24", default-features = false, features = ["clock"] }
 cssparser = "0.36.0"
 font-awesome-as-a-crate = "0.3.0"
 html5ever = "0.36.0"
+ignore = "0.4"
 indexmap = { version = "2.7.0", features = ["serde"] }
 mdbook-renderer = { version = "0.5.2", default-features = false }
 normpath = "1.0.0"
