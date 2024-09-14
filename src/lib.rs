@@ -379,6 +379,7 @@ mod tests {
         pub fn build(mut self) -> BuildOutput {
             let mut renderer = Renderer::new();
             renderer.logfile = Some(self.logfile.try_clone().unwrap());
+            env::set_current_dir(&self.book.root).unwrap();
             let res = self.book.execute_build_process(&renderer);
             self.logfile.seek(io::SeekFrom::Start(0)).unwrap();
             let mut logs = String::new();
