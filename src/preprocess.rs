@@ -70,6 +70,11 @@ enum LinkContext {
     Image,
 }
 
+enum HtmlContext {
+    Inline,
+    Block,
+}
+
 #[derive(Debug)]
 struct UnresolvableRemoteImage {
     err: ureq::Error,
@@ -1038,7 +1043,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         // Actually consume the item from the iterator
                         self.parser.next();
                     }
-                    for event in self.preprocess_contiguous_html(html, Event::Html) {
+                    for event in self.preprocess_contiguous_html(html, HtmlContext::Block) {
                         co.yield_((event, None)).await
                     }
                     continue 'events;
@@ -1051,7 +1056,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         // Actually consume the item from the iterator
                         self.parser.next();
                     }
-                    for event in self.preprocess_contiguous_html(html, Event::InlineHtml) {
+                    for event in self.preprocess_contiguous_html(html, HtmlContext::Inline) {
                         co.yield_((event, None)).await
                     }
                     continue 'events;
@@ -1125,8 +1130,10 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
     fn preprocess_contiguous_html(
         &mut self,
         mut html: CowStr<'book>,
-        wrap_html: impl FnOnce(CowStr<'book>) -> pulldown_cmark::Event,
+        ctx: HtmlContext,
     ) -> impl Iterator<Item = pulldown_cmark::Event<'book>> + '_ {
+        use pulldown_cmark::Event;
+
         if let OutputFormat::Latex { packages } = &mut self.preprocessor.ctx.output {
             static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
                 Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#).unwrap()
@@ -1147,24 +1154,25 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
 
         let already_open_tags = self.open_html_tags.len();
         let mut still_open_tags = self.open_html_tags.len();
-        for node in html5gum::Tokenizer::new(html.as_ref()).infallible() {
-            match node {
-                html5gum::Token::StartTag(start) => {
-                    if !start.self_closing {
-                        self.open_html_tags.push(start.name);
+        if let HtmlContext::Block = ctx {
+            for node in html5gum::Tokenizer::new(html.as_ref()).infallible() {
+                match node {
+                    html5gum::Token::StartTag(start) => {
+                        if !start.self_closing {
+                            self.open_html_tags.push(start.name);
+                        }
                     }
-                }
-                html5gum::Token::EndTag(end) => match self.open_html_tags.last() {
-                    Some(tag) if *tag == end.name => {
-                        self.open_html_tags.pop();
-                        still_open_tags = still_open_tags.min(self.open_html_tags.len());
-                    }
+                    html5gum::Token::EndTag(end) => match self.open_html_tags.last() {
+                        Some(tag) if *tag == end.name => {
+                            self.open_html_tags.pop();
+                            still_open_tags = still_open_tags.min(self.open_html_tags.len());
+                        }
+                        _ => {}
+                    },
                     _ => {}
-                },
-                _ => {}
+                }
             }
         }
-        use pulldown_cmark::Event;
         let mut fenced_divs_available = || {
             self.preprocessor
                 .ctx
@@ -1198,9 +1206,11 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 .into_iter()
                 .flatten()
         };
-        close_divs
-            .chain(iter::once(wrap_html(html)))
-            .chain(open_divs)
+        let html = match ctx {
+            HtmlContext::Inline => Event::InlineHtml(html),
+            HtmlContext::Block => Event::Html(html),
+        };
+        close_divs.chain(iter::once(html)).chain(open_divs)
     }
 }
 

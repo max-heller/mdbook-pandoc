@@ -1279,6 +1279,20 @@ outside divs
         │ , Para [ Str "outside" , Space , Str "divs" ]
         │ ]
         "###);
+
+        // Make sure logic doesn't trigger on inline html since inserting divs
+        // introduces newlines and breaks the original structure
+        let output = MDBook::init()
+            .config(Config::markdown())
+            .chapter(Chapter::new("Chapter", "2<sup>n - 1</sup>", "chapter.md"))
+            .build();
+        insta::assert_snapshot!(output, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ 2`<sup>`{=html}n - 1`</sup>`{=html}
+        "###);
     }
 
     #[test]
