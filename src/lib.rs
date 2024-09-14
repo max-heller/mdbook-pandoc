@@ -1162,7 +1162,7 @@ fn main() {}
                 "chapter.md",
             ))
             .build();
-        insta::assert_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r##"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
@@ -1173,9 +1173,12 @@ fn main() {}
         ├─ latex/src/chapter.md
         │ # Chapter Foo
         │ 
-        │ [link](book/latex/src/chapter.md#chapter-foo "\"foo\" (bar)")
+        │ [link][link-with-description]
         │ 
-        "###);
+        │ 
+        │ 
+        │ [link-with-description]: book/latex/src/chapter.md#chapter-foo "\"foo\" (bar)"
+        "##);
     }
 
     #[test]
