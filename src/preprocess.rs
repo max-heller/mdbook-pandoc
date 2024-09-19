@@ -738,7 +738,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         let Some(level) = iter::successors(Some(level), |level| shift_smaller(*level))
             .nth(self.chapter.parent_names.len())
         else {
-            log::warn!(
+            log::info!(
                 "Heading (level {level}) converted to paragraph in chapter: {}",
                 self.chapter.name
             );
