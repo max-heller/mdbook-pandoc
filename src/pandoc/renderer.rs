@@ -288,7 +288,7 @@ impl Renderer {
         }
 
         if log::log_enabled!(log::Level::Trace) {
-            log::trace!("Running pandoc with profile: {profile:#?}");
+            log::trace!("Running pandoc with profile: {profile:#?} - {pandoc:#?}");
         } else {
             log::debug!("Running pandoc");
         }
