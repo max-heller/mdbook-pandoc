@@ -105,7 +105,7 @@ impl<'book> Preprocessor<'book> {
         for entry in WalkDir::new(&ctx.book.source_dir).follow_links(true) {
             let entry = entry?;
             let src = entry.path();
-            if src.starts_with(&ctx.book.destination.as_path()) {
+            if src.starts_with(ctx.book.destination.as_path()) {
                 continue;
             }
             let dest = preprocessed.join(src.strip_prefix(&ctx.book.source_dir).unwrap());
