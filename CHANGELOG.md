@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.3] - 2024-10-01
+
+### Bug Fixes
+
+- Prevent infinite recursion when source directory contains destination directory ([#116](https://github.com/max-heller/mdbook-pandoc/pull/116))
+
+
 ## [0.7.2] - 2024-09-14
 
 ### Bug Fixes
