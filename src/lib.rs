@@ -1415,6 +1415,13 @@ outside divs
     #[test]
     fn raw_opts() {
         let cfg = r#"
+[book]
+title = "Example book"
+authors = ["John Doe", "Jane Doe"]
+description = "The example book covers examples."
+language = "en"
+text-direction = "ltr"
+
 [output.pandoc.profile.test]
 output-file = "/dev/null"
 to = "markdown"
@@ -1462,6 +1469,9 @@ colorlinks = false
         │         "colorlinks": Boolean(
         │             false,
         │         ),
+        │         "dir": String(
+        │             "ltr",
+        │         ),
         │         "header-includes": Array(
         │             [
         │                 String(
@@ -1479,7 +1489,24 @@ colorlinks = false
         │             "en",
         │         ),
         │     },
-        │     metadata: {},
+        │     metadata: {
+        │         "author": Array(
+        │             [
+        │                 String(
+        │                     "John Doe",
+        │                 ),
+        │                 String(
+        │                     "Jane Doe",
+        │                 ),
+        │             ],
+        │         ),
+        │         "description": String(
+        │             "The example book covers examples.",
+        │         ),
+        │         "title": String(
+        │             "Example book",
+        │         ),
+        │     },
         │     rest: {
         │         "fail-if-warnings": Boolean(
         │             false,
