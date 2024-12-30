@@ -11,6 +11,8 @@ use serde::{Deserialize, Serialize};
 mod book;
 use book::Book;
 
+mod css;
+
 mod latex;
 
 mod pandoc;
@@ -112,6 +114,15 @@ impl mdbook::Renderer for Renderer {
 
         let book = Book::new(ctx)?;
 
+        let stylesheets;
+        let mut css = css::Css::default();
+        if let Some(cfg) = &html_cfg {
+            stylesheets = css::read_stylesheets(cfg, &book).collect::<Vec<_>>();
+            for (stylesheet, stylesheet_css) in &stylesheets {
+                css.load(stylesheet, stylesheet_css);
+            }
+        }
+
         for (name, profile) in cfg.profiles {
             let ctx = pandoc::RenderContext {
                 book: &book,
@@ -124,6 +135,7 @@ impl mdbook::Renderer for Renderer {
                 max_list_depth: 0,
                 code: &cfg.code,
                 html: html_cfg.as_ref(),
+                css: &css,
             };
 
             // Preprocess book
@@ -364,6 +376,15 @@ mod tests {
 
         pub fn part(mut self, name: impl Into<String>) -> Self {
             self.book.book.push_item(BookItem::PartTitle(name.into()));
+            self
+        }
+
+        pub fn file_in_src(self, path: impl AsRef<Path>, contents: &str) -> Self {
+            let path = self.book.source_dir().join(path);
+            if let Some(parent) = path.parent() {
+                fs::create_dir_all(parent).unwrap();
+            }
+            fs::write(path, contents).unwrap();
             self
         }
 
@@ -1226,12 +1247,23 @@ fn main() {}
     }
 
     #[test]
-    fn matched_html_tags() {
+    fn html_comments() {
         let output = MDBook::init()
-            .config(Config::pandoc())
-            .chapter(Chapter::new(
-                "Chapter",
-                "
+            .config(Config::markdown())
+            .chapter(Chapter::new("", "<!-- Comment -->", "chapter.md"))
+            .build();
+        insta::assert_snapshot!(output, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ <!-- Comment -->
+        "#);
+    }
+
+    #[test]
+    fn matched_html_tags() {
+        let contents = "
 <details>
 <summary>
 
@@ -1248,19 +1280,52 @@ more **markdown**
 </details>
 
 outside divs
-            ",
-                "chapter.md",
-            ))
-            .build();
-        insta::assert_snapshot!(output, @r###"
+        ";
+        let book = || MDBook::init().chapter(Chapter::new("Chapter", contents, "chapter.md"));
+
+        let markdown = book().config(Config::markdown()).build();
+        insta::assert_snapshot!(markdown, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ <details>
+        │ 
+        │ ::::: details
+        │ <summary>
+        │ 
+        │ ::: summary
+        │ ## Heading {#book__markdown__src__chaptermd__heading .unnumbered .unlisted}
+        │ 
+        │ text
+        │ :::
+        │ 
+        │ </summary>
+        │ <p>
+        │ 
+        │ ::: p
+        │ more **markdown**
+        │ :::
+        │ 
+        │ </p>
+        │ :::::
+        │ 
+        │ </details>
+        │ 
+        │ outside divs
+        "###);
+
+        let ast = book().config(Config::pandoc()).build();
+        insta::assert_snapshot!(ast, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
         ├─ markdown/pandoc-ir
-        │ [ RawBlock (Format "html") "<details>\n<summary>\n"
+        │ [ RawBlock (Format "html") "<details>\n"
         │ , Div
         │     ( "" , [ "details" ] , [] )
-        │     [ Div
+        │     [ RawBlock (Format "html") "<summary>\n"
+        │     , Div
         │         ( "" , [ "summary" ] , [] )
         │         [ Header
         │             2
@@ -1275,11 +1340,12 @@ outside divs
         │     , Div
         │         ( "" , [ "p" ] , [] )
         │         [ Para [ Str "more" , Space , Strong [ Str "markdown" ] ] ]
+        │     , RawBlock (Format "html") "</p>\n"
         │     ]
-        │ , RawBlock (Format "html") "</p>\n</details>\n"
+        │ , RawBlock (Format "html") "</details>\n"
         │ , Para [ Str "outside" , Space , Str "divs" ]
         │ ]
-        "###);
+        "#);
 
         // Make sure logic doesn't trigger on inline html since inserting divs
         // introduces newlines and breaks the original structure
@@ -1498,6 +1564,37 @@ to = "markdown"
     }
 
     #[test]
+    fn images() {
+        let book = MDBook::init()
+            .config(Config::latex())
+            .file_in_src("img/image.png", "")
+            .chapter(Chapter::new(
+                "",
+                r#"
+![alt text](img/image.png "a title")
+<img src="img/image.png" alt="alt text" title = "a title" width=50 height=100 class="foo bar">
+<img src="img/image.png" alt="alt text" title = "a title" style="width:50; height: 100" class="foo bar">
+                "#,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \pandocbounded{\includegraphics[keepaspectratio]{book/latex/src/img/image.png}}
+        │ \includegraphics[width=0.52083in,height=1.04167in]{book/latex/src/img/image.png}
+        │ \includegraphics[width=0.52083in,height=1.04167in]{book/latex/src/img/image.png}
+        ├─ latex/src/chapter.md
+        │ ![alt text](book/latex/src/img/image.png "a title")
+        │ ![alt text](book/latex/src/img/image.png "a title"){.foo .bar height="100" width="50"}
+        │ ![alt text](book/latex/src/img/image.png "a title"){.foo .bar width="50" height="100"}
+        ├─ latex/src/img/image.png
+        "#);
+    }
+
+    #[test]
     fn remote_images() {
         let book = MDBook::init()
             .config(Config::pdf())
@@ -1541,6 +1638,45 @@ to = "markdown"
         ├─ markdown/book.md
         │ prefix test image suffix
         "###);
+    }
+
+    #[test]
+    fn css() {
+        let cfg = r#"
+[output.html]
+additional-css = ["ferris.css"]
+        "#;
+        let book = MDBook::init()
+            .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+            .config(Config::latex())
+            .file_in_src("img/image.png", "")
+            .file_in_root(
+                "ferris.css",
+                "
+.ferris-explain {
+  width: 100px;
+  height: 50;
+}
+                ",
+            )
+            .chapter(Chapter::new(
+                "",
+                r#"
+<img class="ferris-explain" src="img/image.png" alt="alt text" title = "a title">
+                "#,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \includegraphics[width=1.04167in,height=0.52083in]{book/latex/src/img/image.png}
+        ├─ latex/src/chapter.md
+        │ ![alt text](book/latex/src/img/image.png "a title"){.ferris-explain height="50" width="100px"}
+        ├─ latex/src/img/image.png
+        "#);
     }
 
     #[test]

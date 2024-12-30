@@ -10,10 +10,12 @@ use std::{
     iter::{self, Peekable},
     ops::Range,
     path::{Path, PathBuf},
+    str,
 };
 
 use aho_corasick::AhoCorasick;
 use anyhow::{anyhow, Context as _};
+use html5gum::HtmlString;
 use log::log;
 use mdbook::{
     book::{BookItems, Chapter},
@@ -76,11 +78,11 @@ enum HtmlContext {
 }
 
 #[derive(Debug)]
-struct UnresolvableRemoteImage {
+struct UnresolvableRemoteImageError {
     err: ureq::Error,
 }
 
-impl fmt::Display for UnresolvableRemoteImage {
+impl fmt::Display for UnresolvableRemoteImageError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if cfg!(test) {
             // in tests, print less verbose error message to be consistent across operating systems
@@ -91,7 +93,27 @@ impl fmt::Display for UnresolvableRemoteImage {
     }
 }
 
-impl std::error::Error for UnresolvableRemoteImage {}
+impl std::error::Error for UnresolvableRemoteImageError {}
+
+struct UnresolvableRemoteImage;
+
+impl UnresolvableRemoteImage {
+    async fn replace_with_description<'book>(
+        self,
+        preprocessor: &mut PreprocessChapter<'book, '_>,
+        co: &genawaiter::stack::Co<'_, (pulldown_cmark::Event<'book>, Option<Range<usize>>)>,
+    ) {
+        use pulldown_cmark::{Event, TagEnd};
+
+        log::warn!("Replacing image with description");
+        for (event, range) in &mut preprocessor.parser {
+            match event {
+                Event::End(TagEnd::Image) => break,
+                event => co.yield_((event, Some(range))).await,
+            }
+        }
+    }
+}
 
 impl<'book> Preprocessor<'book> {
     pub fn new(ctx: RenderContext<'book>) -> anyhow::Result<Self> {
@@ -477,7 +499,7 @@ impl<'book> Preprocessor<'book> {
 
     fn download_remote_image(&self, link: &str) -> anyhow::Result<PathBuf> {
         match ureq::get(link).call() {
-            Err(err) => Err(UnresolvableRemoteImage { err }.into()),
+            Err(err) => Err(UnresolvableRemoteImageError { err }.into()),
             Ok(response) => {
                 const IMAGE_CONTENT_TYPES: &[(&str, &str)] = &[("image/svg+xml", "svg")];
                 let extension = IMAGE_CONTENT_TYPES.iter().find_map(|&(ty, extension)| {
@@ -680,7 +702,7 @@ struct PreprocessChapter<'book, 'preprocessor> {
     parser: Peekable<pulldown_cmark::OffsetIter<'book, pulldown_cmark::DefaultBrokenLinkCallback>>,
     matching_tags: Vec<pulldown_cmark::TagEnd>,
     encountered_h1: bool,
-    open_html_tags: Vec<html5gum::HtmlString>,
+    open_html_tags: Vec<HtmlString>,
 }
 
 impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
@@ -794,283 +816,293 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         mut self,
         co: genawaiter::stack::Co<'_, (pulldown_cmark::Event<'book>, Option<Range<usize>>)>,
     ) {
+        while let Some((event, range)) = self.parser.next() {
+            self.preprocess_event(event, Some(range), &co).await;
+        }
+    }
+
+    async fn preprocess_event(
+        &mut self,
+        event: pulldown_cmark::Event<'book>,
+        range: Option<Range<usize>>,
+        co: &genawaiter::stack::Co<'_, (pulldown_cmark::Event<'book>, Option<Range<usize>>)>,
+    ) {
         use pulldown_cmark::{Event, Tag, TagEnd};
 
-        'events: while let Some((event, range)) = self.parser.next() {
-            let event = match event {
-                Event::Start(tag) => 'current_event: {
-                    let tag = match tag {
-                        Tag::List(start_number) => {
-                            self.preprocessor.ctx.cur_list_depth += 1;
-                            self.preprocessor.ctx.max_list_depth = cmp::max(
-                                self.preprocessor.ctx.max_list_depth,
-                                self.preprocessor.ctx.cur_list_depth,
-                            );
-                            Tag::List(start_number)
+        let event = match event {
+            Event::Start(tag) => 'current_event: {
+                let tag = match tag {
+                    Tag::List(start_number) => {
+                        self.preprocessor.ctx.cur_list_depth += 1;
+                        self.preprocessor.ctx.max_list_depth = cmp::max(
+                            self.preprocessor.ctx.max_list_depth,
+                            self.preprocessor.ctx.cur_list_depth,
+                        );
+                        Tag::List(start_number)
+                    }
+                    Tag::Strikethrough => {
+                        // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
+                        // pulldown_cmark_to_cmark always generates ~~, so this is okay,
+                        // although it'd be good to have an option to configure this explicitly.
+                        (self.preprocessor.ctx.pandoc)
+                            .enable_extension(pandoc::Extension::Strikeout);
+                        Tag::Strikethrough
+                    }
+                    Tag::FootnoteDefinition(label) => {
+                        (self.preprocessor.ctx.pandoc)
+                            .enable_extension(pandoc::Extension::Footnotes);
+                        Tag::FootnoteDefinition(label)
+                    }
+                    Tag::Table(alignment) => {
+                        (self.preprocessor.ctx.pandoc)
+                            .enable_extension(pandoc::Extension::PipeTables);
+                        if let Some(annotation) = range.clone().and_then(|range| {
+                            self.column_width_annotation(&self.chapter.content[range])
+                        }) {
+                            co.yield_((Event::Start(Tag::HtmlBlock), None)).await;
+                            co.yield_((Event::Html(annotation.into()), None)).await;
+                            co.yield_((Event::End(TagEnd::HtmlBlock), None)).await;
                         }
-                        Tag::Strikethrough => {
-                            // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
-                            // pulldown_cmark_to_cmark always generates ~~, so this is okay,
-                            // although it'd be good to have an option to configure this explicitly.
-                            (self.preprocessor.ctx.pandoc)
-                                .enable_extension(pandoc::Extension::Strikeout);
-                            Tag::Strikethrough
-                        }
-                        Tag::FootnoteDefinition(label) => {
-                            (self.preprocessor.ctx.pandoc)
-                                .enable_extension(pandoc::Extension::Footnotes);
-                            Tag::FootnoteDefinition(label)
-                        }
-                        Tag::Table(alignment) => {
-                            (self.preprocessor.ctx.pandoc)
-                                .enable_extension(pandoc::Extension::PipeTables);
-                            if let Some(annotation) =
-                                self.column_width_annotation(&self.chapter.content[range.clone()])
-                            {
-                                co.yield_((Event::Start(Tag::HtmlBlock), None)).await;
-                                co.yield_((Event::Html(annotation.into()), None)).await;
-                                co.yield_((Event::End(TagEnd::HtmlBlock), None)).await;
+                        Tag::Table(alignment)
+                    }
+                    Tag::Heading {
+                        level,
+                        id,
+                        classes,
+                        attrs,
+                    } => self
+                        .update_heading(level, classes)
+                        .map(|(level, classes)| {
+                            if id.is_some() || !classes.is_empty() {
+                                // pandoc does not support `header_attributes` with commonmark
+                                // so use `attributes`, which is a superset
+                                (self.preprocessor.ctx.pandoc)
+                                    .enable_extension(pandoc::Extension::Attributes);
                             }
-                            Tag::Table(alignment)
-                        }
-                        Tag::Heading {
-                            level,
-                            id,
-                            classes,
-                            attrs,
-                        } => self
-                            .update_heading(level, classes)
-                            .map(|(level, classes)| {
-                                if id.is_some() || !classes.is_empty() {
-                                    // pandoc does not support `header_attributes` with commonmark
-                                    // so use `attributes`, which is a superset
-                                    (self.preprocessor.ctx.pandoc)
-                                        .enable_extension(pandoc::Extension::Attributes);
-                                }
-                                Tag::Heading {
-                                    level,
-                                    id,
-                                    classes,
-                                    attrs,
-                                }
-                            })
-                            .unwrap_or(Tag::Paragraph),
+                            Tag::Heading {
+                                level,
+                                id,
+                                classes,
+                                attrs,
+                            }
+                        })
+                        .unwrap_or(Tag::Paragraph),
+                    Tag::Link {
+                        link_type,
+                        dest_url,
+                        title,
+                        id,
+                    } => {
+                        let dest_url = self.preprocessor.normalize_link_or_leave_as_is(
+                            self.chapter,
+                            link_type,
+                            dest_url,
+                            LinkContext::Link,
+                        );
                         Tag::Link {
                             link_type,
                             dest_url,
                             title,
                             id,
-                        } => {
-                            let dest_url = self.preprocessor.normalize_link_or_leave_as_is(
-                                self.chapter,
-                                link_type,
-                                dest_url,
-                                LinkContext::Link,
-                            );
-                            Tag::Link {
-                                link_type,
-                                dest_url,
-                                title,
-                                id,
-                            }
                         }
-                        Tag::Image {
+                    }
+                    Tag::Image {
+                        link_type,
+                        dest_url,
+                        title,
+                        id,
+                    } => match self.resolve_image_url(dest_url, link_type) {
+                        Ok(dest_url) => Tag::Image {
                             link_type,
                             dest_url,
                             title,
                             id,
-                        } => {
-                            let resolved = match self.chapter.path.as_ref() {
-                                None => Err((anyhow!("chapter has no path"), dest_url)),
-                                Some(chapter_path) => {
-                                    let chapter_dir = chapter_path.parent().unwrap();
-                                    self.preprocessor.normalize_link(
-                                        chapter_path,
-                                        chapter_dir,
-                                        link_type,
-                                        dest_url,
-                                        LinkContext::Image,
-                                    )
-                                }
-                            };
-                            let dest_url = match resolved {
-                                Ok(link) => link,
-                                Err((err, link)) => {
-                                    log::warn!(
-                                        "Failed to resolve image link '{link}' in chapter '{}': {err:#}",
-                                        self.chapter.name,
-                                    );
-                                    if err.downcast_ref::<UnresolvableRemoteImage>().is_some() {
-                                        log::warn!("Replacing image with description");
-                                        for (event, range) in &mut self.parser {
-                                            match event {
-                                                Event::End(TagEnd::Image) => break,
-                                                event => co.yield_((event, Some(range))).await,
-                                            }
-                                        }
-                                        continue 'events;
-                                    }
-                                    link
-                                }
-                            };
-                            Tag::Image {
-                                link_type,
-                                dest_url,
-                                title,
-                                id,
-                            }
+                        },
+                        Err(unresolvable) => {
+                            unresolvable.replace_with_description(self, co).await;
+                            return;
                         }
-                        Tag::CodeBlock(CodeBlockKind::Fenced(mut info_string)) => {
-                            // MdBook supports custom attributes in code block info strings.
-                            // Attributes are separated by a comma, space, or tab from the language name.
-                            // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
-                            // This processes and strips out the attributes.
-                            let (language, mut attributes) = {
-                                let mut parts =
-                                    info_string.split([',', ' ', '\t']).map(|part| part.trim());
-                                (parts.next(), parts)
-                            };
+                    },
+                    Tag::CodeBlock(CodeBlockKind::Fenced(mut info_string)) => {
+                        // MdBook supports custom attributes in code block info strings.
+                        // Attributes are separated by a comma, space, or tab from the language name.
+                        // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
+                        // This processes and strips out the attributes.
+                        let (language, mut attributes) = {
+                            let mut parts =
+                                info_string.split([',', ' ', '\t']).map(|part| part.trim());
+                            (parts.next(), parts)
+                        };
 
-                            // https://rust-lang.github.io/mdBook/format/mdbook.html?highlight=hide#hiding-code-lines
-                            let hidelines_override =
-                                attributes.find_map(|attr| attr.strip_prefix("hidelines="));
-                            let hidden_line_prefix = hidelines_override.or_else(|| {
-                                let lang = language?;
-                                // Respect [output.html.code.hidelines]
-                                let html = self.preprocessor.ctx.html;
-                                html.and_then(|html| Some(html.code.hidelines.get(lang)?.as_str()))
-                                    .or(match lang {
-                                        "rust" => Some("#"),
-                                        _ => None,
-                                    })
-                            });
+                        // https://rust-lang.github.io/mdBook/format/mdbook.html?highlight=hide#hiding-code-lines
+                        let hidelines_override =
+                            attributes.find_map(|attr| attr.strip_prefix("hidelines="));
+                        let hidden_line_prefix = hidelines_override.or_else(|| {
+                            let lang = language?;
+                            // Respect [output.html.code.hidelines]
+                            let html = self.preprocessor.ctx.html;
+                            html.and_then(|html| Some(html.code.hidelines.get(lang)?.as_str()))
+                                .or(match lang {
+                                    "rust" => Some("#"),
+                                    _ => None,
+                                })
+                        });
 
-                            let mut texts = vec![];
-                            for (event, _) in &mut self.parser {
-                                match event {
+                        let mut texts = vec![];
+                        for (event, _) in &mut self.parser {
+                            match event {
                                     Event::Text(text) => texts.push(text),
                                     Event::End(TagEnd::CodeBlock) => break,
                                     event => panic!("Code blocks should contain only literal text, but encountered {event:?}"),
                                 }
-                            }
-
-                            match hidden_line_prefix {
-                                Some(prefix) if !self.preprocessor.ctx.code.show_hidden_lines => {
-                                    let mut code = String::with_capacity(
-                                        texts.iter().map(|text| text.len()).sum(),
-                                    );
-                                    for text in texts.drain(..) {
-                                        for line in text
-                                            .lines()
-                                            .filter(|line| !line.trim_start().starts_with(prefix))
-                                        {
-                                            code.push_str(line);
-                                            code.push('\n');
-                                        }
-                                    }
-                                    texts.push(code.into());
-                                }
-                                _ => {}
-                            }
-
-                            // Pandoc+fvextra only wraps long lines in code blocks with info strings
-                            // so fall back to "text"
-                            info_string = language.unwrap_or("text").to_owned().into();
-
-                            if let OutputFormat::Latex { .. } = self.preprocessor.ctx.output {
-                                const CODE_BLOCK_LINE_LENGTH_LIMIT: usize = 1000;
-
-                                let overly_long_line = texts.iter().any(|text| {
-                                    text.lines()
-                                        .any(|line| line.len() > CODE_BLOCK_LINE_LENGTH_LIMIT)
-                                });
-                                if overly_long_line {
-                                    (self.preprocessor.ctx.pandoc)
-                                        .enable_extension(pandoc::Extension::RawAttribute);
-                                    let raw_latex =
-                                        Tag::CodeBlock(CodeBlockKind::Fenced("{=latex}".into()));
-                                    let raw_latex_end = raw_latex.to_end();
-                                    let lines = {
-                                        let patterns = &[r"\", "{", "}", "$", "_", "^", "&", "]"];
-                                        let replace_with = &[
-                                            r"\textbackslash{}",
-                                            r"\{",
-                                            r"\}",
-                                            r"\$",
-                                            r"\_",
-                                            r"\^",
-                                            r"\&",
-                                            r"{{]}}",
-                                        ];
-                                        let ac = AhoCorasick::new(patterns).unwrap();
-                                        texts.iter().flat_map(|text| text.lines()).map(
-                                            move |text| {
-                                                let text = ac.replace_all(text, replace_with);
-                                                Event::Text(format!(r"\texttt{{{text}}}\\").into())
-                                            },
-                                        )
-                                    };
-                                    for event in iter::once(Event::Start(raw_latex)).chain(lines) {
-                                        co.yield_((event, None)).await
-                                    }
-                                    break 'current_event Event::End(raw_latex_end);
-                                }
-                            }
-
-                            let code_block = Tag::CodeBlock(CodeBlockKind::Fenced(info_string));
-                            let end_tag = code_block.to_end();
-                            for event in iter::once(Event::Start(code_block))
-                                .chain(texts.into_iter().map(Event::Text))
-                            {
-                                co.yield_((event, None)).await;
-                            }
-                            break 'current_event Event::End(end_tag);
                         }
-                        tag => tag,
-                    };
-                    self.matching_tags.push(tag.to_end());
-                    Event::Start(tag)
-                }
-                Event::End(_) => {
-                    let end = self.matching_tags.pop().unwrap();
-                    if let TagEnd::List(_) = &end {
-                        self.preprocessor.ctx.cur_list_depth -= 1;
+
+                        match hidden_line_prefix {
+                            Some(prefix) if !self.preprocessor.ctx.code.show_hidden_lines => {
+                                let mut code = String::with_capacity(
+                                    texts.iter().map(|text| text.len()).sum(),
+                                );
+                                for text in texts.drain(..) {
+                                    for line in text
+                                        .lines()
+                                        .filter(|line| !line.trim_start().starts_with(prefix))
+                                    {
+                                        code.push_str(line);
+                                        code.push('\n');
+                                    }
+                                }
+                                texts.push(code.into());
+                            }
+                            _ => {}
+                        }
+
+                        // Pandoc+fvextra only wraps long lines in code blocks with info strings
+                        // so fall back to "text"
+                        info_string = language.unwrap_or("text").to_owned().into();
+
+                        if let OutputFormat::Latex { .. } = self.preprocessor.ctx.output {
+                            const CODE_BLOCK_LINE_LENGTH_LIMIT: usize = 1000;
+
+                            let overly_long_line = texts.iter().any(|text| {
+                                text.lines()
+                                    .any(|line| line.len() > CODE_BLOCK_LINE_LENGTH_LIMIT)
+                            });
+                            if overly_long_line {
+                                (self.preprocessor.ctx.pandoc)
+                                    .enable_extension(pandoc::Extension::RawAttribute);
+                                let raw_latex =
+                                    Tag::CodeBlock(CodeBlockKind::Fenced("{=latex}".into()));
+                                let raw_latex_end = raw_latex.to_end();
+                                let lines = {
+                                    let patterns = &[r"\", "{", "}", "$", "_", "^", "&", "]"];
+                                    let replace_with = &[
+                                        r"\textbackslash{}",
+                                        r"\{",
+                                        r"\}",
+                                        r"\$",
+                                        r"\_",
+                                        r"\^",
+                                        r"\&",
+                                        r"{{]}}",
+                                    ];
+                                    let ac = AhoCorasick::new(patterns).unwrap();
+                                    texts.iter().flat_map(|text| text.lines()).map(move |text| {
+                                        let text = ac.replace_all(text, replace_with);
+                                        Event::Text(format!(r"\texttt{{{text}}}\\").into())
+                                    })
+                                };
+                                for event in iter::once(Event::Start(raw_latex)).chain(lines) {
+                                    co.yield_((event, None)).await
+                                }
+                                break 'current_event Event::End(raw_latex_end);
+                            }
+                        }
+
+                        let code_block = Tag::CodeBlock(CodeBlockKind::Fenced(info_string));
+                        let end_tag = code_block.to_end();
+                        for event in iter::once(Event::Start(code_block))
+                            .chain(texts.into_iter().map(Event::Text))
+                        {
+                            co.yield_((event, None)).await;
+                        }
+                        break 'current_event Event::End(end_tag);
                     }
-                    Event::End(end)
+                    tag => tag,
+                };
+                self.matching_tags.push(tag.to_end());
+                Event::Start(tag)
+            }
+            Event::End(_) => {
+                let end = self.matching_tags.pop().unwrap();
+                if let TagEnd::List(_) = &end {
+                    self.preprocessor.ctx.cur_list_depth -= 1;
                 }
-                Event::Html(mut html) => {
-                    while let Some((Event::Html(more), _)) = self.parser.peek() {
-                        let mut string = html.into_string();
-                        string.push_str(more);
-                        html = string.into();
-                        // Actually consume the item from the iterator
-                        self.parser.next();
-                    }
-                    for event in self.preprocess_contiguous_html(html, HtmlContext::Block) {
-                        co.yield_((event, None)).await
-                    }
-                    continue 'events;
+                Event::End(end)
+            }
+            Event::Html(mut html) => {
+                while let Some((Event::Html(more), _)) = self.parser.peek() {
+                    let mut string = html.into_string();
+                    string.push_str(more);
+                    html = string.into();
+                    // Actually consume the item from the iterator
+                    self.parser.next();
                 }
-                Event::InlineHtml(mut html) => {
-                    while let Some((Event::InlineHtml(more), _)) = self.parser.peek() {
-                        let mut string = html.into_string();
-                        string.push_str(more);
-                        html = string.into();
-                        // Actually consume the item from the iterator
-                        self.parser.next();
-                    }
-                    for event in self.preprocess_contiguous_html(html, HtmlContext::Inline) {
-                        co.yield_((event, None)).await
-                    }
-                    continue 'events;
+                self.preprocess_contiguous_html(html, HtmlContext::Block, co)
+                    .await;
+                return;
+            }
+            Event::InlineHtml(mut html) => {
+                while let Some((Event::InlineHtml(more), _)) = self.parser.peek() {
+                    let mut string = html.into_string();
+                    string.push_str(more);
+                    html = string.into();
+                    // Actually consume the item from the iterator
+                    self.parser.next();
                 }
-                Event::TaskListMarker(checked) => {
-                    (self.preprocessor.ctx.pandoc).enable_extension(pandoc::Extension::TaskLists);
-                    Event::TaskListMarker(checked)
+                self.preprocess_contiguous_html(html, HtmlContext::Inline, co)
+                    .await;
+                return;
+            }
+            Event::TaskListMarker(checked) => {
+                (self.preprocessor.ctx.pandoc).enable_extension(pandoc::Extension::TaskLists);
+                Event::TaskListMarker(checked)
+            }
+            event => event,
+        };
+        co.yield_((event, range)).await;
+    }
+
+    fn resolve_image_url(
+        &mut self,
+        dest_url: CowStr<'book>,
+        link_type: LinkType,
+    ) -> Result<CowStr<'book>, UnresolvableRemoteImage> {
+        let resolved = match self.chapter.path.as_ref() {
+            None => Err((anyhow!("chapter has no path"), dest_url)),
+            Some(chapter_path) => {
+                let chapter_dir = chapter_path.parent().unwrap();
+                self.preprocessor.normalize_link(
+                    chapter_path,
+                    chapter_dir,
+                    link_type,
+                    dest_url,
+                    LinkContext::Image,
+                )
+            }
+        };
+        match resolved {
+            Ok(link) => Ok(link),
+            Err((err, link)) => {
+                log::warn!(
+                    "Failed to resolve image link '{link}' in chapter '{}': {err:#}",
+                    self.chapter.name,
+                );
+                if let Some(UnresolvableRemoteImageError { .. }) = err.downcast_ref() {
+                    Err(UnresolvableRemoteImage)
+                } else {
+                    Ok(link)
                 }
-                event => event,
-            };
-            co.yield_((event, Some(range))).await;
+            }
         }
     }
 
@@ -1130,90 +1162,256 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
     /// ```
     ///
     /// This ensures that Pandoc processes the structure properly and the resulting EPUB is valid.
-    fn preprocess_contiguous_html(
+    async fn preprocess_contiguous_html(
         &mut self,
-        mut html: CowStr<'book>,
+        html: CowStr<'book>,
         ctx: HtmlContext,
-    ) -> impl Iterator<Item = pulldown_cmark::Event<'book>> + '_ {
+        co: &genawaiter::stack::Co<'_, (pulldown_cmark::Event<'book>, Option<Range<usize>>)>,
+    ) {
         use pulldown_cmark::Event;
 
-        if let OutputFormat::Latex { packages } = &mut self.preprocessor.ctx.output {
-            static FONT_AWESOME_ICON: Lazy<Regex> = Lazy::new(|| {
-                Regex::new(r#"<i\s+class\s*=\s*"fa fa-(?P<icon>.*?)"(>\s*</i>|/>)"#).unwrap()
-            });
-            if (self.preprocessor.ctx.pandoc)
-                .enable_extension(pandoc::Extension::RawAttribute)
-                .is_available()
-            {
-                html = match FONT_AWESOME_ICON.replace_all(&html, r"`\faicon{$icon}`{=latex}") {
-                    Cow::Borrowed(_) => html,
-                    Cow::Owned(html) => {
-                        packages.need(latex::Package::FontAwesome);
-                        html.into()
-                    }
-                };
-            }
+        fn to_str(s: &HtmlString) -> &str {
+            str::from_utf8(s).expect("input was utf8")
+        }
+        fn to_cowstr(s: &str) -> CowStr<'static> {
+            pulldown_cmark::InlineStr::try_from(s)
+                .map(CowStr::Inlined)
+                .unwrap_or_else(|_| CowStr::Boxed(s.into()))
         }
 
-        let already_open_tags = self.open_html_tags.len();
-        let mut still_open_tags = self.open_html_tags.len();
-        if let HtmlContext::Block = ctx {
-            for node in html5gum::Tokenizer::new(html.as_ref()).infallible() {
-                match node {
-                    html5gum::Token::StartTag(start) => {
-                        if !start.self_closing {
-                            self.open_html_tags.push(start.name);
-                        }
+        let mut preprocessed = String::with_capacity(html.len());
+        let flush = |preprocessed: &mut String| {
+            let event = (!preprocessed.is_empty()).then(|| {
+                let html = to_cowstr(preprocessed);
+                preprocessed.clear();
+                match ctx {
+                    HtmlContext::Inline => Event::InlineHtml(html),
+                    HtmlContext::Block => Event::Html(html),
+                }
+            });
+            async move {
+                if let Some(event) = event {
+                    co.yield_((event, None)).await;
+                }
+            }
+        };
+
+        let fenced_divs_available = {
+            let available = std::cell::OnceCell::new();
+            move |pandoc: &mut pandoc::Context| {
+                *available.get_or_init(|| {
+                    pandoc
+                        .enable_extension(pandoc::Extension::FencedDivs)
+                        .is_available()
+                })
+            }
+        };
+
+        let mut tokens = html5gum::Tokenizer::new(html.as_ref())
+            .infallible()
+            .peekable();
+        while let Some(token) = tokens.next() {
+            match token {
+                html5gum::Token::Error(err) => log::warn!("HTML parsing error: {err}"),
+                html5gum::Token::Doctype(doctype) => {
+                    log::warn!("Unexpected doctype in HTML: {doctype:?}")
+                }
+                html5gum::Token::String(s) => preprocessed.push_str(to_str(&s)),
+                html5gum::Token::Comment(comment) => {
+                    preprocessed.push_str("<!--");
+                    preprocessed.push_str(to_str(&comment));
+                    preprocessed.push_str("-->");
+                }
+                html5gum::Token::StartTag(start) => {
+                    fn closes(tag: &str) -> impl Fn(&html5gum::Token) -> bool + '_ {
+                        |token| matches!(token, html5gum::Token::EndTag(end) if end.name.as_slice() == tag.as_bytes())
                     }
-                    html5gum::Token::EndTag(end) => match self.open_html_tags.last() {
-                        Some(tag) if *tag == end.name => {
-                            self.open_html_tags.pop();
-                            still_open_tags = still_open_tags.min(self.open_html_tags.len());
+
+                    match start.name.as_slice() {
+                        b"img" => {
+                            let mut attrs = start.attributes;
+                            let [src, alt, title, class] = ["src", "alt", "title", "class"]
+                                .map(|attr| attrs.remove(attr.as_bytes()));
+                            let Some(src) = src else { continue };
+                            if !start.self_closing {
+                                tokens.next_if(closes("img"));
+                            }
+                            match self.resolve_image_url(to_cowstr(to_str(&src)), LinkType::Inline)
+                            {
+                                Err(unresolvable) => {
+                                    flush(&mut preprocessed).await;
+                                    unresolvable.replace_with_description(self, co).await;
+                                }
+                                Ok(src) => {
+                                    // TODO: if/when pulldown_cmark supports attributes on images,
+                                    // use Tag::Image instead of embedding raw markdown
+                                    preprocessed.push_str("![");
+                                    if let Some(alt) = alt {
+                                        preprocessed.push_str(to_str(&alt));
+                                    }
+                                    preprocessed.push_str("](");
+                                    preprocessed.push_str(&src);
+                                    if let Some(title) = title {
+                                        preprocessed.push(' ');
+                                        preprocessed.push('"');
+                                        preprocessed.push_str(to_str(&title));
+                                        preprocessed.push('"');
+                                    }
+                                    preprocessed.push(')');
+                                    if (class.is_some() || !attrs.is_empty())
+                                        && (self.preprocessor.ctx.pandoc)
+                                            .enable_extension(pandoc::Extension::Attributes)
+                                            .is_available()
+                                    {
+                                        preprocessed.push('{');
+                                        let mut push_separator = {
+                                            let mut first = true;
+                                            move |preprocessed: &mut String| {
+                                                if first {
+                                                    first = false;
+                                                } else {
+                                                    preprocessed.push(' ');
+                                                }
+                                            }
+                                        };
+                                        let class = class.as_ref().map(to_str);
+                                        let classes =
+                                            || class.into_iter().flat_map(|class| class.split(' '));
+                                        for class in classes() {
+                                            push_separator(&mut preprocessed);
+                                            preprocessed.push('.');
+                                            preprocessed.push_str(class);
+                                        }
+
+                                        let mut push_attr = |attr: &_, val: &_| {
+                                            push_separator(&mut preprocessed);
+                                            preprocessed.push_str(attr);
+                                            preprocessed.push('=');
+                                            preprocessed.push('"');
+                                            preprocessed.push_str(val);
+                                            preprocessed.push('"');
+                                        };
+
+                                        if !matches!(
+                                            self.preprocessor.ctx.output,
+                                            OutputFormat::HtmlLike
+                                        ) {
+                                            let style = attrs.remove("style".as_bytes());
+                                            let style = style
+                                                .as_ref()
+                                                .into_iter()
+                                                .flat_map(|style| to_str(style).split(';'))
+                                                .flat_map(|decl| decl.split_once(':'))
+                                                .map(|(attr, val)| (attr.trim(), val.trim()))
+                                                .chain(
+                                                    classes()
+                                                        .flat_map(|class| {
+                                                            (self.preprocessor.ctx.css)
+                                                                .styles
+                                                                .classes
+                                                                .get(class)
+                                                                .into_iter()
+                                                                .flatten()
+                                                        })
+                                                        .map(|(prop, val)| (prop.as_ref(), *val)),
+                                                );
+                                            for (prop, val) in style {
+                                                if matches!(prop, "width" | "height")
+                                                    && !attrs.contains_key(prop.as_bytes())
+                                                {
+                                                    push_attr(prop, val);
+                                                }
+                                            }
+                                        }
+
+                                        for (attr, val) in attrs {
+                                            push_attr(to_str(&attr), to_str(&val));
+                                        }
+
+                                        preprocessed.push('}');
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+                        b"i" => {
+                            let mut attrs = start.attributes.iter();
+                            match attrs.next() {
+                                Some((attr, val))
+                                    if attr.as_slice() == b"class" && attrs.next().is_none() =>
+                                {
+                                    if let Some(icon) = to_str(val).strip_prefix("fa fa-") {
+                                        if let OutputFormat::Latex { packages } =
+                                            &mut self.preprocessor.ctx.output
+                                        {
+                                            if (self.preprocessor.ctx.pandoc)
+                                                .enable_extension(pandoc::Extension::RawAttribute)
+                                                .is_available()
+                                                && (start.self_closing
+                                                    || tokens.next_if(closes("i")).is_some())
+                                            {
+                                                packages.need(latex::Package::FontAwesome);
+                                                preprocessed.push_str(r"`\faicon{");
+                                                preprocessed.push_str(icon);
+                                                preprocessed.push_str(r"}`{=latex}");
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                }
+                                _ => {}
+                            }
                         }
                         _ => {}
-                    },
-                    _ => {}
+                    }
+                    preprocessed.push('<');
+                    preprocessed.push_str(to_str(&start.name));
+                    for (attr, val) in &start.attributes {
+                        preprocessed.push(' ');
+                        preprocessed.push_str(to_str(attr));
+                        preprocessed.push('=');
+                        preprocessed.push('"');
+                        preprocessed.push_str(to_str(val));
+                        preprocessed.push('"');
+                    }
+                    if start.self_closing {
+                        preprocessed.push('/');
+                    }
+                    preprocessed.push('>');
+
+                    if !start.self_closing {
+                        let name = to_cowstr(to_str(&start.name));
+                        self.open_html_tags.push(start.name);
+                        if matches!(ctx, HtmlContext::Block)
+                            && fenced_divs_available(&mut self.preprocessor.ctx.pandoc)
+                        {
+                            flush(&mut preprocessed).await;
+                            let div = Event::Text(format!("\n\n::: {name}\n\n").into());
+                            co.yield_((div, None)).await;
+                        }
+                    }
+                }
+                html5gum::Token::EndTag(end) => {
+                    match self.open_html_tags.last() {
+                        Some(tag) if *tag == end.name => {
+                            self.open_html_tags.pop();
+                            if matches!(ctx, HtmlContext::Block)
+                                && fenced_divs_available(&mut self.preprocessor.ctx.pandoc)
+                            {
+                                flush(&mut preprocessed).await;
+                                co.yield_((Event::Text("\n\n:::\n\n".into()), None)).await;
+                            }
+                        }
+                        _ => {}
+                    }
+                    preprocessed.push('<');
+                    preprocessed.push('/');
+                    preprocessed.push_str(to_str(&end.name));
+                    preprocessed.push('>');
                 }
             }
         }
-        let mut fenced_divs_available = || {
-            self.preprocessor
-                .ctx
-                .pandoc
-                .enable_extension(pandoc::Extension::FencedDivs)
-                .is_available()
-        };
-        let close_divs = {
-            let closed_tags = already_open_tags - still_open_tags;
-            (closed_tags > 0 && fenced_divs_available())
-                .then(|| {
-                    iter::once(Event::Text("\n\n".into()))
-                        .chain((0..closed_tags).map(|_| Event::Text(":::\n\n".into())))
-                        .chain(iter::once(Event::Text("\n\n".into())))
-                })
-                .into_iter()
-                .flatten()
-        };
-        let open_divs = {
-            let opened_tags = &self.open_html_tags[still_open_tags..];
-            (!opened_tags.is_empty() && fenced_divs_available())
-                .then(|| {
-                    iter::once(Event::Text("\n\n".into()))
-                        .chain(opened_tags.iter().map(|tag| {
-                            Event::Text(
-                                format!("::: {}\n\n", String::from_utf8_lossy(&tag.0)).into(),
-                            )
-                        }))
-                        .chain(iter::once(Event::Text("\n\n".into())))
-                })
-                .into_iter()
-                .flatten()
-        };
-        let html = match ctx {
-            HtmlContext::Inline => Event::InlineHtml(html),
-            HtmlContext::Block => Event::Html(html),
-        };
-        close_divs.chain(iter::once(html)).chain(open_divs)
+        flush(&mut preprocessed).await;
     }
 }
 
