@@ -752,14 +752,14 @@ This is an example of a footnote[^note].
             ))
             .config(Config::latex())
             .build();
-        insta::assert_snapshot!(book, @r###"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
         │ \begin{longtable}[]{@{}
-        │   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0986}}
-        │   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9014}}@{}}
+        │   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.0986}}
+        │   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.9014}}@{}}
         │ \toprule\noalign{}
         │ \begin{minipage}[b]{\linewidth}\raggedright
         │ Header1
@@ -778,7 +778,7 @@ This is an example of a footnote[^note].
         │ |Header1|Header2|
         │ |-------|:------|
         │ |abc|long long long long long long long long long long long long long|
-        "###);
+        "#);
     }
 
     #[test]
