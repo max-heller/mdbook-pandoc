@@ -44,9 +44,37 @@ impl Profile {
             OutputFormat::Latex {
                 packages: Default::default(),
             }
+        } else if self.includes_raw_html() {
+            OutputFormat::HtmlLike
         } else {
             OutputFormat::Other
         }
+    }
+
+    /// Formats for which raw HTML is passed through instead of being suppressed.
+    /// See <https://pandoc.org/MANUAL.html#extension-raw_html>
+    #[allow(unused_parens)]
+    fn includes_raw_html(&self) -> bool {
+        let extension = || {
+            (self.output_file)
+                .extension()
+                .and_then(|extension| extension.to_str())
+        };
+        matches!(
+            self.to.as_deref(),
+            Some(
+                ("html" | "html4" | "html5")
+                    | "s5"
+                    | ("slidy" | "slideous")
+                    | "dzslides"
+                    | ("epub" | "epub2" | "epub3")
+                    | "org"
+                    | "textile"
+            )
+        ) || matches!(
+            extension(),
+            Some("html" | "htm" | "xhtml" | "epub" | "md" | "markdown" | "org" | "textile")
+        )
     }
 
     /// Determines whether the profile uses LaTeX, either by outputting it directory or rendering it to PDF.

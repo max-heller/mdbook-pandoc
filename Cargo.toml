@@ -16,6 +16,7 @@ include = ["/src", "/CHANGELOG.md", "/LICENSE-*", "/README.md"]
 [dependencies]
 aho-corasick = "1.0.0"
 anyhow = "1.0.47"
+cssparser = "0.34.0"
 env_logger = "0.11.0"
 genawaiter = { version = "0.99.1", default-features = false }
 html5gum = "0.5.7"

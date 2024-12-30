@@ -14,7 +14,7 @@ use tempfile::NamedTempFile;
 
 use crate::{
     book::Book,
-    latex,
+    css, latex,
     pandoc::{self, extension, Profile, Version},
     CodeConfig,
 };
@@ -35,10 +35,12 @@ pub struct Context<'book> {
     pub max_list_depth: usize,
     pub html: Option<&'book mdbook::config::HtmlConfig>,
     pub(crate) code: &'book CodeConfig,
+    pub css: &'book css::Css<'book>,
 }
 
 pub enum OutputFormat {
     Latex { packages: latex::Packages },
+    HtmlLike,
     Other,
 }
 
@@ -149,7 +151,7 @@ impl Renderer {
                     default_variables.push(("dir", dir.into()));
                 }
             }
-            OutputFormat::Other => {}
+            OutputFormat::HtmlLike | OutputFormat::Other => {}
         };
         for (key, val) in default_variables {
             if !profile.variables.contains_key(key) {
@@ -220,6 +222,11 @@ impl Renderer {
                     .collect::<Vec<_>>()
                     .join("\n");
                 additional_variables.push(("header-includes", include_packages));
+            }
+            OutputFormat::HtmlLike => {
+                for stylesheet in &ctx.css.stylesheets {
+                    additional_variables.push(("css", stylesheet.to_string_lossy().into_owned()));
+                }
             }
             OutputFormat::Other => {}
         };
