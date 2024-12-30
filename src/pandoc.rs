@@ -144,7 +144,7 @@ mod tests {
         .unwrap();
         let output = pandoc.wait_with_output().unwrap();
         let stderr = String::from_utf8_lossy(&output.stderr);
-        insta::assert_snapshot!(stderr, @r###"
+        insta::assert_snapshot!(stderr, @r#"
         Error producing PDF.
         ! LaTeX Error: Too deeply nested.
 
@@ -152,9 +152,9 @@ mod tests {
         Type  H <return>  for immediate help.
          ...                                              
                                                           
-        l.78         \begin{itemize}
+        l.74         \begin{itemize}
 
-        "###);
+        "#);
     }
 
     #[test]
