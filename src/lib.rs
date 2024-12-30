@@ -1393,7 +1393,7 @@ outside divs
         let diff = similar::TextDiff::from_lines(&default.to_string(), &with_overrides.to_string())
             .unified_diff()
             .to_string();
-        insta::assert_snapshot!(diff, @r###"
+        insta::assert_snapshot!(diff, @r##"
         @@ -10,7 +10,7 @@
          │     pdf_engine: None,
          │     standalone: false,
@@ -1403,13 +1403,13 @@ outside divs
          │     ),
          │     to: None,
          │     table_of_contents: true,
-        @@ -19,4 +19,4 @@
+        @@ -24,4 +24,4 @@
          │ }    
          │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
          ├─ markdown/book.md
         -│ # Chapter {#book__markdown__src__chaptermd__chapter}
         +│ # Chapter
-        "###);
+        "##);
     }
 
     #[test]
@@ -1439,7 +1439,7 @@ colorlinks = false
             .init()
             .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
             .build();
-        insta::assert_snapshot!(output, @r###"
+        insta::assert_snapshot!(output, @r#"
         ├─ log output
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
@@ -1475,7 +1475,11 @@ colorlinks = false
         │         "indent": Boolean(
         │             true,
         │         ),
+        │         "lang": String(
+        │             "en",
+        │         ),
         │     },
+        │     metadata: {},
         │     rest: {
         │         "fail-if-warnings": Boolean(
         │             false,
@@ -1496,7 +1500,7 @@ colorlinks = false
         │     },
         │ }    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null    
-        "###)
+        "#)
     }
 
     #[test]

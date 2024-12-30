@@ -23,6 +23,8 @@ pub struct Profile {
     pub table_of_contents: bool,
     #[serde(default)]
     pub variables: BTreeMap<String, toml::Value>,
+    #[serde(default)]
+    pub metadata: BTreeMap<String, toml::Value>,
     #[serde(flatten)]
     pub rest: BTreeMap<String, toml::Value>,
 }

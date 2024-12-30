@@ -129,27 +129,36 @@ impl Renderer {
             format
         });
 
+        let mut default_metadata = vec![];
+        if let Some(title) = ctx.mdbook_cfg.book.title.as_deref() {
+            default_metadata.push(("title", title.into()));
+        }
+        if let Some(description) = ctx.mdbook_cfg.book.description.as_deref() {
+            default_metadata.push(("description", description.into()));
+        }
+        if !ctx.mdbook_cfg.book.authors.is_empty() {
+            default_metadata.push(("author", ctx.mdbook_cfg.book.authors.clone().into()));
+        }
+        for (key, val) in default_metadata {
+            if !profile.metadata.contains_key(key) {
+                profile.metadata.insert(key.into(), val);
+            }
+        }
+
         let mut default_variables = vec![];
+        if let Some(language) = ctx.mdbook_cfg.book.language.as_deref() {
+            default_variables.push(("lang", language.into()));
+        }
+        if let Some(text_direction) = ctx.mdbook_cfg.book.text_direction {
+            let dir = match text_direction {
+                mdbook::config::TextDirection::LeftToRight => "ltr",
+                mdbook::config::TextDirection::RightToLeft => "rtl",
+            };
+            default_variables.push(("dir", dir.into()));
+        }
         match ctx.output {
             OutputFormat::Latex { .. } => {
                 default_variables.push(("documentclass", "report".into()));
-                if let Some(title) = ctx.mdbook_cfg.book.title.as_deref() {
-                    default_variables.push(("title", title.into()));
-                }
-                if let Some(description) = ctx.mdbook_cfg.book.description.as_deref() {
-                    default_variables.push(("description", description.into()));
-                }
-                default_variables.push(("author", ctx.mdbook_cfg.book.authors.clone().into()));
-                if let Some(language) = ctx.mdbook_cfg.book.language.as_deref() {
-                    default_variables.push(("lang", language.into()));
-                }
-                if let Some(text_direction) = ctx.mdbook_cfg.book.text_direction {
-                    let dir = match text_direction {
-                        mdbook::config::TextDirection::LeftToRight => "ltr",
-                        mdbook::config::TextDirection::RightToLeft => "rtl",
-                    };
-                    default_variables.push(("dir", dir.into()));
-                }
             }
             OutputFormat::HtmlLike | OutputFormat::Other => {}
         };
