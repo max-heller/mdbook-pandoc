@@ -24,11 +24,12 @@ snapshot_kind: text
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__formatting' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__tests__addingmd__explanatory_comment'
-  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Label
+  `book__pandoc__pdf__src__traits__goals-and-clausesmd__domain-goals'
+  multiply defined.
+[WARNING] [makePDF] LaTeX Warning: Label
+  `book__pandoc__pdf__src__borrow_check__region_inferencemd__region-variables'
+  multiply defined.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__compiler-debuggingmd__rustc_test-attributes'
   on $PAGE undefined on input $LINE.
@@ -36,45 +37,13 @@ snapshot_kind: text
   `book__pandoc__pdf__src__building__how-to-build-and-runmd__toolchain'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__walkthroughmd__impl' on $PAGE
-  undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__tests__intromd__crater' on $PAGE
   undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__formatting' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__cc' on $PAGE
-  undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__cio' on $PAGE
-  undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__conventionsmd__er' on $PAGE
-  undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__notification-groups__aboutmd__join'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__notification-groups__aboutmd__join'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__parallel-rustcmd__Codegen' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__queries__incremental-compilationmd__dag'
-  on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__querymd__adding-a-new-kind-of-query'
   on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__mir__indexmd__promoted' on $PAGE
-  undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__diagnosticsmd__future-incompatible'
   on $PAGE undefined on input $LINE.
@@ -82,91 +51,14 @@ snapshot_kind: text
   `book__pandoc__pdf__src__ty_module__generic_argumentsmd__genericargkind'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__type-inferencemd__vars' on $PAGE
-  undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__traits__canonical-queriesmd__query-response'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__traits__canonical-queriesmd__query-response'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__variancemd__addendum' on $PAGE
-  undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__opaque-types-impl-trait-inferencemd__Within-the-type_of-query'
   on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__dataflow'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__borrow_check__region_inference__member_constraintsmd__collecting'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__quantified'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__variance'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
-  $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__glossarymd__TyCtxt' on
   $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__dataflow'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__what-is-a-debruijn-index'
   on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__traits__goals-and-clausesmd__trait-ref'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__mir__indexmd__promoted' on $PAGE
-  undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__quantified'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__traits__goals-and-clausesmd__trait-ref'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__backgroundmd__variance'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on $PAGE
-  undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on $PAGE
-  undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on $PAGE
-  undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__hirmd__hir-id' on $PAGE
-  undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: There were undefined references.
+[WARNING] [makePDF] LaTeX Warning: There were multiply-defined labels.
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pandoc/pdf/book.pdf
