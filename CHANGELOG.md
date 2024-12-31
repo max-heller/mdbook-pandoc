@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.0] - 2024-12-31
+
+### Changes
+
+- [**breaking**] Raw HTML is now parsed and processed in a best-effort manner instead of being passed through verbatim.
+  For the most part, this should be neutral at worst (since raw HTML is stripped for most output formats) and improve
+  rendered output in the presence of `<img>`, `<a>`, and `<span>` elements (see [**Features**](#features)).
+- Tweak log levels to better convey where time is spent (#129)
+
+### Features
+
+- Support `<img>` elements (#124)
+- Link to `<a>` elements by `id` (#128)
+- Link to `<span>` elements by `id` (#130)
+
+### Bug Fixes
+
+- Set document metadata for all output formats (#125)
+
+### Miscellaneous Tasks
+
+- Upgrade `pandoc` used for tests to version 3.6.1 (#122)
+- Update example books (#127, #131)
+
+
 ## [0.7.3] - 2024-10-01
 
 ### Bug Fixes
