@@ -5,10 +5,18 @@ expression: logs
 DEBUG mdbook::book: Running the index preprocessor.    
 DEBUG mdbook::book: Running the links preprocessor.    
  INFO mdbook::book: Running the pandoc backend    
+ INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /commands/cargo-git-checkout.html => ./deprecated-and-removed.html    
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /commands/cargo-read-manifest.html => ./deprecated-and-removed.html    
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /commands/cargo-verify-project.html => ./deprecated-and-removed.html    
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /guide/build-cache.html => ../reference/build-cache.html    
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/commands/cargo-git-checkout.html => book/pdf/src/commands/deprecated-and-removed.md#deprecated-and-removed-commands    
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/commands/cargo-read-manifest.html => book/pdf/src/commands/deprecated-and-removed.md#deprecated-and-removed-commands    
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/commands/cargo-verify-project.html => book/pdf/src/commands/deprecated-and-removed.md#deprecated-and-removed-commands    
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/guide/build-cache.html => book/pdf/src/reference/build-cache.md#build-cache    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html' in chapter 'guide/project-layout.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/guide/../../book/ch07-00-managing-growing-projects-with-packages-crates-and-modules.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustdoc/write-documentation/documentation-tests.html' in chapter 'guide/tests.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/guide/../../rustdoc/write-documentation/documentation-tests.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../book/ch11-00-testing.html' in chapter 'guide/tests.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/guide/../../book/ch11-00-testing.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/conditional-compilation.html' in chapter 'reference/specifying-dependencies.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/conditional-compilation.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/primitive.char.html#method.is_alphanumeric' in chapter 'reference/manifest.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../std/primitive.char.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../edition-guide/index.html' in chapter 'reference/manifest.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../edition-guide/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/lints/levels.html#capping-lints' in chapter 'reference/manifest.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../rustc/lints/levels.html'    
@@ -29,6 +37,8 @@ DEBUG mdbook::book: Running the links preprocessor.
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../edition-guide/index.html' in chapter 'reference/cargo-targets.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../edition-guide/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/linkage.html' in chapter 'reference/cargo-targets.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/linkage.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/linkage.html' in chapter 'reference/cargo-targets.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/linkage.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/conditional-compilation.html' in chapter 'reference/specifying-dependencies.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/conditional-compilation.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/any/trait.Any.html#method.downcast_ref' in chapter 'reference/resolver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../std/any/trait.Any.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/conditional-compilation.md' in chapter 'reference/features.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/conditional-compilation.md'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/conditional-compilation.md' in chapter 'reference/features.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/conditional-compilation.md'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/command-line-arguments.md#option-cfg' in chapter 'reference/features.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../rustc/command-line-arguments.md'    
@@ -115,7 +125,6 @@ DEBUG mdbook::book: Running the links preprocessor.
  WARN mdbook_pandoc::preprocess: Heading (level h4) converted to paragraph in chapter: Registry Index    
  WARN mdbook_pandoc::preprocess: Heading (level h4) converted to paragraph in chapter: Registry Index    
  WARN mdbook_pandoc::preprocess: Heading (level h4) converted to paragraph in chapter: Registry Index    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/any/trait.Any.html#method.downcast_ref' in chapter 'reference/resolver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../std/any/trait.Any.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/items.html' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/items.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/conditional-compilation.md#the-cfg-attribute' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/conditional-compilation.md'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/conditional-compilation.md' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/conditional-compilation.md'    
@@ -150,6 +159,9 @@ DEBUG mdbook::book: Running the links preprocessor.
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/expressions/call-expr.html#disambiguating-function-calls' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/expressions/call-expr.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/items/traits.html#object-safety' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/items/traits.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/expressions/call-expr.html#disambiguating-function-calls' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/expressions/call-expr.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/types/impl-trait.md#abstract-return-types' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/types/impl-trait.md'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../edition-guide/rust-2024/rpit-lifetime-capture.html' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../edition-guide/rust-2024/rpit-lifetime-capture.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/types/impl-trait.md#capturing' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/types/impl-trait.md'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/attributes/diagnostics.html#the-deprecated-attribute' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/attributes/diagnostics.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/lints/listing/warn-by-default.html#unused-unsafe' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../rustc/lints/listing/warn-by-default.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/names/preludes.html#the-no_std-attribute' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/names/preludes.html'    
@@ -171,6 +183,7 @@ DEBUG mdbook::book: Running the links preprocessor.
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/lints/listing/warn-by-default.html#exported-private-dependencies' in chapter 'reference/unstable.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../rustc/lints/listing/warn-by-default.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../edition-guide/index.html' in chapter 'reference/unstable.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../edition-guide/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../edition-guide/index.html' in chapter 'reference/unstable.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../edition-guide/index.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../clippy/index.html' in chapter 'commands/cargo-clippy.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/commands/../../clippy/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../edition-guide/index.html' in chapter 'appendix/glossary.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/appendix/../../edition-guide/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/attributes/codegen.html#the-target_feature-attribute' in chapter 'appendix/glossary.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/appendix/../../reference/attributes/codegen.html'    
 DEBUG mdbook_pandoc::pandoc::renderer: Running pandoc    
@@ -182,6 +195,9 @@ DEBUG mdbook_pandoc::pandoc::renderer: Running pandoc
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__commands__cargo-buildmd__option-cargo-build---keep-going'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__commands__cargomd__option-cargo---locked'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__commands__cargomd__option-cargo---offline'
