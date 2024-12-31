@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.0] - 2024-12-31
+
+### Bug Fixes
+
+- Set document metadata for all output formats (#125)
+
+### Changes
+
+- Tweak log levels to better convey where time is spent (#129)
+
+### Features
+
+- [**breaking**] Support `<img>` tags (#124)
+- Link to `<a>` tags by `id` (#128)
+- Link to `<span>` elements by `id` (#130)
+
+### Miscellaneous Tasks
+
+- Upgrade `pandoc` used for tests to version 3.6.1 (#122)
+- Update example books (#127)
+- Update example books (#131)
+
+
 ## [0.7.3] - 2024-10-01
 
 ### Bug Fixes
