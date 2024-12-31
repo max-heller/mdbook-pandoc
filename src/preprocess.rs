@@ -1228,7 +1228,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                          attrs: BTreeMap<HtmlString, HtmlString>,
                          preprocessed: &mut String| {
             let pandoc = &mut this.preprocessor.ctx.pandoc;
-            if matches!(name.as_slice(), b"a" if bracketed_spans_available(pandoc)) {
+            if matches!(name.as_slice(), b"a" | b"span" if bracketed_spans_available(pandoc)) {
                 preprocessed.push(']');
                 this.write_attributes(attrs, preprocessed);
                 return;
@@ -1271,7 +1271,9 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
 
                     let mut write_html = true;
                     match start.name.as_slice() {
-                        b"a" if bracketed_spans_available(&mut self.preprocessor.ctx.pandoc) => {
+                        b"a" | b"span"
+                            if bracketed_spans_available(&mut self.preprocessor.ctx.pandoc) =>
+                        {
                             preprocessed.push('[');
                             write_html = false;
                         }

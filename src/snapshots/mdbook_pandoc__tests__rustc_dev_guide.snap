@@ -25,8 +25,6 @@ snapshot_kind: text
  WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__ice' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__conventionsmd__formatting' on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__tests__addingmd__explanatory_comment'
@@ -61,9 +59,6 @@ snapshot_kind: text
   `book__pandoc__pdf__src__notification-groups__aboutmd__join'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__intrinsic' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__parallel-rustcmd__Codegen' on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__queries__incremental-compilationmd__dag'
@@ -81,22 +76,10 @@ snapshot_kind: text
   `book__pandoc__pdf__src__mir__indexmd__promoted' on $PAGE
   undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__newtype' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__diagnosticsmd__future-incompatible'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__ty_module__generic_argumentsmd__genericargkind'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__placeholder'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__type-inferencemd__vars' on $PAGE
@@ -117,20 +100,11 @@ snapshot_kind: text
   `book__pandoc__pdf__src__opaque-types-impl-trait-inferencemd__Within-the-type_of-query'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__region' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__inf-var' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__dataflow'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
   on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__point' on
-  $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__borrow_check__region_inference__member_constraintsmd__collecting'
   on $PAGE undefined on input $LINE.
@@ -142,14 +116,6 @@ snapshot_kind: text
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__mono' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__def-id' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__codegen-unit'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__cfg' on
@@ -167,34 +133,14 @@ snapshot_kind: text
   `book__pandoc__pdf__src__appendix__glossarymd__TyCtxt' on
   $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__cx' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__tcx' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__dataflow'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__what-is-a-debruijn-index'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__variant-idx'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__tag' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__fat-ptr' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__ut' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__free-vs-bound'
   on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__ir' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__ir' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__tag' on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__traits__goals-and-clausesmd__trait-ref'
   on $PAGE undefined on input $LINE.
@@ -205,33 +151,11 @@ snapshot_kind: text
   `book__pandoc__pdf__src__appendix__backgroundmd__quantified'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__ast' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__substs' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__discriminant'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__niche' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__traits__goals-and-clausesmd__trait-ref'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__codegen' on
-  $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__tcx' on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__appendix__backgroundmd__variance'
   on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__discriminant'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pandoc__pdf__src__appendix__glossarymd__fat-ptr' on
-  $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pandoc__pdf__src__hirmd__hir-id' on $PAGE
   undefined on input $LINE.
