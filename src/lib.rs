@@ -1168,6 +1168,31 @@ fn main() {}
     }
 
     #[test]
+    fn link_to_element_by_id() {
+        let book = MDBook::init()
+            .config(Config::markdown())
+            .chapter(Chapter::new(
+                "",
+                r#"
+<a id="test">some text here</a>
+
+[test link](#test)
+                "#,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ [some text here]{#book__markdown__src__chaptermd__test}
+        │ 
+        │ [test link](#book__markdown__src__chaptermd__test)
+        ");
+    }
+
+    #[test]
     fn link_title_containing_quotes() {
         let book = MDBook::init()
             .config(Config::latex())
