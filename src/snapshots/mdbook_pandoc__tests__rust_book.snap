@@ -1,6 +1,7 @@
 ---
 source: src/lib.rs
 expression: logs
+snapshot_kind: text
 ---
  WARN mdbook::preprocess::cmd: The command wasn't found, is the "trpl-listing" preprocessor installed?    
  WARN mdbook::preprocess::cmd: 	Command: mdbook-trpl-listing    
@@ -42,19 +43,6 @@ expression: logs
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/thread/struct.Builder.html#method.spawn' in chapter 'ch21-02-multithreaded.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/thread/struct.Builder.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/items/unions.html' in chapter 'appendix-01-keywords.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/items/unions.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/index.html' in chapter 'appendix-03-derivable-traits.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/index.html'    
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pdf__src__ch15-02-derefmd__following-the-pointer-to-the-value-with-the-dereference-operator'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pdf__src__ch06-02-matchmd__the-match-control-flow-operator'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pdf__src__ch13-01-closuresmd__moving-captured-values-out-of-the-closure-and-the-fn-traits'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: Hyper reference
-  `book__pdf__src__ch04-01-what-is-ownershipmd__ways-variables-and-data-interact-clone'
-  on $PAGE undefined on input $LINE.
-[WARNING] [makePDF] LaTeX Warning: There were undefined references.
 [WARNING] Missing character: There is no ا (U+0627) (U+0627) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no ل (U+0644) (U+0644) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no س (U+0633) (U+0633) in font NotoSansMono:mode=node;script

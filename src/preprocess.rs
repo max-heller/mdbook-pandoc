@@ -1,7 +1,7 @@
 use std::{
     borrow::Cow,
     cmp,
-    collections::{hash_map::DefaultHasher, HashMap},
+    collections::{hash_map::DefaultHasher, BTreeMap, HashMap},
     ffi::OsString,
     fmt::{self, Write as _},
     fs::{self, File},
@@ -702,7 +702,7 @@ struct PreprocessChapter<'book, 'preprocessor> {
     parser: Peekable<pulldown_cmark::OffsetIter<'book, pulldown_cmark::DefaultBrokenLinkCallback>>,
     matching_tags: Vec<pulldown_cmark::TagEnd>,
     encountered_h1: bool,
-    open_html_tags: Vec<HtmlString>,
+    open_html_tags: Vec<(HtmlString, BTreeMap<HtmlString, HtmlString>)>,
 }
 
 impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
@@ -1207,6 +1207,43 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             }
         };
 
+        let bracketed_spans_available = {
+            let available = std::cell::OnceCell::new();
+            move |pandoc: &mut pandoc::Context| {
+                *available.get_or_init(|| {
+                    pandoc
+                        .enable_extension(pandoc::Extension::BracketedSpans)
+                        .is_available()
+                })
+            }
+        };
+
+        enum Tag {
+            SelfClosing,
+            End,
+        }
+        let close_tag = |this: &mut Self,
+                         name: HtmlString,
+                         tag: Tag,
+                         attrs: BTreeMap<HtmlString, HtmlString>,
+                         preprocessed: &mut String| {
+            let pandoc = &mut this.preprocessor.ctx.pandoc;
+            if matches!(name.as_slice(), b"a" if bracketed_spans_available(pandoc)) {
+                preprocessed.push(']');
+                this.write_attributes(attrs, preprocessed);
+                return;
+            }
+            match tag {
+                Tag::SelfClosing => {}
+                Tag::End => {
+                    preprocessed.push('<');
+                    preprocessed.push('/');
+                    preprocessed.push_str(to_str(&name));
+                    preprocessed.push('>');
+                }
+            }
+        };
+
         let mut tokens = html5gum::Tokenizer::new(html.as_ref())
             .map(|token| match token {
                 Ok(token) => token,
@@ -1232,11 +1269,16 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         |token| matches!(token, html5gum::Token::EndTag(end) if end.name.as_slice() == tag.as_bytes())
                     }
 
+                    let mut write_html = true;
                     match start.name.as_slice() {
+                        b"a" if bracketed_spans_available(&mut self.preprocessor.ctx.pandoc) => {
+                            preprocessed.push('[');
+                            write_html = false;
+                        }
                         b"img" => {
                             let mut attrs = start.attributes;
-                            let [src, alt, title, class] = ["src", "alt", "title", "class"]
-                                .map(|attr| attrs.remove(attr.as_bytes()));
+                            let [src, alt, title] =
+                                ["src", "alt", "title"].map(|attr| attrs.remove(attr.as_bytes()));
                             let Some(src) = src else { continue };
                             if !start.self_closing {
                                 tokens.next_if(closes("img"));
@@ -1263,78 +1305,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                         preprocessed.push('"');
                                     }
                                     preprocessed.push(')');
-                                    if (class.is_some() || !attrs.is_empty())
-                                        && (self.preprocessor.ctx.pandoc)
-                                            .enable_extension(pandoc::Extension::Attributes)
-                                            .is_available()
-                                    {
-                                        preprocessed.push('{');
-                                        let mut push_separator = {
-                                            let mut first = true;
-                                            move |preprocessed: &mut String| {
-                                                if first {
-                                                    first = false;
-                                                } else {
-                                                    preprocessed.push(' ');
-                                                }
-                                            }
-                                        };
-                                        let class = class.as_ref().map(to_str);
-                                        let classes =
-                                            || class.into_iter().flat_map(|class| class.split(' '));
-                                        for class in classes() {
-                                            push_separator(&mut preprocessed);
-                                            preprocessed.push('.');
-                                            preprocessed.push_str(class);
-                                        }
-
-                                        let mut push_attr = |attr: &_, val: &_| {
-                                            push_separator(&mut preprocessed);
-                                            preprocessed.push_str(attr);
-                                            preprocessed.push('=');
-                                            preprocessed.push('"');
-                                            preprocessed.push_str(val);
-                                            preprocessed.push('"');
-                                        };
-
-                                        if !matches!(
-                                            self.preprocessor.ctx.output,
-                                            OutputFormat::HtmlLike
-                                        ) {
-                                            let style = attrs.remove("style".as_bytes());
-                                            let style = style
-                                                .as_ref()
-                                                .into_iter()
-                                                .flat_map(|style| to_str(style).split(';'))
-                                                .flat_map(|decl| decl.split_once(':'))
-                                                .map(|(attr, val)| (attr.trim(), val.trim()))
-                                                .chain(
-                                                    classes()
-                                                        .flat_map(|class| {
-                                                            (self.preprocessor.ctx.css)
-                                                                .styles
-                                                                .classes
-                                                                .get(class)
-                                                                .into_iter()
-                                                                .flatten()
-                                                        })
-                                                        .map(|(prop, val)| (prop.as_ref(), *val)),
-                                                );
-                                            for (prop, val) in style {
-                                                if matches!(prop, "width" | "height")
-                                                    && !attrs.contains_key(prop.as_bytes())
-                                                {
-                                                    push_attr(prop, val);
-                                                }
-                                            }
-                                        }
-
-                                        for (attr, val) in attrs {
-                                            push_attr(to_str(&attr), to_str(&val));
-                                        }
-
-                                        preprocessed.push('}');
-                                    }
+                                    self.write_attributes(attrs, &mut preprocessed);
                                 }
                             }
                             continue;
@@ -1369,24 +1340,35 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         }
                         _ => {}
                     }
-                    preprocessed.push('<');
-                    preprocessed.push_str(to_str(&start.name));
-                    for (attr, val) in &start.attributes {
-                        preprocessed.push(' ');
-                        preprocessed.push_str(to_str(attr));
-                        preprocessed.push('=');
-                        preprocessed.push('"');
-                        preprocessed.push_str(to_str(val));
-                        preprocessed.push('"');
-                    }
-                    if start.self_closing {
-                        preprocessed.push('/');
-                    }
-                    preprocessed.push('>');
 
-                    if !start.self_closing {
+                    if write_html {
+                        preprocessed.push('<');
+                        preprocessed.push_str(to_str(&start.name));
+                        for (attr, val) in &start.attributes {
+                            preprocessed.push(' ');
+                            preprocessed.push_str(to_str(attr));
+                            preprocessed.push('=');
+                            preprocessed.push('"');
+                            preprocessed.push_str(to_str(val));
+                            preprocessed.push('"');
+                        }
+                        if start.self_closing {
+                            preprocessed.push('/');
+                        }
+                        preprocessed.push('>');
+                    }
+
+                    if start.self_closing {
+                        close_tag(
+                            self,
+                            start.name,
+                            Tag::SelfClosing,
+                            start.attributes,
+                            &mut preprocessed,
+                        );
+                    } else {
                         let name = to_cowstr(to_str(&start.name));
-                        self.open_html_tags.push(start.name);
+                        self.open_html_tags.push((start.name, start.attributes));
                         if matches!(ctx, HtmlContext::Block)
                             && fenced_divs_available(&mut self.preprocessor.ctx.pandoc)
                         {
@@ -1397,9 +1379,10 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     }
                 }
                 html5gum::Token::EndTag(end) => {
+                    let mut attrs = None;
                     match self.open_html_tags.last() {
-                        Some(tag) if *tag == end.name => {
-                            self.open_html_tags.pop();
+                        Some((tag, _)) if *tag == end.name => {
+                            attrs = self.open_html_tags.pop().map(|(_, attrs)| attrs);
                             if matches!(ctx, HtmlContext::Block)
                                 && fenced_divs_available(&mut self.preprocessor.ctx.pandoc)
                             {
@@ -1409,14 +1392,97 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         }
                         _ => {}
                     }
-                    preprocessed.push('<');
-                    preprocessed.push('/');
-                    preprocessed.push_str(to_str(&end.name));
-                    preprocessed.push('>');
+                    close_tag(
+                        self,
+                        end.name,
+                        Tag::End,
+                        attrs.unwrap_or_default(),
+                        &mut preprocessed,
+                    );
                 }
             }
         }
         flush(&mut preprocessed).await;
+    }
+
+    /// Writes [pandoc attributes](https://pandoc.org/MANUAL.html#extension-attributes).
+    fn write_attributes(
+        &mut self,
+        mut attrs: BTreeMap<HtmlString, HtmlString>,
+        string: &mut String,
+    ) {
+        fn to_str(s: &HtmlString) -> &str {
+            str::from_utf8(s).expect("input was utf8")
+        }
+
+        if !attrs.is_empty()
+            && (self.preprocessor.ctx.pandoc)
+                .enable_extension(pandoc::Extension::Attributes)
+                .is_available()
+        {
+            let class = attrs.remove("class".as_bytes());
+
+            string.push('{');
+            let mut write_separator = {
+                let mut first = true;
+                move |writer: &mut String| {
+                    if first {
+                        first = false;
+                    } else {
+                        writer.push(' ');
+                    }
+                }
+            };
+            let class = class.as_ref().map(to_str);
+            let classes = || class.into_iter().flat_map(|class| class.split(' '));
+            for class in classes() {
+                write_separator(string);
+                string.push('.');
+                string.push_str(class);
+            }
+
+            let mut write_attr = |attr: &_, val: &_| {
+                write_separator(string);
+                string.push_str(attr);
+                string.push('=');
+                string.push('"');
+                string.push_str(val);
+                string.push('"');
+            };
+
+            if !matches!(self.preprocessor.ctx.output, OutputFormat::HtmlLike) {
+                let style = attrs.remove("style".as_bytes());
+                let style = style
+                    .as_ref()
+                    .into_iter()
+                    .flat_map(|style| to_str(style).split(';'))
+                    .flat_map(|decl| decl.split_once(':'))
+                    .map(|(attr, val)| (attr.trim(), val.trim()))
+                    .chain(
+                        classes()
+                            .flat_map(|class| {
+                                (self.preprocessor.ctx.css)
+                                    .styles
+                                    .classes
+                                    .get(class)
+                                    .into_iter()
+                                    .flatten()
+                            })
+                            .map(|(prop, val)| (prop.as_ref(), *val)),
+                    );
+                for (prop, val) in style {
+                    if matches!(prop, "width" | "height") && !attrs.contains_key(prop.as_bytes()) {
+                        write_attr(prop, val);
+                    }
+                }
+            }
+
+            for (attr, val) in attrs {
+                write_attr(to_str(&attr), to_str(&val));
+            }
+
+            string.push('}');
+        }
     }
 }
 
