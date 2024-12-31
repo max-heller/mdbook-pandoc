@@ -1208,11 +1208,16 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         };
 
         let mut tokens = html5gum::Tokenizer::new(html.as_ref())
-            .infallible()
+            .map(|token| match token {
+                Ok(token) => token,
+                Err(err) => match err {},
+            })
             .peekable();
         while let Some(token) = tokens.next() {
             match token {
-                html5gum::Token::Error(err) => log::warn!("HTML parsing error: {err}"),
+                html5gum::Token::Error(err) => {
+                    log::warn!("HTML parsing error: {err}: {}", html.trim())
+                }
                 html5gum::Token::Doctype(doctype) => {
                     log::warn!("Unexpected doctype in HTML: {doctype:?}")
                 }
