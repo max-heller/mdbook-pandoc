@@ -306,7 +306,7 @@ impl Renderer {
         if log::log_enabled!(log::Level::Trace) {
             log::trace!("Running pandoc with profile: {profile:#?}");
         } else {
-            log::debug!("Running pandoc");
+            log::info!("Running pandoc");
         }
         let status = pandoc
             .stdin(Stdio::null())

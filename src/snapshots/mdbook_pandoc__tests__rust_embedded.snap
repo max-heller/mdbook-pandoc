@@ -4,6 +4,7 @@ expression: logs
 snapshot_kind: text
 ---
  INFO mdbook::book: Running the pandoc backend    
+ INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
 [WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ✘ (U+2718) (U+2718) in font NotoSerif:mode=node;script=l
