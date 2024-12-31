@@ -1,9 +1,9 @@
 ---
 source: src/lib.rs
 expression: logs
+snapshot_kind: text
 ---
  INFO mdbook::book: Running the pandoc backend    
- INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../../cargo/reference/source-replacement.html' in chapter '$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/cargo-can-use-a-local-registry-replacement.html', linking to hosted HTML book at 'https://doc.rust-lang.org/edition-guide/$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/../../../cargo/reference/source-replacement.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../../cargo/commands/cargo-check.html' in chapter '$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/cargo-check-for-faster-checking.html', linking to hosted HTML book at 'https://doc.rust-lang.org/edition-guide/$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/../../../cargo/commands/cargo-check.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../../cargo/commands/cargo-install.html' in chapter '$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/cargo-install-for-easy-installation-of-tools.html', linking to hosted HTML book at 'https://doc.rust-lang.org/edition-guide/$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/../../../cargo/commands/cargo-install.html'    
@@ -181,4 +181,5 @@ expression: logs
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../style-guide/index.html#sorting' in chapter 'rust-2024/rustfmt-raw-identifier-sorting.md', linking to hosted HTML book at 'https://doc.rust-lang.org/edition-guide/rust-2024/../../style-guide/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../style-guide/index.html' in chapter 'rust-2024/rustfmt-version-sorting.md', linking to hosted HTML book at 'https://doc.rust-lang.org/edition-guide/rust-2024/../../style-guide/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../style-guide/index.html#sorting' in chapter 'rust-2024/rustfmt-version-sorting.md', linking to hosted HTML book at 'https://doc.rust-lang.org/edition-guide/rust-2024/../../style-guide/index.html'    
+ INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf

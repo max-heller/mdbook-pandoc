@@ -4,7 +4,6 @@ expression: logs
 snapshot_kind: text
 ---
  INFO mdbook::book: Running the pandoc backend    
- INFO mdbook_pandoc: Processing redirects in [output.html.redirect]    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../book/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../book/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/index.html'    
@@ -228,6 +227,7 @@ snapshot_kind: text
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../book/ch09-01-unrecoverable-errors-with-panic.html' in chapter 'runtime.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../book/ch09-01-unrecoverable-errors-with-panic.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/panicking/fn.set_hook.html' in chapter 'runtime.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/panicking/fn.set_hook.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/alloc/global/trait.GlobalAlloc.html' in chapter 'runtime.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../core/alloc/global/trait.GlobalAlloc.html'    
+ INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__destructorsmd__r-destructors.scope.nesting.function-body'
   on $PAGE undefined on input $LINE.
