@@ -1191,27 +1191,148 @@ fn main() {}
     #[test]
     fn link_to_element_by_id() {
         let book = MDBook::init()
-            .config(Config::markdown())
+            .config(Config::latex())
             .chapter(Chapter::new(
                 "",
                 r#"
 <a id="test">some text here</a>
+<span id="test2">some text here</span>
+
+<div id="test3">
+some text here
+</div>
+
+<div id="test4">some text here</div>
 
 [test link](#test)
+[test2 link](#test2)
+[test3 link](#test3)
+[test4 link](#test4)
                 "#,
                 "chapter.md",
             ))
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
-        ├─ markdown/book.md
-        │ [some text here]{#book__markdown__src__chaptermd__test}
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \phantomsection\label{book__latex__src__chaptermd__test}{some text here}
+        │ \phantomsection\label{book__latex__src__chaptermd__test2}{some text
+        │ here}
         │ 
-        │ [test link](#book__markdown__src__chaptermd__test)
-        ");
+        │ \phantomsection\label{book__latex__src__chaptermd__test3}
+        │ some text here
+        │ 
+        │ \phantomsection\label{book__latex__src__chaptermd__test4}
+        │ some text here
+        │ 
+        │ \hyperref[book__latex__src__chaptermd__test]{test link}
+        │ \hyperref[book__latex__src__chaptermd__test2]{test2 link}
+        │ \hyperref[book__latex__src__chaptermd__test3]{test3 link}
+        │ \hyperref[book__latex__src__chaptermd__test4]{test4 link}
+        ├─ latex/src/chapter.md
+        │ [some text here]{id="test"}
+        │ [some text here]{id="test2"}
+        │ 
+        │ 
+        │ 
+        │ ::: {id="test3"}
+        │ 
+        │ some text here
+        │ 
+        │ :::
+        │ 
+        │ 
+        │ 
+        │ 
+        │ 
+        │ ::: {id="test4"}
+        │ some text here
+        │ :::
+        │ 
+        │ 
+        │ 
+        │ [test link](#test)
+        │ [test2 link](#test2)
+        │ [test3 link](#test3)
+        │ [test4 link](#test4)
+        "#);
+    }
+
+    #[test]
+    fn attach_id_to_div_of_stripped_html_elements() {
+        let book = MDBook::init()
+            .config(Config::latex())
+            .chapter(Chapter::new(
+                "",
+                r##"<dt id="foo=bar"><a href="#foo=bar"></a>something here</dt>"##,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \phantomsection\label{book__latex__src__chaptermd__foo=bar}
+        │ \hyperref[book__latex__src__chaptermd__foo=bar]{}something here
+        ├─ latex/src/chapter.md
+        │ <dt id="foo=bar">
+        │ 
+        │ ::: {id="foo=bar"}
+        │ [](#foo=bar){.mdbook-pandoc}something here
+        │ :::
+        │ 
+        │ </dt>
+        "#);
+    }
+
+    #[test]
+    fn rust_reference_regression_nested_elements() {
+        let book = MDBook::init()
+            .config(Config::latex())
+            .chapter(Chapter::new(
+                "",
+                r##"
+<div id="my-div">
+<a id="my-a" href="#my-div">[some text here]</a>
+</div>
+
+[div](#my-div)
+[a](#my-a)
+                "##,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \phantomsection\label{book__latex__src__chaptermd__my-div}
+        │ \phantomsection\label{book__latex__src__chaptermd__my-a}\hyperref[book__latex__src__chaptermd__my-div]{{[}some
+        │ text here{]}}
+        │ 
+        │ \hyperref[book__latex__src__chaptermd__my-div]{div}
+        │ \hyperref[book__latex__src__chaptermd__my-a]{a}
+        ├─ latex/src/chapter.md
+        │ 
+        │ 
+        │ ::: {id="my-div"}
+        │ 
+        │ [[some text here]](#my-div){id="my-a"}
+        │ 
+        │ :::
+        │ 
+        │ 
+        │ 
+        │ [div](#my-div)
+        │ [a](#my-a)
+        "#);
     }
 
     #[test]
@@ -1343,10 +1464,10 @@ outside divs
         ├─ markdown/book.md
         │ <details>
         │ 
-        │ ::::: details
+        │ ::::: mdbook-pandoc
         │ <summary>
         │ 
-        │ ::: summary
+        │ ::: mdbook-pandoc
         │ ## Heading {#book__markdown__src__chaptermd__heading .unnumbered .unlisted}
         │ 
         │ text
@@ -1355,7 +1476,7 @@ outside divs
         │ </summary>
         │ <p>
         │ 
-        │ ::: p
+        │ ::: mdbook-pandoc
         │ more **markdown**
         │ :::
         │ 
@@ -1376,10 +1497,10 @@ outside divs
         ├─ markdown/pandoc-ir
         │ [ RawBlock (Format "html") "<details>\n"
         │ , Div
-        │     ( "" , [ "details" ] , [] )
+        │     ( "" , [ "mdbook-pandoc" ] , [] )
         │     [ RawBlock (Format "html") "<summary>\n"
         │     , Div
-        │         ( "" , [ "summary" ] , [] )
+        │         ( "" , [ "mdbook-pandoc" ] , [] )
         │         [ Header
         │             2
         │             ( "book__markdown__src__chaptermd__heading"
@@ -1391,7 +1512,7 @@ outside divs
         │         ]
         │     , RawBlock (Format "html") "</summary>\n<p>\n"
         │     , Div
-        │         ( "" , [ "p" ] , [] )
+        │         ( "" , [ "mdbook-pandoc" ] , [] )
         │         [ Para [ Str "more" , Space , Strong [ Str "markdown" ] ] ]
         │     , RawBlock (Format "html") "</p>\n"
         │     ]
