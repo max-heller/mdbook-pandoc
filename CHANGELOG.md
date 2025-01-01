@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.1] - 2025-01-01
+
+### Bug Fixes
+
+- Support more HTML link patterns (#134)
+
+
 ## [0.8.0] - 2024-12-31
 
 ### Changes
