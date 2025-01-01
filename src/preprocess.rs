@@ -1,13 +1,15 @@
 use std::{
     borrow::Cow,
+    cell::Cell,
     cmp,
     collections::{hash_map::DefaultHasher, BTreeMap, HashMap},
     ffi::OsString,
-    fmt::{self, Write as _},
+    fmt::{self, Display, Write as _},
     fs::{self, File},
     hash::{Hash, Hasher},
     io::{self, Write as _},
     iter::{self, Peekable},
+    mem,
     ops::Range,
     path::{Path, PathBuf},
     str,
@@ -82,7 +84,7 @@ struct UnresolvableRemoteImageError {
     err: ureq::Error,
 }
 
-impl fmt::Display for UnresolvableRemoteImageError {
+impl Display for UnresolvableRemoteImageError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if cfg!(test) {
             // in tests, print less verbose error message to be consistent across operating systems
@@ -1225,13 +1227,26 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         let close_tag = |this: &mut Self,
                          name: HtmlString,
                          tag: Tag,
-                         attrs: BTreeMap<HtmlString, HtmlString>,
+                         mut attrs: BTreeMap<HtmlString, HtmlString>,
                          preprocessed: &mut String| {
             let pandoc = &mut this.preprocessor.ctx.pandoc;
-            if matches!(name.as_slice(), b"a" | b"span" if bracketed_spans_available(pandoc)) {
-                preprocessed.push(']');
-                this.write_attributes(attrs, preprocessed);
-                return;
+            match name.as_slice() {
+                tag @ (b"a" | b"span") if bracketed_spans_available(pandoc) => {
+                    preprocessed.push(']');
+                    if matches!(tag, b"a") {
+                        if let Some(href) = attrs.remove("href".as_bytes()) {
+                            write!(preprocessed, "({})", to_str(&href)).unwrap();
+                        }
+                    }
+                    this.write_attributes(attrs, preprocessed);
+                    return;
+                }
+                b"div" if fenced_divs_available(pandoc) => {
+                    write!(preprocessed, "{}", this.close_div()).unwrap();
+                    debug_assert_eq!(attrs, BTreeMap::new(), "attrs are written to start tag");
+                    return;
+                }
+                _ => {}
             }
             match tag {
                 Tag::SelfClosing => {}
@@ -1242,6 +1257,13 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     preprocessed.push('>');
                 }
             }
+        };
+        let should_wrap_in_div = |name: &HtmlString| {
+            matches!(ctx, HtmlContext::Block)
+                && !matches!(
+                    name.as_slice(),
+                    b"div" | b"code" | b"a" | b"span" | b"em" | b"i" | b"b" | b"strong"
+                )
         };
 
         let mut tokens = html5gum::Tokenizer::new(html.as_ref())
@@ -1264,7 +1286,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     preprocessed.push_str(to_str(&comment));
                     preprocessed.push_str("-->");
                 }
-                html5gum::Token::StartTag(start) => {
+                html5gum::Token::StartTag(mut start) => {
                     fn closes(tag: &str) -> impl Fn(&html5gum::Token) -> bool + '_ {
                         |token| matches!(token, html5gum::Token::EndTag(end) if end.name.as_slice() == tag.as_bytes())
                     }
@@ -1276,6 +1298,14 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         {
                             preprocessed.push('[');
                             write_html = false;
+                        }
+                        b"div" if fenced_divs_available(&mut self.preprocessor.ctx.pandoc) => {
+                            write_html = false;
+                            let attrs = mem::take(&mut start.attributes);
+                            write!(preprocessed, "{}", self.open_div(attrs)).unwrap();
+                            if start.self_closing {
+                                write!(preprocessed, "{}", self.close_div()).unwrap();
+                            }
                         }
                         b"img" => {
                             let mut attrs = start.attributes;
@@ -1369,15 +1399,20 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             &mut preprocessed,
                         );
                     } else {
-                        let name = to_cowstr(to_str(&start.name));
-                        self.open_html_tags.push((start.name, start.attributes));
-                        if matches!(ctx, HtmlContext::Block)
+                        if should_wrap_in_div(&start.name)
                             && fenced_divs_available(&mut self.preprocessor.ctx.pandoc)
                         {
-                            flush(&mut preprocessed).await;
-                            let div = Event::Text(format!("\n\n::: {name}\n\n").into());
-                            co.yield_((div, None)).await;
+                            // If the format strips raw HTML and the tag contains an `id`, move the
+                            // `id` to the wrapper div so links to it don't break
+                            let attrs =
+                                (!matches!(self.preprocessor.ctx.output, OutputFormat::HtmlLike))
+                                    .then(|| start.attributes.remove_entry("id".as_bytes()))
+                                    .into_iter()
+                                    .flatten()
+                                    .collect();
+                            write!(preprocessed, "{}", self.open_div(attrs)).unwrap();
                         }
+                        self.open_html_tags.push((start.name, start.attributes));
                     }
                 }
                 html5gum::Token::EndTag(end) => {
@@ -1385,11 +1420,10 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     match self.open_html_tags.last() {
                         Some((tag, _)) if *tag == end.name => {
                             attrs = self.open_html_tags.pop().map(|(_, attrs)| attrs);
-                            if matches!(ctx, HtmlContext::Block)
+                            if should_wrap_in_div(&end.name)
                                 && fenced_divs_available(&mut self.preprocessor.ctx.pandoc)
                             {
-                                flush(&mut preprocessed).await;
-                                co.yield_((Event::Text("\n\n:::\n\n".into()), None)).await;
+                                write!(preprocessed, "{}", self.close_div()).unwrap();
                             }
                         }
                         _ => {}
@@ -1407,84 +1441,107 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         flush(&mut preprocessed).await;
     }
 
+    fn open_div(
+        &self,
+        attrs: BTreeMap<HtmlString, HtmlString>,
+    ) -> OpenDiv<'_, 'book, 'preprocessor> {
+        OpenDiv {
+            preprocessor: self,
+            attrs: Cell::new(attrs),
+        }
+    }
+
+    fn close_div(&self) -> CloseDiv {
+        CloseDiv {
+            depth: self.open_html_tags.len(),
+        }
+    }
+
     /// Writes [pandoc attributes](https://pandoc.org/MANUAL.html#extension-attributes).
-    fn write_attributes(
-        &mut self,
+    fn write_attributes(&mut self, attrs: BTreeMap<HtmlString, HtmlString>, writer: &mut String) {
+        if (self.preprocessor.ctx.pandoc)
+            .enable_extension(pandoc::Extension::Attributes)
+            .is_available()
+        {
+            self.write_attributes_unchecked(attrs, writer).unwrap();
+        }
+    }
+
+    /// Writes [pandoc attributes](https://pandoc.org/MANUAL.html#extension-attributes) assuming
+    /// the extension is available and enabled.
+    fn write_attributes_unchecked<W: fmt::Write>(
+        &self,
         mut attrs: BTreeMap<HtmlString, HtmlString>,
-        string: &mut String,
-    ) {
+        writer: &mut W,
+    ) -> fmt::Result {
         fn to_str(s: &HtmlString) -> &str {
             str::from_utf8(s).expect("input was utf8")
         }
 
-        if !attrs.is_empty()
-            && (self.preprocessor.ctx.pandoc)
-                .enable_extension(pandoc::Extension::Attributes)
-                .is_available()
-        {
-            let class = attrs.remove("class".as_bytes());
-
-            string.push('{');
-            let mut write_separator = {
-                let mut first = true;
-                move |writer: &mut String| {
-                    if first {
-                        first = false;
-                    } else {
-                        writer.push(' ');
-                    }
-                }
-            };
-            let class = class.as_ref().map(to_str);
-            let classes = || class.into_iter().flat_map(|class| class.split(' '));
-            for class in classes() {
-                write_separator(string);
-                string.push('.');
-                string.push_str(class);
-            }
-
-            let mut write_attr = |attr: &_, val: &_| {
-                write_separator(string);
-                string.push_str(attr);
-                string.push('=');
-                string.push('"');
-                string.push_str(val);
-                string.push('"');
-            };
-
-            if !matches!(self.preprocessor.ctx.output, OutputFormat::HtmlLike) {
-                let style = attrs.remove("style".as_bytes());
-                let style = style
-                    .as_ref()
-                    .into_iter()
-                    .flat_map(|style| to_str(style).split(';'))
-                    .flat_map(|decl| decl.split_once(':'))
-                    .map(|(attr, val)| (attr.trim(), val.trim()))
-                    .chain(
-                        classes()
-                            .flat_map(|class| {
-                                (self.preprocessor.ctx.css)
-                                    .styles
-                                    .classes
-                                    .get(class)
-                                    .into_iter()
-                                    .flatten()
-                            })
-                            .map(|(prop, val)| (prop.as_ref(), *val)),
-                    );
-                for (prop, val) in style {
-                    if matches!(prop, "width" | "height") && !attrs.contains_key(prop.as_bytes()) {
-                        write_attr(prop, val);
-                    }
-                }
-            }
-
-            for (attr, val) in attrs {
-                write_attr(to_str(&attr), to_str(&val));
-            }
-
-            string.push('}');
+        // Pandoc doesn't parse `{}` as attributes, so add a dummy class
+        if attrs.is_empty() {
+            return write!(writer, r"{{.mdbook-pandoc}}");
         }
+
+        let [class] = ["class"].map(|attr| attrs.remove(attr.as_bytes()));
+
+        writer.write_char('{')?;
+        let mut write_separator = {
+            let mut first = true;
+            move |writer: &mut W| {
+                if first {
+                    first = false;
+                } else {
+                    writer.write_char(' ')?;
+                }
+                Ok(())
+            }
+        };
+
+        let class = class.as_ref().filter(|c| !c.is_empty()).map(to_str);
+        let classes = || class.into_iter().flat_map(|class| class.split(' '));
+        for class in classes() {
+            write_separator(writer)?;
+            write!(writer, ".{class}")?;
+        }
+
+        let mut write_attr = |attr: &_, val: &_| {
+            write_separator(writer)?;
+            write!(writer, r#"{attr}="{val}""#)
+        };
+
+        if !matches!(self.preprocessor.ctx.output, OutputFormat::HtmlLike) {
+            let style = attrs.remove("style".as_bytes());
+            let style = style
+                .as_ref()
+                .into_iter()
+                .flat_map(|style| to_str(style).split(';'))
+                .flat_map(|decl| decl.split_once(':'))
+                .map(|(attr, val)| (attr.trim(), val.trim()))
+                .chain(
+                    classes()
+                        .flat_map(|class| {
+                            (self.preprocessor.ctx.css)
+                                .styles
+                                .classes
+                                .get(class)
+                                .into_iter()
+                                .flatten()
+                        })
+                        .map(|(prop, val)| (prop.as_ref(), *val)),
+                );
+            for (prop, val) in style {
+                if matches!(prop, "width" | "height") && !attrs.contains_key(prop.as_bytes()) {
+                    write_attr(prop, val)?;
+                }
+            }
+        }
+
+        for (attr, val) in attrs {
+            write_attr(to_str(&attr), to_str(&val))?;
+        }
+
+        writer.write_char('}')
     }
 }
 
@@ -1556,6 +1613,39 @@ impl fmt::Debug for IndexedChapter<'_> {
             .field("chapter", &self.chapter.name)
             .field("anchors", &self.anchors)
             .finish_non_exhaustive()
+    }
+}
+
+struct OpenDiv<'a, 'book, 'preprocessor> {
+    preprocessor: &'a PreprocessChapter<'book, 'preprocessor>,
+    attrs: Cell<BTreeMap<HtmlString, HtmlString>>,
+}
+
+impl Display for OpenDiv<'_, '_, '_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "\n\n:::")?;
+        for _ in 0..self.preprocessor.open_html_tags.len() {
+            write!(f, ":")?;
+        }
+        let attrs = self.attrs.take();
+        write!(f, " ")?;
+
+        self.preprocessor.write_attributes_unchecked(attrs, f)?;
+        writeln!(f)
+    }
+}
+
+struct CloseDiv {
+    depth: usize,
+}
+
+impl Display for CloseDiv {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "\n:::")?;
+        for _ in 0..self.depth {
+            write!(f, ":")?;
+        }
+        write!(f, "\n\n")
     }
 }
 
