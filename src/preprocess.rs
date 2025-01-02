@@ -1,15 +1,13 @@
 use std::{
     borrow::Cow,
-    cell::Cell,
     cmp,
-    collections::{hash_map::DefaultHasher, BTreeMap, HashMap},
+    collections::{hash_map::DefaultHasher, HashMap},
     ffi::OsString,
     fmt::{self, Display, Write as _},
     fs::{self, File},
     hash::{Hash, Hasher},
     io::{self, Write as _},
     iter::{self, Peekable},
-    mem,
     ops::Range,
     path::{Path, PathBuf},
     str,
@@ -17,7 +15,6 @@ use std::{
 
 use aho_corasick::AhoCorasick;
 use anyhow::{anyhow, Context as _};
-use html5gum::HtmlString;
 use log::log;
 use mdbook::{
     book::{BookItems, Chapter},
@@ -25,17 +22,17 @@ use mdbook::{
 };
 use normpath::PathExt;
 use once_cell::sync::Lazy;
-use pulldown_cmark::{CodeBlockKind, CowStr, HeadingLevel, LinkType};
+use pulldown_cmark::{CodeBlockKind, CowStr, Event, HeadingLevel, LinkType};
 use regex::Regex;
 use walkdir::WalkDir;
 
 use crate::{
-    latex,
+    html::TreeBuilder,
     pandoc::{self, OutputFormat, RenderContext},
 };
 
 pub struct Preprocessor<'book> {
-    ctx: RenderContext<'book>,
+    pub(crate) ctx: RenderContext<'book>,
     preprocessed: PathBuf,
     preprocessed_relative_to_root: PathBuf,
     redirects: HashMap<PathBuf, String>,
@@ -74,11 +71,6 @@ enum LinkContext {
     Image,
 }
 
-enum HtmlContext {
-    Inline,
-    Block,
-}
-
 #[derive(Debug)]
 struct UnresolvableRemoteImageError {
     err: ureq::Error,
@@ -97,13 +89,13 @@ impl Display for UnresolvableRemoteImageError {
 
 impl std::error::Error for UnresolvableRemoteImageError {}
 
-struct UnresolvableRemoteImage;
+pub struct UnresolvableRemoteImage;
 
 impl UnresolvableRemoteImage {
-    async fn replace_with_description<'book>(
+    fn replace_with_description<'book>(
         self,
         preprocessor: &mut PreprocessChapter<'book, '_>,
-        co: &genawaiter::stack::Co<'_, (pulldown_cmark::Event<'book>, Option<Range<usize>>)>,
+        tree: &mut TreeBuilder<'book>,
     ) {
         use pulldown_cmark::{Event, TagEnd};
 
@@ -111,7 +103,7 @@ impl UnresolvableRemoteImage {
         for (event, range) in &mut preprocessor.parser {
             match event {
                 Event::End(TagEnd::Image) => break,
-                event => co.yield_((event, Some(range))).await,
+                event => tree.generate_event((event, Some(range))),
             }
         }
     }
@@ -479,9 +471,7 @@ impl<'book> Preprocessor<'book> {
     }
 
     /// Generates a GitHub Markdown-flavored identifier for a heading with the provided content.
-    fn make_gfm_identifier<'source>(
-        content: impl IntoIterator<Item = pulldown_cmark::Event<'source>>,
-    ) -> String {
+    fn make_gfm_identifier<'source>(content: impl IntoIterator<Item = Event<'source>>) -> String {
         let mut id = String::new();
         use pulldown_cmark::Event;
         for event in content {
@@ -698,13 +688,12 @@ impl<'book> Preprocess<'book> {
     }
 }
 
-struct PreprocessChapter<'book, 'preprocessor> {
-    preprocessor: &'preprocessor mut Preprocessor<'book>,
+pub struct PreprocessChapter<'book, 'preprocessor> {
+    pub(crate) preprocessor: &'preprocessor mut Preprocessor<'book>,
     chapter: &'book Chapter,
     parser: Peekable<pulldown_cmark::OffsetIter<'book, pulldown_cmark::DefaultBrokenLinkCallback>>,
     matching_tags: Vec<pulldown_cmark::TagEnd>,
     encountered_h1: bool,
-    open_html_tags: Vec<(HtmlString, BTreeMap<HtmlString, HtmlString>)>,
 }
 
 impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
@@ -730,7 +719,6 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 .peekable(),
             matching_tags: Default::default(),
             encountered_h1: false,
-            open_html_tags: Vec::new(),
         }
     }
 
@@ -816,18 +804,21 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
 
     async fn preprocess(
         mut self,
-        co: genawaiter::stack::Co<'_, (pulldown_cmark::Event<'book>, Option<Range<usize>>)>,
+        co: genawaiter::stack::Co<'_, (Event<'book>, Option<Range<usize>>)>,
     ) {
+        let mut tree = crate::html::TreeBuilder::new();
         while let Some((event, range)) = self.parser.next() {
-            self.preprocess_event(event, Some(range), &co).await;
+            self.preprocess_event(event, range, &mut tree).await;
         }
+        let (html, emitter) = tree.finish();
+        emitter.emit(html, &mut self, &co).await
     }
 
     async fn preprocess_event(
         &mut self,
-        event: pulldown_cmark::Event<'book>,
-        range: Option<Range<usize>>,
-        co: &genawaiter::stack::Co<'_, (pulldown_cmark::Event<'book>, Option<Range<usize>>)>,
+        event: Event<'book>,
+        range: Range<usize>,
+        tree: &mut TreeBuilder<'book>,
     ) {
         use pulldown_cmark::{Event, Tag, TagEnd};
 
@@ -858,12 +849,12 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     Tag::Table(alignment) => {
                         (self.preprocessor.ctx.pandoc)
                             .enable_extension(pandoc::Extension::PipeTables);
-                        if let Some(annotation) = range.clone().and_then(|range| {
-                            self.column_width_annotation(&self.chapter.content[range])
-                        }) {
-                            co.yield_((Event::Start(Tag::HtmlBlock), None)).await;
-                            co.yield_((Event::Html(annotation.into()), None)).await;
-                            co.yield_((Event::End(TagEnd::HtmlBlock), None)).await;
+                        if let Some(annotation) =
+                            self.column_width_annotation(&self.chapter.content[range.clone()])
+                        {
+                            tree.generate_event((Event::Start(Tag::HtmlBlock), None));
+                            tree.generate_event((Event::Html(annotation.into()), None));
+                            tree.generate_event((Event::End(TagEnd::HtmlBlock), None));
                         }
                         Tag::Table(alignment)
                     }
@@ -921,7 +912,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             id,
                         },
                         Err(unresolvable) => {
-                            unresolvable.replace_with_description(self, co).await;
+                            unresolvable.replace_with_description(self, tree);
                             return;
                         }
                     },
@@ -1014,7 +1005,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                     })
                                 };
                                 for event in iter::once(Event::Start(raw_latex)).chain(lines) {
-                                    co.yield_((event, None)).await
+                                    tree.generate_event((event, None))
                                 }
                                 break 'current_event Event::End(raw_latex_end);
                             }
@@ -1025,7 +1016,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         for event in iter::once(Event::Start(code_block))
                             .chain(texts.into_iter().map(Event::Text))
                         {
-                            co.yield_((event, None)).await;
+                            tree.generate_event((event, None));
                         }
                         break 'current_event Event::End(end_tag);
                     }
@@ -1041,28 +1032,12 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 }
                 Event::End(end)
             }
-            Event::Html(mut html) => {
-                while let Some((Event::Html(more), _)) = self.parser.peek() {
-                    let mut string = html.into_string();
-                    string.push_str(more);
-                    html = string.into();
-                    // Actually consume the item from the iterator
-                    self.parser.next();
-                }
-                self.preprocess_contiguous_html(html, HtmlContext::Block, co)
-                    .await;
+            Event::Html(html) => {
+                tree.process_html(html.as_ref().into());
                 return;
             }
-            Event::InlineHtml(mut html) => {
-                while let Some((Event::InlineHtml(more), _)) = self.parser.peek() {
-                    let mut string = html.into_string();
-                    string.push_str(more);
-                    html = string.into();
-                    // Actually consume the item from the iterator
-                    self.parser.next();
-                }
-                self.preprocess_contiguous_html(html, HtmlContext::Inline, co)
-                    .await;
+            Event::InlineHtml(html) => {
+                tree.process_html(html.as_ref().into());
                 return;
             }
             Event::TaskListMarker(checked) => {
@@ -1071,10 +1046,10 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             }
             event => event,
         };
-        co.yield_((event, range)).await;
+        tree.generate_event((event, Some(range)));
     }
 
-    fn resolve_image_url(
+    pub fn resolve_image_url(
         &mut self,
         dest_url: CowStr<'book>,
         link_type: LinkType,
@@ -1106,442 +1081,6 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 }
             }
         }
-    }
-
-    /// Preprocess a block of HTML.
-    ///
-    /// # Font Awesome icons
-    ///
-    /// To support Font Awesome icons represented in the source as HTML tags, which performs a pass
-    /// to replace such tags with appropriate alternatives for the output format.
-    ///
-    /// # Preserving document structure
-    ///
-    /// Pandoc doesn't take raw HTML blocks into account when dividing a document into sections
-    /// for e.g. EPUB conversion. This can become problematic when the structure of the document
-    /// that Pandoc infers differs from the actual structure as determined by raw HTML blocks.
-    ///
-    /// Take for instance the following source:
-    ///
-    /// ```md
-    /// <details>
-    ///
-    /// ## Heading
-    ///
-    /// text
-    ///
-    /// </details>
-    /// ```
-    ///
-    /// Pandoc interprets this as:
-    ///
-    /// ```md
-    /// <details>
-    ///
-    /// ## Heading
-    ///
-    /// <div>
-    /// text
-    ///
-    /// </details>
-    /// </div>
-    /// ```
-    ///
-    /// which breaks the resulting EPUB because `</details>` is misplaced.
-    ///
-    /// As part of this preprocessing pass, we proactively insert divs to divide the source as:
-    ///
-    /// ```md
-    /// <details>
-    /// <div>
-    ///
-    /// ## Heading
-    ///
-    /// text
-    ///
-    /// </div>
-    /// </details>
-    /// ```
-    ///
-    /// This ensures that Pandoc processes the structure properly and the resulting EPUB is valid.
-    async fn preprocess_contiguous_html(
-        &mut self,
-        html: CowStr<'book>,
-        ctx: HtmlContext,
-        co: &genawaiter::stack::Co<'_, (pulldown_cmark::Event<'book>, Option<Range<usize>>)>,
-    ) {
-        use pulldown_cmark::Event;
-
-        fn to_str(s: &HtmlString) -> &str {
-            str::from_utf8(s).expect("input was utf8")
-        }
-        fn to_cowstr(s: &str) -> CowStr<'static> {
-            pulldown_cmark::InlineStr::try_from(s)
-                .map(CowStr::Inlined)
-                .unwrap_or_else(|_| CowStr::Boxed(s.into()))
-        }
-
-        let mut preprocessed = String::with_capacity(html.len());
-        let flush = |preprocessed: &mut String| {
-            let event = (!preprocessed.is_empty()).then(|| {
-                let html = to_cowstr(preprocessed);
-                preprocessed.clear();
-                match ctx {
-                    HtmlContext::Inline => Event::InlineHtml(html),
-                    HtmlContext::Block => Event::Html(html),
-                }
-            });
-            async move {
-                if let Some(event) = event {
-                    co.yield_((event, None)).await;
-                }
-            }
-        };
-
-        let fenced_divs_available = {
-            let available = std::cell::OnceCell::new();
-            move |pandoc: &mut pandoc::Context| {
-                *available.get_or_init(|| {
-                    pandoc
-                        .enable_extension(pandoc::Extension::FencedDivs)
-                        .is_available()
-                })
-            }
-        };
-
-        let bracketed_spans_available = {
-            let available = std::cell::OnceCell::new();
-            move |pandoc: &mut pandoc::Context| {
-                *available.get_or_init(|| {
-                    pandoc
-                        .enable_extension(pandoc::Extension::BracketedSpans)
-                        .is_available()
-                })
-            }
-        };
-
-        enum Tag {
-            SelfClosing,
-            End,
-        }
-        let close_tag = |this: &mut Self,
-                         name: HtmlString,
-                         tag: Tag,
-                         mut attrs: BTreeMap<HtmlString, HtmlString>,
-                         preprocessed: &mut String| {
-            let pandoc = &mut this.preprocessor.ctx.pandoc;
-            match name.as_slice() {
-                tag @ (b"a" | b"span") if bracketed_spans_available(pandoc) => {
-                    preprocessed.push(']');
-                    if matches!(tag, b"a") {
-                        if let Some(href) = attrs.remove("href".as_bytes()) {
-                            write!(preprocessed, "({})", to_str(&href)).unwrap();
-                        }
-                    }
-                    this.write_attributes(attrs, preprocessed);
-                    return;
-                }
-                b"div" if fenced_divs_available(pandoc) => {
-                    write!(preprocessed, "{}", this.close_div()).unwrap();
-                    debug_assert_eq!(attrs, BTreeMap::new(), "attrs are written to start tag");
-                    return;
-                }
-                _ => {}
-            }
-            match tag {
-                Tag::SelfClosing => {}
-                Tag::End => {
-                    preprocessed.push('<');
-                    preprocessed.push('/');
-                    preprocessed.push_str(to_str(&name));
-                    preprocessed.push('>');
-                }
-            }
-        };
-        let should_wrap_in_div = |name: &HtmlString| {
-            matches!(ctx, HtmlContext::Block)
-                && !matches!(
-                    name.as_slice(),
-                    b"div" | b"code" | b"a" | b"span" | b"em" | b"i" | b"b" | b"strong"
-                )
-        };
-
-        let mut tokens = html5gum::Tokenizer::new(html.as_ref())
-            .map(|token| match token {
-                Ok(token) => token,
-                Err(err) => match err {},
-            })
-            .peekable();
-        while let Some(token) = tokens.next() {
-            match token {
-                html5gum::Token::Error(err) => {
-                    log::warn!("HTML parsing error: {err}: {}", html.trim())
-                }
-                html5gum::Token::Doctype(doctype) => {
-                    log::warn!("Unexpected doctype in HTML: {doctype:?}")
-                }
-                html5gum::Token::String(s) => preprocessed.push_str(to_str(&s)),
-                html5gum::Token::Comment(comment) => {
-                    preprocessed.push_str("<!--");
-                    preprocessed.push_str(to_str(&comment));
-                    preprocessed.push_str("-->");
-                }
-                html5gum::Token::StartTag(mut start) => {
-                    fn closes(tag: &str) -> impl Fn(&html5gum::Token) -> bool + '_ {
-                        |token| matches!(token, html5gum::Token::EndTag(end) if end.name.as_slice() == tag.as_bytes())
-                    }
-
-                    let mut write_html = true;
-                    match start.name.as_slice() {
-                        b"a" | b"span"
-                            if bracketed_spans_available(&mut self.preprocessor.ctx.pandoc) =>
-                        {
-                            preprocessed.push('[');
-                            write_html = false;
-                        }
-                        b"div" if fenced_divs_available(&mut self.preprocessor.ctx.pandoc) => {
-                            write_html = false;
-                            let attrs = mem::take(&mut start.attributes);
-                            write!(preprocessed, "{}", self.open_div(attrs)).unwrap();
-                            if start.self_closing {
-                                write!(preprocessed, "{}", self.close_div()).unwrap();
-                            }
-                        }
-                        b"img" => {
-                            let mut attrs = start.attributes;
-                            let [src, alt, title] =
-                                ["src", "alt", "title"].map(|attr| attrs.remove(attr.as_bytes()));
-                            let Some(src) = src else { continue };
-                            if !start.self_closing {
-                                tokens.next_if(closes("img"));
-                            }
-                            match self.resolve_image_url(to_cowstr(to_str(&src)), LinkType::Inline)
-                            {
-                                Err(unresolvable) => {
-                                    flush(&mut preprocessed).await;
-                                    unresolvable.replace_with_description(self, co).await;
-                                }
-                                Ok(src) => {
-                                    // TODO: if/when pulldown_cmark supports attributes on images,
-                                    // use Tag::Image instead of embedding raw markdown
-                                    preprocessed.push_str("![");
-                                    if let Some(alt) = alt {
-                                        preprocessed.push_str(to_str(&alt));
-                                    }
-                                    preprocessed.push_str("](");
-                                    preprocessed.push_str(&src);
-                                    if let Some(title) = title {
-                                        preprocessed.push(' ');
-                                        preprocessed.push('"');
-                                        preprocessed.push_str(to_str(&title));
-                                        preprocessed.push('"');
-                                    }
-                                    preprocessed.push(')');
-                                    self.write_attributes(attrs, &mut preprocessed);
-                                }
-                            }
-                            continue;
-                        }
-                        b"i" => {
-                            let mut attrs = start.attributes.iter();
-                            match attrs.next() {
-                                Some((attr, val))
-                                    if attr.as_slice() == b"class" && attrs.next().is_none() =>
-                                {
-                                    if let Some(icon) = to_str(val).strip_prefix("fa fa-") {
-                                        if let OutputFormat::Latex { packages } =
-                                            &mut self.preprocessor.ctx.output
-                                        {
-                                            if (self.preprocessor.ctx.pandoc)
-                                                .enable_extension(pandoc::Extension::RawAttribute)
-                                                .is_available()
-                                                && (start.self_closing
-                                                    || tokens.next_if(closes("i")).is_some())
-                                            {
-                                                packages.need(latex::Package::FontAwesome);
-                                                preprocessed.push_str(r"`\faicon{");
-                                                preprocessed.push_str(icon);
-                                                preprocessed.push_str(r"}`{=latex}");
-                                                continue;
-                                            }
-                                        }
-                                    }
-                                }
-                                _ => {}
-                            }
-                        }
-                        _ => {}
-                    }
-
-                    if write_html {
-                        preprocessed.push('<');
-                        preprocessed.push_str(to_str(&start.name));
-                        for (attr, val) in &start.attributes {
-                            preprocessed.push(' ');
-                            preprocessed.push_str(to_str(attr));
-                            preprocessed.push('=');
-                            preprocessed.push('"');
-                            preprocessed.push_str(to_str(val));
-                            preprocessed.push('"');
-                        }
-                        if start.self_closing {
-                            preprocessed.push('/');
-                        }
-                        preprocessed.push('>');
-                    }
-
-                    if start.self_closing {
-                        close_tag(
-                            self,
-                            start.name,
-                            Tag::SelfClosing,
-                            start.attributes,
-                            &mut preprocessed,
-                        );
-                    } else {
-                        if should_wrap_in_div(&start.name)
-                            && fenced_divs_available(&mut self.preprocessor.ctx.pandoc)
-                        {
-                            // If the format strips raw HTML and the tag contains an `id`, move the
-                            // `id` to the wrapper div so links to it don't break
-                            let attrs =
-                                (!matches!(self.preprocessor.ctx.output, OutputFormat::HtmlLike))
-                                    .then(|| start.attributes.remove_entry("id".as_bytes()))
-                                    .into_iter()
-                                    .flatten()
-                                    .collect();
-                            write!(preprocessed, "{}", self.open_div(attrs)).unwrap();
-                        }
-                        self.open_html_tags.push((start.name, start.attributes));
-                    }
-                }
-                html5gum::Token::EndTag(end) => {
-                    let mut attrs = None;
-                    match self.open_html_tags.last() {
-                        Some((tag, _)) if *tag == end.name => {
-                            attrs = self.open_html_tags.pop().map(|(_, attrs)| attrs);
-                            if should_wrap_in_div(&end.name)
-                                && fenced_divs_available(&mut self.preprocessor.ctx.pandoc)
-                            {
-                                write!(preprocessed, "{}", self.close_div()).unwrap();
-                            }
-                        }
-                        _ => {}
-                    }
-                    close_tag(
-                        self,
-                        end.name,
-                        Tag::End,
-                        attrs.unwrap_or_default(),
-                        &mut preprocessed,
-                    );
-                }
-            }
-        }
-        flush(&mut preprocessed).await;
-    }
-
-    fn open_div(
-        &self,
-        attrs: BTreeMap<HtmlString, HtmlString>,
-    ) -> OpenDiv<'_, 'book, 'preprocessor> {
-        OpenDiv {
-            preprocessor: self,
-            attrs: Cell::new(attrs),
-        }
-    }
-
-    fn close_div(&self) -> CloseDiv {
-        CloseDiv {
-            depth: self.open_html_tags.len(),
-        }
-    }
-
-    /// Writes [pandoc attributes](https://pandoc.org/MANUAL.html#extension-attributes).
-    fn write_attributes(&mut self, attrs: BTreeMap<HtmlString, HtmlString>, writer: &mut String) {
-        if (self.preprocessor.ctx.pandoc)
-            .enable_extension(pandoc::Extension::Attributes)
-            .is_available()
-        {
-            self.write_attributes_unchecked(attrs, writer).unwrap();
-        }
-    }
-
-    /// Writes [pandoc attributes](https://pandoc.org/MANUAL.html#extension-attributes) assuming
-    /// the extension is available and enabled.
-    fn write_attributes_unchecked<W: fmt::Write>(
-        &self,
-        mut attrs: BTreeMap<HtmlString, HtmlString>,
-        writer: &mut W,
-    ) -> fmt::Result {
-        fn to_str(s: &HtmlString) -> &str {
-            str::from_utf8(s).expect("input was utf8")
-        }
-
-        // Pandoc doesn't parse `{}` as attributes, so add a dummy class
-        if attrs.is_empty() {
-            return write!(writer, r"{{.mdbook-pandoc}}");
-        }
-
-        let [class] = ["class"].map(|attr| attrs.remove(attr.as_bytes()));
-
-        writer.write_char('{')?;
-        let mut write_separator = {
-            let mut first = true;
-            move |writer: &mut W| {
-                if first {
-                    first = false;
-                } else {
-                    writer.write_char(' ')?;
-                }
-                Ok(())
-            }
-        };
-
-        let class = class.as_ref().filter(|c| !c.is_empty()).map(to_str);
-        let classes = || class.into_iter().flat_map(|class| class.split(' '));
-        for class in classes() {
-            write_separator(writer)?;
-            write!(writer, ".{class}")?;
-        }
-
-        let mut write_attr = |attr: &_, val: &_| {
-            write_separator(writer)?;
-            write!(writer, r#"{attr}="{val}""#)
-        };
-
-        if !matches!(self.preprocessor.ctx.output, OutputFormat::HtmlLike) {
-            let style = attrs.remove("style".as_bytes());
-            let style = style
-                .as_ref()
-                .into_iter()
-                .flat_map(|style| to_str(style).split(';'))
-                .flat_map(|decl| decl.split_once(':'))
-                .map(|(attr, val)| (attr.trim(), val.trim()))
-                .chain(
-                    classes()
-                        .flat_map(|class| {
-                            (self.preprocessor.ctx.css)
-                                .styles
-                                .classes
-                                .get(class)
-                                .into_iter()
-                                .flatten()
-                        })
-                        .map(|(prop, val)| (prop.as_ref(), *val)),
-                );
-            for (prop, val) in style {
-                if matches!(prop, "width" | "height") && !attrs.contains_key(prop.as_bytes()) {
-                    write_attr(prop, val)?;
-                }
-            }
-        }
-
-        for (attr, val) in attrs {
-            write_attr(to_str(&attr), to_str(&val))?;
-        }
-
-        writer.write_char('}')
     }
 }
 
@@ -1613,39 +1152,6 @@ impl fmt::Debug for IndexedChapter<'_> {
             .field("chapter", &self.chapter.name)
             .field("anchors", &self.anchors)
             .finish_non_exhaustive()
-    }
-}
-
-struct OpenDiv<'a, 'book, 'preprocessor> {
-    preprocessor: &'a PreprocessChapter<'book, 'preprocessor>,
-    attrs: Cell<BTreeMap<HtmlString, HtmlString>>,
-}
-
-impl Display for OpenDiv<'_, '_, '_> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "\n\n:::")?;
-        for _ in 0..self.preprocessor.open_html_tags.len() {
-            write!(f, ":")?;
-        }
-        let attrs = self.attrs.take();
-        write!(f, " ")?;
-
-        self.preprocessor.write_attributes_unchecked(attrs, f)?;
-        writeln!(f)
-    }
-}
-
-struct CloseDiv {
-    depth: usize,
-}
-
-impl Display for CloseDiv {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "\n:::")?;
-        for _ in 0..self.depth {
-            write!(f, ":")?;
-        }
-        write!(f, "\n\n")
     }
 }
 

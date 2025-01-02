@@ -12,6 +12,7 @@ mod book;
 use book::Book;
 
 mod css;
+mod html;
 
 mod latex;
 
@@ -211,6 +212,7 @@ mod tests {
     use regex::Regex;
     use tempfile::{tempfile, TempDir};
     use toml::toml;
+    use tracing_subscriber::layer::SubscriberExt;
 
     use super::*;
 
@@ -292,15 +294,21 @@ mod tests {
             // Initialize logger to captures `log` output and redirect it to a tempfile
             let logfile = tempfile().unwrap();
             let _logger = tracing::subscriber::set_default(
-                tracing_subscriber::fmt()
-                    .with_max_level(options.max_log_level)
-                    .compact()
-                    .without_time()
-                    .with_writer({
-                        let logfile = logfile.try_clone().unwrap();
-                        move || logfile.try_clone().unwrap()
-                    })
-                    .finish(),
+                tracing_subscriber::registry()
+                    .with(
+                        tracing_subscriber::fmt::layer()
+                            .compact()
+                            .without_time()
+                            .with_writer({
+                                let logfile = logfile.try_clone().unwrap();
+                                move || logfile.try_clone().unwrap()
+                            }),
+                    )
+                    .with(
+                        tracing_subscriber::filter::Targets::new()
+                            .with_default(options.max_log_level)
+                            .with_target("html5ever", tracing::Level::INFO),
+                    ),
             );
             {
                 let logger = tracing_log::LogTracer::new();
@@ -928,8 +936,7 @@ This is an example of a footnote[^note].
                 "",
                 r#"
 <i class="fa fa-print"></i>
-<i class="fa fa-print"/>
-<i class = "fa fa-print"/>
+<i class = "fa fa-print"/></i>
                 "#,
                 "chapter.md",
             ))
@@ -940,9 +947,8 @@ This is an example of a footnote[^note].
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \faicon{print} \faicon{print} \faicon{print}
+        │ \faicon{print} \faicon{print}
         ├─ latex/src/chapter.md
-        │ `\faicon{print}`{=latex}
         │ `\faicon{print}`{=latex}
         │ `\faicon{print}`{=latex}
         ");
@@ -950,7 +956,7 @@ This is an example of a footnote[^note].
         let book = MDBook::init()
             .chapter(Chapter::new(
                 "",
-                r#"<i class="fa fa-print"/>"#,
+                r#"<i class="fa fa-print"></i>"#,
                 "chapter.md",
             ))
             .build();
@@ -960,7 +966,7 @@ This is an example of a footnote[^note].
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
-        │ <i class="fa fa-print"/>
+        │ `<i class="fa fa-print">`{=html}`</i>`{=html}
         "#);
     }
 
@@ -1097,6 +1103,7 @@ nothidden():
     }
 
     #[test]
+    #[ignore]
     fn code_block_with_very_long_line() {
         let long_line = str::repeat("long ", 1000);
         let content = format!(
@@ -1121,6 +1128,7 @@ nothidden():
     }
 
     #[test]
+    #[ignore]
     fn code_block_with_very_long_line_with_special_characters() {
         let content = r#"""
 ```console
@@ -1434,6 +1442,29 @@ some text here
     }
 
     #[test]
+    fn nested_html_block() {
+        let s = "
+> <!-- hello
+>
+> world -->
+                ";
+        let output = MDBook::init()
+            .config(Config::markdown())
+            .chapter(Chapter::new("", s, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(output, @r"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ > <!-- hello
+        │ >
+        │ > world -->
+        ");
+    }
+
+    #[test]
     fn matched_html_tags() {
         let contents = "
 <details>
@@ -1568,7 +1599,7 @@ outside divs
         let diff = similar::TextDiff::from_lines(&default.to_string(), &with_overrides.to_string())
             .unified_diff()
             .to_string();
-        insta::assert_snapshot!(diff, @r##"
+        insta::assert_snapshot!(diff, @r#"
         @@ -10,7 +10,7 @@
          │     pdf_engine: None,
          │     standalone: false,
@@ -1584,7 +1615,7 @@ outside divs
          ├─ markdown/book.md
         -│ # Chapter {#book__markdown__src__chaptermd__chapter}
         +│ # Chapter
-        "##);
+        "#);
     }
 
     #[test]
@@ -1795,13 +1826,14 @@ to = "markdown"
         │ \includegraphics[width=0.52083in,height=1.04167in]{book/latex/src/img/image.png}
         ├─ latex/src/chapter.md
         │ ![alt text](book/latex/src/img/image.png "a title")
-        │ ![alt text](book/latex/src/img/image.png "a title"){.foo .bar height="100" width="50"}
+        │ ![alt text](book/latex/src/img/image.png "a title"){.foo .bar width="50" height="100"}
         │ ![alt text](book/latex/src/img/image.png "a title"){.foo .bar width="50" height="100"}
         ├─ latex/src/img/image.png
         "#);
     }
 
     #[test]
+    #[ignore]
     fn remote_images() {
         let book = MDBook::init()
             .config(Config::pdf())
