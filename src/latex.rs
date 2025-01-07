@@ -1,11 +1,11 @@
 use std::collections::BTreeSet;
 
-#[derive(Default)]
+#[derive(Debug, Default)]
 pub struct Packages {
     needed: BTreeSet<Package>,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Package {
     FontAwesome,
     EnumItem,

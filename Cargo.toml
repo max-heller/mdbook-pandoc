@@ -18,29 +18,24 @@ aho-corasick = "1.0.0"
 anyhow = "1.0.47"
 cssparser = "0.34.0"
 env_logger = "0.11.0"
-genawaiter = { version = "0.99.1", default-features = false }
 html5ever = "0.29.0"
 log = "0.4.0"
 mdbook = { version = "0.4.35", default-features = false }
 normpath = "1.0.0"
 once_cell = "1.0.0"
 pulldown-cmark = { version = "0.10.0", default-features = false }
-pulldown-cmark-to-cmark = "14.0.1"
 regex = "1.5.5"
-scraper = { git = "https://github.com/rust-scraper/scraper", features = ["deterministic"] }
+scraper = { git = "https://github.com/rust-scraper/scraper", rev = "1896e4f2c57438b5d42aade714d2b8f3019e983f", features = ["deterministic"] }
 ego-tree = "0.10.0"
+replace_with = "0.1.7"
 semver = "1.0.0"
 serde = { version = "1.0.85", features = ["derive"] }
-serde_derive = "1.0.85"
 serde_yaml = "0.9.0"
 tempfile = "3.0.0"
 toml = "0.8.0"
 ureq = "2.0.0"
+utf8parse = "0.2.2"
 walkdir = "2.0.0"
-
-# Increase minimum version requirements of transitive dependencies
-thiserror = "1.0.2"
-proc-macro2 = "1.0.60"
 
 [dev-dependencies]
 insta = { version = "1.36.0" }

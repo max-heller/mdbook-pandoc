@@ -1,15 +1,14 @@
-use std::{collections::BTreeMap, fmt, num::ParseIntError, process::Command, str::FromStr};
+use std::{fmt, num::ParseIntError, process::Command, str::FromStr};
 
 use anyhow::{anyhow, Context as _};
-
-pub mod extension;
-pub use extension::Extension;
 
 mod profile;
 pub use profile::Profile;
 
 mod renderer;
 pub use renderer::{Context as RenderContext, OutputFormat, Renderer};
+
+pub mod native;
 
 /// Minimum compatible version of Pandoc
 const MINIMUM_VERSION: Version =
@@ -43,40 +42,6 @@ impl FromStr for Version {
             minor: next_component()?,
             patch: next_component()?,
         })
-    }
-}
-
-pub struct Context {
-    pub version: Version,
-    enabled_extensions: BTreeMap<Extension, extension::Availability>,
-}
-
-impl Context {
-    pub fn new(version: Version) -> Self {
-        let mut this = Self {
-            enabled_extensions: Default::default(),
-            version,
-        };
-        // Automatically generate section labels according to GitHub's method to
-        // align with behavior of mdbook's HTML renderer
-        this.enable_extension(Extension::GfmAutoIdentifiers);
-        this
-    }
-
-    pub fn enable_extension(&mut self, extension: Extension) -> &extension::Availability {
-        self.enabled_extensions
-            .entry(extension)
-            .or_insert_with(|| extension.check_availability(&self.version))
-    }
-
-    pub fn retain_extensions(&mut self, mut f: impl FnMut(&Extension) -> bool) {
-        self.enabled_extensions.retain(|extension, _| f(extension))
-    }
-
-    pub fn enabled_extensions(
-        &self,
-    ) -> impl Iterator<Item = (&Extension, &extension::Availability)> + '_ {
-        self.enabled_extensions.iter()
     }
 }
 

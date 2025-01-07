@@ -1,19 +1,19 @@
 use std::{
-    borrow::Cow,
+    borrow::{Borrow, Cow},
     cmp,
-    collections::{hash_map::DefaultHasher, HashMap},
+    collections::{hash_map::DefaultHasher, HashMap, VecDeque},
     ffi::OsString,
-    fmt::{self, Display, Write as _},
+    fmt::{self, Display, Write},
     fs::{self, File},
     hash::{Hash, Hasher},
     io::{self, Write as _},
-    iter::{self, Peekable},
+    iter,
+    num::NonZeroU32,
     ops::Range,
     path::{Path, PathBuf},
     str,
 };
 
-use aho_corasick::AhoCorasick;
 use anyhow::{anyhow, Context as _};
 use log::log;
 use mdbook::{
@@ -22,14 +22,14 @@ use mdbook::{
 };
 use normpath::PathExt;
 use once_cell::sync::Lazy;
-use pulldown_cmark::{CodeBlockKind, CowStr, Event, HeadingLevel, LinkType};
+use pulldown_cmark::{CowStr, Event, HeadingLevel, LinkType};
 use regex::Regex;
 use walkdir::WalkDir;
 
-use crate::{
-    html::TreeBuilder,
-    pandoc::{self, OutputFormat, RenderContext},
-};
+use crate::pandoc::{self, native::ColWidth, OutputFormat, RenderContext};
+
+mod tree;
+use tree::TreeBuilder;
 
 pub struct Preprocessor<'book> {
     pub(crate) ctx: RenderContext<'book>,
@@ -90,24 +90,6 @@ impl Display for UnresolvableRemoteImageError {
 impl std::error::Error for UnresolvableRemoteImageError {}
 
 pub struct UnresolvableRemoteImage;
-
-impl UnresolvableRemoteImage {
-    fn replace_with_description<'book>(
-        self,
-        preprocessor: &mut PreprocessChapter<'book, '_>,
-        tree: &mut TreeBuilder<'book>,
-    ) {
-        use pulldown_cmark::{Event, TagEnd};
-
-        log::warn!("Replacing image with description");
-        for (event, range) in &mut preprocessor.parser {
-            match event {
-                Event::End(TagEnd::Image) => break,
-                event => tree.generate_event((event, Some(range))),
-            }
-        }
-    }
-}
 
 impl<'book> Preprocessor<'book> {
     pub fn new(ctx: RenderContext<'book>) -> anyhow::Result<Self> {
@@ -471,11 +453,13 @@ impl<'book> Preprocessor<'book> {
     }
 
     /// Generates a GitHub Markdown-flavored identifier for a heading with the provided content.
-    fn make_gfm_identifier<'source>(content: impl IntoIterator<Item = Event<'source>>) -> String {
+    fn make_gfm_identifier<E>(content: impl IntoIterator<Item = E>) -> String
+    where
+        E: Borrow<Event<'book>>,
+    {
         let mut id = String::new();
-        use pulldown_cmark::Event;
         for event in content {
-            if let Event::Text(text) | Event::Code(text) = event {
+            if let Event::Text(text) | Event::Code(text) = event.borrow() {
                 for c in text.chars() {
                     match c {
                         ' ' => id.push('-'),
@@ -601,8 +585,23 @@ impl<'book> Preprocess<'book> {
                 };
                 let chapter_path = self.preprocessor.ctx.book.source_dir.join(chapter_path);
                 let normalized = self.preprocessor.normalize_path(&chapter_path)?;
-                let writer = io::BufWriter::new(normalized.create()?);
-                self.preprocess_chapter(chapter, writer)?;
+                let mut writer = io::BufWriter::new(normalized.create()?);
+                let res = self
+                    .preprocess_chapter(chapter, &mut writer)
+                    .with_context(|| format!("failed to preprocess chapter '{}'", chapter.name));
+                writer.flush()?;
+                drop(writer);
+                if let Err(err) = res {
+                    match fs::read_to_string(normalized.preprocessed_absolute_path) {
+                        Ok(preprocessed) => {
+                            log::error!("Partially preprocessed chapter: {preprocessed}")
+                        }
+                        Err(err) => {
+                            log::error!("Failed to read partially preprocessed chapter: {err}")
+                        }
+                    }
+                    return Err(err);
+                }
                 Ok(Some(normalized.preprocessed_path_relative_to_root))
             }
             BookItem::Separator => {
@@ -610,11 +609,7 @@ impl<'book> Preprocess<'book> {
                 Ok(None)
             }
             BookItem::PartTitle(name) => match self.preprocessor.ctx.output {
-                OutputFormat::Latex { .. }
-                    if (self.preprocessor.ctx.pandoc)
-                        .enable_extension(pandoc::Extension::RawAttribute)
-                        .is_available() =>
-                {
+                OutputFormat::Latex { .. } => {
                     self.part_num += 1;
                     let kebab_case_name = Preprocessor::make_kebab_case(name);
                     let path =
@@ -624,7 +619,10 @@ impl<'book> Preprocess<'book> {
                         .create_new(true)
                         .open(self.preprocessor.preprocessed.join(&path))
                         .with_context(|| format!("Unable to create file for part '{name}'"))?;
-                    writeln!(file, r"`\part{{{name}}}`{{=latex}}")?;
+                    writeln!(
+                        file,
+                        r#"[Para [RawInline (Format "latex") "\\part{{{name}}}"]]"#
+                    )?;
                     Ok(Some(
                         self.preprocessor.preprocessed_relative_to_root.join(path),
                     ))
@@ -640,39 +638,10 @@ impl<'book> Preprocess<'book> {
     fn preprocess_chapter(
         &mut self,
         chapter: &'book Chapter,
-        mut out: impl io::Write,
+        out: impl io::Write,
     ) -> anyhow::Result<()> {
-        if chapter.number.is_none() && self.part_num > 0 {
-            match self.preprocessor.ctx.output {
-                OutputFormat::Latex { .. }
-                    if (self.preprocessor.ctx.pandoc)
-                        .enable_extension(pandoc::Extension::RawAttribute)
-                        .is_available() =>
-                {
-                    writeln!(out, r"`\bookmarksetup{{startatroot}}`{{=latex}}")?;
-                }
-                _ => {}
-            }
-        }
-
-        let preprocessed = PreprocessChapter::new(&mut self.preprocessor, chapter);
-        genawaiter::stack::let_gen_using!(preprocessed, |co| preprocessed.preprocess(co));
-
-        struct IoWriteAdapter<W>(W);
-        impl<W: io::Write> fmt::Write for IoWriteAdapter<W> {
-            fn write_str(&mut self, s: &str) -> fmt::Result {
-                self.0.write_all(s.as_bytes()).map_err(|_| fmt::Error)
-            }
-        }
-
-        pulldown_cmark_to_cmark::cmark_with_source_range_and_options(
-            preprocessed.into_iter(),
-            &chapter.content,
-            IoWriteAdapter(out),
-            Default::default(),
-        )
-        .context("Failed to write preprocessed chapter")?;
-        Ok(())
+        let preprocessed = PreprocessChapter::new(&mut self.preprocessor, chapter, self.part_num);
+        preprocessed.preprocess(out)
     }
 
     pub fn render_context(&mut self) -> &mut RenderContext<'book> {
@@ -691,13 +660,21 @@ impl<'book> Preprocess<'book> {
 pub struct PreprocessChapter<'book, 'preprocessor> {
     pub(crate) preprocessor: &'preprocessor mut Preprocessor<'book>,
     chapter: &'book Chapter,
-    parser: Peekable<pulldown_cmark::OffsetIter<'book, pulldown_cmark::DefaultBrokenLinkCallback>>,
+    part_num: usize,
+    parser: Parser<'book>,
     matching_tags: Vec<pulldown_cmark::TagEnd>,
     encountered_h1: bool,
+    tables: VecDeque<&'book str>,
+    identifiers: HashMap<String, NonZeroU32>,
 }
 
-impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
-    fn new(preprocessor: &'preprocessor mut Preprocessor<'book>, chapter: &'book Chapter) -> Self {
+struct Parser<'book> {
+    lookahead: VecDeque<(Event<'book>, Range<usize>)>,
+    parser: pulldown_cmark::OffsetIter<'book, pulldown_cmark::DefaultBrokenLinkCallback>,
+}
+
+impl<'book> Parser<'book> {
+    fn new(md: &'book str) -> Self {
         /// Markdown extensions supported by mdBook
         ///
         /// See https://rust-lang.github.io/mdBook/format/markdown.html#extensions
@@ -712,14 +689,69 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         };
 
         Self {
+            lookahead: Default::default(),
+            parser: pulldown_cmark::Parser::new_ext(md, PARSER_OPTIONS).into_offset_iter(),
+        }
+    }
+
+    fn peek_until(
+        &mut self,
+        mut end: impl FnMut(&Event<'book>) -> bool,
+    ) -> impl Iterator<Item = &'_ Event<'book>> + '_ {
+        let n = self
+            .lookahead
+            .iter()
+            .enumerate()
+            .find_map(|(idx, (event, _))| end(event).then_some(idx));
+        let n = n.unwrap_or_else(|| loop {
+            let (event, range) = self
+                .parser
+                .next()
+                .expect("start tag should be followed by a matching end tag");
+            let done = end(&event);
+            self.lookahead.push_back((event, range));
+            if done {
+                break self.lookahead.len();
+            }
+        });
+        (0..n)
+            .map(|idx| &self.lookahead[idx])
+            .map(|(event, _)| event)
+    }
+}
+
+impl<'book> Iterator for Parser<'book> {
+    type Item = (Event<'book>, Range<usize>);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.lookahead.pop_front().or_else(|| self.parser.next())
+    }
+}
+
+impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
+    fn new(
+        preprocessor: &'preprocessor mut Preprocessor<'book>,
+        chapter: &'book Chapter,
+        part_num: usize,
+    ) -> Self {
+        Self {
             preprocessor,
             chapter,
-            parser: pulldown_cmark::Parser::new_ext(&chapter.content, PARSER_OPTIONS)
-                .into_offset_iter()
-                .peekable(),
+            parser: Parser::new(&chapter.content),
             matching_tags: Default::default(),
             encountered_h1: false,
+            tables: Default::default(),
+            identifiers: Default::default(),
+            part_num,
         }
+    }
+
+    pub fn part_num(&self) -> usize {
+        self.part_num
+    }
+
+    pub fn chapter(&self) -> &Chapter {
+        self.chapter
     }
 
     fn update_heading<'b>(
@@ -730,23 +762,18 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         const PANDOC_UNNUMBERED_CLASS: &str = "unnumbered";
         const PANDOC_UNLISTED_CLASS: &str = "unlisted";
 
-        if (self.preprocessor.ctx.pandoc)
-            .enable_extension(pandoc::Extension::Attributes)
-            .is_available()
-        {
-            if let HeadingLevel::H1 = level {
-                // Number the first H1 in each numbered chapter, mirroring mdBook
-                if self.encountered_h1 {
-                    classes.push(PANDOC_UNNUMBERED_CLASS.into());
-                    classes.push(PANDOC_UNLISTED_CLASS.into());
-                } else if self.chapter.number.is_none() {
-                    classes.push(PANDOC_UNNUMBERED_CLASS.into());
-                }
-                self.encountered_h1 = true;
-            } else {
+        if let HeadingLevel::H1 = level {
+            // Number the first H1 in each numbered chapter, mirroring mdBook
+            if self.encountered_h1 {
                 classes.push(PANDOC_UNNUMBERED_CLASS.into());
                 classes.push(PANDOC_UNLISTED_CLASS.into());
+            } else if self.chapter.number.is_none() {
+                classes.push(PANDOC_UNNUMBERED_CLASS.into());
             }
+            self.encountered_h1 = true;
+        } else {
+            classes.push(PANDOC_UNNUMBERED_CLASS.into());
+            classes.push(PANDOC_UNLISTED_CLASS.into());
         }
 
         let shift_smaller = |level| {
@@ -772,7 +799,14 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         Some((level, classes))
     }
 
-    fn column_width_annotation(&self, table: &str) -> Option<String> {
+    pub fn pop_table(&mut self) -> Option<&'book str> {
+        self.tables.pop_front()
+    }
+
+    pub fn column_widths<'table>(
+        &self,
+        table: &'table str,
+    ) -> impl Iterator<Item = Option<ColWidth>> + 'table {
         let mut wide = false;
         let mut rows = table.lines().inspect(|line| {
             if line.len() > self.preprocessor.ctx.columns {
@@ -782,39 +816,30 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         // The second row of a table is the delimiter row
         // See: https://github.github.com/gfm/#tables-extension-
         let delimiter_row = rows.nth(1).expect("table did not contain a delimiter row");
-        let mut column_widths = delimiter_row
-            // Cells are separated by pipes
-            .split('|')
-            .map(|cell| cell.chars().filter(char::is_ascii_punctuation).count())
-            .filter(|&width| width > 0);
+        let column_widths = || {
+            delimiter_row
+                // Cells are separated by pipes
+                .split('|')
+                .map(|cell| cell.chars().filter(char::is_ascii_punctuation).count())
+                .filter(|&width| width > 0)
+        };
         // Consume iterator to finish checking for long rows
         rows.for_each(|_| ());
-        wide.then(|| {
-            let mut annotation = String::from("<!-- mdbook-pandoc::table: ");
-            if let Some(width) = column_widths.next() {
-                write!(annotation, "{width}").unwrap();
-            }
-            for width in column_widths {
-                write!(annotation, "|{width}").unwrap();
-            }
-            write!(annotation, " -->").unwrap();
-            annotation
-        })
+        let total_width = column_widths().sum::<usize>() as f64;
+        column_widths().map(move |width| wide.then(|| ColWidth(width as f64 / total_width)))
     }
 
-    async fn preprocess(
-        mut self,
-        co: genawaiter::stack::Co<'_, (Event<'book>, Option<Range<usize>>)>,
-    ) {
-        let mut tree = crate::html::TreeBuilder::new();
+    fn preprocess(mut self, writer: impl io::Write) -> anyhow::Result<()> {
+        let mut tree = TreeBuilder::new();
         while let Some((event, range)) = self.parser.next() {
-            self.preprocess_event(event, range, &mut tree).await;
+            self.preprocess_event(event, range, &mut tree);
         }
-        let (html, emitter) = tree.finish();
-        emitter.emit(html, &mut self, &co).await
+        let events = tree.finish();
+
+        pandoc::native::Serializer::serialize(writer, self, |blocks| events.emit(blocks))
     }
 
-    async fn preprocess_event(
+    fn preprocess_event(
         &mut self,
         event: Event<'book>,
         range: Range<usize>,
@@ -823,7 +848,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         use pulldown_cmark::{Event, Tag, TagEnd};
 
         let event = match event {
-            Event::Start(tag) => 'current_event: {
+            Event::Start(tag) => {
                 let tag = match tag {
                     Tag::List(start_number) => {
                         self.preprocessor.ctx.cur_list_depth += 1;
@@ -833,29 +858,13 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         );
                         Tag::List(start_number)
                     }
-                    Tag::Strikethrough => {
-                        // TODO: pandoc requires ~~, but commonmark's extension allows ~ or ~~.
-                        // pulldown_cmark_to_cmark always generates ~~, so this is okay,
-                        // although it'd be good to have an option to configure this explicitly.
-                        (self.preprocessor.ctx.pandoc)
-                            .enable_extension(pandoc::Extension::Strikeout);
-                        Tag::Strikethrough
-                    }
                     Tag::FootnoteDefinition(label) => {
-                        (self.preprocessor.ctx.pandoc)
-                            .enable_extension(pandoc::Extension::Footnotes);
+                        let bookmark = tree.bookmark();
+                        tree.footnote(label.clone(), bookmark);
                         Tag::FootnoteDefinition(label)
                     }
                     Tag::Table(alignment) => {
-                        (self.preprocessor.ctx.pandoc)
-                            .enable_extension(pandoc::Extension::PipeTables);
-                        if let Some(annotation) =
-                            self.column_width_annotation(&self.chapter.content[range.clone()])
-                        {
-                            tree.generate_event((Event::Start(Tag::HtmlBlock), None));
-                            tree.generate_event((Event::Html(annotation.into()), None));
-                            tree.generate_event((Event::End(TagEnd::HtmlBlock), None));
-                        }
+                        self.tables.push_back(&self.chapter.content[range]);
                         Tag::Table(alignment)
                     }
                     Tag::Heading {
@@ -863,23 +872,32 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         id,
                         classes,
                         attrs,
-                    } => self
-                        .update_heading(level, classes)
-                        .map(|(level, classes)| {
-                            if id.is_some() || !classes.is_empty() {
-                                // pandoc does not support `header_attributes` with commonmark
-                                // so use `attributes`, which is a superset
-                                (self.preprocessor.ctx.pandoc)
-                                    .enable_extension(pandoc::Extension::Attributes);
+                    } => {
+                        let id = Some(match id {
+                            Some(id) => id,
+                            None => {
+                                let mut id =
+                                    Preprocessor::make_gfm_identifier(self.parser.peek_until(
+                                        |event| matches!(event, Event::End(TagEnd::Heading(..))),
+                                    ));
+                                if let Some(count) = self.identifiers.get_mut(&id) {
+                                    write!(id, "-{}", count.get()).unwrap();
+                                    *count = count.saturating_add(1);
+                                } else {
+                                    self.identifiers.insert(id.clone(), NonZeroU32::MIN);
+                                }
+                                id.into()
                             }
-                            Tag::Heading {
+                        });
+                        self.update_heading(level, classes)
+                            .map(|(level, classes)| Tag::Heading {
                                 level,
                                 id,
                                 classes,
                                 attrs,
-                            }
-                        })
-                        .unwrap_or(Tag::Paragraph),
+                            })
+                            .unwrap_or(Tag::Paragraph)
+                    }
                     Tag::Link {
                         link_type,
                         dest_url,
@@ -899,127 +917,6 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             id,
                         }
                     }
-                    Tag::Image {
-                        link_type,
-                        dest_url,
-                        title,
-                        id,
-                    } => match self.resolve_image_url(dest_url, link_type) {
-                        Ok(dest_url) => Tag::Image {
-                            link_type,
-                            dest_url,
-                            title,
-                            id,
-                        },
-                        Err(unresolvable) => {
-                            unresolvable.replace_with_description(self, tree);
-                            return;
-                        }
-                    },
-                    Tag::CodeBlock(CodeBlockKind::Fenced(mut info_string)) => {
-                        // MdBook supports custom attributes in code block info strings.
-                        // Attributes are separated by a comma, space, or tab from the language name.
-                        // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
-                        // This processes and strips out the attributes.
-                        let (language, mut attributes) = {
-                            let mut parts =
-                                info_string.split([',', ' ', '\t']).map(|part| part.trim());
-                            (parts.next(), parts)
-                        };
-
-                        // https://rust-lang.github.io/mdBook/format/mdbook.html?highlight=hide#hiding-code-lines
-                        let hidelines_override =
-                            attributes.find_map(|attr| attr.strip_prefix("hidelines="));
-                        let hidden_line_prefix = hidelines_override.or_else(|| {
-                            let lang = language?;
-                            // Respect [output.html.code.hidelines]
-                            let html = self.preprocessor.ctx.html;
-                            html.and_then(|html| Some(html.code.hidelines.get(lang)?.as_str()))
-                                .or(match lang {
-                                    "rust" => Some("#"),
-                                    _ => None,
-                                })
-                        });
-
-                        let mut texts = vec![];
-                        for (event, _) in &mut self.parser {
-                            match event {
-                                    Event::Text(text) => texts.push(text),
-                                    Event::End(TagEnd::CodeBlock) => break,
-                                    event => panic!("Code blocks should contain only literal text, but encountered {event:?}"),
-                                }
-                        }
-
-                        match hidden_line_prefix {
-                            Some(prefix) if !self.preprocessor.ctx.code.show_hidden_lines => {
-                                let mut code = String::with_capacity(
-                                    texts.iter().map(|text| text.len()).sum(),
-                                );
-                                for text in texts.drain(..) {
-                                    for line in text
-                                        .lines()
-                                        .filter(|line| !line.trim_start().starts_with(prefix))
-                                    {
-                                        code.push_str(line);
-                                        code.push('\n');
-                                    }
-                                }
-                                texts.push(code.into());
-                            }
-                            _ => {}
-                        }
-
-                        // Pandoc+fvextra only wraps long lines in code blocks with info strings
-                        // so fall back to "text"
-                        info_string = language.unwrap_or("text").to_owned().into();
-
-                        if let OutputFormat::Latex { .. } = self.preprocessor.ctx.output {
-                            const CODE_BLOCK_LINE_LENGTH_LIMIT: usize = 1000;
-
-                            let overly_long_line = texts.iter().any(|text| {
-                                text.lines()
-                                    .any(|line| line.len() > CODE_BLOCK_LINE_LENGTH_LIMIT)
-                            });
-                            if overly_long_line {
-                                (self.preprocessor.ctx.pandoc)
-                                    .enable_extension(pandoc::Extension::RawAttribute);
-                                let raw_latex =
-                                    Tag::CodeBlock(CodeBlockKind::Fenced("{=latex}".into()));
-                                let raw_latex_end = raw_latex.to_end();
-                                let lines = {
-                                    let patterns = &[r"\", "{", "}", "$", "_", "^", "&", "]"];
-                                    let replace_with = &[
-                                        r"\textbackslash{}",
-                                        r"\{",
-                                        r"\}",
-                                        r"\$",
-                                        r"\_",
-                                        r"\^",
-                                        r"\&",
-                                        r"{{]}}",
-                                    ];
-                                    let ac = AhoCorasick::new(patterns).unwrap();
-                                    texts.iter().flat_map(|text| text.lines()).map(move |text| {
-                                        let text = ac.replace_all(text, replace_with);
-                                        Event::Text(format!(r"\texttt{{{text}}}\\").into())
-                                    })
-                                };
-                                for event in iter::once(Event::Start(raw_latex)).chain(lines) {
-                                    tree.generate_event((event, None))
-                                }
-                                break 'current_event Event::End(raw_latex_end);
-                            }
-                        }
-
-                        let code_block = Tag::CodeBlock(CodeBlockKind::Fenced(info_string));
-                        let end_tag = code_block.to_end();
-                        for event in iter::once(Event::Start(code_block))
-                            .chain(texts.into_iter().map(Event::Text))
-                        {
-                            tree.generate_event((event, None));
-                        }
-                        break 'current_event Event::End(end_tag);
-                    }
                     tag => tag,
                 };
                 self.matching_tags.push(tag.to_end());
@@ -1032,28 +929,20 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 }
                 Event::End(end)
             }
-            Event::Html(html) => {
+            Event::Html(html) | Event::InlineHtml(html) => {
                 tree.process_html(html.as_ref().into());
                 return;
-            }
-            Event::InlineHtml(html) => {
-                tree.process_html(html.as_ref().into());
-                return;
-            }
-            Event::TaskListMarker(checked) => {
-                (self.preprocessor.ctx.pandoc).enable_extension(pandoc::Extension::TaskLists);
-                Event::TaskListMarker(checked)
             }
             event => event,
         };
-        tree.generate_event((event, Some(range)));
+        tree.generate_event(event);
     }
 
-    pub fn resolve_image_url(
+    pub fn resolve_image_url<'url>(
         &mut self,
-        dest_url: CowStr<'book>,
+        dest_url: CowStr<'url>,
         link_type: LinkType,
-    ) -> Result<CowStr<'book>, UnresolvableRemoteImage> {
+    ) -> Result<CowStr<'url>, UnresolvableRemoteImage> {
         let resolved = match self.chapter.path.as_ref() {
             None => Err((anyhow!("chapter has no path"), dest_url)),
             Some(chapter_path) => {

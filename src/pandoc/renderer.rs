@@ -1,5 +1,4 @@
 use std::{
-    collections::HashSet,
     fmt::Write as _,
     fs,
     io::Write as _,
@@ -12,12 +11,7 @@ use anyhow::Context as _;
 use normpath::PathExt;
 use tempfile::NamedTempFile;
 
-use crate::{
-    book::Book,
-    css, latex,
-    pandoc::{self, extension, Profile, Version},
-    CodeConfig,
-};
+use crate::{book::Book, css, latex, pandoc::Profile, CodeConfig};
 
 pub struct Renderer {
     pandoc: Command,
@@ -26,7 +20,6 @@ pub struct Renderer {
 
 pub struct Context<'book> {
     pub output: OutputFormat,
-    pub pandoc: pandoc::Context,
     pub destination: PathBuf,
     pub book: &'book Book<'book>,
     pub mdbook_cfg: &'book mdbook::Config,
@@ -38,6 +31,7 @@ pub struct Context<'book> {
     pub css: &'book css::Css<'book>,
 }
 
+#[derive(Debug)]
 pub enum OutputFormat {
     Latex { packages: latex::Packages },
     HtmlLike,
@@ -68,21 +62,6 @@ impl Renderer {
         self
     }
 
-    /// Parses a Pandoc format string possibly containing extension modifiers into the format name
-    /// and an iterator of extensions.
-    ///
-    /// For example, splits "commonmark+foo-bar" into "commonmark" and ["foo", "bar"].
-    fn parse_format(format: &str) -> (&str, impl Iterator<Item = &str>) {
-        const ENABLED: char = '+';
-        const DISABLED: char = '-';
-        let mut parts = format.split([ENABLED, DISABLED]);
-        let format = parts
-            .next()
-            .expect("str::split() always returns at least one item");
-        let extensions = parts;
-        (format, extensions)
-    }
-
     pub fn render(self, mut profile: Profile, ctx: &mut Context) -> anyhow::Result<()> {
         let mut pandoc = self.pandoc;
 
@@ -93,41 +72,7 @@ impl Renderer {
             ctx.destination.join(&profile.output_file)
         };
 
-        profile.from = Some({
-            let mut format;
-            let mut explicitly_configured_extensions = HashSet::new();
-            // Check if the profile has specified an explicit source format.
-            // If so, respect its extension configuration
-            match profile.from {
-                None => format = String::from("commonmark"),
-                Some(from) => {
-                    format = from;
-                    let (_, extensions) = Self::parse_format(&format);
-                    explicitly_configured_extensions.extend(extensions);
-                }
-            };
-            // Don't redundantly enable extensions or enable an explicitly disabled extension
-            ctx.pandoc.retain_extensions(|extension| {
-                !explicitly_configured_extensions.contains(extension.name())
-            });
-            // Enable additional extensions
-            for (extension, availability) in ctx.pandoc.enabled_extensions() {
-                match availability {
-                    extension::Availability::Available => {
-                        format.push('+');
-                        format.push_str(extension.name());
-                    }
-                    extension::Availability::Unavailable { introduced_in } => {
-                        log::warn!(
-                            "Cannot use Pandoc extension `{}`, which may result in degraded output \
-                            (introduced in version {}, but using {})",
-                            extension.name(), introduced_in, ctx.pandoc.version,
-                        );
-                    }
-                }
-            }
-            format
-        });
+        pandoc.args(["-f", "native"]);
 
         let mut default_metadata = vec![];
         if let Some(title) = ctx.mdbook_cfg.book.title.as_deref() {
@@ -255,31 +200,6 @@ impl Renderer {
             }
         }
 
-        let _filter_tempfile_guard: tempfile::TempPath;
-        if (ctx.pandoc.enabled_extensions).contains_key(&pandoc::Extension::PipeTables) {
-            let introduced_in = Version {
-                major: 2,
-                minor: 9,
-                patch: 2,
-            };
-            if ctx.pandoc.version >= introduced_in {
-                let mut filter = NamedTempFile::new()?;
-                write!(
-                    filter,
-                    "{}",
-                    include_str!("filters/annotate-tables-with-column-widths.lua")
-                )?;
-                pandoc.arg("--lua-filter");
-                pandoc.arg(filter.path().normalize()?.as_path());
-                _filter_tempfile_guard = filter.into_temp_path();
-            } else {
-                log::warn!(
-                    "Cannot wrap cell contents of tables, which may result in tables overflowing the page (requires Pandoc version {}, but using {})",
-                    introduced_in, ctx.pandoc.version,
-                );
-            }
-        }
-
         let defaults_file = {
             let mut file = NamedTempFile::new()?;
             serde_yaml::to_writer(&mut file, &profile)?;
@@ -290,11 +210,12 @@ impl Renderer {
         // --file-scope only works if there are at least two files, so if there is only one file,
         // add an additionaly empty file to convince Pandoc to perform its link adjustment pass
         let _dummy_tempfile_guard: tempfile::TempPath;
-        if self.num_inputs == 1 {
-            let dummy = tempfile::Builder::new()
+        if self.num_inputs < 2 {
+            let mut dummy = tempfile::Builder::new()
                 .prefix("dummy")
                 .rand_bytes(0)
                 .tempfile_in(&ctx.destination)?;
+            write!(dummy, "[]")?;
             let path = dummy
                 .path()
                 .normalize()
