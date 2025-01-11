@@ -686,6 +686,7 @@ impl<'book> Parser<'book> {
                 .union(Options::ENABLE_TABLES)
                 .union(Options::ENABLE_TASKLISTS)
                 .union(Options::ENABLE_HEADING_ATTRIBUTES)
+                .union(Options::ENABLE_GFM)
         };
 
         Self {

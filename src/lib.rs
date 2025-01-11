@@ -2010,6 +2010,33 @@ include-in-header = ["file-in-root"]
         ");
     }
 
+    #[test]
+    fn alerts() {
+        let book = MDBook::init()
+            .chapter(Chapter::new(
+                "",
+                "
+> [!NOTE]  
+> Highlights information that users should take into account, even when skimming.
+                ",
+                "chapter.md",
+            ))
+            .config(Config::latex())
+            .build();
+        insta::assert_snapshot!(book, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ Note
+        │ 
+        │ Highlights information that users should take into account, even when skimming.
+        ├─ latex/src/chapter.md
+        │ [Div ("", ["note"], []) [Div ("", ["title"], []) [Para [Str "Note"]], Para [Str "Highlights information that users should take into account, even when skimming."]]]
+        "#);
+    }
+
     static BOOKS: Lazy<PathBuf> = Lazy::new(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("books"));
 
     #[test]
