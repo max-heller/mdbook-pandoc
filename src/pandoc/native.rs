@@ -5,10 +5,10 @@ use std::{
 
 use anyhow::anyhow;
 use escape::Escape;
-use html5ever::{local_name, serialize::HtmlSerializer};
+use html5ever::serialize::HtmlSerializer;
 use pulldown_cmark::CowStr;
 
-use crate::{html, preprocess::PreprocessChapter};
+use crate::preprocess::{self, PreprocessChapter};
 
 use super::OutputFormat;
 
@@ -68,22 +68,22 @@ where
     }
 }
 
-impl Attributes for &scraper::node::Attributes {
+impl Attributes for &preprocess::tree::Attributes {
     fn id(&self) -> Option<&str> {
-        self.get(&html::name(local_name!("id"))).map(|s| s.as_ref())
+        self.id.as_deref()
     }
 
     fn classes(&self) -> impl Iterator<Item = &str> {
-        self.get(&html::name(local_name!("class")))
-            .filter(|s| !s.is_empty())
+        (!self.classes.is_empty())
+            .then_some(self.classes.split_ascii_whitespace())
             .into_iter()
-            .flat_map(|s| s.split(' '))
+            .flatten()
     }
 
     fn attrs(&self) -> impl Iterator<Item = (&str, &str)> {
-        self.iter()
-            .filter(|(k, _)| !matches!(k.local, local_name!("id") | local_name!("class")))
-            .map(|(k, v)| (k.local.as_ref(), v.as_ref()))
+        self.rest
+            .iter()
+            .map(|(name, value)| (name.local.as_ref(), value.as_ref()))
     }
 }
 
@@ -797,18 +797,17 @@ impl<'a, 'book, 'p, W: io::Write> SerializeBlock<'a, 'book, 'p, W> {
 
     /// Table, with attributes, caption, optional short caption, column alignments and widths
     /// (required), table head, table bodies, and table foot
-    pub fn serialize_table<S>(
+    pub fn serialize_table(
         self,
-        state: &mut S,
         attrs: impl Attributes,
         cols: impl IntoIterator<Item = (Alignment, Option<ColWidth>)>,
         header: (
             impl Attributes,
-            impl FnOnce(&mut S, &mut SerializeRows<'_, 'book, 'p, W>) -> anyhow::Result<()>,
+            impl FnOnce(&mut SerializeRows<'_, 'book, 'p, W>) -> anyhow::Result<()>,
         ),
         body: (
             impl Attributes,
-            impl FnOnce(&mut S, &mut SerializeRows<'_, 'book, 'p, W>) -> anyhow::Result<()>,
+            impl FnOnce(&mut SerializeRows<'_, 'book, 'p, W>) -> anyhow::Result<()>,
         ),
     ) -> anyhow::Result<()> {
         write!(self.serializer.unescaped(), "Table ")?;
@@ -846,7 +845,7 @@ impl<'a, 'book, 'p, W: io::Write> SerializeBlock<'a, 'book, 'p, W> {
             self.serializer.write_attributes(attrs)?;
             write!(self.serializer.unescaped(), " ")?;
             let mut serializer = SerializeList::new(self.serializer, Row)?;
-            rows(state, &mut serializer)?;
+            rows(&mut serializer)?;
             serializer.finish()?;
             write!(self.serializer.unescaped(), ")")?;
         }
@@ -858,7 +857,7 @@ impl<'a, 'book, 'p, W: io::Write> SerializeBlock<'a, 'book, 'p, W> {
             self.serializer.write_attributes(attrs)?;
             write!(self.serializer.unescaped(), " (RowHeadColumns 0) [] ")?;
             let mut serializer = SerializeList::new(self.serializer, Row)?;
-            rows(state, &mut serializer)?;
+            rows(&mut serializer)?;
             serializer.finish()?;
             write!(self.serializer.unescaped(), ")]")?;
         }
