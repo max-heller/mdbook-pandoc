@@ -594,6 +594,11 @@ impl<'book> Preprocess<'book> {
                 if let Err(err) = res {
                     match fs::read_to_string(normalized.preprocessed_absolute_path) {
                         Ok(preprocessed) => {
+                            log::error!(
+                                "Failed to preprocess chapter '{}' with content:\n{}",
+                                chapter.name,
+                                chapter.content,
+                            );
                             log::error!("Partially preprocessed chapter: {preprocessed}")
                         }
                         Err(err) => {
