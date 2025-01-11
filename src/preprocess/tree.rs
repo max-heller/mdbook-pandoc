@@ -13,7 +13,7 @@ use html5ever::{
     tendril::{fmt::UTF8, Tendril, TendrilSink},
     LocalName, QualName,
 };
-use pulldown_cmark::{CodeBlockKind, CowStr, Event as MdEvent, LinkType};
+use pulldown_cmark::{BlockQuoteKind, CodeBlockKind, CowStr, Event as MdEvent, LinkType};
 use scraper::{node::Element, Node};
 
 use crate::{html, latex, pandoc, preprocess::UnresolvableRemoteImage};
@@ -268,6 +268,8 @@ impl<'book> Emitter<'book> {
                 log::error!("HTML should have been filtered out of markdown events: {html:?}");
                 Ok(())
             }
+            // Math option is not enabled
+            MdEvent::InlineMath(_) | MdEvent::DisplayMath(_) => unreachable!(),
             MdEvent::Text(s) => serializer
                 .serialize_inlines(|inlines| inlines.serialize_element()?.serialize_str(s)),
             MdEvent::Code(s) => serializer
@@ -316,7 +318,24 @@ impl<'book> Emitter<'book> {
                         })
                     },
                 ),
-                Tag::BlockQuote => serializer
+                Tag::BlockQuote(Some(kind)) => {
+                    let (class, title) = match kind {
+                        BlockQuoteKind::Note => ("note", "Note"),
+                        BlockQuoteKind::Tip => ("tip", "Tip"),
+                        BlockQuoteKind::Important => ("important", "Important"),
+                        BlockQuoteKind::Warning => ("warning", "Warning"),
+                        BlockQuoteKind::Caution => ("caution", "Caution"),
+                    };
+                    serializer.blocks()?.serialize_element()?.serialize_div((None, &[class.into()], &[]), |blocks| {
+                        blocks.serialize_element()?.serialize_div((None, &["title".into()], &[]), |header| {
+                            header.serialize_element()?.serialize_para(|header| header.serialize_element()?.serialize_str(title))
+                        })?;
+                        blocks.serialize_nested(|serializer| {
+                            self.serialize_children(tag, siblings, serializer)
+                        })
+                    })
+                }
+                Tag::BlockQuote(None) => serializer
                     .blocks()?
                     .serialize_element()?
                     .serialize_block_quote(|blocks| {
@@ -563,6 +582,8 @@ impl<'book> Emitter<'book> {
                     log::warn!("Ignoring metadata block");
                     Ok(())
                 }
+                // Definition list parsing is not enabled
+                Tag::DefinitionList | Tag::DefinitionListTitle | Tag::DefinitionListDefinition => unreachable!()
             },
             MdEvent::FootnoteReference(label) => match self.footnotes.get(label) {
                 None => {
