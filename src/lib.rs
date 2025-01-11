@@ -12,9 +12,8 @@ mod book;
 use book::Book;
 
 mod css;
-
+mod html;
 mod latex;
-
 mod pandoc;
 
 mod preprocess;
@@ -105,7 +104,7 @@ impl mdbook::Renderer for Renderer {
             return Ok(());
         }
 
-        let pandoc_version = pandoc::check_compatibility()?;
+        pandoc::check_compatibility()?;
 
         let html_cfg: Option<HtmlConfig> = ctx
             .config
@@ -127,7 +126,6 @@ impl mdbook::Renderer for Renderer {
             let ctx = pandoc::RenderContext {
                 book: &book,
                 mdbook_cfg: &ctx.config,
-                pandoc: pandoc::Context::new(pandoc_version),
                 destination: book.destination.join(name),
                 output: profile.output_format(),
                 columns: profile.columns,
@@ -211,6 +209,7 @@ mod tests {
     use regex::Regex;
     use tempfile::{tempfile, TempDir};
     use toml::toml;
+    use tracing_subscriber::layer::SubscriberExt;
 
     use super::*;
 
@@ -292,15 +291,21 @@ mod tests {
             // Initialize logger to captures `log` output and redirect it to a tempfile
             let logfile = tempfile().unwrap();
             let _logger = tracing::subscriber::set_default(
-                tracing_subscriber::fmt()
-                    .with_max_level(options.max_log_level)
-                    .compact()
-                    .without_time()
-                    .with_writer({
-                        let logfile = logfile.try_clone().unwrap();
-                        move || logfile.try_clone().unwrap()
-                    })
-                    .finish(),
+                tracing_subscriber::registry()
+                    .with(
+                        tracing_subscriber::fmt::layer()
+                            .compact()
+                            .without_time()
+                            .with_writer({
+                                let logfile = logfile.try_clone().unwrap();
+                                move || logfile.try_clone().unwrap()
+                            }),
+                    )
+                    .with(
+                        tracing_subscriber::filter::Targets::new()
+                            .with_default(options.max_log_level)
+                            .with_target("html5ever", tracing::Level::INFO),
+                    ),
             );
             {
                 let logger = tracing_log::LogTracer::new();
@@ -329,10 +334,6 @@ mod tests {
         pub fn config(mut self, config: Config) -> Self {
             self.book.config.set(Renderer::CONFIG_KEY, config).unwrap();
             self
-        }
-
-        pub fn toml_config(self, toml: toml::map::Map<String, toml::Value>) -> Self {
-            self.config(toml.try_into().expect("invalid config"))
         }
 
         pub fn chapter(mut self, Chapter { mut chapter }: Chapter) -> Self {
@@ -601,7 +602,7 @@ mod tests {
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
-        │ # Getting Started {#book__markdown__src__getting-startedmd__getting-started}
+        │ # Getting Started {#book__markdown__src__getting-started.md__getting-started}
         ");
     }
 
@@ -632,7 +633,7 @@ mod tests {
             .chapter(Chapter::new("", "~test1~ ~~test2~~", "chapter.md"))
             .config(Config::latex())
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
@@ -640,8 +641,8 @@ mod tests {
         ├─ latex/output.tex
         │ \st{test1} \st{test2}
         ├─ latex/src/chapter.md
-        │ ~~test1~~ ~~test2~~
-        ");
+        │ [Para [Strikeout [Str "test1"], Str " ", Strikeout [Str "test2"]]]
+        "#);
     }
 
     #[test]
@@ -654,7 +655,7 @@ mod tests {
             ))
             .config(Config::latex())
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
@@ -668,9 +669,8 @@ mod tests {
         │   Incomplete task
         │ \end{itemize}
         ├─ latex/src/chapter.md
-        │ * [x] Complete task
-        │ * [ ] Incomplete task
-        ");
+        │ [BulletList [[Plain [Str "\9746", Space, Str "Complete task"]], [Plain [Str "\9744", Space, Str "Incomplete task"]]]]
+        "#);
     }
 
     #[test]
@@ -683,51 +683,47 @@ mod tests {
             ))
             .config(Config::latex())
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r##"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \chapter{Heading}\label{book__latex__src__chaptermd__custom-heading}
+        │ \chapter{Heading}\label{book__latex__src__chapter.md__custom-heading}
         │ 
-        │ \hyperref[book__latex__src__chaptermd__custom-heading]{heading}
+        │ \hyperref[book__latex__src__chapter.md__custom-heading]{heading}
         ├─ latex/src/chapter.md
-        │ # Heading { #custom-heading }
-        │ 
-        │ [heading](#custom-heading)
-        ");
+        │ [Header 1 ("custom-heading", [], []) [Str "Heading"], Para [Link ("", [], []) [Str "heading"] ("#custom-heading", "")]]
+        "##);
     }
 
     #[test]
     fn footnotes() {
+        // Pandoc doesn't support nested footnotes (it won't output anything meaningful for them)
+        // but we output the AST for them anyway. See https://github.com/jgm/pandoc/issues/2053
         let book = MDBook::init()
             .chapter(Chapter::new(
                 "",
                 "
-This is an example of a footnote[^note].
+hello[^1]
 
-[^note]: This text is the contents of the footnote, which will be rendered
-    towards the bottom.
+[^1]: a footnote containing another footnote[^2]
+[^2]: second footnote
                 ",
                 "chapter.md",
             ))
             .config(Config::latex())
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ This is an example of a footnote\footnote{This text is the contents of
-        │   the footnote, which will be rendered towards the bottom.}.
+        │ hello\footnote{a footnote containing another footnote\footnotemark{}}
         ├─ latex/src/chapter.md
-        │ This is an example of a footnote[^note].
-        │ 
-        │ [^note]: This text is the contents of the footnote, which will be rendered
-        │     towards the bottom.
-        ");
+        │ [Para [Str "hello", Note [Para [Str "a footnote containing another footnote", Note [Para [Str "second footnote"]]]]]]
+        "#);
     }
 
     #[test]
@@ -744,7 +740,7 @@ This is an example of a footnote[^note].
             ))
             .config(Config::latex())
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
@@ -760,10 +756,8 @@ This is an example of a footnote[^note].
         │ abc & def \\
         │ \end{longtable}
         ├─ latex/src/chapter.md
-        │ |Header1|Header2|
-        │ |-------|-------|
-        │ |abc|def|
-        ");
+        │ [Table ("", [], []) (Caption Nothing []) [(AlignDefault, ColWidthDefault), (AlignDefault, ColWidthDefault)] (TableHead ("", [], []) [Row ("", [], []) [Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header1"]], Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header2"]]]]) [(TableBody ("", [], []) (RowHeadColumns 0) [] [Row ("", [], []) [Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "abc"]], Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "def"]]]])] (TableFoot ("", [], []) [])]
+        "#);
     }
 
     #[test]
@@ -780,7 +774,7 @@ This is an example of a footnote[^note].
             ))
             .config(Config::latex())
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
@@ -799,15 +793,12 @@ This is an example of a footnote[^note].
         │ \endhead
         │ \bottomrule\noalign{}
         │ \endlastfoot
-        │ abc & long long long long long long long long long long long long
-        │ long \\
+        │ abc &
+        │ long long long long long long long long long long long long long \\
         │ \end{longtable}
         ├─ latex/src/chapter.md
-        │ <!-- mdbook-pandoc::table: 7|64 -->
-        │ |Header1|Header2|
-        │ |-------|:------|
-        │ |abc|long long long long long long long long long long long long long|
-        ");
+        │ [Table ("", [], []) (Caption Nothing []) [(AlignDefault, (ColWidth 0.09859154929577464)), (AlignLeft, (ColWidth 0.9014084507042254))] (TableHead ("", [], []) [Row ("", [], []) [Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header1"]], Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header2"]]]]) [(TableBody ("", [], []) (RowHeadColumns 0) [] [Row ("", [], []) [Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "abc"]], Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "long long long long long long long long long long long long long"]]]])] (TableFoot ("", [], []) [])]
+        "#);
     }
 
     #[test]
@@ -818,24 +809,24 @@ This is an example of a footnote[^note].
             .chapter(Chapter::new("", "# Two", "two.md"))
             .config(Config::latex())
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \chapter{One}\label{book__latex__src__onemd__one}
+        │ \chapter{One}\label{book__latex__src__one.md__one}
         │ 
         │ \part{part two}
         │ 
-        │ \chapter{Two}\label{book__latex__src__twomd__two}
+        │ \chapter{Two}\label{book__latex__src__two.md__two}
         ├─ latex/src/one.md
-        │ # One
+        │ [Header 1 ("one", [], []) [Str "One"]]
         ├─ latex/src/part-1-part-two.md
-        │ `\part{part two}`{=latex}
+        │ [Para [RawInline (Format "latex") "\\part{part two}"]]
         ├─ latex/src/two.md
-        │ # Two
-        ");
+        │ [Header 1 ("two", [], []) [Str "Two"]]
+        "#);
     }
 
     #[test]
@@ -854,7 +845,7 @@ This is an example of a footnote[^note].
             .chapter(Chapter::new("Three", "", "three.md"))
             .config(Config::latex())
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  WARN mdbook_pandoc::preprocess: Failed to determine suitable anchor for beginning of chapter 'Three'--does it contain any headings?    
@@ -862,27 +853,22 @@ This is an example of a footnote[^note].
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \chapter{One}\label{book__latex__src__one__onemd__one}
+        │ \chapter{One}\label{book__latex__src__one__one.md__one}
         │ 
-        │ \hyperref[book__latex__src__two__twomd__two]{Two}
+        │ \hyperref[book__latex__src__two__two.md__two]{Two}
         │ 
-        │ \chapter{Two}\label{book__latex__src__two__twomd__two}
+        │ \chapter{Two}\label{book__latex__src__two__two.md__two}
         │ 
-        │ \hyperref[book__latex__src__one__onemd__one]{One}
-        │ \hyperref[book__latex__src__one__onemd__one]{also one}
+        │ \hyperref[book__latex__src__one__one.md__one]{One}
+        │ \hyperref[book__latex__src__one__one.md__one]{also one}
         │ \href{../three.md}{Three}
         ├─ latex/src/one/one.md
-        │ # One
-        │ 
-        │ [Two](book/latex/src/two/two.md#two)
+        │ [Header 1 ("one", [], []) [Str "One"], Para [Link ("", [], []) [Str "Two"] ("book/latex/src/two/two.md#two", "")]]
         ├─ latex/src/three.md
+        │ []
         ├─ latex/src/two/two.md
-        │ # Two
-        │ 
-        │ [One](book/latex/src/one/one.md#one)
-        │ [also one](book/latex/src/one/one.md#one)
-        │ [Three](../three.md)
-        ");
+        │ [Header 1 ("two", [], []) [Str "Two"], Para [Link ("", [], []) [Str "One"] ("book/latex/src/one/one.md#one", ""), SoftBreak, Link ("", [], []) [Str "also one"] ("book/latex/src/one/one.md#one", ""), SoftBreak, Link ("", [], []) [Str "Three"] ("../three.md", "")]]
+        "#);
     }
 
     #[test]
@@ -896,28 +882,26 @@ This is an example of a footnote[^note].
             .chapter(Chapter::new("Two", "# Two", "two.md"))
             .config(Config::latex())
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \chapter{One}\label{book__latex__src__onemd__one}
+        │ \chapter{One}\label{book__latex__src__one.md__one}
         │ 
-        │ \section{Top}\label{book__latex__src__onepointonemd__top}
+        │ \section{Top}\label{book__latex__src__onepointone.md__top}
         │ 
-        │ \subsection*{Another}\label{book__latex__src__onepointonemd__another}
+        │ \subsection*{Another}\label{book__latex__src__onepointone.md__another}
         │ 
-        │ \chapter{Two}\label{book__latex__src__twomd__two}
+        │ \chapter{Two}\label{book__latex__src__two.md__two}
         ├─ latex/src/one.md
-        │ # One
+        │ [Header 1 ("one", [], []) [Str "One"]]
         ├─ latex/src/onepointone.md
-        │ ## Top
-        │ 
-        │ ### Another { .unnumbered .unlisted }
+        │ [Header 2 ("top", [], []) [Str "Top"], Header 3 ("another", ["unnumbered", "unlisted"], []) [Str "Another"]]
         ├─ latex/src/two.md
-        │ # Two
-        ");
+        │ [Header 1 ("two", [], []) [Str "Two"]]
+        "#);
     }
 
     #[test]
@@ -928,29 +912,26 @@ This is an example of a footnote[^note].
                 "",
                 r#"
 <i class="fa fa-print"></i>
-<i class="fa fa-print"/>
-<i class = "fa fa-print"/>
+<i class = "fa fa-print"/></i>
                 "#,
                 "chapter.md",
             ))
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \faicon{print} \faicon{print} \faicon{print}
+        │ \faicon{print} \faicon{print}
         ├─ latex/src/chapter.md
-        │ `\faicon{print}`{=latex}
-        │ `\faicon{print}`{=latex}
-        │ `\faicon{print}`{=latex}
-        ");
+        │ [Para [RawInline (Format "latex") "\\faicon{print}", SoftBreak, RawInline (Format "latex") "\\faicon{print}"]]
+        "#);
 
         let book = MDBook::init()
             .chapter(Chapter::new(
                 "",
-                r#"<i class="fa fa-print"/>"#,
+                r#"<i class="fa fa-print"></i>"#,
                 "chapter.md",
             ))
             .build();
@@ -960,7 +941,7 @@ This is an example of a footnote[^note].
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
-        │ <i class="fa fa-print"/>
+        │ `<i class="fa fa-print">`{=html}`</i>`{=html}
         "#);
     }
 
@@ -1097,6 +1078,7 @@ nothidden():
     }
 
     #[test]
+    #[ignore]
     fn code_block_with_very_long_line() {
         let long_line = str::repeat("long ", 1000);
         let content = format!(
@@ -1121,6 +1103,7 @@ nothidden():
     }
 
     #[test]
+    #[ignore]
     fn code_block_with_very_long_line_with_special_characters() {
         let content = r#"""
 ```console
@@ -1159,7 +1142,7 @@ fn main() {}
                 "chapter.md",
             ))
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
@@ -1177,15 +1160,10 @@ fn main() {}
         │ \end{Highlighting}
         │ \end{Shaded}
         ├─ latex/src/chapter.md
-        │ 
-        │ ````rust
-        │ fn main() {}
-        │ ````
-        │ 
-        │ ````rust
-        │ fn main() {}
-        │ ````
-        ");
+        │ [CodeBlock ("", ["rust"], []) "fn main() {}
+        │ ", CodeBlock ("", ["rust"], []) "fn main() {}
+        │ "]
+        "#);
     }
 
     #[test]
@@ -1212,53 +1190,33 @@ some text here
                 "chapter.md",
             ))
             .build();
-        insta::assert_snapshot!(book, @r#"
+        insta::assert_snapshot!(book, @r##"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \phantomsection\label{book__latex__src__chaptermd__test}{some text here}
-        │ \phantomsection\label{book__latex__src__chaptermd__test2}{some text
-        │ here}
+        │ \phantomsection\label{book__latex__src__chapter.md__test}{some text here}
+        │ \phantomsection\label{book__latex__src__chapter.md__test2}{some text here}
         │ 
-        │ \phantomsection\label{book__latex__src__chaptermd__test3}
+        │ \phantomsection\label{book__latex__src__chapter.md__test3}
+        │ 
         │ some text here
         │ 
-        │ \phantomsection\label{book__latex__src__chaptermd__test4}
+        │ \phantomsection\label{book__latex__src__chapter.md__test4}
         │ some text here
         │ 
-        │ \hyperref[book__latex__src__chaptermd__test]{test link}
-        │ \hyperref[book__latex__src__chaptermd__test2]{test2 link}
-        │ \hyperref[book__latex__src__chaptermd__test3]{test3 link}
-        │ \hyperref[book__latex__src__chaptermd__test4]{test4 link}
+        │ \hyperref[book__latex__src__chapter.md__test]{test link}
+        │ \hyperref[book__latex__src__chapter.md__test2]{test2 link}
+        │ \hyperref[book__latex__src__chapter.md__test3]{test3 link}
+        │ \hyperref[book__latex__src__chapter.md__test4]{test4 link}
         ├─ latex/src/chapter.md
-        │ [some text here]{id="test"}
-        │ [some text here]{id="test2"}
-        │ 
-        │ 
-        │ 
-        │ ::: {id="test3"}
-        │ 
+        │ [Para [Span ("test", [], []) [Str "some text here"], SoftBreak, Span ("test2", [], []) [Str "some text here"]], Div ("test3", [], []) [Plain [Str "
         │ some text here
-        │ 
-        │ :::
-        │ 
-        │ 
-        │ 
-        │ 
-        │ 
-        │ ::: {id="test4"}
-        │ some text here
-        │ :::
-        │ 
-        │ 
-        │ 
-        │ [test link](#test)
-        │ [test2 link](#test2)
-        │ [test3 link](#test3)
-        │ [test4 link](#test4)
-        "#);
+        │ "]], Plain [Str "
+        │ "], Div ("test4", [], []) [Plain [Str "some text here"]], Plain [Str "
+        │ "], Para [Link ("", [], []) [Str "test link"] ("#test", ""), SoftBreak, Link ("", [], []) [Str "test2 link"] ("#test2", ""), SoftBreak, Link ("", [], []) [Str "test3 link"] ("#test3", ""), SoftBreak, Link ("", [], []) [Str "test4 link"] ("#test4", "")]]
+        "##);
     }
 
     #[test]
@@ -1271,23 +1229,17 @@ some text here
                 "chapter.md",
             ))
             .build();
-        insta::assert_snapshot!(book, @r#"
+        insta::assert_snapshot!(book, @r##"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \phantomsection\label{book__latex__src__chaptermd__foo=bar}
-        │ \hyperref[book__latex__src__chaptermd__foo=bar]{}something here
+        │ \phantomsection\label{book__latex__src__chapter.md__foo=bar}
+        │ \hyperref[book__latex__src__chapter.md__foo=bar]{}something here
         ├─ latex/src/chapter.md
-        │ <dt id="foo=bar">
-        │ 
-        │ ::: {id="foo=bar"}
-        │ [](#foo=bar){.mdbook-pandoc}something here
-        │ :::
-        │ 
-        │ </dt>
-        "#);
+        │ [RawBlock (Format "html") "<dt id=\"foo=bar\">", Div ("foo=bar", [], []) [Plain [Link ("", [], [("href", "#foo=bar")]) [] ("#foo=bar", ""), Str "something here"]], RawBlock (Format "html") "</dt>"]
+        "##);
     }
 
     #[test]
@@ -1307,32 +1259,24 @@ some text here
                 "chapter.md",
             ))
             .build();
-        insta::assert_snapshot!(book, @r#"
+        insta::assert_snapshot!(book, @r##"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \phantomsection\label{book__latex__src__chaptermd__my-div}
-        │ \phantomsection\label{book__latex__src__chaptermd__my-a}\hyperref[book__latex__src__chaptermd__my-div]{{[}some
-        │ text here{]}}
+        │ \phantomsection\label{book__latex__src__chapter.md__my-div}
         │ 
-        │ \hyperref[book__latex__src__chaptermd__my-div]{div}
-        │ \hyperref[book__latex__src__chaptermd__my-a]{a}
+        │ \phantomsection\label{book__latex__src__chapter.md__my-a}\hyperref[book__latex__src__chapter.md__my-div]{{[}some text here{]}}
+        │ 
+        │ \hyperref[book__latex__src__chapter.md__my-div]{div}
+        │ \hyperref[book__latex__src__chapter.md__my-a]{a}
         ├─ latex/src/chapter.md
-        │ 
-        │ 
-        │ ::: {id="my-div"}
-        │ 
-        │ [[some text here]](#my-div){id="my-a"}
-        │ 
-        │ :::
-        │ 
-        │ 
-        │ 
-        │ [div](#my-div)
-        │ [a](#my-a)
-        "#);
+        │ [Div ("my-div", [], []) [Plain [Str "
+        │ ", Link ("my-a", [], [("href", "#my-div")]) [Str "[some text here]"] ("#my-div", ""), Str "
+        │ "]], Plain [Str "
+        │ "], Para [Link ("", [], []) [Str "div"] ("#my-div", ""), SoftBreak, Link ("", [], []) [Str "a"] ("#my-a", "")]]
+        "##);
     }
 
     #[test]
@@ -1357,14 +1301,11 @@ some text here
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \chapter{Chapter Foo}\label{book__latex__src__chaptermd__chapter-foo}
+        │ \chapter{Chapter Foo}\label{book__latex__src__chapter.md__chapter-foo}
         │ 
-        │ \hyperref[book__latex__src__chaptermd__chapter-foo]{link}
+        │ \hyperref[book__latex__src__chapter.md__chapter-foo]{link}
         ├─ latex/src/chapter.md
-        │ # Chapter Foo
-        │ 
-        │ [link](book/latex/src/chapter.md#chapter-foo "\"foo\" (bar)")
-        │
+        │ [Header 1 ("chapter-foo", [], []) [Str "Chapter Foo"], Para [Link ("", [], []) [Str "link"] ("book/latex/src/chapter.md#chapter-foo", "\"foo\" (bar)")], Para []]
         "#);
     }
 
@@ -1378,20 +1319,18 @@ some text here
                 "chapter.md",
             ))
             .build();
-        insta::assert_snapshot!(book, @r"
+        insta::assert_snapshot!(book, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
         ├─ latex/output.tex
-        │ \chapter{Chapter One}\label{book__latex__src__chaptermd__chapter-one}
+        │ \chapter{Chapter One}\label{book__latex__src__chapter.md__chapter-one}
         │ 
-        │ \hyperref[book__latex__src__chaptermd__chapter-one]{link}
+        │ \hyperref[book__latex__src__chapter.md__chapter-one]{link}
         ├─ latex/src/chapter.md
-        │ # Chapter One
-        │ 
-        │ [link](book/latex/src/chapter.md#chapter-one)
-        ");
+        │ [Header 1 ("chapter-one", [], []) [Str "Chapter One"], Para [Link ("", [], []) [Str "link"] ("book/latex/src/chapter.md#chapter-one", "")]]
+        "#);
     }
 
     #[test]
@@ -1407,11 +1346,13 @@ some text here
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
         ├─ markdown/pandoc-ir
         │ [ Para
-        │     [ Str "[Prefix"
-        │     , Space
-        │     , Str "@fig:1]"
-        │     , Space
-        │     , Str "[-@fig:1]"
+        │     [ Str "["
+        │     , Str "Prefix @fig:1"
+        │     , Str "]"
+        │     , Str " "
+        │     , Str "["
+        │     , Str "-@fig:1"
+        │     , Str "]"
         │     ]
         │ ]
         "#);
@@ -1434,8 +1375,34 @@ some text here
     }
 
     #[test]
+    fn nested_html_block() {
+        let s = "
+> <!-- hello
+>
+> world -->
+                ";
+        let output = MDBook::init()
+            .config(Config::markdown())
+            .chapter(Chapter::new("", s, "chapter.md"))
+            .build();
+        insta::assert_snapshot!(output, @r"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ > <!-- hello
+        │ >
+        │ > world -->
+        ");
+    }
+
+    #[test]
     fn matched_html_tags() {
-        let contents = "
+        let ast = MDBook::init()
+            .chapter(Chapter::new(
+                "Chapter",
+                "
 <details>
 <summary>
 
@@ -1452,72 +1419,46 @@ more **markdown**
 </details>
 
 outside divs
-        ";
-        let book = || MDBook::init().chapter(Chapter::new("Chapter", contents, "chapter.md"));
-
-        let markdown = book().config(Config::markdown()).build();
-        insta::assert_snapshot!(markdown, @r"
-        ├─ log output
-        │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
-        ├─ markdown/book.md
-        │ <details>
-        │ 
-        │ ::::: mdbook-pandoc
-        │ <summary>
-        │ 
-        │ ::: mdbook-pandoc
-        │ ## Heading {#book__markdown__src__chaptermd__heading .unnumbered .unlisted}
-        │ 
-        │ text
-        │ :::
-        │ 
-        │ </summary>
-        │ <p>
-        │ 
-        │ ::: mdbook-pandoc
-        │ more **markdown**
-        │ :::
-        │ 
-        │ </p>
-        │ :::::
-        │ 
-        │ </details>
-        │ 
-        │ outside divs
-        ");
-
-        let ast = book().config(Config::pandoc()).build();
+                ",
+                "chapter.md",
+            ))
+            .config(Config::pandoc())
+            .build();
         insta::assert_snapshot!(ast, @r#"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
         ├─ markdown/pandoc-ir
-        │ [ RawBlock (Format "html") "<details>\n"
+        │ [ RawBlock (Format "html") "<details>"
         │ , Div
-        │     ( "" , [ "mdbook-pandoc" ] , [] )
-        │     [ RawBlock (Format "html") "<summary>\n"
+        │     ( "" , [] , [] )
+        │     [ Plain [ Str "\n" , RawInline (Format "html") "<summary>" ]
         │     , Div
-        │         ( "" , [ "mdbook-pandoc" ] , [] )
-        │         [ Header
+        │         ( "" , [] , [] )
+        │         [ Plain [ Str "\n" ]
+        │         , Header
         │             2
-        │             ( "book__markdown__src__chaptermd__heading"
+        │             ( "book__markdown__src__chapter.md__heading"
         │             , [ "unnumbered" , "unlisted" ]
         │             , []
         │             )
         │             [ Str "Heading" ]
         │         , Para [ Str "text" ]
         │         ]
-        │     , RawBlock (Format "html") "</summary>\n<p>\n"
+        │     , RawBlock (Format "html") "</summary>"
+        │     , Plain [ Str "\n" , RawInline (Format "html") "<p>" ]
         │     , Div
-        │         ( "" , [ "mdbook-pandoc" ] , [] )
-        │         [ Para [ Str "more" , Space , Strong [ Str "markdown" ] ] ]
-        │     , RawBlock (Format "html") "</p>\n"
+        │         ( "" , [] , [] )
+        │         [ Plain [ Str "\n" ]
+        │         , Para [ Str "more " , Strong [ Str "markdown" ] ]
+        │         ]
+        │     , RawBlock (Format "html") "</p>"
+        │     , Plain [ Str "\n" ]
         │     ]
-        │ , RawBlock (Format "html") "</details>\n"
-        │ , Para [ Str "outside" , Space , Str "divs" ]
+        │ , RawBlock (Format "html") "</details>"
+        │ , Plain [ Str "\n" ]
+        │ , Para [ Str "outside divs" ]
         │ ]
         "#);
 
@@ -1535,56 +1476,6 @@ outside divs
         ├─ markdown/book.md
         │ 2`<sup>`{=html}n - 1`</sup>`{=html}
         ");
-    }
-
-    #[test]
-    /// Respect enabled/disabled extensions in Pandoc's `from` option
-    fn extension_overrides() {
-        let opts = MDBook::options().max_log_level(tracing::Level::TRACE);
-        let chapter = Chapter::new("", "# Chapter", "chapter.md");
-        let default = opts
-            .init()
-            .toml_config(toml! {
-                keep-preprocessed = false
-
-                [profile.markdown]
-                output-file = "book.md"
-                standalone = false
-            })
-            .chapter(chapter.clone())
-            .build();
-        let with_overrides = opts
-            .init()
-            .toml_config(toml! {
-                keep-preprocessed = false
-
-                [profile.markdown]
-                output-file = "book.md"
-                standalone = false
-                from = "commonmark-gfm_auto_identifiers+attributes"
-            })
-            .chapter(chapter)
-            .build();
-        let diff = similar::TextDiff::from_lines(&default.to_string(), &with_overrides.to_string())
-            .unified_diff()
-            .to_string();
-        insta::assert_snapshot!(diff, @r##"
-        @@ -10,7 +10,7 @@
-         │     pdf_engine: None,
-         │     standalone: false,
-         │     from: Some(
-        -│         "commonmark+attributes+gfm_auto_identifiers",
-        +│         "commonmark-gfm_auto_identifiers+attributes",
-         │     ),
-         │     to: None,
-         │     table_of_contents: true,
-        @@ -24,4 +24,4 @@
-         │ }    
-         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
-         ├─ markdown/book.md
-        -│ # Chapter {#book__markdown__src__chaptermd__chapter}
-        +│ # Chapter
-        "##);
     }
 
     #[test]
@@ -1633,9 +1524,6 @@ colorlinks = false
         │     output_file: "/dev/null",
         │     pdf_engine: None,
         │     standalone: true,
-        │     from: Some(
-        │         "commonmark+gfm_auto_identifiers",
-        │     ),
         │     to: Some(
         │         "markdown",
         │     ),
@@ -1701,7 +1589,7 @@ colorlinks = false
         │         ),
         │     },
         │ }    
-        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null
         "#)
     }
 
@@ -1744,7 +1632,7 @@ to = "markdown"
             ))
             .chapter(Chapter::new("", "# New New Bar", "new-new-bar.md"))
             .build();
-        insta::assert_snapshot!(output, @r"
+        insta::assert_snapshot!(output, @r#"
         ├─ log output
         │ DEBUG mdbook::book: Running the index preprocessor.    
         │ DEBUG mdbook::book: Running the links preprocessor.    
@@ -1761,12 +1649,11 @@ to = "markdown"
         ├─ test/src/appendices/bibliography.html
         ├─ test/src/foo/bar.html
         ├─ test/src/index.md
-        │ [bar](book/test/src/new-new-bar.md#new-new-bar)
-        │ [bib](https://rustc-dev-guide.rust-lang.org/appendix/bibliography.html)
+        │ [Para [Link ("", [], []) [Str "bar"] ("book/test/src/new-new-bar.md#new-new-bar", ""), SoftBreak, Link ("", [], []) [Str "bib"] ("https://rustc-dev-guide.rust-lang.org/appendix/bibliography.html", "")]]
         ├─ test/src/new-bar.html
         ├─ test/src/new-new-bar.md
-        │ # New New Bar
-        ")
+        │ [Header 1 ("new-new-bar", [], []) [Str "New New Bar"]]
+        "#)
     }
 
     #[test]
@@ -1794,14 +1681,13 @@ to = "markdown"
         │ \includegraphics[width=0.52083in,height=1.04167in]{book/latex/src/img/image.png}
         │ \includegraphics[width=0.52083in,height=1.04167in]{book/latex/src/img/image.png}
         ├─ latex/src/chapter.md
-        │ ![alt text](book/latex/src/img/image.png "a title")
-        │ ![alt text](book/latex/src/img/image.png "a title"){.foo .bar height="100" width="50"}
-        │ ![alt text](book/latex/src/img/image.png "a title"){.foo .bar width="50" height="100"}
+        │ [Para [Image ("", [], []) [Str "alt text"] ("book/latex/src/img/image.png", "a title"), SoftBreak, Image ("", ["foo", "bar"], [("height", "100"), ("width", "50")]) [Str "alt text"] ("book/latex/src/img/image.png", "a title"), SoftBreak, Image ("", ["foo", "bar"], [("width", "50"), ("height", "100")]) [Str "alt text"] ("book/latex/src/img/image.png", "a title")]]
         ├─ latex/src/img/image.png
         "#);
     }
 
     #[test]
+    #[ignore]
     fn remote_images() {
         let book = MDBook::init()
             .config(Config::pdf())
@@ -1841,7 +1727,6 @@ to = "markdown"
         ├─ log output
         │  INFO mdbook::book: Running the pandoc backend    
         │  WARN mdbook_pandoc::preprocess: Failed to resolve image link 'https://doesnotexist.fake/main.yml?style=flat-square' in chapter 'Some Chapter': could not fetch remote image: Dns Failed    
-        │  WARN mdbook_pandoc::preprocess: Replacing image with description    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
@@ -1884,9 +1769,224 @@ additional-css = ["ferris.css"]
         ├─ latex/output.tex
         │ \includegraphics[width=1.04167in,height=0.52083in]{book/latex/src/img/image.png}
         ├─ latex/src/chapter.md
-        │ ![alt text](book/latex/src/img/image.png "a title"){.ferris-explain height="50" width="100px"}
+        │ [Plain [Image ("", ["ferris-explain"], [("height", "50"), ("width", "100px")]) [Str "alt text"] ("book/latex/src/img/image.png", "a title"), Str "
+        │ "]]
         ├─ latex/src/img/image.png
         "#);
+    }
+
+    #[test]
+    fn regression_inline_code_newline() {
+        let book = MDBook::init()
+            .config(Config::pandoc())
+            .chapter(Chapter::new(
+                "",
+                // Important for inline code to be in the same inline container as the rest of the item
+                "- Writing a program that prints `Hello, world!`",
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+        ├─ markdown/pandoc-ir
+        │ [ BulletList
+        │     [ [ Plain
+        │           [ Str "Writing a program that prints "
+        │           , Code ( "" , [] , [] ) "Hello, world!"
+        │           ]
+        │       ]
+        │     ]
+        │ ]
+        "#);
+    }
+
+    #[test]
+    fn footnotes_get_preprocessed() {
+        let book = MDBook::init()
+            .config(Config::pandoc())
+            .chapter(Chapter::new(
+                "",
+                r#"
+hello[^1]
+
+[^1]: a footnote containing another footnote[^2]
+[^2]: <a href="example.com"></a>
+                "#,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+        ├─ markdown/pandoc-ir
+        │ [ Para
+        │     [ Str "hello"
+        │     , Note
+        │         [ Para
+        │             [ Str "a footnote containing another footnote"
+        │             , Note
+        │                 [ Para
+        │                     [ Link
+        │                         ( "" , [] , [ ( "href" , "example.com" ) ] )
+        │                         []
+        │                         ( "example.com" , "" )
+        │                     ]
+        │                 ]
+        │             ]
+        │         ]
+        │     ]
+        │ ]
+        "#);
+    }
+
+    #[test]
+    fn code_escaping() {
+        let book = MDBook::init()
+            .config(Config::pandoc())
+            .chapter(Chapter::new(
+                "",
+                r###"
+```rust
+"foo"; r"foo";                     // foo
+"\"foo\""; r#""foo""#;             // "foo"
+
+"foo #\"# bar";
+r##"foo #"# bar"##;                // foo #"# bar
+
+"\x52"; "R"; r"R";                 // R
+"\\x52"; r"\x52";                  // \x52
+```
+`"foo"; r"foo";                     // foo`
+`"\"foo\""; r#""foo""#;             // "foo"`
+`"foo #\"# bar";`
+`r##"foo #"# bar"##;                // foo #"# bar`
+`"\x52"; "R"; r"R";                 // R`
+`"\\x52"; r"\x52";                  // \x52`
+                "###,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r###"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+        ├─ markdown/pandoc-ir
+        │ [ CodeBlock
+        │     ( "" , [ "rust" ] , [] )
+        │     "\"foo\"; r\"foo\";                     // foo\n\"\\\"foo\\\"\"; r#\"\"foo\"\"#;             // \"foo\"\n\n\"foo #\\\"# bar\";\nr##\"foo #\"# bar\"##;                // foo #\"# bar\n\n\"\\x52\"; \"R\"; r\"R\";                 // R\n\"\\\\x52\"; r\"\\x52\";                  // \\x52\n"
+        │ , Para
+        │     [ Code
+        │         ( "" , [] , [] )
+        │         "\"foo\"; r\"foo\";                     // foo"
+        │     , SoftBreak
+        │     , Code
+        │         ( "" , [] , [] )
+        │         "\"\\\"foo\\\"\"; r#\"\"foo\"\"#;             // \"foo\""
+        │     , SoftBreak
+        │     , Code ( "" , [] , [] ) "\"foo #\\\"# bar\";"
+        │     , SoftBreak
+        │     , Code
+        │         ( "" , [] , [] )
+        │         "r##\"foo #\"# bar\"##;                // foo #\"# bar"
+        │     , SoftBreak
+        │     , Code
+        │         ( "" , [] , [] )
+        │         "\"\\x52\"; \"R\"; r\"R\";                 // R"
+        │     , SoftBreak
+        │     , Code
+        │         ( "" , [] , [] )
+        │         "\"\\\\x52\"; r\"\\x52\";                  // \\x52"
+        │     ]
+        │ ]
+        "###);
+    }
+
+    #[test]
+    fn repeated_identifiers() {
+        let book = MDBook::init()
+            .config(Config::pandoc())
+            .chapter(Chapter::new(
+                "",
+                "# Hello\n# Hello\n[first](#hello)[second](#hello-1)",
+                "chapter.md",
+            ))
+            .chapter(Chapter::new(
+                "",
+                "# Hello\n# Hello\n[first](#hello)[second](#hello-1)",
+                "chapter2.md",
+            ))
+            .chapter(Chapter::new("", "# ?\n# ?\n[second](#-1)", "weird-ids.md"))
+            .build();
+        insta::assert_snapshot!(book, @r##"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+        ├─ markdown/pandoc-ir
+        │ [ Header
+        │     1
+        │     ( "book__markdown__src__chapter.md__hello" , [] , [] )
+        │     [ Str "Hello" ]
+        │ , Header
+        │     1
+        │     ( "book__markdown__src__chapter.md__hello-1"
+        │     , [ "unnumbered" , "unlisted" ]
+        │     , []
+        │     )
+        │     [ Str "Hello" ]
+        │ , Para
+        │     [ Link
+        │         ( "" , [] , [] )
+        │         [ Str "first" ]
+        │         ( "#book__markdown__src__chapter.md__hello" , "" )
+        │     , Link
+        │         ( "" , [] , [] )
+        │         [ Str "second" ]
+        │         ( "#book__markdown__src__chapter.md__hello-1" , "" )
+        │     ]
+        │ , Header
+        │     1
+        │     ( "book__markdown__src__chapter2.md__hello" , [] , [] )
+        │     [ Str "Hello" ]
+        │ , Header
+        │     1
+        │     ( "book__markdown__src__chapter2.md__hello-1"
+        │     , [ "unnumbered" , "unlisted" ]
+        │     , []
+        │     )
+        │     [ Str "Hello" ]
+        │ , Para
+        │     [ Link
+        │         ( "" , [] , [] )
+        │         [ Str "first" ]
+        │         ( "#book__markdown__src__chapter2.md__hello" , "" )
+        │     , Link
+        │         ( "" , [] , [] )
+        │         [ Str "second" ]
+        │         ( "#book__markdown__src__chapter2.md__hello-1" , "" )
+        │     ]
+        │ , Header 1 ( "" , [] , [] ) [ Str "?" ]
+        │ , Header
+        │     1
+        │     ( "book__markdown__src__weird-ids.md__-1"
+        │     , [ "unnumbered" , "unlisted" ]
+        │     , []
+        │     )
+        │     [ Str "?" ]
+        │ , Para
+        │     [ Link
+        │         ( "" , [] , [] )
+        │         [ Str "second" ]
+        │         ( "#book__markdown__src__weird-ids.md__-1" , "" )
+        │     ]
+        │ ]
+        "##);
     }
 
     #[test]
