@@ -15,6 +15,8 @@ use std::{
 };
 
 use anyhow::{anyhow, Context as _};
+use ego_tree::NodeId;
+use html5ever::{expanded_name, local_name, namespace_url, ns, tendril::format_tendril, LocalName};
 use log::log;
 use mdbook::{
     book::{BookItems, Chapter},
@@ -22,14 +24,14 @@ use mdbook::{
 };
 use normpath::PathExt;
 use once_cell::sync::Lazy;
-use pulldown_cmark::{CowStr, Event, HeadingLevel, LinkType};
+use pulldown_cmark::{CowStr, Event, HeadingLevel, LinkType, Tag, TagEnd};
 use regex::Regex;
 use walkdir::WalkDir;
 
 use crate::pandoc::{self, native::ColWidth, OutputFormat, RenderContext};
 
-mod tree;
-use tree::TreeBuilder;
+pub mod tree;
+use tree::{Element, MdElement, Node, QualNameExt, TreeBuilder};
 
 pub struct Preprocessor<'book> {
     pub(crate) ctx: RenderContext<'book>,
@@ -667,10 +669,10 @@ pub struct PreprocessChapter<'book, 'preprocessor> {
     chapter: &'book Chapter,
     part_num: usize,
     parser: Parser<'book>,
-    matching_tags: Vec<pulldown_cmark::TagEnd>,
+    stack: Vec<NodeId>,
     encountered_h1: bool,
-    tables: VecDeque<&'book str>,
     identifiers: HashMap<String, NonZeroU32>,
+    in_table_head: bool,
 }
 
 struct Parser<'book> {
@@ -743,11 +745,11 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             preprocessor,
             chapter,
             parser: Parser::new(&chapter.content),
-            matching_tags: Default::default(),
+            stack: Vec::new(),
             encountered_h1: false,
-            tables: Default::default(),
             identifiers: Default::default(),
             part_num,
+            in_table_head: false,
         }
     }
 
@@ -804,10 +806,6 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         Some((level, classes))
     }
 
-    pub fn pop_table(&mut self) -> Option<&'book str> {
-        self.tables.pop_front()
-    }
-
     pub fn column_widths<'table>(
         &self,
         table: &'table str,
@@ -850,28 +848,52 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         range: Range<usize>,
         tree: &mut TreeBuilder<'book>,
     ) {
-        use pulldown_cmark::{Event, Tag, TagEnd};
-
-        let event = match event {
+        match event {
             Event::Start(tag) => {
-                let tag = match tag {
+                let push_element =
+                    |this: &mut Self, tree: &mut TreeBuilder<'book>, element: MdElement<'book>| {
+                        let node = tree.create_element(element);
+                        this.stack.push(node);
+                        node
+                    };
+                let push_html_element =
+                    |this: &mut Self, tree: &mut TreeBuilder<'book>, name: LocalName| {
+                        let node = tree.create_html_element(name);
+                        this.stack.push(node);
+                        node
+                    };
+                match tag {
                     Tag::List(start_number) => {
                         self.preprocessor.ctx.cur_list_depth += 1;
                         self.preprocessor.ctx.max_list_depth = cmp::max(
                             self.preprocessor.ctx.max_list_depth,
                             self.preprocessor.ctx.cur_list_depth,
                         );
-                        Tag::List(start_number)
+                        push_element(self, tree, MdElement::List(start_number))
                     }
+                    Tag::Item => push_element(self, tree, MdElement::Item),
                     Tag::FootnoteDefinition(label) => {
-                        let bookmark = tree.bookmark();
-                        tree.footnote(label.clone(), bookmark);
-                        Tag::FootnoteDefinition(label)
+                        let node = push_element(self, tree, MdElement::FootnoteDefinition);
+                        tree.footnote(label, node);
+                        node
                     }
-                    Tag::Table(alignment) => {
-                        self.tables.push_back(&self.chapter.content[range]);
-                        Tag::Table(alignment)
+                    Tag::Table(alignment) => push_element(
+                        self,
+                        tree,
+                        MdElement::Table {
+                            alignment,
+                            source: &self.chapter.content[range],
+                        },
+                    ),
+                    Tag::TableHead => {
+                        self.in_table_head = true;
+                        push_html_element(self, tree, local_name!("thead"))
                     }
+                    Tag::TableRow => push_html_element(self, tree, local_name!("tr")),
+                    Tag::TableCell if self.in_table_head => {
+                        push_html_element(self, tree, local_name!("th"))
+                    }
+                    Tag::TableCell => push_html_element(self, tree, local_name!("td")),
                     Tag::Heading {
                         level,
                         id,
@@ -894,20 +916,22 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                 id.into()
                             }
                         });
-                        self.update_heading(level, classes)
-                            .map(|(level, classes)| Tag::Heading {
+                        let element = self
+                            .update_heading(level, classes)
+                            .map(|(level, classes)| MdElement::Heading {
                                 level,
                                 id,
                                 classes,
                                 attrs,
                             })
-                            .unwrap_or(Tag::Paragraph)
+                            .unwrap_or(MdElement::Paragraph);
+                        push_element(self, tree, element)
                     }
                     Tag::Link {
                         link_type,
                         dest_url,
                         title,
-                        id,
+                        id: _,
                     } => {
                         let dest_url = self.preprocessor.normalize_link_or_leave_as_is(
                             self.chapter,
@@ -915,32 +939,93 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             dest_url,
                             LinkContext::Link,
                         );
-                        Tag::Link {
+                        push_element(self, tree, MdElement::Link { dest_url, title })
+                    }
+                    Tag::Paragraph => push_element(self, tree, MdElement::Paragraph),
+                    Tag::BlockQuote => push_element(self, tree, MdElement::BlockQuote),
+                    Tag::CodeBlock(kind) => push_element(self, tree, MdElement::CodeBlock(kind)),
+                    Tag::Emphasis => push_element(self, tree, MdElement::Emphasis),
+                    Tag::Strong => push_element(self, tree, MdElement::Strong),
+                    Tag::Strikethrough => push_element(self, tree, MdElement::Strikethrough),
+                    Tag::Image {
+                        link_type,
+                        dest_url,
+                        title,
+                        id,
+                    } => push_element(
+                        self,
+                        tree,
+                        MdElement::Image {
                             link_type,
                             dest_url,
                             title,
                             id,
+                        },
+                    ),
+                    Tag::HtmlBlock => return,
+                    Tag::MetadataBlock(_) => {
+                        log::warn!("Ignoring metadata block");
+                        for (event, _) in &mut self.parser {
+                            if let Event::End(TagEnd::MetadataBlock(_)) = event {
+                                break;
+                            }
                         }
+                        // False positive
+                        #[allow(clippy::needless_return)]
+                        return;
                     }
-                    tag => tag,
                 };
-                self.matching_tags.push(tag.to_end());
-                Event::Start(tag)
             }
-            Event::End(_) => {
-                let end = self.matching_tags.pop().unwrap();
-                if let TagEnd::List(_) = &end {
-                    self.preprocessor.ctx.cur_list_depth -= 1;
+            Event::End(TagEnd::HtmlBlock | TagEnd::MetadataBlock(_)) => {}
+            Event::End(end) => {
+                let node = self
+                    .stack
+                    .pop()
+                    .unwrap_or_else(|| panic!("unmatched {end:?}"));
+                let html = {
+                    let tree = tree.html.tokenizer.sink.sink.tree.borrow();
+                    let Node::Element(element) = tree.tree.get(node).unwrap().value() else {
+                        unreachable!()
+                    };
+                    match element {
+                        Element::Markdown(MdElement::List(_)) => {
+                            self.preprocessor.ctx.cur_list_depth -= 1
+                        }
+                        Element::Html(element)
+                            if element.name.expanded() == expanded_name!(html "thead") =>
+                        {
+                            self.in_table_head = false
+                        }
+                        _ => {}
+                    }
+                    let name = element.name();
+                    (!name.is_void_element()).then(|| format_tendril!("</{}>", name.local))
+                };
+                if let Some(html) = html {
+                    tree.process_html(html);
                 }
-                Event::End(end)
             }
-            Event::Html(html) | Event::InlineHtml(html) => {
-                tree.process_html(html.as_ref().into());
-                return;
+            Event::Html(html) | Event::InlineHtml(html) => tree.process_html(html.as_ref().into()),
+            Event::Text(text) => {
+                tree.create_element(MdElement::Text(text));
+                tree.process_html("</span>".into());
             }
-            event => event,
-        };
-        tree.generate_event(event);
+            Event::Code(code) => {
+                tree.create_element(MdElement::InlineCode(code));
+                tree.process_html("</code>".into());
+            }
+            Event::FootnoteReference(label) => {
+                tree.create_element(MdElement::FootnoteReference(label));
+            }
+            Event::SoftBreak => {
+                tree.create_element(MdElement::SoftBreak);
+            }
+            Event::HardBreak => tree.process_html("<br>".into()),
+            Event::Rule => tree.process_html("<hr>".into()),
+            Event::TaskListMarker(checked) => {
+                tree.create_element(MdElement::TaskListMarker(checked));
+            }
+        }
     }
 
     pub fn resolve_image_url<'url>(
@@ -981,7 +1066,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
 impl<'book> ChapterAnchors<'book> {
     /// Searches for tags in the provided chapter with identifiers that can be used as link anchors.
     fn new(chapter: &'book Chapter) -> anyhow::Result<Self> {
-        use pulldown_cmark::{Event, Options, Parser, Tag, TagEnd};
+        use pulldown_cmark::{Options, Parser};
         let mut parser = Parser::new_ext(&chapter.content, Options::ENABLE_HEADING_ATTRIBUTES);
         let beginning = 'beginning: {
             let heading_id = loop {
