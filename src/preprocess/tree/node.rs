@@ -82,6 +82,9 @@ pub enum MdElement<'a> {
 pub trait QualNameExt {
     /// Is this the name of a [void element](https://developer.mozilla.org/en-US/docs/Glossary/Void_element)?
     fn is_void_element(&self) -> bool;
+
+    /// Does this element default to `display: block`?
+    fn is_display_block(&self) -> bool;
 }
 
 impl QualNameExt for QualName {
@@ -107,6 +110,40 @@ impl QualNameExt for QualName {
                     | local_name!("source")
                     | local_name!("track")
                     | local_name!("wbr")
+            )
+    }
+
+    // Taken from https://www.w3schools.com/cssref/css_default_values.php and filtered down to
+    // those that are likely to appear in mdbooks.
+    fn is_display_block(&self) -> bool {
+        self.ns == ns!(html)
+            && matches!(
+                self.local,
+                local_name!("address")
+                    | local_name!("article")
+                    | local_name!("aside")
+                    | local_name!("blockquote")
+                    | local_name!("dd")
+                    | local_name!("details")
+                    | local_name!("div")
+                    | local_name!("dl")
+                    | local_name!("dt")
+                    | local_name!("figcaption")
+                    | local_name!("figure")
+                    | local_name!("h1")
+                    | local_name!("h2")
+                    | local_name!("h3")
+                    | local_name!("h4")
+                    | local_name!("h5")
+                    | local_name!("h6")
+                    | local_name!("hr")
+                    | local_name!("legend")
+                    | local_name!("ol")
+                    | local_name!("p")
+                    | local_name!("pre")
+                    | local_name!("section")
+                    | local_name!("summary")
+                    | local_name!("ul")
             )
     }
 }
