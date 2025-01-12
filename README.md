@@ -28,11 +28,11 @@ See [Rendered Books](#rendered-books) for samples of rendered books.
 
 - [Install `pandoc`](https://pandoc.org/installing.html)
 
-  > [!NOTE]
-  > `mdbook-pandoc` works best with Pandoc 2.10.1 or newer.
-  > Older versions (as old as 2.8) are partially supported, but will result in degraded output.
-  >
-  > If you have an old version of Pandoc installed (in particular, Ubuntu releases before 23.04 have older-than-recommended Pandoc versions in their package repositories), consider downloading a newer version from Pandoc's installation page.
+> [!NOTE]
+> `mdbook-pandoc` works best with Pandoc 2.10.1 or newer.
+> Older versions (as old as 2.8) are partially supported, but will result in degraded output.
+>
+> If you have an old version of Pandoc installed (in particular, Ubuntu releases before 23.04 have older-than-recommended Pandoc versions in their package repositories), consider downloading a newer version from Pandoc's installation page.
 
 ## Getting Started
 
