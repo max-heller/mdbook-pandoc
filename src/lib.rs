@@ -1243,6 +1243,44 @@ some text here
     }
 
     #[test]
+    fn implicitly_closed_tags() {
+        let book = MDBook::init()
+            .config(Config::latex())
+            .chapter(Chapter::new(
+                "",
+                r#"
+- before
+- [Box<T>](#foo)
+- after
+
+# Foo
+                "#,
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(book, @r##"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \begin{itemize}
+        │ \tightlist
+        │ \item
+        │   before
+        │ \item
+        │   \hyperref[book__latex__src__chapter.md__foo]{Box}
+        │ \item
+        │   after
+        │ \end{itemize}
+        │ 
+        │ \chapter{Foo}\label{book__latex__src__chapter.md__foo}
+        ├─ latex/src/chapter.md
+        │ [BulletList [[Plain [Str "before"]], [Plain [Link ("", [], []) [Str "Box", RawInline (Format "html") "<t>", RawInline (Format "html") "</t>"] ("#foo", "")]], [Plain [Str "after"]]], Header 1 ("foo", [], []) [Str "Foo"]]
+        "##);
+    }
+
+    #[test]
     fn rust_reference_regression_nested_elements() {
         let book = MDBook::init()
             .config(Config::latex())
@@ -1411,11 +1449,9 @@ some text here
 text
 
 </summary>
-<p>
 
 more **markdown**
 
-</p>
 </details>
 
 outside divs
@@ -1447,14 +1483,8 @@ outside divs
         │         , Para [ Str "text" ]
         │         ]
         │     , RawBlock (Format "html") "</summary>"
-        │     , Plain [ Str "\n" , RawInline (Format "html") "<p>" ]
-        │     , Div
-        │         ( "" , [] , [] )
-        │         [ Plain [ Str "\n" ]
-        │         , Para [ Str "more " , Strong [ Str "markdown" ] ]
-        │         ]
-        │     , RawBlock (Format "html") "</p>"
         │     , Plain [ Str "\n" ]
+        │     , Para [ Str "more " , Strong [ Str "markdown" ] ]
         │     ]
         │ , RawBlock (Format "html") "</details>"
         │ , Plain [ Str "\n" ]
