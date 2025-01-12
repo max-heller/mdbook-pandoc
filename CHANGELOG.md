@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.0] - 2025-01-12
+
+### Bug Fixes
+
+- [**breaking**] Be more selective about div-wrapping (#142)
+- Recognize .latex and .ltx output files as LaTeX (#143)
+- Fix LuaLaTeX rendering of left-to-right text in right-to-left books (#144)
+
+### Changes
+
+- Raise minimum supported Rust version to 1.75 (#135)
+- Change! overhaul HTML parsing and Pandoc communication ([#137](https://github.com/max-heller/mdbook-pandoc/pull/137))
+- Construct a combined Markdown+HTML tree (#140)
+
+### Miscellaneous Tasks
+
+- Improve logging when preprocessing a chapter fails (#139)
+- Update README (#141)
+
+
 ## [0.8.1] - 2025-01-01
 
 ### Bug Fixes
