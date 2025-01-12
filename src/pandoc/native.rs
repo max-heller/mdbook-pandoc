@@ -230,6 +230,13 @@ impl<'serializer, 'book, 'p, W: io::Write> SerializeNested<'_, 'serializer, 'boo
         }
     }
 
+    pub fn is_blocks(&self) -> bool {
+        matches!(
+            self,
+            Self::Blocks(_) | Self::BlocksSerializingInlines { .. }
+        )
+    }
+
     pub fn blocks(&mut self) -> anyhow::Result<&mut SerializeBlocks<'serializer, 'book, 'p, W>> {
         replace_with::replace_with_or_abort_and_return(self, |nested| match nested {
             Self::BlocksSerializingInlines {

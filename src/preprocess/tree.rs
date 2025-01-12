@@ -646,17 +646,21 @@ impl<'book> Emitter<'book> {
                 .map(|s| s.as_ref());
                 if node.has_children() || id.is_some() {
                     let attrs = (id, &[], &[]);
-                    match serializer.blocks() {
-                        Ok(serializer) => {
-                            serializer
-                                .serialize_element()?
-                                .serialize_div(attrs, |serializer| {
+                    if serializer.is_blocks() {
+                        if element.name.is_display_block() {
+                            serializer.blocks()?.serialize_element()?.serialize_div(
+                                attrs,
+                                |serializer| {
                                     serializer.serialize_nested(|serializer| {
                                         self.serialize_children(node, serializer)
                                     })
-                                })
+                                },
+                            )?
+                        } else {
+                            self.serialize_children(node, serializer)?
                         }
-                        Err(_) => serializer.serialize_inlines(|serializer| {
+                    } else {
+                        serializer.serialize_inlines(|serializer| {
                             serializer
                                 .serialize_element()?
                                 .serialize_span(attrs, |serializer| {
@@ -664,8 +668,8 @@ impl<'book> Emitter<'book> {
                                         self.serialize_children(node, serializer)
                                     })
                                 })
-                        }),
-                    }?;
+                        })?
+                    }
                 }
                 serializer
                     .serialize_raw_html(|serializer| serializer.end_elem(element.name.clone()))

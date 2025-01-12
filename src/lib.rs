@@ -1372,6 +1372,56 @@ some text here
     }
 
     #[test]
+    fn regression_inline_html_newlines() {
+        let output = MDBook::init()
+            .config(Config::latex())
+            .chapter(Chapter::new(
+                "",
+                // This should stay on a single line; the presence of inline HTML should not result in a line break
+                "- <kbd>Arrow-Left</kbd>: Navigate to the previous page.",
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(output, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \begin{itemize}
+        │ \item
+        │   Arrow-Left: Navigate to the previous page.
+        │ \end{itemize}
+        ├─ latex/src/chapter.md
+        │ [BulletList [[RawBlock (Format "html") "<kbd>", Plain [Str "Arrow-Left", RawInline (Format "html") "</kbd>", Str ": Navigate to the previous page."]]]]
+        "#);
+    }
+
+    #[test]
+    fn regression_malformed_html() {
+        let output = MDBook::init()
+            .config(Config::latex())
+            .chapter(Chapter::new(
+                "",
+                // These tags are mismatched (the second should be </sup> to close the first)
+                // but we should be able to handle this in a reasonable way
+                "**<sup>foo<sup>**",
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(output, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+        ├─ latex/output.tex
+        │ \textbf{{foo}}
+        ├─ latex/src/chapter.md
+        │ [Para [Strong [RawInline (Format "html") "<sup>", Span ("", [], []) [Str "foo", RawInline (Format "html") "<sup>", RawInline (Format "html") "</sup>"], RawInline (Format "html") "</sup>"]]]
+        "#);
+    }
+
+    #[test]
     fn preserve_escapes() {
         let output = MDBook::init()
             .config(Config::pandoc())
