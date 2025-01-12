@@ -4,22 +4,25 @@ All notable changes to this project will be documented in this file.
 
 ## [0.9.0] - 2025-01-12
 
-### Bug Fixes
-
-- [**breaking**] Be more selective about div-wrapping (#142)
-- Recognize .latex and .ltx output files as LaTeX (#143)
-- Fix LuaLaTeX rendering of left-to-right text in right-to-left books (#144)
-
 ### Changes
 
 - Raise minimum supported Rust version to 1.75 (#135)
-- Change! overhaul HTML parsing and Pandoc communication ([#137](https://github.com/max-heller/mdbook-pandoc/pull/137))
-- Construct a combined Markdown+HTML tree (#140)
+- [**breaking**] Overhaul HTML parsing and Pandoc communication (#137, #140)
+
+  This release completely changes how `mdbook-pandoc` parses Markdown files and how it interacts with Pandoc:
+  - Raw HTML: Instead of processing a stream of HTML tokens, `mdbook-pandoc` now uses a browser-grade HTML parser (`html5ever`) to parse raw HTML and construct a combined Markdown+HTML tree. This lets `mdbook-pandoc` avoid having to think too much about the semantics of HTML (which elements are void vs need closing tags, when elements are implicitly closed, etc.).
+  - Pandoc: Instead of generating preprocessed Markdown (Commonmark + many extensions), generates Pandoc's native format. This avoids ambiguity in parsing preprocessed markdown (previously, the meaning of Markdown in the original source may have changed based on the Pandoc extensions `mdbook-pandoc` enabled) and the difficulty of round-tripping Markdown (`pulldown-cmark-to-cmark` often had subtle differences).
+
+  This may result in worse compatibility with old versions of Pandoc.
+
+
+### Bug Fixes
+
+- Recognize `.latex` and `.ltx` output files as LaTeX (#143)
 
 ### Miscellaneous Tasks
 
 - Improve logging when preprocessing a chapter fails (#139)
-- Update README (#141)
 
 
 ## [0.8.1] - 2025-01-01
