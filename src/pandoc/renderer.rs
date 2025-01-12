@@ -8,6 +8,7 @@ use std::{
 };
 
 use anyhow::Context as _;
+use mdbook::config::TextDirection;
 use normpath::PathExt;
 use tempfile::NamedTempFile;
 
@@ -168,6 +169,20 @@ impl Renderer {
                         .unwrap();
                     }
                     additional_variables.push(("include-before", include_before))
+                }
+
+                if ctx.mdbook_cfg.book.realized_text_direction() == TextDirection::RightToLeft {
+                    // Without this, LuaTeX errors on left-to-right text because the \LR command isn't defined, e.g.:
+                    //   Error producing PDF.
+                    //   ! Undefined control sequence.
+                    //   l.279 ...اوقات زبان Rust را با C و \LR
+                    // (see https://github.com/google/comprehensive-rust/pull/2531#issuecomment-2567445055)
+                    // Using luabidi was suggested in
+                    // https://github.com/jgm/pandoc/issues/8460#issuecomment-1344881107
+                    additional_variables.push((
+                        "header-includes",
+                        r"\ifLuaTeX\usepackage{luabidi}\fi".into(),
+                    ));
                 }
 
                 let include_packages = packages
