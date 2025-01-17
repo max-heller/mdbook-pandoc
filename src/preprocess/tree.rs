@@ -6,11 +6,12 @@ use std::{
 };
 
 use aho_corasick::AhoCorasick;
+use anyhow::Context;
 use ego_tree::{NodeId, NodeRef};
 use html5ever::{
     expanded_name, local_name, namespace_url, ns,
     serialize::Serializer,
-    tendril::{fmt::UTF8, format_tendril, Tendril, TendrilSink},
+    tendril::{fmt::UTF8, format_tendril, StrTendril, Tendril, TendrilSink},
     LocalName,
 };
 use pulldown_cmark::{CowStr, LinkType};
@@ -52,32 +53,43 @@ impl Tree<'_> {
 
 impl<'book> TreeBuilder<'book> {
     pub fn new() -> Self {
-        let html_parser = html5ever::driver::parse_fragment(
-            HtmlTreeSink::new(),
-            html5ever::ParseOpts::default(),
-            html::name!(html "body"),
-            Vec::new(),
-        );
+        let html_parser = {
+            let mut opts = html5ever::ParseOpts::default();
+            // If this is enabled (the default) then the contents of <noscript> elements get parsed
+            // as text, which doesn't play nice with the assumptions that the tree builder makes
+            // about the creation of new elements when HTML tags are parsed.
+            opts.tree_builder.scripting_enabled = false;
+            html5ever::driver::parse_fragment(
+                HtmlTreeSink::new(),
+                opts,
+                html::name!(html "body"),
+                Vec::new(),
+            )
+        };
         Self {
             html: html_parser,
             footnotes: Default::default(),
         }
     }
 
-    pub fn create_element(&mut self, element: MdElement<'book>) -> NodeId {
-        self.html
-            .process(format_tendril!("<{}>", element.name().local));
+    fn create_element_inner(&mut self, html: StrTendril) -> anyhow::Result<NodeId> {
+        self.html.process(html.clone());
         let sink = &self.html.tokenizer.sink.sink;
-        let id = sink.most_recently_created_element.take().unwrap();
-        let mut tree = sink.tree.borrow_mut();
-        *tree.tree.get_mut(id).unwrap().value() = Node::Element(Element::Markdown(element));
-        id
+        sink.most_recently_created_element.take().with_context(|| {
+            format!("parsing HTML {html} did not result in the creation of a new element")
+        })
     }
 
-    pub fn create_html_element(&mut self, name: LocalName) -> NodeId {
-        self.html.process(format_tendril!("<{}>", name));
-        let sink = &self.html.tokenizer.sink.sink;
-        sink.most_recently_created_element.take().unwrap()
+    pub fn create_element(&mut self, element: MdElement<'book>) -> anyhow::Result<NodeId> {
+        let tag = format_tendril!("<{}>", element.name().local);
+        let id = self.create_element_inner(tag)?;
+        let mut tree = self.html.tokenizer.sink.sink.tree.borrow_mut();
+        *tree.tree.get_mut(id).unwrap().value() = Node::Element(Element::Markdown(element));
+        Ok(id)
+    }
+
+    pub fn create_html_element(&mut self, name: LocalName) -> anyhow::Result<NodeId> {
+        self.create_element_inner(format_tendril!("<{}>", name))
     }
 
     pub fn process_html(&mut self, html: Tendril<UTF8>) {

@@ -1746,6 +1746,8 @@ to = "markdown"
         │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/appendices/bibliography.html => https://rustc-dev-guide.rust-lang.org/appendix/bibliography.html    
         │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/foo/bar.html => book/test/src/new-bar.html    
         │ DEBUG mdbook_pandoc::preprocess: Registered redirect: book/test/src/new-bar.html => book/test/src/new-new-bar.md#new-new-bar    
+        │ DEBUG mdbook_pandoc::preprocess: Preprocessing ''    
+        │ DEBUG mdbook_pandoc::preprocess: Preprocessing ''    
         │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to /dev/null    
         ├─ test/src/appendices/bibliography.html
@@ -2142,6 +2144,36 @@ mainfontfallback = [
         │ <INVALID UTF8>
         ├─ pdf/src/chapter.md
         │ [Para [Span ("", [], [("dir", "ltr")]) [Str "C++"]]]
+        "#);
+    }
+
+    #[test]
+    fn noscript_element() {
+        let output = MDBook::init()
+            .config(Config::pandoc())
+            .chapter(Chapter::new(
+                "",
+                "<noscript>\n\n## No scripting enabled\n\n</noscript>",
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(output, @r#"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+        ├─ markdown/pandoc-ir
+        │ [ RawBlock (Format "html") "<noscript>"
+        │ , Plain [ Str "\n" ]
+        │ , Header
+        │     2
+        │     ( "book__markdown__src__chapter.md__no-scripting-enabled"
+        │     , [ "unnumbered" , "unlisted" ]
+        │     , []
+        │     )
+        │     [ Str "No scripting enabled" ]
+        │ , RawBlock (Format "html") "</noscript>"
+        │ ]
         "#);
     }
 
