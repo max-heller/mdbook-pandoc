@@ -952,6 +952,14 @@ hello[^1]
 # fn main() {
     # // another hidden line
 println!("Hello, world!");
+    #foo
+    # foo
+    ##foo
+    ## foo
+    # # foo
+    #[test]
+    #![test]
+    #
 # }
 ```
         "#;
@@ -967,6 +975,11 @@ println!("Hello, world!");
         ├─ markdown/book.md
         │ ``` rust
         │ println!("Hello, world!");
+        │     #foo
+        │     #foo
+        │     # foo
+        │     #[test]
+        │     #![test]
         │ ```
         "#);
         let book = MDBook::init()
@@ -985,10 +998,18 @@ println!("Hello, world!");
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
         │ ``` rust
-        │ # fn main() {
-        │     # // another hidden line
+        │ fn main() {
+        │     // another hidden line
         │ println!("Hello, world!");
-        │ # }
+        │     #foo
+        │     foo
+        │     #foo
+        │     # foo
+        │     # foo
+        │     #[test]
+        │     #![test]
+        │     
+        │ }
         │ ```
         "#);
     }
@@ -1025,6 +1046,7 @@ python = "~"
         │ ```
         ");
         let book = MDBook::init()
+            .mdbook_config(cfg.parse().unwrap())
             .config(Config {
                 code: CodeConfig {
                     show_hidden_lines: true,
@@ -1040,10 +1062,10 @@ python = "~"
         │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
         ├─ markdown/book.md
         │ ``` python
-        │ ~hidden()
+        │ hidden()
         │ nothidden():
-        │ ~    hidden()
-        │     ~hidden()
+        │     hidden()
+        │     hidden()
         │     nothidden()
         │ ```
         ");

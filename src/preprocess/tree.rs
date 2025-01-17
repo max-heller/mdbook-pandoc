@@ -13,7 +13,7 @@ use html5ever::{
     tendril::{fmt::UTF8, format_tendril, Tendril, TendrilSink},
     LocalName,
 };
-use pulldown_cmark::{CodeBlockKind, CowStr, LinkType};
+use pulldown_cmark::{CowStr, LinkType};
 
 use crate::{html, latex, pandoc, preprocess::UnresolvableRemoteImage};
 
@@ -22,6 +22,8 @@ pub use node::{Attributes, Element, MdElement, Node, QualNameExt};
 
 mod sink;
 pub use sink::HtmlTreeSink;
+
+use super::code;
 
 #[derive(Debug)]
 pub struct Tree<'book> {
@@ -362,62 +364,28 @@ impl<'book> Emitter<'book> {
                     inlines.serialize_element()?.serialize_code((), s)
                 }),
                 MdElement::CodeBlock(kind) => {
-                    // MdBook supports custom attributes in code block info strings.
-                    // Attributes are separated by a comma, space, or tab from the language name.
-                    // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
-                    // This processes and strips out the attributes.
-                    let (language, mut attributes) = {
-                        let info_string = match kind {
-                            CodeBlockKind::Indented => "",
-                            CodeBlockKind::Fenced(info_string) => info_string,
-                        };
-                        let mut parts = info_string.split([',', ' ', '\t']).map(|part| part.trim());
-                        (parts.next(), parts)
-                    };
+                    let ctx = &serializer.preprocessor().preprocessor.ctx;
 
-                    // https://rust-lang.github.io/mdBook/format/mdbook.html?highlight=hide#hiding-code-lines
-                    let hide_lines = !serializer
-                        .preprocessor()
-                        .preprocessor
-                        .ctx
-                        .code
-                        .show_hidden_lines;
-                    let hidden_line_prefix = hide_lines
-                        .then(|| {
-                            let hidelines_override =
-                                attributes.find_map(|attr| attr.strip_prefix("hidelines="));
-                            hidelines_override.or_else(|| {
-                                let lang = language?;
-                                // Respect [output.html.code.hidelines]
-                                let html = serializer.preprocessor().preprocessor.ctx.html;
-                                html.and_then(|html| Some(html.code.hidelines.get(lang)?.as_str()))
-                                    .or((lang == "rust").then_some("#"))
-                            })
-                        })
-                        .flatten();
+                    let code_block = code::CodeBlock::new(kind, ctx.html.map(|cfg| &cfg.code));
 
-                    let texts = node.children().map(|node| {
+                    let lines = node.children().map(|node| {
                         match node.value() {
                             Node::Element(Element::Markdown(MdElement::Text(text))) => text,
                             event => panic!("Code blocks should contain only literal text, but encountered {event:?}"),
                         }
-                    });
-                    let lines = texts
-                        .flat_map(|text| text.lines())
-                        .filter(|line| {
-                            hidden_line_prefix
-                                .map_or(true, |prefix| !line.trim_start().starts_with(prefix))
-                        })
-                        .collect::<Vec<_>>();
+                    }).flat_map(|text| text.lines());
+                    let lines = code_block.lines(lines, ctx.code);
 
-                    // Pandoc+fvextra only wraps long lines in code blocks with info strings
-                    // so fall back to "text"
-                    let language = language.unwrap_or("text");
+                    let mut language = code_block.language();
 
                     if let pandoc::OutputFormat::Latex { .. } =
                         serializer.preprocessor().preprocessor.ctx.output
                     {
                         const CODE_BLOCK_LINE_LENGTH_LIMIT: usize = 1000;
+
+                        // Pandoc+fvextra only wraps long lines in code blocks with info strings
+                        // so fall back to "text"
+                        language = language.or(Some("text"));
 
                         let overly_long_line = lines
                             .iter()
@@ -438,7 +406,7 @@ impl<'book> Emitter<'book> {
                                 let ac = AhoCorasick::new(patterns).unwrap();
                                 lines
                                     .into_iter()
-                                    .map(move |line| ac.replace_all(line, replace_with))
+                                    .map(move |line| ac.replace_all(&line, replace_with))
                             };
                             return serializer
                                 .blocks()?
@@ -454,13 +422,14 @@ impl<'book> Emitter<'book> {
                         }
                     }
 
-                    let classes = [CowStr::Borrowed(language)];
+                    let language = language.map(CowStr::Borrowed);
+                    let classes = language.as_slice();
                     serializer
                         .blocks()?
                         .serialize_element()?
                         .serialize_code_block((None, &classes, &[]), |code| {
                             for line in lines {
-                                code.serialize_code(line)?;
+                                code.serialize_code(&line)?;
                                 code.serialize_code("\n")?;
                             }
                             Ok(())
