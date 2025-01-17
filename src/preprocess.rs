@@ -849,6 +849,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         }
         let events = tree.finish();
 
+        log::trace!("Writing Pandoc AST for chapter '{}'", self.chapter.name);
         pandoc::native::Serializer::serialize(writer, self, |blocks| events.emit(blocks))
     }
 
@@ -858,6 +859,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         range: Range<usize>,
         tree: &mut TreeBuilder<'book>,
     ) -> anyhow::Result<()> {
+        log::trace!("Preprocessing event: {event:?}");
         match event {
             Event::Start(tag) => {
                 let push_element = |this: &mut Self, tree: &mut TreeBuilder<'book>, element| {

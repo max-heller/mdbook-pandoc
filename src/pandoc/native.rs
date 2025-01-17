@@ -6,6 +6,7 @@ use std::{
 use anyhow::anyhow;
 use escape::Escape;
 use html5ever::serialize::HtmlSerializer;
+use indexmap::IndexSet;
 use pulldown_cmark::CowStr;
 
 use crate::preprocess::{self, PreprocessChapter};
@@ -90,6 +91,8 @@ impl Attributes for &preprocess::tree::Attributes {
 pub struct Serializer<'p, 'book, W: io::Write> {
     html: HtmlSerializer<escape::Writer<W>>,
     pub preprocessor: PreprocessChapter<'p, 'book>,
+    /// Footnotes currently being serialized.
+    pub footnotes: IndexSet<String>,
 }
 
 pub enum SerializeNested<'a, 'serializer, 'book, 'p, W: io::Write> {
@@ -109,6 +112,7 @@ impl<'p, 'book, W: io::Write> Serializer<'p, 'book, W> {
     ) -> anyhow::Result<()> {
         let mut serializer = Self {
             preprocessor,
+            footnotes: Default::default(),
             html: html5ever::serialize::HtmlSerializer::new(
                 escape::Writer::new(writer),
                 html5ever::serialize::SerializeOpts {
@@ -220,14 +224,16 @@ impl<'serializer, 'book, 'p, W: io::Write> SerializeInlines<'serializer, 'book, 
 }
 
 impl<'serializer, 'book, 'p, W: io::Write> SerializeNested<'_, 'serializer, 'book, 'p, W> {
-    pub fn preprocessor(&mut self) -> &mut PreprocessChapter<'p, 'book> {
+    pub fn serializer(&mut self) -> &mut Serializer<'p, 'book, W> {
         match self {
-            Self::Blocks(serializer) => &mut serializer.serializer.preprocessor,
-            Self::BlocksSerializingInlines { serializer, .. } => {
-                &mut serializer.serializer.preprocessor
-            }
-            Self::Inlines(serializer) => &mut serializer.serializer.preprocessor,
+            Self::Blocks(serializer) => serializer.serializer,
+            Self::BlocksSerializingInlines { serializer, .. } => serializer.serializer,
+            Self::Inlines(serializer) => serializer.serializer,
         }
+    }
+
+    pub fn preprocessor(&mut self) -> &mut PreprocessChapter<'p, 'book> {
+        &mut self.serializer().preprocessor
     }
 
     pub fn is_blocks(&self) -> bool {

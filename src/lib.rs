@@ -2177,6 +2177,28 @@ mainfontfallback = [
         "#);
     }
 
+    #[test]
+    fn footnote_cycle() {
+        let output = MDBook::init()
+            .chapter(Chapter::new(
+                "",
+                "[^1]\n\n[^1]: [^2]\n\n[^2]: [^1]",
+                "chapter.md",
+            ))
+            .build();
+        insta::assert_snapshot!(output, @r"
+        ├─ log output
+        │  INFO mdbook::book: Running the pandoc backend    
+        │  WARN mdbook_pandoc::preprocess::tree: Cycle in footnote definitions: 1 => 2 => 1    
+        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+        ├─ markdown/book.md
+        │ [^1]
+        │ 
+        │ [^1]: [^2]
+        ");
+    }
+
     static BOOKS: Lazy<PathBuf> = Lazy::new(|| Path::new(env!("CARGO_MANIFEST_DIR")).join("books"));
 
     #[test]

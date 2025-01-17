@@ -14,6 +14,7 @@ use html5ever::{
     tendril::{fmt::UTF8, format_tendril, StrTendril, Tendril, TendrilSink},
     LocalName,
 };
+use indexmap::IndexSet;
 use pulldown_cmark::{CowStr, LinkType};
 
 use crate::{html, latex, pandoc, preprocess::UnresolvableRemoteImage};
@@ -130,6 +131,7 @@ impl<'book> Emitter<'book> {
         node: NodeRef<'_, Node>,
         serializer: &mut pandoc::native::SerializeNested<'_, '_, 'book, '_, impl io::Write>,
     ) -> anyhow::Result<()> {
+        log::trace!("Writing Pandoc AST for {:?}", node.value());
         match node.value() {
             Node::Document => unreachable!(),
             Node::HtmlComment(comment) => {
@@ -347,19 +349,34 @@ impl<'book> Emitter<'book> {
                         log::warn!("Undefined footnote: {label}");
                         Ok(())
                     }
-                    Some(definition) => serializer.serialize_inlines(|serializer| {
-                        serializer
-                            .serialize_element()?
-                            .serialize_note(|serializer| {
-                                serializer.serialize_nested(|serializer| {
-                                    for node in self.tree.tree.get(*definition).unwrap().children()
-                                    {
-                                        self.serialize_node(node, serializer)?;
-                                    }
-                                    Ok(())
-                                })
-                            })
-                    }),
+                    Some(definition) => {
+                        let open_footnotes = &mut serializer.serializer().footnotes;
+                        if open_footnotes.contains(label.as_ref()) {
+                            log::warn!(
+                                "Cycle in footnote definitions: {:?}",
+                                FootnoteCycle(&serializer.serializer().footnotes, label)
+                            );
+                            Ok(())
+                        } else {
+                            open_footnotes.insert(label.to_string());
+                            serializer.serialize_inlines(|serializer| {
+                                serializer
+                                    .serialize_element()?
+                                    .serialize_note(|serializer| {
+                                        serializer.serialize_nested(|serializer| {
+                                            for node in
+                                                self.tree.tree.get(*definition).unwrap().children()
+                                            {
+                                                self.serialize_node(node, serializer)?;
+                                            }
+                                            Ok(())
+                                        })
+                                    })
+                            })?;
+                            serializer.serializer().footnotes.pop();
+                            Ok(())
+                        }
+                    }
                 },
                 MdElement::BlockQuote => serializer
                     .blocks()?
@@ -724,5 +741,21 @@ impl fmt::Debug for Emitter<'_> {
             parent: self.tree.tree.root(),
         }
         .fmt(f)
+    }
+}
+
+struct FootnoteCycle<'a>(&'a IndexSet<String>, &'a str);
+
+impl fmt::Debug for FootnoteCycle<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let (mut footnotes, last) = (self.0.iter(), self.1);
+        if let Some(first) = footnotes.next() {
+            write!(f, "{first}")?;
+        }
+        for footnote in footnotes {
+            write!(f, " => {footnote}")?;
+        }
+        write!(f, " => {last}")?;
+        Ok(())
     }
 }
