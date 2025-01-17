@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.1] - 2025-01-17
+
+### Bug Fixes
+
+- Correctly hide lines in Rust code blocks (#147)
+
+
 ## [0.9.0] - 2025-01-12
 
 ### Changes
