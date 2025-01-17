@@ -30,6 +30,8 @@ use walkdir::WalkDir;
 
 use crate::pandoc::{self, native::ColWidth, OutputFormat, RenderContext};
 
+mod code;
+
 pub mod tree;
 use tree::{Element, MdElement, Node, QualNameExt, TreeBuilder};
 
