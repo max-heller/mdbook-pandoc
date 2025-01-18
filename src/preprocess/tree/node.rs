@@ -2,7 +2,7 @@ use std::fmt;
 
 use html5ever::{local_name, namespace_url, ns, tendril::StrTendril, Attribute, QualName};
 use indexmap::IndexMap;
-use pulldown_cmark::{Alignment, CodeBlockKind, CowStr, HeadingLevel, LinkType};
+use pulldown_cmark::{Alignment, BlockQuoteKind, CodeBlockKind, CowStr, HeadingLevel, LinkType};
 
 use crate::html;
 
@@ -52,7 +52,7 @@ pub enum MdElement<'a> {
         classes: Vec<CowStr<'a>>,
         attrs: Vec<(CowStr<'a>, Option<CowStr<'a>>)>,
     },
-    BlockQuote,
+    BlockQuote(Option<BlockQuoteKind>),
     InlineCode(CowStr<'a>),
     CodeBlock(CodeBlockKind<'a>),
     List(Option<u64>),
@@ -218,7 +218,7 @@ impl MdElement<'_> {
                     HeadingLevel::H6 => H6,
                 }
             }
-            MdElement::BlockQuote => {
+            MdElement::BlockQuote(_) => {
                 const BLOCKQUOTE: &QualName = &html::name!(html "blockquote");
                 BLOCKQUOTE
             }
