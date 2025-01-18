@@ -17,22 +17,21 @@ See [Rendered Books](#rendered-books) for samples of rendered books.
   To install the latest release published to [crates.io](https://crates.io/crates/mdbook-pandoc):
 
   ```sh
-  cargo install mdbook-pandoc
+  cargo install mdbook-pandoc --locked
   ```
 
   The install the latest version committed to GitHub:
 
   ```sh
-  cargo install --git https://github.com/max-heller/mdbook-pandoc.git mdbook-pandoc
+  cargo install mdbook-pandoc --git https://github.com/max-heller/mdbook-pandoc.git --locked
   ```
 
 - [Install `pandoc`](https://pandoc.org/installing.html)
 
-> [!NOTE]
-> `mdbook-pandoc` works best with Pandoc 2.10.1 or newer.
-> Older versions (as old as 2.8) are partially supported, but will result in degraded output.
->
-> If you have an old version of Pandoc installed (in particular, Ubuntu releases before 23.04 have older-than-recommended Pandoc versions in their package repositories), consider downloading a newer version from Pandoc's installation page.
+  > **Note**: `mdbook-pandoc` works best with Pandoc 2.10.1 or newer.
+  > Older versions (as old as 2.8) are partially supported, but will result in degraded output.
+  >
+  > If you have an old version of Pandoc installed (in particular, Ubuntu releases before 23.04 have older-than-recommended Pandoc versions in their package repositories), consider downloading a newer version from Pandoc's installation page.
 
 ## Getting Started
 
