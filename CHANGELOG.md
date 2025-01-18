@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.3] - 2025-01-18
+
+### Documentation
+
+- Suggest `cargo install --locked` and fix formatting in README (#157)
+
+### Miscellaneous Tasks
+
+- Unexport accidentally-exported macro (#153)
+
+### Testing
+
+- Clean up multiline strings in tests using `indoc` (#155)
+- Split test suite into sections (#156)
+
+
 ## [0.9.2] - 2025-01-18
 
 ### Bug Fixes
