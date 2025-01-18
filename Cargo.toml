@@ -9,7 +9,7 @@ license = "MIT OR Apache-2.0"
 keywords = ["mdbook", "pandoc", "pdf", "latex", "book"]
 documentation = "https://docs.rs/mdbook-pandoc"
 repository = "https://github.com/max-heller/mdbook-pandoc"
-include = ["/src", "/CHANGELOG.md", "/LICENSE-*", "/README.md"]
+include = ["/src", "!/src/tests", "/CHANGELOG.md", "/LICENSE-*", "/README.md"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
