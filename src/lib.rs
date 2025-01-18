@@ -203,6 +203,7 @@ mod tests {
         str::FromStr,
     };
 
+    use indoc::indoc;
     use mdbook::{BookItem, Renderer as _};
     use normpath::PathExt;
     use once_cell::sync::Lazy;
@@ -704,12 +705,12 @@ mod tests {
         let book = MDBook::init()
             .chapter(Chapter::new(
                 "",
-                "
-hello[^1]
+                indoc! {"
+                    hello[^1]
 
-[^1]: a footnote containing another footnote[^2]
-[^2]: second footnote
-                ",
+                    [^1]: a footnote containing another footnote[^2]
+                    [^2]: second footnote
+                "},
                 "chapter.md",
             ))
             .config(Config::latex())
@@ -731,11 +732,11 @@ hello[^1]
         let book = MDBook::init()
             .chapter(Chapter::new(
                 "",
-                "
-| Header1 | Header2 |
-|---------|---------|
-| abc     | def     |
-                ",
+                indoc! {"
+                    | Header1 | Header2 |
+                    |---------|---------|
+                    | abc     | def     |
+                "},
                 "chapter.md",
             ))
             .config(Config::latex())
@@ -765,11 +766,11 @@ hello[^1]
         let book = MDBook::init()
             .chapter(Chapter::new(
                 "",
-                "
-| Header1 | Header2 |
-| ------- | :--------------------------------------------------------------- |
-| abc     | long long long long long long long long long long long long long |
-                ",
+                indoc! {"
+                    | Header1 | Header2 |
+                    | ------- | :--------------------------------------------------------------- |
+                    | abc     | long long long long long long long long long long long long long |
+                "},
                 "chapter.md",
             ))
             .config(Config::latex())
@@ -910,10 +911,10 @@ hello[^1]
             .config(Config::latex())
             .chapter(Chapter::new(
                 "",
-                r#"
-<i class="fa fa-print"></i>
-<i class = "fa fa-print"/></i>
-                "#,
+                indoc! {r#"
+                    <i class="fa fa-print"></i>
+                    <i class = "fa fa-print"/></i>
+                "#},
                 "chapter.md",
             ))
             .build();
@@ -947,22 +948,22 @@ hello[^1]
 
     #[test]
     fn code_block_with_hidden_lines() {
-        let content = r#"
-```rust
-# fn main() {
-    # // another hidden line
-println!("Hello, world!");
-    #foo
-    # foo
-    ##foo
-    ## foo
-    # # foo
-    #[test]
-    #![test]
-    #
-# }
-```
-        "#;
+        let content = indoc! {r#"
+            ```rust
+            # fn main() {
+                # // another hidden line
+            println!("Hello, world!");
+                #foo
+                # foo
+                ##foo
+                ## foo
+                # # foo
+                #[test]
+                #![test]
+                #
+            # }
+            ```
+        "#};
         let book = MDBook::init()
             .config(Config::markdown())
             .chapter(Chapter::new("", content, "chapter.md"))
@@ -1016,19 +1017,19 @@ println!("Hello, world!");
 
     #[test]
     fn non_rust_code_block_with_hidden_lines() {
-        let content = r#"
-```python
-~hidden()
-nothidden():
-~    hidden()
-    ~hidden()
-    nothidden()
-```
-        "#;
-        let cfg = r#"
-[output.html.code.hidelines]
-python = "~"
-        "#;
+        let content = indoc! {r#"
+            ```python
+            ~hidden()
+            nothidden():
+            ~    hidden()
+                ~hidden()
+                nothidden()
+            ```
+        "#};
+        let cfg = indoc! {r#"
+            [output.html.code.hidelines]
+            python = "~"
+        "#};
         let book = MDBook::init()
             .mdbook_config(cfg.parse().unwrap())
             .config(Config::markdown())
@@ -1073,15 +1074,15 @@ python = "~"
 
     #[test]
     fn code_block_hidelines_override() {
-        let content = r#"
-```python,hidelines=!!!
-!!!hidden()
-nothidden():
-!!!    hidden()
-    !!!hidden()
-    nothidden()
-```
-        "#;
+        let content = indoc! {r#"
+            ```python,hidelines=!!!
+            !!!hidden()
+            nothidden():
+            !!!    hidden()
+                !!!hidden()
+                nothidden()
+            ```
+        "#};
         let book = MDBook::init()
             .config(Config::markdown())
             .chapter(Chapter::new("", content, "chapter.md"))
@@ -1103,13 +1104,11 @@ nothidden():
     #[ignore]
     fn code_block_with_very_long_line() {
         let long_line = str::repeat("long ", 1000);
-        let content = format!(
-            "
-```java
-{long_line}
-```
-            "
-        );
+        let content = indoc::formatdoc! {"
+            ```java
+            {long_line}
+            ```
+        "};
         let book = MDBook::init()
             .config(Config::pdf())
             .chapter(Chapter::new("", content, "chapter.md"))
@@ -1127,12 +1126,12 @@ nothidden():
     #[test]
     #[ignore]
     fn code_block_with_very_long_line_with_special_characters() {
-        let content = r#"""
-```console
-$ rustc json_error_demo.rs --error-format json
-{"message":"cannot add `&str` to `{integer}`","code":{"code":"E0277","explanation":"\nYou tried to use a type which doesn't implement some trait in a place which\nexpected that trait. Erroneous code example:\n\n```compile_fail,E0277\n// here we declare the Foo trait with a bar method\ntrait Foo {\n    fn bar(&self);\n}\n\n// we now declare a function which takes an object implementing the Foo trait\nfn some_func<T: Foo>(foo: T) {\n    foo.bar();\n}\n\nfn main() {\n    // we now call the method with the i32 type, which doesn't implement\n    // the Foo trait\n    some_func(5i32); // error: the trait bound `i32 : Foo` is not satisfied\n}\n```\n\nIn order to fix this error, verify that the type you're using does implement\nthe trait. Example:\n\n```\ntrait Foo {\n    fn bar(&self);\n}\n\nfn some_func<T: Foo>(foo: T) {\n    foo.bar(); // we can now use this method since i32 implements the\n               // Foo trait\n}\n\n// we implement the trait on the i32 type\nimpl Foo for i32 {\n    fn bar(&self) {}\n}\n\nfn main() {\n    some_func(5i32); // ok!\n}\n```\n\nOr in a generic context, an erroneous code example would look like:\n\n```compile_fail,E0277\nfn some_func<T>(foo: T) {\n    println!(\"{:?}\", foo); // error: the trait `core::fmt::Debug` is not\n                           //        implemented for the type `T`\n}\n\nfn main() {\n    // We now call the method with the i32 type,\n    // which *does* implement the Debug trait.\n    some_func(5i32);\n}\n```\n\nNote that the error here is in the definition of the generic function: Although\nwe only call it with a parameter that does implement `Debug`, the compiler\nstill rejects the function: It must work with all possible input types. In\norder to make this example compile, we need to restrict the generic type we're\naccepting:\n\n```\nuse std::fmt;\n\n// Restrict the input type to types that implement Debug.\nfn some_func<T: fmt::Debug>(foo: T) {\n    println!(\"{:?}\", foo);\n}\n\nfn main() {\n    // Calling the method is still fine, as i32 implements Debug.\n    some_func(5i32);\n\n    // This would fail to compile now:\n    // struct WithoutDebug;\n    // some_func(WithoutDebug);\n}\n```\n\nRust only looks at the signature of the called function, as such it must\nalready specify all requirements that will be used for every type parameter.\n"},"level":"error","spans":[{"file_name":"json_error_demo.rs","byte_start":50,"byte_end":51,"line_start":4,"line_end":4,"column_start":7,"column_end":8,"is_primary":true,"text":[{"text":"    a + b","highlight_start":7,"highlight_end":8}],"label":"no implementation for `{integer} + &str`","suggested_replacement":null,"suggestion_applicability":null,"expansion":null}],"children":[{"message":"the trait `std::ops::Add<&str>` is not implemented for `{integer}`","code":null,"level":"help","spans":[],"children":[],"rendered":null}],"rendered":"error[E0277]: cannot add `&str` to `{integer}`\n --> json_error_demo.rs:4:7\n  |\n4 |     a + b\n  |       ^ no implementation for `{integer} + &str`\n  |\n  = help: the trait `std::ops::Add<&str>` is not implemented for `{integer}`\n\n"}
-```
-            """#;
+        let content = indoc! {r#"""
+            ```console
+            $ rustc json_error_demo.rs --error-format json
+            {"message":"cannot add `&str` to `{integer}`","code":{"code":"E0277","explanation":"\nYou tried to use a type which doesn't implement some trait in a place which\nexpected that trait. Erroneous code example:\n\n```compile_fail,E0277\n// here we declare the Foo trait with a bar method\ntrait Foo {\n    fn bar(&self);\n}\n\n// we now declare a function which takes an object implementing the Foo trait\nfn some_func<T: Foo>(foo: T) {\n    foo.bar();\n}\n\nfn main() {\n    // we now call the method with the i32 type, which doesn't implement\n    // the Foo trait\n    some_func(5i32); // error: the trait bound `i32 : Foo` is not satisfied\n}\n```\n\nIn order to fix this error, verify that the type you're using does implement\nthe trait. Example:\n\n```\ntrait Foo {\n    fn bar(&self);\n}\n\nfn some_func<T: Foo>(foo: T) {\n    foo.bar(); // we can now use this method since i32 implements the\n               // Foo trait\n}\n\n// we implement the trait on the i32 type\nimpl Foo for i32 {\n    fn bar(&self) {}\n}\n\nfn main() {\n    some_func(5i32); // ok!\n}\n```\n\nOr in a generic context, an erroneous code example would look like:\n\n```compile_fail,E0277\nfn some_func<T>(foo: T) {\n    println!(\"{:?}\", foo); // error: the trait `core::fmt::Debug` is not\n                           //        implemented for the type `T`\n}\n\nfn main() {\n    // We now call the method with the i32 type,\n    // which *does* implement the Debug trait.\n    some_func(5i32);\n}\n```\n\nNote that the error here is in the definition of the generic function: Although\nwe only call it with a parameter that does implement `Debug`, the compiler\nstill rejects the function: It must work with all possible input types. In\norder to make this example compile, we need to restrict the generic type we're\naccepting:\n\n```\nuse std::fmt;\n\n// Restrict the input type to types that implement Debug.\nfn some_func<T: fmt::Debug>(foo: T) {\n    println!(\"{:?}\", foo);\n}\n\nfn main() {\n    // Calling the method is still fine, as i32 implements Debug.\n    some_func(5i32);\n\n    // This would fail to compile now:\n    // struct WithoutDebug;\n    // some_func(WithoutDebug);\n}\n```\n\nRust only looks at the signature of the called function, as such it must\nalready specify all requirements that will be used for every type parameter.\n"},"level":"error","spans":[{"file_name":"json_error_demo.rs","byte_start":50,"byte_end":51,"line_start":4,"line_end":4,"column_start":7,"column_end":8,"is_primary":true,"text":[{"text":"    a + b","highlight_start":7,"highlight_end":8}],"label":"no implementation for `{integer} + &str`","suggested_replacement":null,"suggestion_applicability":null,"expansion":null}],"children":[{"message":"the trait `std::ops::Add<&str>` is not implemented for `{integer}`","code":null,"level":"help","spans":[],"children":[],"rendered":null}],"rendered":"error[E0277]: cannot add `&str` to `{integer}`\n --> json_error_demo.rs:4:7\n  |\n4 |     a + b\n  |       ^ no implementation for `{integer} + &str`\n  |\n  = help: the trait `std::ops::Add<&str>` is not implemented for `{integer}`\n\n"}
+            ```
+        """#};
         let book = MDBook::init()
             .config(Config::pdf())
             .chapter(Chapter::new("", content, "chapter.md"))
@@ -1153,14 +1152,14 @@ $ rustc json_error_demo.rs --error-format json
             .config(Config::latex())
             .chapter(Chapter::new(
                 "",
-                r#"
-```rust
-fn main() {}
-```
-```rust,ignore
-fn main() {}
-```
-                "#,
+                indoc! {r#"
+                    ```rust
+                    fn main() {}
+                    ```
+                    ```rust,ignore
+                    fn main() {}
+                    ```
+                "#},
                 "chapter.md",
             ))
             .build();
@@ -1194,21 +1193,21 @@ fn main() {}
             .config(Config::latex())
             .chapter(Chapter::new(
                 "",
-                r#"
-<a id="test">some text here</a>
-<span id="test2">some text here</span>
+                indoc! {r#"
+                    <a id="test">some text here</a>
+                    <span id="test2">some text here</span>
 
-<div id="test3">
-some text here
-</div>
+                    <div id="test3">
+                    some text here
+                    </div>
 
-<div id="test4">some text here</div>
+                    <div id="test4">some text here</div>
 
-[test link](#test)
-[test2 link](#test2)
-[test3 link](#test3)
-[test4 link](#test4)
-                "#,
+                    [test link](#test)
+                    [test2 link](#test2)
+                    [test3 link](#test3)
+                    [test4 link](#test4)
+                "#},
                 "chapter.md",
             ))
             .build();
@@ -1270,13 +1269,13 @@ some text here
             .config(Config::latex())
             .chapter(Chapter::new(
                 "",
-                r#"
-- before
-- [Box<T>](#foo)
-- after
+                indoc! {r#"
+                    - before
+                    - [Box<T>](#foo)
+                    - after
 
-# Foo
-                "#,
+                    # Foo
+                "#},
                 "chapter.md",
             ))
             .build();
@@ -1308,14 +1307,14 @@ some text here
             .config(Config::latex())
             .chapter(Chapter::new(
                 "",
-                r##"
-<div id="my-div">
-<a id="my-a" href="#my-div">[some text here]</a>
-</div>
+                indoc! {r##"
+                    <div id="my-div">
+                    <a id="my-a" href="#my-div">[some text here]</a>
+                    </div>
 
-[div](#my-div)
-[a](#my-a)
-                "##,
+                    [div](#my-div)
+                    [a](#my-a)
+                "##},
                 "chapter.md",
             ))
             .build();
@@ -1345,13 +1344,13 @@ some text here
             .config(Config::latex())
             .chapter(Chapter::new(
                 "",
-                r#"
-# Chapter Foo
+                indoc! {r#"
+                    # Chapter Foo
 
-[link][link-with-description]
+                    [link][link-with-description]
 
-[link-with-description]: chapter.md '"foo" (bar)'
-                "#,
+                    [link-with-description]: chapter.md '"foo" (bar)'
+                "#},
                 "chapter.md",
             ))
             .build();
@@ -1365,7 +1364,7 @@ some text here
         │ 
         │ \hyperref[book__latex__src__chapter.md__chapter-foo]{link}
         ├─ latex/src/chapter.md
-        │ [Header 1 ("chapter-foo", [], []) [Str "Chapter Foo"], Para [Link ("", [], []) [Str "link"] ("book/latex/src/chapter.md#chapter-foo", "\"foo\" (bar)")], Para []]
+        │ [Header 1 ("chapter-foo", [], []) [Str "Chapter Foo"], Para [Link ("", [], []) [Str "link"] ("book/latex/src/chapter.md#chapter-foo", "\"foo\" (bar)")]]
         "#);
     }
 
@@ -1486,11 +1485,11 @@ some text here
 
     #[test]
     fn nested_html_block() {
-        let s = "
-> <!-- hello
->
-> world -->
-                ";
+        let s = indoc! {"
+            > <!-- hello
+            >
+            > world -->
+        "};
         let output = MDBook::init()
             .config(Config::markdown())
             .chapter(Chapter::new("", s, "chapter.md"))
@@ -1512,22 +1511,22 @@ some text here
         let ast = MDBook::init()
             .chapter(Chapter::new(
                 "Chapter",
-                "
-<details>
-<summary>
+                indoc! {"
+                    <details>
+                    <summary>
 
-## Heading
+                    ## Heading
 
-text
+                    text
 
-</summary>
+                    </summary>
 
-more **markdown**
+                    more **markdown**
 
-</details>
+                    </details>
 
-outside divs
-                ",
+                    outside divs
+                "},
                 "chapter.md",
             ))
             .config(Config::pandoc())
@@ -1582,33 +1581,33 @@ outside divs
 
     #[test]
     fn raw_opts() {
-        let cfg = r#"
-[book]
-title = "Example book"
-authors = ["John Doe", "Jane Doe"]
-description = "The example book covers examples."
-language = "en"
-text-direction = "ltr"
+        let cfg = indoc! {r#"
+            [book]
+            title = "Example book"
+            authors = ["John Doe", "Jane Doe"]
+            description = "The example book covers examples."
+            language = "en"
+            text-direction = "ltr"
 
-[output.pandoc.profile.test]
-output-file = "/dev/null"
-to = "markdown"
-verbosity = "INFO"
-fail-if-warnings = false
+            [output.pandoc.profile.test]
+            output-file = "/dev/null"
+            to = "markdown"
+            verbosity = "INFO"
+            fail-if-warnings = false
 
-resource-path = [
-    "really-long-path",
-    "really-long-path2",
-]
+            resource-path = [
+                "really-long-path",
+                "really-long-path2",
+            ]
 
-[output.pandoc.profile.test.variables]
-header-includes = [
-    "text1",
-    "text2",
-]
-indent = true
-colorlinks = false
-        "#;
+            [output.pandoc.profile.test.variables]
+            header-includes = [
+                "text1",
+                "text2",
+            ]
+            indent = true
+            colorlinks = false
+        "#};
         let output = MDBook::options()
             .max_log_level(tracing::Level::TRACE)
             .init()
@@ -1697,10 +1696,10 @@ colorlinks = false
 
     #[test]
     fn disabled() {
-        let cfg = r#"
-[output.pandoc]
-disabled = true
-        "#;
+        let cfg = indoc! {r#"
+            [output.pandoc]
+            disabled = true
+        "#};
         let output = MDBook::init()
             .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
             .build();
@@ -1713,16 +1712,16 @@ disabled = true
 
     #[test]
     fn redirects() {
-        let cfg = r#"
-[output.pandoc.profile.test]
-output-file = "/dev/null"
-to = "markdown"
+        let cfg = indoc! {r#"
+            [output.pandoc.profile.test]
+            output-file = "/dev/null"
+            to = "markdown"
 
-[output.html.redirect]
-"/appendices/bibliography.html" = "https://rustc-dev-guide.rust-lang.org/appendix/bibliography.html"
-"/foo/bar.html" = "../new-bar.html"
-"/new-bar.html" = "new-new-bar.html"
-        "#;
+            [output.html.redirect]
+            "/appendices/bibliography.html" = "https://rustc-dev-guide.rust-lang.org/appendix/bibliography.html"
+            "/foo/bar.html" = "../new-bar.html"
+            "/new-bar.html" = "new-new-bar.html"
+        "#};
         let output = MDBook::options()
             .max_log_level(tracing::Level::DEBUG)
             .init()
@@ -1767,11 +1766,11 @@ to = "markdown"
             .file_in_src("img/image.png", "")
             .chapter(Chapter::new(
                 "",
-                r#"
-![alt text](img/image.png "a title")
-<img src="img/image.png" alt="alt text" title = "a title" width=50 height=100 class="foo bar">
-<img src="img/image.png" alt="alt text" title = "a title" style="width:50; height: 100" class="foo bar">
-                "#,
+                indoc!{r#"
+                    ![alt text](img/image.png "a title")
+                    <img src="img/image.png" alt="alt text" title = "a title" width=50 height=100 class="foo bar">
+                    <img src="img/image.png" alt="alt text" title = "a title" style="width:50; height: 100" class="foo bar">
+                "#},
                 "chapter.md",
             ))
             .build();
@@ -1797,13 +1796,13 @@ to = "markdown"
             .config(Config::pdf())
             .chapter(Chapter::new(
                 "",
-                r#"
-[![Build](https://github.com/rust-lang/mdBook/workflows/CI/badge.svg?event=push)](https://github.com/rust-lang/mdBook/actions?query=workflow%3ACI+branch%3Amaster)
-[![Build](https://img.shields.io/github/actions/workflow/status/rust-lang/mdBook/main.yml?style=flat-square)](https://github.com/rust-lang/mdBook/actions/workflows/main.yml?query=branch%3Amaster)
-[![crates.io](https://img.shields.io/crates/v/mdbook.svg)](https://crates.io/crates/mdbook)
-[![GitHub contributors](https://img.shields.io/github/contributors/rust-lang/mdBook?style=flat-square)](https://github.com/rust-lang/mdBook/graphs/contributors)
-[![GitHub stars](https://img.shields.io/github/stars/rust-lang/mdBook?style=flat-square)](https://github.com/rust-lang/mdBook/stargazers)
-                "#,
+                indoc!{r#"
+                    [![Build](https://github.com/rust-lang/mdBook/workflows/CI/badge.svg?event=push)](https://github.com/rust-lang/mdBook/actions?query=workflow%3ACI+branch%3Amaster)
+                    [![Build](https://img.shields.io/github/actions/workflow/status/rust-lang/mdBook/main.yml?style=flat-square)](https://github.com/rust-lang/mdBook/actions/workflows/main.yml?query=branch%3Amaster)
+                    [![crates.io](https://img.shields.io/crates/v/mdbook.svg)](https://crates.io/crates/mdbook)
+                    [![GitHub contributors](https://img.shields.io/github/contributors/rust-lang/mdBook?style=flat-square)](https://github.com/rust-lang/mdBook/graphs/contributors)
+                    [![GitHub stars](https://img.shields.io/github/stars/rust-lang/mdBook?style=flat-square)](https://github.com/rust-lang/mdBook/stargazers)
+                "#},
                 "chapter.md",
             ))
             .build();
@@ -1840,28 +1839,26 @@ to = "markdown"
 
     #[test]
     fn css() {
-        let cfg = r#"
-[output.html]
-additional-css = ["ferris.css"]
-        "#;
+        let cfg = indoc! {r#"
+            [output.html]
+            additional-css = ["ferris.css"]
+        "#};
         let book = MDBook::init()
             .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
             .config(Config::latex())
             .file_in_src("img/image.png", "")
             .file_in_root(
                 "ferris.css",
-                "
-.ferris-explain {
-  width: 100px;
-  height: 50;
-}
-                ",
+                indoc!{"
+                    .ferris-explain {
+                      width: 100px;
+                      height: 50;
+                    }
+                "},
             )
             .chapter(Chapter::new(
                 "",
-                r#"
-<img class="ferris-explain" src="img/image.png" alt="alt text" title = "a title">
-                "#,
+                r#"<img class="ferris-explain" src="img/image.png" alt="alt text" title = "a title">"#,
                 "chapter.md",
             ))
             .build();
@@ -1873,8 +1870,7 @@ additional-css = ["ferris.css"]
         ├─ latex/output.tex
         │ \includegraphics[width=1.04167in,height=0.52083in]{book/latex/src/img/image.png}
         ├─ latex/src/chapter.md
-        │ [Plain [Image ("", ["ferris-explain"], [("height", "50"), ("width", "100px")]) [Str "alt text"] ("book/latex/src/img/image.png", "a title"), Str "
-        │ "]]
+        │ [Plain [Image ("", ["ferris-explain"], [("height", "50"), ("width", "100px")]) [Str "alt text"] ("book/latex/src/img/image.png", "a title")]]
         ├─ latex/src/img/image.png
         "#);
     }
@@ -1913,12 +1909,12 @@ additional-css = ["ferris.css"]
             .config(Config::pandoc())
             .chapter(Chapter::new(
                 "",
-                r#"
-hello[^1]
+                indoc! {r#"
+                    hello[^1]
 
-[^1]: a footnote containing another footnote[^2]
-[^2]: <a href="example.com"></a>
-                "#,
+                    [^1]: a footnote containing another footnote[^2]
+                    [^2]: <a href="example.com"></a>
+                "#},
                 "chapter.md",
             ))
             .build();
@@ -1954,24 +1950,24 @@ hello[^1]
             .config(Config::pandoc())
             .chapter(Chapter::new(
                 "",
-                r###"
-```rust
-"foo"; r"foo";                     // foo
-"\"foo\""; r#""foo""#;             // "foo"
+                indoc! {r###"
+                    ```rust
+                    "foo"; r"foo";                     // foo
+                    "\"foo\""; r#""foo""#;             // "foo"
 
-"foo #\"# bar";
-r##"foo #"# bar"##;                // foo #"# bar
+                    "foo #\"# bar";
+                    r##"foo #"# bar"##;                // foo #"# bar
 
-"\x52"; "R"; r"R";                 // R
-"\\x52"; r"\x52";                  // \x52
-```
-`"foo"; r"foo";                     // foo`
-`"\"foo\""; r#""foo""#;             // "foo"`
-`"foo #\"# bar";`
-`r##"foo #"# bar"##;                // foo #"# bar`
-`"\x52"; "R"; r"R";                 // R`
-`"\\x52"; r"\x52";                  // \x52`
-                "###,
+                    "\x52"; "R"; r"R";                 // R
+                    "\\x52"; r"\x52";                  // \x52
+                    ```
+                    `"foo"; r"foo";                     // foo`
+                    `"\"foo\""; r#""foo""#;             // "foo"`
+                    `"foo #\"# bar";`
+                    `r##"foo #"# bar"##;                // foo #"# bar`
+                    `"\x52"; "R"; r"R";                 // R`
+                    `"\\x52"; r"\x52";                  // \x52`
+                "###},
                 "chapter.md",
             ))
             .build();
@@ -2095,11 +2091,11 @@ r##"foo #"# bar"##;                // foo #"# bar
 
     #[test]
     fn pandoc_working_dir_is_root() {
-        let cfg = r#"
-[output.pandoc.profile.foo]
-output-file = "foo.md"
-include-in-header = ["file-in-root"]
-        "#;
+        let cfg = indoc! {r#"
+            [output.pandoc.profile.foo]
+            output-file = "foo.md"
+            include-in-header = ["file-in-root"]
+        "#};
         let book = MDBook::init()
             .mdbook_config(cfg.parse().unwrap())
             .file_in_root("file-in-root", "some text")
@@ -2117,20 +2113,20 @@ include-in-header = ["file-in-root"]
     #[test]
     #[ignore]
     fn right_to_left_fonts_lualatex() {
-        let cfg = r#"
-[book]
-language = "fa"
+        let cfg = indoc! {r#"
+            [book]
+            language = "fa"
 
-[output.pandoc.profile.pdf]
-output-file = "book.pdf"
-pdf-engine = "lualatex"
+            [output.pandoc.profile.pdf]
+            output-file = "book.pdf"
+            pdf-engine = "lualatex"
 
-[output.pandoc.profile.pdf.variables]
-mainfont = "Noto Naskh Arabic"
-mainfontfallback = [
-  "NotoSerif:",
-]
-        "#;
+            [output.pandoc.profile.pdf.variables]
+            mainfont = "Noto Naskh Arabic"
+            mainfontfallback = [
+              "NotoSerif:",
+            ]
+        "#};
         let output = MDBook::init()
             .mdbook_config(cfg.parse().unwrap())
             .chapter(Chapter::new("", "<span dir=ltr>C++</span>", "chapter.md"))
