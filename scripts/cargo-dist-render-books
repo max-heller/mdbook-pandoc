@@ -2,7 +2,7 @@
 
 set -e
 
-cargo nextest run --run-ignored ignored-only
+cargo nextest run --run-ignored all tests::books
 
 cp books/cargo/src/doc/book/pdf/book.pdf rendered-cargo-book.pdf
 cp books/mdBook/guide/book/pdf/book.pdf rendered-mdBook-guide.pdf
