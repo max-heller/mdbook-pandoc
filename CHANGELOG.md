@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.2] - 2025-01-18
+
+### Bug Fixes
+
+- Parse `<noscript>` elements without panicking (#150)
+- Detect cycles in footnote definitions (#151)
+
+
 ## [0.9.1] - 2025-01-17
 
 ### Bug Fixes
