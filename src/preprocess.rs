@@ -14,9 +14,9 @@ use std::{
     str,
 };
 
-use anyhow::{anyhow, Context as _};
+use anyhow::{anyhow, Context};
 use ego_tree::NodeId;
-use html5ever::{expanded_name, local_name, namespace_url, ns, tendril::format_tendril, LocalName};
+use html5ever::{expanded_name, local_name, namespace_url, ns, tendril::format_tendril};
 use log::log;
 use mdbook::{
     book::{BookItems, Chapter},
@@ -649,6 +649,11 @@ impl<'book> Preprocess<'book> {
         chapter: &'book Chapter,
         out: impl io::Write,
     ) -> anyhow::Result<()> {
+        if log::log_enabled!(log::Level::Trace) {
+            log::debug!("Preprocessing '{}':\n{}", chapter.name, chapter.content);
+        } else {
+            log::debug!("Preprocessing '{}'", chapter.name);
+        }
         let preprocessed = PreprocessChapter::new(&mut self.preprocessor, chapter, self.part_num);
         preprocessed.preprocess(out)
     }
@@ -837,7 +842,10 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
     fn preprocess(mut self, writer: impl io::Write) -> anyhow::Result<()> {
         let mut tree = TreeBuilder::new();
         while let Some((event, range)) = self.parser.next() {
-            self.preprocess_event(event, range, &mut tree);
+            self.preprocess_event(event, range.clone(), &mut tree)
+                .with_context(|| {
+                    format!("failed to preprocess '{}'", &self.chapter.content[range])
+                })?;
         }
         let events = tree.finish();
 
@@ -849,21 +857,19 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         event: Event<'book>,
         range: Range<usize>,
         tree: &mut TreeBuilder<'book>,
-    ) {
+    ) -> anyhow::Result<()> {
         match event {
             Event::Start(tag) => {
-                let push_element =
-                    |this: &mut Self, tree: &mut TreeBuilder<'book>, element: MdElement<'book>| {
-                        let node = tree.create_element(element);
-                        this.stack.push(node);
-                        node
-                    };
-                let push_html_element =
-                    |this: &mut Self, tree: &mut TreeBuilder<'book>, name: LocalName| {
-                        let node = tree.create_html_element(name);
-                        this.stack.push(node);
-                        node
-                    };
+                let push_element = |this: &mut Self, tree: &mut TreeBuilder<'book>, element| {
+                    let node = tree.create_element(element)?;
+                    this.stack.push(node);
+                    Ok::<_, anyhow::Error>(node)
+                };
+                let push_html_element = |this: &mut Self, tree: &mut TreeBuilder<'book>, name| {
+                    let node = tree.create_html_element(name)?;
+                    this.stack.push(node);
+                    Ok(node)
+                };
                 match tag {
                     Tag::List(start_number) => {
                         self.preprocessor.ctx.cur_list_depth += 1;
@@ -875,9 +881,9 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     }
                     Tag::Item => push_element(self, tree, MdElement::Item),
                     Tag::FootnoteDefinition(label) => {
-                        let node = push_element(self, tree, MdElement::FootnoteDefinition);
+                        let node = push_element(self, tree, MdElement::FootnoteDefinition)?;
                         tree.footnote(label, node);
-                        node
+                        Ok(node)
                     }
                     Tag::Table(alignment) => push_element(
                         self,
@@ -964,7 +970,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             id,
                         },
                     ),
-                    Tag::HtmlBlock => return,
+                    Tag::HtmlBlock => return Ok(()),
                     Tag::MetadataBlock(_) => {
                         log::warn!("Ignoring metadata block");
                         for (event, _) in &mut self.parser {
@@ -972,13 +978,12 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                                 break;
                             }
                         }
-                        // False positive
-                        #[allow(clippy::needless_return)]
-                        return;
+                        return Ok(());
                     }
-                };
+                }?;
+                Ok(())
             }
-            Event::End(TagEnd::HtmlBlock | TagEnd::MetadataBlock(_)) => {}
+            Event::End(TagEnd::HtmlBlock | TagEnd::MetadataBlock(_)) => Ok(()),
             Event::End(end) => {
                 let node = self
                     .stack
@@ -1006,26 +1011,41 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 if let Some(html) = html {
                     tree.process_html(html);
                 }
+                Ok(())
             }
-            Event::Html(html) | Event::InlineHtml(html) => tree.process_html(html.as_ref().into()),
+            Event::Html(html) | Event::InlineHtml(html) => {
+                tree.process_html(html.as_ref().into());
+                Ok(())
+            }
             Event::Text(text) => {
-                tree.create_element(MdElement::Text(text));
+                tree.create_element(MdElement::Text(text))?;
                 tree.process_html("</span>".into());
+                Ok(())
             }
             Event::Code(code) => {
-                tree.create_element(MdElement::InlineCode(code));
+                tree.create_element(MdElement::InlineCode(code))?;
                 tree.process_html("</code>".into());
+                Ok(())
             }
             Event::FootnoteReference(label) => {
-                tree.create_element(MdElement::FootnoteReference(label));
+                tree.create_element(MdElement::FootnoteReference(label))?;
+                Ok(())
             }
             Event::SoftBreak => {
-                tree.create_element(MdElement::SoftBreak);
+                tree.create_element(MdElement::SoftBreak)?;
+                Ok(())
             }
-            Event::HardBreak => tree.process_html("<br>".into()),
-            Event::Rule => tree.process_html("<hr>".into()),
+            Event::HardBreak => {
+                tree.process_html("<br>".into());
+                Ok(())
+            }
+            Event::Rule => {
+                tree.process_html("<hr>".into());
+                Ok(())
+            }
             Event::TaskListMarker(checked) => {
-                tree.create_element(MdElement::TaskListMarker(checked));
+                tree.create_element(MdElement::TaskListMarker(checked))?;
+                Ok(())
             }
         }
     }
