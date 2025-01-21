@@ -3,7 +3,7 @@ use std::{
     cmp,
     collections::{hash_map::DefaultHasher, HashMap, VecDeque},
     ffi::OsString,
-    fmt::{self, Display, Write},
+    fmt::{self, Write},
     fs::{self, File},
     hash::{Hash, Hasher},
     io::{self, Write as _},
@@ -68,32 +68,6 @@ struct NormalizedPath {
     preprocessed_absolute_path: PathBuf,
     preprocessed_path_relative_to_root: PathBuf,
 }
-
-#[derive(Copy, Clone)]
-enum LinkContext {
-    Link,
-    Image,
-}
-
-#[derive(Debug)]
-struct UnresolvableRemoteImageError {
-    err: ureq::Error,
-}
-
-impl Display for UnresolvableRemoteImageError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        if cfg!(test) {
-            // in tests, print less verbose error message to be consistent across operating systems
-            write!(f, "could not fetch remote image: {}", self.err.kind())
-        } else {
-            write!(f, "could not fetch remote image: {}", self.err)
-        }
-    }
-}
-
-impl std::error::Error for UnresolvableRemoteImageError {}
-
-pub struct UnresolvableRemoteImage;
 
 impl<'book> Preprocessor<'book> {
     pub fn new(ctx: RenderContext<'book>) -> anyhow::Result<Self> {
@@ -191,13 +165,7 @@ impl<'book> Preprocessor<'book> {
             .map(|(res, entry)| {
                 res.and_then(|(src, dst)| {
                     let dst = self
-                        .normalize_link(
-                            &src,
-                            src.parent().unwrap(),
-                            LinkType::Autolink,
-                            dst.into(),
-                            LinkContext::Link,
-                        )
+                        .normalize_link(&src, src.parent().unwrap(), LinkType::Autolink, dst.into())
                         .map_err(|(err, _)| err)
                         .context("Unable to normalize redirect destination")?;
                     let src = self
@@ -234,13 +202,12 @@ impl<'book> Preprocessor<'book> {
         chapter: &Chapter,
         link_type: LinkType,
         link: CowStr<'link>,
-        ctx: LinkContext,
     ) -> CowStr<'link> {
         let Some(chapter_path) = &chapter.path else {
             return link;
         };
         let chapter_dir = chapter_path.parent().unwrap();
-        self.normalize_link(chapter_path, chapter_dir, link_type, link, ctx)
+        self.normalize_link(chapter_path, chapter_dir, link_type, link)
             .unwrap_or_else(|(err, link)| {
                 log::warn!(
                     "Unable to normalize link '{}' in chapter '{}': {err:#}",
@@ -257,7 +224,6 @@ impl<'book> Preprocessor<'book> {
         chapter_dir: &Path,
         link_type: LinkType,
         link: CowStr<'link>,
-        ctx: LinkContext,
     ) -> Result<CowStr<'link>, (anyhow::Error, CowStr<'link>)> {
         use LinkType::*;
         match link_type {
@@ -268,8 +234,7 @@ impl<'book> Preprocessor<'book> {
         }
 
         // URI scheme definition: https://datatracker.ietf.org/doc/html/rfc3986#section-3.1
-        static SCHEME: Lazy<Regex> =
-            Lazy::new(|| Regex::new(r"^(?P<scheme>[a-zA-Z][a-z0-9+.-]*):").unwrap());
+        static SCHEME: Lazy<Regex> = Lazy::new(|| Regex::new(r"^[a-zA-Z][a-z0-9+.-]*:").unwrap());
 
         let os_to_utf8 = |os: OsString| {
             os.into_string()
@@ -278,181 +243,159 @@ impl<'book> Preprocessor<'book> {
 
         let link_path_range = || ..link.find(['?', '#']).unwrap_or(link.len());
 
-        if let Some(scheme) = SCHEME.captures(&link).and_then(|caps| caps.name("scheme")) {
-            match (ctx, scheme.as_str()) {
-                (LinkContext::Image, "http" | "https") => {
-                    /// Pandoc usually downloads remote images and embeds them in documents, but it
-                    /// doesn't handle some cases--we special case those here.
-                    const PANDOC_UNSUPPORTED_IMAGE_EXTENSIONS: &[&str] = &[
-                        // e.g. https://img.shields.io/github/actions/workflow/status/rust-lang/mdBook/main.yml?style=flat-square
-                        ".yml",
-                    ];
+        if SCHEME.is_match(&link) {
+            // Leave URIs with schemes untouched
+            return Ok(link);
+        }
 
-                    let path = &link[link_path_range()];
-                    if PANDOC_UNSUPPORTED_IMAGE_EXTENSIONS
-                        .iter()
-                        .any(|extension| path.ends_with(extension))
-                    {
-                        self.download_remote_image(&link)
-                            .and_then(|path| os_to_utf8(path.into_os_string()).map(CowStr::from))
-                            .map_err(|err| (err, link))
-                    } else {
-                        Ok(link)
-                    }
-                }
-                // Leave all other URIs with schemes untouched
-                _ => Ok(link),
-            }
+        // URI is a relative-reference: https://datatracker.ietf.org/doc/html/rfc3986#section-4.2
+        if link.starts_with("//") {
+            // URI is a network-path reference; leave it untouched
+            Ok(link)
         } else {
-            // URI is a relative-reference: https://datatracker.ietf.org/doc/html/rfc3986#section-4.2
-            if link.starts_with("//") {
-                // URI is a network-path reference; leave it untouched
-                Ok(link)
+            // URI is an absolute-path or relative-path reference, which must be resolved
+            // relative to the book root or the current chapter's directory, respectively
+            let path_range = link_path_range();
+            let link_path = match &link[path_range] {
+                // Internal reference within chapter
+                "" if link.starts_with('#') => return Ok(link),
+                path => Path::new(path),
+            };
+            let path = if let Ok(relative_to_root) = link_path.strip_prefix("/") {
+                self.preprocessed.join(relative_to_root)
             } else {
-                // URI is an absolute-path or relative-path reference, which must be resolved
-                // relative to the book root or the current chapter's directory, respectively
-                let path_range = link_path_range();
-                let link_path = match &link[path_range] {
-                    // Internal reference within chapter
-                    "" if link.starts_with('#') => return Ok(link),
-                    path => Path::new(path),
-                };
-                let path = if let Ok(relative_to_root) = link_path.strip_prefix("/") {
-                    self.preprocessed.join(relative_to_root)
-                } else {
-                    chapter_dir.join(link_path)
-                };
+                chapter_dir.join(link_path)
+            };
 
-                enum LinkDestination<'a> {
-                    PartiallyResolved(NormalizedPath),
-                    FullyResolved(Cow<'a, str>),
-                }
+            enum LinkDestination<'a> {
+                PartiallyResolved(NormalizedPath),
+                FullyResolved(Cow<'a, str>),
+            }
 
-                let normalized_path = self
-                    .normalize_path(&self.ctx.book.source_dir.join(&path))
-                    .or_else(|err| {
-                        self.normalize_path(&self.preprocessed.join(&path))
-                            .map_err(|_| err)
-                    })
-                    .and_then(|normalized| {
-                        if let Some(mut path) = self
-                            .redirects
-                            .get(&normalized.preprocessed_path_relative_to_root)
-                        {
-                            while let Some(dest) = self.redirects.get(Path::new(path)) {
-                                path = dest;
-                            }
-                            Ok(LinkDestination::FullyResolved(Cow::Borrowed(path)))
-                        } else {
-                            if !normalized.exists()? {
-                                normalized.copy_to_preprocessed()?;
-                            }
-                            Ok(LinkDestination::PartiallyResolved(normalized))
+            let normalized_path = self
+                .normalize_path(&self.ctx.book.source_dir.join(&path))
+                .or_else(|err| {
+                    self.normalize_path(&self.preprocessed.join(&path))
+                        .map_err(|_| err)
+                })
+                .and_then(|normalized| {
+                    if let Some(mut path) = self
+                        .redirects
+                        .get(&normalized.preprocessed_path_relative_to_root)
+                    {
+                        while let Some(dest) = self.redirects.get(Path::new(path)) {
+                            path = dest;
                         }
-                    });
-                let normalized_link = match normalized_path {
-                    Err(err) => Err((err, link)),
-                    Ok(normalized_path) => {
-                        let (normalized_path, add_anchor) = match normalized_path {
-                            LinkDestination::FullyResolved(path) => (path, None),
-                            LinkDestination::PartiallyResolved(normalized_path) => {
-                                // Check whether link is anchored (points to a section within a document)
-                                let already_anchored = link[path_range.end..].contains('#');
+                        Ok(LinkDestination::FullyResolved(Cow::Borrowed(path)))
+                    } else {
+                        if !normalized.exists()? {
+                            normalized.copy_to_preprocessed()?;
+                        }
+                        Ok(LinkDestination::PartiallyResolved(normalized))
+                    }
+                });
+            let normalized_link = match normalized_path {
+                Err(err) => Err((err, link)),
+                Ok(normalized_path) => {
+                    let (normalized_path, add_anchor) = match normalized_path {
+                        LinkDestination::FullyResolved(path) => (path, None),
+                        LinkDestination::PartiallyResolved(normalized_path) => {
+                            // Check whether link is anchored (points to a section within a document)
+                            let already_anchored = link[path_range.end..].contains('#');
 
-                                // As of version 3.2, pandoc no longer generates an anchor at the beginning
-                                // of each file, so we need to find alternate destination for chapter links
-                                let add_anchor = if already_anchored {
-                                    None
-                                } else {
-                                    let relative_path = normalized_path
-                                        .preprocessed_path_relative_to_root
-                                        .strip_prefix(&self.preprocessed_relative_to_root)
-                                        .unwrap();
-                                    let chapter = self.chapters.get_mut(relative_path);
-                                    match chapter {
-                                        None => {
-                                            log::trace!(
-                                                "Not recognized as a chapter: {}",
-                                                relative_path.display(),
-                                            );
-                                            None
-                                        }
-                                        Some(IndexedChapter {
-                                            chapter,
-                                            ref mut anchors,
-                                        }) => {
-                                            let anchors = match anchors {
-                                                Some(anchors) => anchors,
-                                                None => match ChapterAnchors::new(chapter) {
-                                                    Ok(found) => anchors.insert(found),
-                                                    Err(err) => return Err((err, link)),
-                                                },
-                                            };
-                                            match &anchors.beginning {
-                                                Some(anchor) => Some(anchor),
-                                                None => {
-                                                    let err = anyhow!(
-                                                        "failed to link to beginning of chapter"
-                                                    );
-                                                    return Err((err, link));
-                                                }
+                            // As of version 3.2, pandoc no longer generates an anchor at the beginning
+                            // of each file, so we need to find alternate destination for chapter links
+                            let add_anchor = if already_anchored {
+                                None
+                            } else {
+                                let relative_path = normalized_path
+                                    .preprocessed_path_relative_to_root
+                                    .strip_prefix(&self.preprocessed_relative_to_root)
+                                    .unwrap();
+                                let chapter = self.chapters.get_mut(relative_path);
+                                match chapter {
+                                    None => {
+                                        log::trace!(
+                                            "Not recognized as a chapter: {}",
+                                            relative_path.display(),
+                                        );
+                                        None
+                                    }
+                                    Some(IndexedChapter {
+                                        chapter,
+                                        ref mut anchors,
+                                    }) => {
+                                        let anchors = match anchors {
+                                            Some(anchors) => anchors,
+                                            None => match ChapterAnchors::new(chapter) {
+                                                Ok(found) => anchors.insert(found),
+                                                Err(err) => return Err((err, link)),
+                                            },
+                                        };
+                                        match &anchors.beginning {
+                                            Some(anchor) => Some(anchor),
+                                            None => {
+                                                let err = anyhow!(
+                                                    "failed to link to beginning of chapter"
+                                                );
+                                                return Err((err, link));
                                             }
                                         }
                                     }
-                                };
-
-                                match os_to_utf8(
-                                    normalized_path
-                                        .preprocessed_path_relative_to_root
-                                        .into_os_string(),
-                                ) {
-                                    Ok(path) => (path.into(), add_anchor),
-                                    Err(err) => return Err((err, link)),
                                 }
+                            };
+
+                            match os_to_utf8(
+                                normalized_path
+                                    .preprocessed_path_relative_to_root
+                                    .into_os_string(),
+                            ) {
+                                Ok(path) => (path.into(), add_anchor),
+                                Err(err) => return Err((err, link)),
                             }
-                        };
-
-                        let mut link = link.into_string();
-                        link.replace_range(path_range, &normalized_path);
-
-                        if let Some(anchor) = add_anchor {
-                            link.push('#');
-                            link.push_str(anchor);
                         }
+                    };
 
-                        Ok(link.into())
+                    let mut link = link.into_string();
+                    link.replace_range(path_range, &normalized_path);
+
+                    if let Some(anchor) = add_anchor {
+                        link.push('#');
+                        link.push_str(anchor);
                     }
-                };
-                normalized_link
-                    .or_else(|(err, original_link)| {
-                        self.hosted_html
-                            .ok_or_else(|| {
-                                self.unresolved_links = true;
-                                err
-                            })
-                            .and_then(|uri| {
-                                let mut hosted = OsString::from(uri.trim_end_matches('/'));
-                                hosted.push("/");
-                                hosted.push(&path);
-                                let hosted = os_to_utf8(hosted)?;
-                                log!(
-                                    // In tests, log at a higher level to detect link breakage
-                                    if cfg!(test) {
-                                        log::Level::Info
-                                    } else {
-                                        log::Level::Debug
-                                    },
-                                    "Failed to resolve link '{original_link}' in chapter '{}', \
+
+                    Ok(link.into())
+                }
+            };
+            normalized_link
+                .or_else(|(err, original_link)| {
+                    self.hosted_html
+                        .ok_or_else(|| {
+                            self.unresolved_links = true;
+                            err
+                        })
+                        .and_then(|uri| {
+                            let mut hosted = OsString::from(uri.trim_end_matches('/'));
+                            hosted.push("/");
+                            hosted.push(&path);
+                            let hosted = os_to_utf8(hosted)?;
+                            log!(
+                                // In tests, log at a higher level to detect link breakage
+                                if cfg!(test) {
+                                    log::Level::Info
+                                } else {
+                                    log::Level::Debug
+                                },
+                                "Failed to resolve link '{original_link}' in chapter '{}', \
                                     linking to hosted HTML book at '{hosted}'",
-                                    chapter_path.display(),
-                                );
-                                Ok(hosted)
-                            })
-                            .map(Cow::Owned)
-                            .map_err(|err| (err, original_link))
-                    })
-                    .map(CowStr::from)
-            }
+                                chapter_path.display(),
+                            );
+                            Ok(hosted)
+                        })
+                        .map(Cow::Owned)
+                        .map_err(|err| (err, original_link))
+                })
+                .map(CowStr::from)
         }
     }
 
@@ -475,39 +418,6 @@ impl<'book> Preprocessor<'book> {
             }
         }
         id
-    }
-
-    fn download_remote_image(&self, link: &str) -> anyhow::Result<PathBuf> {
-        match ureq::get(link).call() {
-            Err(err) => Err(UnresolvableRemoteImageError { err }.into()),
-            Ok(response) => {
-                const IMAGE_CONTENT_TYPES: &[(&str, &str)] = &[("image/svg+xml", "svg")];
-                let extension = IMAGE_CONTENT_TYPES.iter().find_map(|&(ty, extension)| {
-                    (ty == response.content_type()).then_some(extension)
-                });
-                match extension {
-                    None => anyhow::bail!("Unrecognized content-type: {}", response.content_type()),
-                    Some(extension) => {
-                        let mut filename = PathBuf::from(Self::make_kebab_case(link));
-                        filename.set_extension(extension);
-                        let path = self.preprocessed.join(filename);
-
-                        File::create(&path)
-                            .and_then(|file| {
-                                io::copy(&mut response.into_reader(), &mut io::BufWriter::new(file))
-                            })
-                            .with_context(|| {
-                                format!(
-                                    "Unable to write downloaded image from '{}' to file '{}'",
-                                    link,
-                                    path.display(),
-                                )
-                            })
-                            .map(|_| path)
-                    }
-                }
-            }
-        }
     }
 
     /// Converts an absolute path to a normalized form usable as a relative path within the preprocessed source directory.
@@ -947,7 +857,6 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                             self.chapter,
                             link_type,
                             dest_url,
-                            LinkContext::Link,
                         );
                         push_element(self, tree, MdElement::Link { dest_url, title })
                     }
@@ -1056,32 +965,23 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         &mut self,
         dest_url: CowStr<'url>,
         link_type: LinkType,
-    ) -> Result<CowStr<'url>, UnresolvableRemoteImage> {
+    ) -> CowStr<'url> {
         let resolved = match self.chapter.path.as_ref() {
             None => Err((anyhow!("chapter has no path"), dest_url)),
             Some(chapter_path) => {
                 let chapter_dir = chapter_path.parent().unwrap();
-                self.preprocessor.normalize_link(
-                    chapter_path,
-                    chapter_dir,
-                    link_type,
-                    dest_url,
-                    LinkContext::Image,
-                )
+                self.preprocessor
+                    .normalize_link(chapter_path, chapter_dir, link_type, dest_url)
             }
         };
         match resolved {
-            Ok(link) => Ok(link),
+            Ok(link) => link,
             Err((err, link)) => {
                 log::warn!(
                     "Failed to resolve image link '{link}' in chapter '{}': {err:#}",
                     self.chapter.name,
                 );
-                if let Some(UnresolvableRemoteImageError { .. }) = err.downcast_ref() {
-                    Err(UnresolvableRemoteImage)
-                } else {
-                    Ok(link)
-                }
+                link
             }
         }
     }
