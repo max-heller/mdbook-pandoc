@@ -17,7 +17,7 @@ use html5ever::{
 use indexmap::IndexSet;
 use pulldown_cmark::{CowStr, LinkType};
 
-use crate::{html, latex, pandoc, preprocess::UnresolvableRemoteImage};
+use crate::{html, latex, pandoc};
 
 mod node;
 pub use node::{Attributes, Element, MdElement, Node, QualNameExt};
@@ -491,20 +491,16 @@ impl<'book> Emitter<'book> {
                     title,
                     id,
                 } => serializer.serialize_inlines(|inlines| {
-                    match inlines
+                    let dest_url = inlines
                         .serializer
                         .preprocessor
-                        .resolve_image_url(dest_url.as_ref().into(), *link_type)
-                    {
-                        Err(UnresolvableRemoteImage) => inlines
-                            .serialize_nested(|inlines| self.serialize_children(node, inlines)),
-                        Ok(dest_url) => inlines.serialize_element()?.serialize_image(
-                            (Some(id.as_ref()), &[], &[]),
-                            |alt| alt.serialize_nested(|alt| self.serialize_children(node, alt)),
-                            &dest_url,
-                            title,
-                        ),
-                    }
+                        .resolve_image_url(dest_url.as_ref().into(), *link_type);
+                    inlines.serialize_element()?.serialize_image(
+                        (Some(id.as_ref()), &[], &[]),
+                        |alt| alt.serialize_nested(|alt| self.serialize_children(node, alt)),
+                        &dest_url,
+                        title,
+                    )
                 }),
             },
             Node::Element(Element::Html(element)) => {
@@ -578,30 +574,22 @@ impl<'book> Emitter<'book> {
                             [html::name!("src"), html::name!("alt"), html::name!("title")]
                                 .map(|attr| attrs.rest.swap_remove(&attr));
                         let Some(src) = src else { return Ok(()) };
-                        return match serializer
+                        let src = serializer
                             .preprocessor()
-                            .resolve_image_url(src.as_ref().into(), LinkType::Inline)
-                        {
-                            Err(UnresolvableRemoteImage) => match alt {
-                                Some(alt) => serializer.serialize_inlines(|serializer| {
-                                    serializer.serialize_element()?.serialize_str(&alt)
-                                }),
-                                None => Ok(()),
-                            },
-                            Ok(src) => serializer.serialize_inlines(|inlines| {
-                                inlines.serialize_element()?.serialize_image(
-                                    &attrs,
-                                    |serializer| match alt {
-                                        Some(alt) => {
-                                            serializer.serialize_element()?.serialize_str(&alt)
-                                        }
-                                        None => Ok(()),
-                                    },
-                                    &src,
-                                    title.as_ref().map_or("", |s| s.as_ref()),
-                                )
-                            }),
-                        };
+                            .resolve_image_url(src.as_ref().into(), LinkType::Inline);
+                        return serializer.serialize_inlines(|inlines| {
+                            inlines.serialize_element()?.serialize_image(
+                                &attrs,
+                                |serializer| match alt {
+                                    Some(alt) => {
+                                        serializer.serialize_element()?.serialize_str(&alt)
+                                    }
+                                    None => Ok(()),
+                                },
+                                &src,
+                                title.as_ref().map_or("", |s| s.as_ref()),
+                            )
+                        });
                     }
                     local_name!("i") => {
                         let Attributes { id, classes, rest } = &element.attrs;
