@@ -19,26 +19,30 @@ fn html_comments() {
 }
 
 #[test]
-fn nested_html_block() {
+fn noncontiguous_html() {
+    // HTML comment is noncontiguous in the source because it is nested in a block quote.
+    // Parsing should handle this sanely.
     let s = indoc! {"
         > <!-- hello
         >
         > world -->
     "};
     let output = MDBook::init()
-        .config(Config::markdown())
+        .config(Config::pandoc())
         .chapter(Chapter::new("", s, "chapter.md"))
         .build();
-    insta::assert_snapshot!(output, @r"
+    insta::assert_snapshot!(output, @r#"
     ├─ log output
     │  INFO mdbook::book: Running the pandoc backend    
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
-    ├─ markdown/book.md
-    │ > <!-- hello
-    │ >
-    │ > world -->
-    ");
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+    ├─ markdown/pandoc-ir
+    │ [ BlockQuote
+    │     [ RawBlock (Format "html") "<!-- hello\n\nworld -->"
+    │     , Plain [ Str "\n" ]
+    │     ]
+    │ ]
+    "#);
 }
 
 #[test]

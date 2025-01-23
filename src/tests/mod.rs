@@ -365,6 +365,7 @@ impl Config {
 
             [profile.markdown]
             output-file = "book.md"
+            to = "commonmark_x"
             standalone = false
         }
         .try_into()
@@ -389,6 +390,7 @@ mod basic;
 mod config;
 mod escaping;
 
+mod alerts;
 mod code;
 mod css;
 mod fonts;
