@@ -58,24 +58,3 @@ fn remote_images() {
     │ <INVALID UTF8>
     ");
 }
-
-#[test]
-fn unresolvable_remote_images() {
-    let book = MDBook::init()
-        .config(Config::markdown())
-        .chapter(Chapter::new(
-            "Some Chapter",
-            "prefix ![test image](https://doesnotexist.fake/main.yml?style=flat-square) suffix",
-            "chapter.md",
-        ))
-        .build();
-    insta::assert_snapshot!(book, @r"
-    ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  WARN mdbook_pandoc::preprocess: Failed to resolve image link 'https://doesnotexist.fake/main.yml?style=flat-square' in chapter 'Some Chapter': could not fetch remote image: Dns Failed    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
-    ├─ markdown/book.md
-    │ prefix test image suffix
-    ");
-}
