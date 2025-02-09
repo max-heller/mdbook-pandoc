@@ -20,7 +20,7 @@ jobs:
         run: cargo test --doc
       - name: Archive rendered books
         if: github.base_ref == 'main'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rendered-books
           path: |
