@@ -2,7 +2,7 @@
 name = "mdbook-pandoc"
 description = "A mdbook backend that outsources most of the rendering process to pandoc."
 version = "0.9.3"
-rust-version = "1.75.0"
+rust-version = "1.77.0"
 edition = "2021"
 authors = ["Max Heller <max.a.heller@gmail.com>"]
 license = "MIT OR Apache-2.0"
