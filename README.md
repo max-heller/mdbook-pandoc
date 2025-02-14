@@ -66,6 +66,9 @@ A subset of the available options are described below:
 [output.pandoc]
 hosted-html = "https://doc.rust-lang.org/book" # URL of a HTML version of the book
 
+[output.pandoc.markdown.extensions] # enable additional Markdown extensions
+gfm = false # enable pulldown-cmark's GitHub Flavored Markdown extensions
+
 [output.pandoc.code]
 # Display hidden lines in code blocks (e.g., lines in Rust blocks prefixed by '#').
 # See https://rust-lang.github.io/mdBook/format/mdbook.html?highlight=hidden#hiding-code-lines
@@ -101,8 +104,26 @@ variable-name = "value"
   - [x] [Tables](https://rust-lang.github.io/mdBook/format/markdown.html#tables)
   - [x] [Task Lists](https://rust-lang.github.io/mdBook/format/markdown.html#task-lists) (e.g. `- [x] Complete task`)
   - [x] [Heading Attributes](https://rust-lang.github.io/mdBook/format/markdown.html#heading-attributes) (e.g. `# Heading { #custom-heading }`)
+
+- [ ] `pulldown-cmark` Markdown extensions not yet enabled by mdBook.
+
+  These extensions are disabled by default for consistency with mdBook and must be explicitly enabled.
+  
+  - [x] [Blockquote tags](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_GFM)
+    (Enable by setting `output.pandoc.markdown.extensions.gfm` to `true`)
+
+  - [ ] [Math](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_MATH)
+
+  - [ ] [Definition Lists](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_DEFINITION_LIST)
+
+  - [ ] [Superscript](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_SUPERSCRIPT)
+
+  - [ ] [Subscript](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_SUBSCRIPT)
+
 - [x] Table of contents
+
 - [x] Take [`[output.html.redirect]`](https://rust-lang.github.io/mdBook/format/configuration/renderers.html#outputhtmlredirect) into account when resolving links
+
 - [x] Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`) to LaTeX
 
 ### Preprocessing

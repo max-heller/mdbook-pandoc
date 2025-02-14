@@ -15,7 +15,7 @@ use html5ever::{
     LocalName,
 };
 use indexmap::IndexSet;
-use pulldown_cmark::{CowStr, LinkType};
+use pulldown_cmark::{BlockQuoteKind, CowStr, LinkType};
 
 use crate::{html, latex, pandoc};
 
@@ -378,15 +378,37 @@ impl<'book> Emitter<'book> {
                         }
                     }
                 },
-                MdElement::BlockQuote => serializer
+                MdElement::BlockQuote(Some(kind)) => {
+                    let (class, title) = match kind {
+                        BlockQuoteKind::Note => ("note", "Note"),
+                        BlockQuoteKind::Tip => ("tip", "Tip"),
+                        BlockQuoteKind::Important => ("important", "Important"),
+                        BlockQuoteKind::Warning => ("warning", "Warning"),
+                        BlockQuoteKind::Caution => ("caution", "Caution"),
+                    };
+                    serializer.blocks()?.serialize_element()?.serialize_div(
+                        (None, &[class.into()], &[]),
+                        |blocks| {
+                            blocks.serialize_element()?.serialize_div(
+                                (None, &["title".into()], &[]),
+                                |header| {
+                                    header.serialize_element()?.serialize_para(|header| {
+                                        header.serialize_element()?.serialize_str(title)
+                                    })
+                                },
+                            )?;
+                            blocks.serialize_nested(|serializer| {
+                                self.serialize_children(node, serializer)
+                            })
+                        },
+                    )
+                }
+                MdElement::BlockQuote(None) => serializer
                     .blocks()?
                     .serialize_element()?
                     .serialize_block_quote(|blocks| {
                         blocks.serialize_nested(|serializer| {
-                            for node in node.children() {
-                                self.serialize_node(node, serializer)?;
-                            }
-                            Ok(())
+                            self.serialize_children(node, serializer)
                         })
                     }),
                 MdElement::InlineCode(s) => serializer.serialize_inlines(|inlines| {
