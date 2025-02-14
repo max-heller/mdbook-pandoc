@@ -19,7 +19,7 @@ mod pandoc;
 mod preprocess;
 use preprocess::Preprocessor;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 struct Config {
     #[serde(rename = "profile", default = "Default::default")]
@@ -33,10 +33,30 @@ struct Config {
     /// Skip running the renderer.
     #[serde(default = "Default::default")]
     pub disabled: bool,
+    /// Markdown-related configuration.
+    #[serde(default = "Default::default")]
+    pub markdown: MarkdownConfig,
+}
+
+/// Configuration for customizing how Markdown is parsed.
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+struct MarkdownConfig {
+    /// Enable additional Markdown extensions.
+    pub extensions: MarkdownExtensionConfig,
+}
+
+/// [`pulldown_cmark`] Markdown extensions not enabled by default by [`mdbook`].
+#[derive(Clone, Copy, Debug, Default, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+struct MarkdownExtensionConfig {
+    /// Enable [`pulldown_cmark::Options::ENABLE_GFM`].
+    #[serde(default = "defaults::disabled")]
+    pub gfm: bool,
 }
 
 /// Configuration for tweaking how code blocks are rendered.
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 struct CodeConfig {
     pub show_hidden_lines: bool,
@@ -45,6 +65,10 @@ struct CodeConfig {
 mod defaults {
     pub fn enabled() -> bool {
         true
+    }
+
+    pub fn disabled() -> bool {
+        false
     }
 }
 
@@ -137,7 +161,7 @@ impl mdbook::Renderer for Renderer {
             };
 
             // Preprocess book
-            let mut preprocessor = Preprocessor::new(ctx)?;
+            let mut preprocessor = Preprocessor::new(ctx, &cfg.markdown)?;
 
             if let Some(uri) = cfg.hosted_html.as_deref() {
                 preprocessor.hosted_html(uri);

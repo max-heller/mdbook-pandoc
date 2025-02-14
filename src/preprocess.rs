@@ -28,7 +28,10 @@ use pulldown_cmark::{CowStr, Event, HeadingLevel, LinkType, Tag, TagEnd};
 use regex::Regex;
 use walkdir::WalkDir;
 
-use crate::pandoc::{self, native::ColWidth, OutputFormat, RenderContext};
+use crate::{
+    pandoc::{self, native::ColWidth, OutputFormat, RenderContext},
+    MarkdownConfig, MarkdownExtensionConfig,
+};
 
 mod code;
 
@@ -41,6 +44,7 @@ pub struct Preprocessor<'book> {
     preprocessed_relative_to_root: PathBuf,
     redirects: HashMap<PathBuf, String>,
     hosted_html: Option<&'book str>,
+    markdown: &'book MarkdownConfig,
     unresolved_links: bool,
     chapters: HashMap<&'book Path, IndexedChapter<'book>>,
 }
@@ -70,7 +74,7 @@ struct NormalizedPath {
 }
 
 impl<'book> Preprocessor<'book> {
-    pub fn new(ctx: RenderContext<'book>) -> anyhow::Result<Self> {
+    pub fn new(ctx: RenderContext<'book>, markdown: &'book MarkdownConfig) -> anyhow::Result<Self> {
         let preprocessed = ctx.destination.join("src");
 
         if preprocessed.try_exists()? {
@@ -120,6 +124,7 @@ impl<'book> Preprocessor<'book> {
             preprocessed,
             redirects: Default::default(),
             hosted_html: Default::default(),
+            markdown,
             unresolved_links: false,
             chapters,
             ctx,
@@ -605,12 +610,13 @@ struct Parser<'book> {
 }
 
 impl<'book> Parser<'book> {
-    fn new(md: &'book str) -> Self {
+    fn new(md: &'book str, extensions: MarkdownExtensionConfig) -> Self {
+        use pulldown_cmark::Options;
+
         /// Markdown extensions supported by mdBook
         ///
         /// See https://rust-lang.github.io/mdBook/format/markdown.html#extensions
-        const PARSER_OPTIONS: pulldown_cmark::Options = {
-            use pulldown_cmark::Options;
+        const PARSER_OPTIONS: Options = {
             Options::empty()
                 .union(Options::ENABLE_STRIKETHROUGH)
                 .union(Options::ENABLE_FOOTNOTES)
@@ -619,9 +625,18 @@ impl<'book> Parser<'book> {
                 .union(Options::ENABLE_HEADING_ATTRIBUTES)
         };
 
+        let options = {
+            let mut options = PARSER_OPTIONS;
+            let MarkdownExtensionConfig { gfm } = extensions;
+            if gfm {
+                options |= Options::ENABLE_GFM;
+            }
+            options
+        };
+
         Self {
             lookahead: Default::default(),
-            parser: pulldown_cmark::Parser::new_ext(md, PARSER_OPTIONS).into_offset_iter(),
+            parser: pulldown_cmark::Parser::new_ext(md, options).into_offset_iter(),
         }
     }
 
@@ -666,9 +681,9 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         part_num: usize,
     ) -> Self {
         Self {
-            preprocessor,
             chapter,
-            parser: Parser::new(&chapter.content),
+            parser: Parser::new(&chapter.content, preprocessor.markdown.extensions),
+            preprocessor,
             stack: Vec::new(),
             encountered_h1: false,
             identifiers: Default::default(),
@@ -868,7 +883,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         push_element(self, tree, MdElement::Link { dest_url, title })
                     }
                     Tag::Paragraph => push_element(self, tree, MdElement::Paragraph),
-                    Tag::BlockQuote(_) => push_element(self, tree, MdElement::BlockQuote),
+                    Tag::BlockQuote(kind) => push_element(self, tree, MdElement::BlockQuote(kind)),
                     Tag::CodeBlock(kind) => push_element(self, tree, MdElement::CodeBlock(kind)),
                     Tag::Emphasis => push_element(self, tree, MdElement::Emphasis),
                     Tag::Strong => push_element(self, tree, MdElement::Strong),
