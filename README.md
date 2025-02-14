@@ -68,6 +68,7 @@ hosted-html = "https://doc.rust-lang.org/book" # URL of a HTML version of the bo
 
 [output.pandoc.markdown.extensions] # enable additional Markdown extensions
 gfm = false # enable pulldown-cmark's GitHub Flavored Markdown extensions
+math = false # parse inline ($a^b$) and display ($$a^b$$) math
 
 [output.pandoc.code]
 # Display hidden lines in code blocks (e.g., lines in Rust blocks prefixed by '#').
