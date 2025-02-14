@@ -229,8 +229,15 @@ impl<'book> Preprocessor<'book> {
         match link_type {
             // Don't try to normalize emails
             Email => return Ok(link),
-            Inline | Reference | ReferenceUnknown | Collapsed | CollapsedUnknown | Shortcut
-            | ShortcutUnknown | Autolink => {}
+            Inline
+            | Reference
+            | ReferenceUnknown
+            | Collapsed
+            | CollapsedUnknown
+            | Shortcut
+            | ShortcutUnknown
+            | Autolink
+            | WikiLink { .. } => {}
         }
 
         // URI scheme definition: https://datatracker.ietf.org/doc/html/rfc3986#section-3.1
@@ -861,7 +868,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         push_element(self, tree, MdElement::Link { dest_url, title })
                     }
                     Tag::Paragraph => push_element(self, tree, MdElement::Paragraph),
-                    Tag::BlockQuote => push_element(self, tree, MdElement::BlockQuote),
+                    Tag::BlockQuote(_) => push_element(self, tree, MdElement::BlockQuote),
                     Tag::CodeBlock(kind) => push_element(self, tree, MdElement::CodeBlock(kind)),
                     Tag::Emphasis => push_element(self, tree, MdElement::Emphasis),
                     Tag::Strong => push_element(self, tree, MdElement::Strong),
@@ -891,6 +898,12 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         }
                         return Ok(());
                     }
+                    // Definition list parsing is not enabled
+                    Tag::DefinitionList
+                    | Tag::DefinitionListTitle
+                    | Tag::DefinitionListDefinition => unreachable!(),
+                    // Not enabled
+                    Tag::Superscript | Tag::Subscript => unreachable!(),
                 }?;
                 Ok(())
             }
@@ -958,6 +971,8 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 tree.create_element(MdElement::TaskListMarker(checked))?;
                 Ok(())
             }
+            // Math option is not enabled
+            Event::InlineMath(_) | Event::DisplayMath(_) => unreachable!(),
         }
     }
 
