@@ -112,7 +112,8 @@ variable-name = "value"
   - [x] [Blockquote tags](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_GFM)
     (Enable by setting `output.pandoc.markdown.extensions.gfm` to `true`)
 
-  - [ ] [Math](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_MATH)
+  - [x] [Math](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_MATH)
+    (Enable by setting `output.pandoc.markdown.extensions.math` to `true`)
 
   - [ ] [Definition Lists](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_DEFINITION_LIST)
 

@@ -507,6 +507,16 @@ impl<'book> Emitter<'book> {
                         })
                     })
                 }),
+                MdElement::InlineMath(math) => serializer.serialize_inlines(|inlines| {
+                    inlines
+                        .serialize_element()?
+                        .serialize_math(pandoc::native::MathType::Inline, math)
+                }),
+                MdElement::DisplayMath(math) => serializer.serialize_inlines(|inlines| {
+                    inlines
+                        .serialize_element()?
+                        .serialize_math(pandoc::native::MathType::Display, math)
+                }),
                 MdElement::Image {
                     link_type,
                     dest_url,
