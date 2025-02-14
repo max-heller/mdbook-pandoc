@@ -627,9 +627,12 @@ impl<'book> Parser<'book> {
 
         let options = {
             let mut options = PARSER_OPTIONS;
-            let MarkdownExtensionConfig { gfm } = extensions;
+            let MarkdownExtensionConfig { gfm, math } = extensions;
             if gfm {
                 options |= Options::ENABLE_GFM;
+            }
+            if math {
+                options |= Options::ENABLE_MATH;
             }
             options
         };
@@ -986,8 +989,16 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 tree.create_element(MdElement::TaskListMarker(checked))?;
                 Ok(())
             }
-            // Math option is not enabled
-            Event::InlineMath(_) | Event::DisplayMath(_) => unreachable!(),
+            Event::InlineMath(math) => {
+                tree.create_element(MdElement::InlineMath(math))?;
+                tree.process_html("</span>".into());
+                Ok(())
+            }
+            Event::DisplayMath(math) => {
+                tree.create_element(MdElement::DisplayMath(math))?;
+                tree.process_html("</span>".into());
+                Ok(())
+            }
         }
     }
 

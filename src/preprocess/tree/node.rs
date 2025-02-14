@@ -67,6 +67,8 @@ pub enum MdElement<'a> {
     Emphasis,
     Strong,
     Strikethrough,
+    InlineMath(CowStr<'a>),
+    DisplayMath(CowStr<'a>),
     Link {
         dest_url: CowStr<'a>,
         title: CowStr<'a>,
@@ -253,6 +255,10 @@ impl MdElement<'_> {
             MdElement::TaskListMarker(_) => {
                 const INPUT: &QualName = &html::name!(html "input");
                 INPUT
+            }
+            MdElement::InlineMath(_) | MdElement::DisplayMath(_) => {
+                const SPAN: &QualName = &html::name!(html "span");
+                SPAN
             }
         }
     }

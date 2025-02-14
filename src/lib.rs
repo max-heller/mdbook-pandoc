@@ -53,6 +53,9 @@ struct MarkdownExtensionConfig {
     /// Enable [`pulldown_cmark::Options::ENABLE_GFM`].
     #[serde(default = "defaults::disabled")]
     pub gfm: bool,
+    /// Enable [`pulldown_cmark::Options::ENABLE_MATH`].
+    #[serde(default = "defaults::disabled")]
+    pub math: bool,
 }
 
 /// Configuration for tweaking how code blocks are rendered.

@@ -15,6 +15,11 @@ use super::OutputFormat;
 
 pub mod escape;
 
+pub enum MathType {
+    Display,
+    Inline,
+}
+
 /// Alignment of a table column.
 pub enum Alignment {
     Default,
@@ -589,6 +594,22 @@ impl<'book, 'p, W: io::Write> SerializeInline<'_, 'book, 'p, W> {
     /// Hard line break
     pub fn serialize_line_break(self) -> anyhow::Result<()> {
         write!(self.serializer.unescaped(), "LineBreak")?;
+        Ok(())
+    }
+
+    /// TeX math (literal)
+    pub fn serialize_math(self, ty: MathType, math: &str) -> anyhow::Result<()> {
+        write!(self.serializer.unescaped(), "Math ")?;
+        let ty = match ty {
+            MathType::Display => "DisplayMath",
+            MathType::Inline => "InlineMath",
+        };
+        write!(self.serializer.unescaped(), "{ty}")?;
+        write!(
+            self.serializer.unescaped(),
+            r#" "{}""#,
+            math.escape_quotes_verbatim()
+        )?;
         Ok(())
     }
 

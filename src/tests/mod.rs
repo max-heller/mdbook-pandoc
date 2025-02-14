@@ -399,6 +399,7 @@ mod headings;
 mod html;
 mod images;
 mod links;
+mod math;
 mod redirects;
 mod tables;
 
