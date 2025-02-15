@@ -415,6 +415,18 @@ impl SerializeElement for Cell {
     }
 }
 
+impl SerializeElement for DefinitionListItem {
+    type Serializer<'a, 'book: 'a, 'p: 'a + 'book, W: io::Write + 'a> =
+        SerializeDefinitionListItem<'a, 'book, 'p, W>;
+
+    fn serializer<'a, 'book, 'p, W: io::Write>(
+        &mut self,
+        serializer: &'a mut Serializer<'p, 'book, W>,
+    ) -> Self::Serializer<'a, 'book, 'p, W> {
+        SerializeDefinitionListItem { serializer }
+    }
+}
+
 impl<Item: SerializeElement + Copy> SerializeElement for List<Item> {
     type Serializer<'a, 'book: 'a, 'p: 'a + 'book, W: io::Write + 'a> =
         anyhow::Result<SerializeList<'a, 'book, 'p, W, Item>>;
@@ -476,6 +488,8 @@ pub struct List<T>(T);
 pub struct Row;
 #[derive(Copy, Clone)]
 pub struct Cell;
+#[derive(Copy, Clone)]
+pub struct DefinitionListItem;
 
 pub type SerializeBlocks<'a, 'book, 'p, W> = SerializeList<'a, 'book, 'p, W, Block>;
 pub type SerializeInlines<'a, 'book, 'p, W> = SerializeList<'a, 'book, 'p, W, Inline>;
@@ -514,6 +528,11 @@ pub struct SerializeRow<'a, 'book, 'p, W: io::Write> {
 
 #[must_use]
 pub struct SerializeCell<'a, 'book, 'p, W: io::Write> {
+    serializer: &'a mut Serializer<'p, 'book, W>,
+}
+
+#[must_use]
+pub struct SerializeDefinitionListItem<'a, 'book, 'p, W: io::Write> {
     serializer: &'a mut Serializer<'p, 'book, W>,
 }
 
@@ -808,6 +827,20 @@ impl<'a, 'book, 'p, W: io::Write> SerializeBlock<'a, 'book, 'p, W> {
         serializer.finish()
     }
 
+    /// Definition list. Each list item is a pair consisting of a term (a list of inlines)
+    /// and one or more definitions (each a list of blocks)
+    pub fn serialize_definition_list(
+        self,
+        items: impl FnOnce(
+            &mut SerializeList<'_, 'book, 'p, W, DefinitionListItem>,
+        ) -> anyhow::Result<()>,
+    ) -> anyhow::Result<()> {
+        write!(self.serializer.unescaped(), "DefinitionList ")?;
+        let mut serializer = SerializeList::new(self.serializer, DefinitionListItem)?;
+        items(&mut serializer)?;
+        serializer.finish()
+    }
+
     /// Horizontal rule
     pub fn serialize_horizontal_rule(self) -> anyhow::Result<()> {
         write!(self.serializer.unescaped(), "HorizontalRule")?;
@@ -968,6 +1001,28 @@ impl<'book, 'p, W: io::Write> SerializeCell<'_, 'book, 'p, W> {
         let mut serializer = SerializeList::new(self.serializer, Block)?;
         blocks(&mut serializer)?;
         serializer.finish()
+    }
+}
+
+impl<'book, 'p, W: io::Write> SerializeDefinitionListItem<'_, 'book, 'p, W> {
+    /// A term (a list of inlines) and one or more definitions (each a list of blocks)
+    pub fn serialize_item(
+        self,
+        term: impl FnOnce(&mut SerializeInlines<'_, 'book, 'p, W>) -> anyhow::Result<()>,
+        definitions: impl FnOnce(
+            &mut SerializeList<'_, 'book, 'p, W, List<Block>>,
+        ) -> anyhow::Result<()>,
+    ) -> anyhow::Result<()> {
+        write!(self.serializer.unescaped(), "(")?;
+        let mut serializer = SerializeList::new(self.serializer, Inline)?;
+        term(&mut serializer)?;
+        serializer.finish()?;
+        write!(self.serializer.unescaped(), ", ")?;
+        let mut serializer = SerializeList::new(self.serializer, List(Block))?;
+        definitions(&mut serializer)?;
+        serializer.finish()?;
+        write!(self.serializer.unescaped(), ")")?;
+        Ok(())
     }
 }
 

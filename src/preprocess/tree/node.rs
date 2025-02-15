@@ -289,6 +289,10 @@ impl HtmlElement {
 }
 
 impl Attributes {
+    pub fn is_empty(&self) -> bool {
+        self.id.is_none() && self.classes.is_empty() && self.rest.is_empty()
+    }
+
     pub fn iter(&self) -> impl Iterator<Item = (&QualName, &StrTendril)> {
         const ID: &QualName = &html::name!("id");
         const CLASS: &QualName = &html::name!("class");
@@ -303,7 +307,7 @@ impl fmt::Debug for Node<'_> {
         match self {
             Node::Document => write!(f, "Document"),
             Node::HtmlComment(comment) => write!(f, "<!-- {comment} -->"),
-            Node::HtmlText(text) => write!(f, "Text({text})"),
+            Node::HtmlText(text) => write!(f, "HtmlText({:?})", text.as_ref()),
             Node::Element(element) => write!(f, "{element:?}"),
         }
     }

@@ -69,6 +69,7 @@ hosted-html = "https://doc.rust-lang.org/book" # URL of a HTML version of the bo
 [output.pandoc.markdown.extensions] # enable additional Markdown extensions
 gfm = false # enable pulldown-cmark's GitHub Flavored Markdown extensions
 math = false # parse inline ($a^b$) and display ($$a^b$$) math
+definition-lists = false # parse definition lists
 
 [output.pandoc.code]
 # Display hidden lines in code blocks (e.g., lines in Rust blocks prefixed by '#').
@@ -116,7 +117,8 @@ variable-name = "value"
   - [x] [Math](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_MATH)
     (Enable by setting `output.pandoc.markdown.extensions.math` to `true`)
 
-  - [ ] [Definition Lists](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_DEFINITION_LIST)
+  - [x] [Definition Lists](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_DEFINITION_LIST)
+    (Enable by setting `output.pandoc.markdown.extensions.definition-lists` to `true`)
 
   - [ ] [Superscript](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_SUPERSCRIPT)
 

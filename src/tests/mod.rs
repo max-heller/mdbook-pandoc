@@ -393,6 +393,7 @@ mod escaping;
 mod alerts;
 mod code;
 mod css;
+mod definition_lists;
 mod fonts;
 mod footnotes;
 mod headings;

@@ -56,6 +56,9 @@ struct MarkdownExtensionConfig {
     /// Enable [`pulldown_cmark::Options::ENABLE_MATH`].
     #[serde(default = "defaults::disabled")]
     pub math: bool,
+    /// Enable [`pulldown_cmark::Options::ENABLE_DEFINITION_LIST`].
+    #[serde(default = "defaults::disabled")]
+    pub definition_lists: bool,
 }
 
 /// Configuration for tweaking how code blocks are rendered.
