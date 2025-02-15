@@ -317,8 +317,8 @@ impl<'book> Emitter<'book> {
                                                                                 cell.children()
                                                                             {
                                                                                 self.serialize_node(
-                                                                                node, serializer,
-                                                                            )?;
+                                                                                    node, serializer,
+                                                                                )?;
                                                                             }
                                                                             Ok(())
                                                                         },
@@ -642,6 +642,80 @@ impl<'book> Emitter<'book> {
                                 }
                             }
                         }
+                    }
+                    local_name!("dl") => {
+                        enum Component {
+                            Term,
+                            Definition,
+                        }
+                        let mut components = node
+                            .children()
+                            .filter_map(|node| match node.value() {
+                                Node::Element(Element::Html(element)) => {
+                                    match element.name.expanded() {
+                                        expanded_name!(html "dt") => {
+                                            Some((Component::Term, node, &element.attrs))
+                                        }
+                                        expanded_name!(html "dd") => {
+                                            Some((Component::Definition, node, &element.attrs))
+                                        }
+                                        _ => None,
+                                    }
+                                }
+                                _ => None,
+                            })
+                            .peekable();
+                        return serializer
+                            .blocks()?
+                            .serialize_element()?
+                            .serialize_definition_list(|items| {
+                                while let Some((component, node, attrs)) = components.next() {
+                                    match component {
+                                        Component::Term => {}
+                                        Component::Definition => {
+                                            anyhow::bail!("definition list definition with no term")
+                                        }
+                                    };
+                                    items.serialize_element()?.serialize_item(
+                                        |term| {
+                                            if attrs.is_empty() {
+                                                term.serialize_nested(|serializer| {
+                                                    self.serialize_children(node, serializer)
+                                                })
+                                            } else {
+                                                // Wrap term in a span with the attributes since Pandoc
+                                                // doesn't support attributes on definition list terms
+                                                term.serialize_element()?.serialize_span(
+                                                    attrs,
+                                                    |inlines| {
+                                                        inlines.serialize_nested(|serializer| {
+                                                            self.serialize_children(
+                                                                node, serializer,
+                                                            )
+                                                        })
+                                                    },
+                                                )
+                                            }
+                                        },
+                                        |definitions| {
+                                            while let Some((_, definition, _)) =
+                                                components.next_if(|(component, _, _)| {
+                                                    matches!(component, Component::Definition)
+                                                })
+                                            {
+                                                let mut serializer =
+                                                    definitions.serialize_element()??;
+                                                serializer.serialize_nested(|serializer| {
+                                                    self.serialize_children(definition, serializer)
+                                                })?;
+                                                serializer.finish()?;
+                                            }
+                                            Ok(())
+                                        },
+                                    )?
+                                }
+                                Ok(())
+                            });
                     }
                     _ => {}
                 }

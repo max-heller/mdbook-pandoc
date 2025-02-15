@@ -627,12 +627,19 @@ impl<'book> Parser<'book> {
 
         let options = {
             let mut options = PARSER_OPTIONS;
-            let MarkdownExtensionConfig { gfm, math } = extensions;
+            let MarkdownExtensionConfig {
+                gfm,
+                math,
+                definition_lists,
+            } = extensions;
             if gfm {
                 options |= Options::ENABLE_GFM;
             }
             if math {
                 options |= Options::ENABLE_MATH;
+            }
+            if definition_lists {
+                options |= Options::ENABLE_DEFINITION_LIST;
             }
             options
         };
@@ -817,6 +824,18 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         push_element(self, tree, MdElement::List(start_number))
                     }
                     Tag::Item => push_element(self, tree, MdElement::Item),
+                    Tag::DefinitionList => {
+                        self.preprocessor.ctx.cur_list_depth += 1;
+                        self.preprocessor.ctx.max_list_depth = cmp::max(
+                            self.preprocessor.ctx.max_list_depth,
+                            self.preprocessor.ctx.cur_list_depth,
+                        );
+                        push_html_element(self, tree, local_name!("dl"))
+                    }
+                    Tag::DefinitionListTitle => push_html_element(self, tree, local_name!("dt")),
+                    Tag::DefinitionListDefinition => {
+                        push_html_element(self, tree, local_name!("dd"))
+                    }
                     Tag::FootnoteDefinition(label) => {
                         let node = push_element(self, tree, MdElement::FootnoteDefinition)?;
                         tree.footnote(label, node);
@@ -916,10 +935,6 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         }
                         return Ok(());
                     }
-                    // Definition list parsing is not enabled
-                    Tag::DefinitionList
-                    | Tag::DefinitionListTitle
-                    | Tag::DefinitionListDefinition => unreachable!(),
                     // Not enabled
                     Tag::Superscript | Tag::Subscript => unreachable!(),
                 }?;
@@ -938,6 +953,11 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     };
                     match element {
                         Element::Markdown(MdElement::List(_)) => {
+                            self.preprocessor.ctx.cur_list_depth -= 1
+                        }
+                        Element::Html(element)
+                            if element.name.expanded() == expanded_name!(html "dl") =>
+                        {
                             self.preprocessor.ctx.cur_list_depth -= 1
                         }
                         Element::Html(element)
