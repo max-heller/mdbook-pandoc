@@ -174,14 +174,11 @@ impl<'book> Emitter<'book> {
                     classes,
                     attrs,
                 } => serializer.blocks()?.serialize_element()?.serialize_header(
-                    *level as usize,
+                    *level,
                     (id.as_deref(), classes, attrs),
                     |inlines| {
                         inlines.serialize_nested(|serializer| {
-                            for node in node.children() {
-                                self.serialize_node(node, serializer)?;
-                            }
-                            Ok(())
+                            self.serialize_children(node, serializer)
                         })
                     },
                 ),

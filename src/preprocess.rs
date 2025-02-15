@@ -7,7 +7,6 @@ use std::{
     fs::{self, File},
     hash::{Hash, Hasher},
     io::{self, Write as _},
-    iter,
     num::NonZeroU32,
     ops::Range,
     path::{Path, PathBuf},
@@ -710,13 +709,32 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         self.chapter
     }
 
-    fn update_heading<'b>(
+    fn preprocess_heading<'b>(
         &mut self,
+        id: Option<CowStr<'b>>,
         level: HeadingLevel,
         mut classes: Vec<CowStr<'b>>,
-    ) -> Option<(HeadingLevel, Vec<CowStr<'b>>)> {
+        attrs: Vec<(CowStr<'b>, Option<CowStr<'b>>)>,
+    ) -> MdElement<'b> {
         const PANDOC_UNNUMBERED_CLASS: &str = "unnumbered";
         const PANDOC_UNLISTED_CLASS: &str = "unlisted";
+
+        let id = Some(match id {
+            Some(id) => id,
+            None => {
+                let mut id = Preprocessor::make_gfm_identifier(
+                    self.parser
+                        .peek_until(|event| matches!(event, Event::End(TagEnd::Heading(..)))),
+                );
+                if let Some(count) = self.identifiers.get_mut(&id) {
+                    write!(id, "-{}", count.get()).unwrap();
+                    *count = count.saturating_add(1);
+                } else {
+                    self.identifiers.insert(id.clone(), NonZeroU32::MIN);
+                }
+                id.into()
+            }
+        });
 
         if let HeadingLevel::H1 = level {
             // Number the first H1 in each numbered chapter, mirroring mdBook
@@ -732,27 +750,22 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             classes.push(PANDOC_UNLISTED_CLASS.into());
         }
 
-        let shift_smaller = |level| {
-            use HeadingLevel::*;
-            match level {
-                H1 => Some(H2),
-                H2 => Some(H3),
-                H3 => Some(H4),
-                H4 => Some(H5),
-                H5 => Some(H6),
-                H6 => None,
-            }
+        let level: u16 = match level {
+            HeadingLevel::H1 => 1,
+            HeadingLevel::H2 => 2,
+            HeadingLevel::H3 => 3,
+            HeadingLevel::H4 => 4,
+            HeadingLevel::H5 => 5,
+            HeadingLevel::H6 => 6,
         };
-        let Some(level) = iter::successors(Some(level), |level| shift_smaller(*level))
-            .nth(self.chapter.parent_names.len())
-        else {
-            log::warn!(
-                "Heading (level {level}) converted to paragraph in chapter: {}",
-                self.chapter.name
-            );
-            return None;
-        };
-        Some((level, classes))
+        let num_parents = self.chapter.parent_names.len();
+        let level = level.saturating_add(num_parents.try_into().unwrap_or(u16::MAX));
+        MdElement::Heading {
+            level,
+            id,
+            classes,
+            attrs,
+        }
     }
 
     pub fn column_widths<'table>(
@@ -864,31 +877,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         classes,
                         attrs,
                     } => {
-                        let id = Some(match id {
-                            Some(id) => id,
-                            None => {
-                                let mut id =
-                                    Preprocessor::make_gfm_identifier(self.parser.peek_until(
-                                        |event| matches!(event, Event::End(TagEnd::Heading(..))),
-                                    ));
-                                if let Some(count) = self.identifiers.get_mut(&id) {
-                                    write!(id, "-{}", count.get()).unwrap();
-                                    *count = count.saturating_add(1);
-                                } else {
-                                    self.identifiers.insert(id.clone(), NonZeroU32::MIN);
-                                }
-                                id.into()
-                            }
-                        });
-                        let element = self
-                            .update_heading(level, classes)
-                            .map(|(level, classes)| MdElement::Heading {
-                                level,
-                                id,
-                                classes,
-                                attrs,
-                            })
-                            .unwrap_or(MdElement::Paragraph);
+                        let element = self.preprocess_heading(id, level, classes, attrs);
                         push_element(self, tree, element)
                     }
                     Tag::Link {

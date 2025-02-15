@@ -10,19 +10,6 @@ snapshot_kind: text
  INFO mdbook::book: Running the pandoc backend    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../early-late-bound-params/early-late-bound-summary.md' in chapter 'ty_module/param_ty_const_regions.md', linking to hosted HTML book at 'https://rustc-dev-guide.rust-lang.org/ty_module/../early-late-bound-params/early-late-bound-summary.md'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../early-late-bound-params/early-late-bound-summary.md' in chapter 'ty_module/param_ty_const_regions.md', linking to hosted HTML book at 'https://rustc-dev-guide.rust-lang.org/ty_module/../early-late-bound-params/early-late-bound-summary.md'    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Coinduction    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Coinduction    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
- WARN mdbook_pandoc::preprocess: Heading (level h5) converted to paragraph in chapter: Return Position Impl Trait In Trait    
  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
 [WARNING] [makePDF] LaTeX Warning: Label
   `book__pandoc__pdf__src__traits__goals-and-clauses.md__domain-goals'
