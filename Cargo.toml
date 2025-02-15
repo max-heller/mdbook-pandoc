@@ -16,6 +16,7 @@ include = ["/src", "!/src/tests", "/CHANGELOG.md", "/LICENSE-*", "/README.md"]
 [dependencies]
 aho-corasick = "1.0.0"
 anyhow = "1.0.47"
+chrono = { version = "0.4.24", default-features = false, features = ["clock"] }
 cssparser = "0.34.0"
 env_logger = "0.11.0"
 html5ever = "0.29.0"

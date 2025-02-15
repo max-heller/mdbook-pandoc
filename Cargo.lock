@@ -675,6 +675,7 @@ version = "0.9.3"
 dependencies = [
  "aho-corasick",
  "anyhow",
+ "chrono",
  "cssparser",
  "ego-tree",
  "env_logger",
