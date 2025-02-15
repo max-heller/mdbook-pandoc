@@ -850,7 +850,7 @@ impl<'a, 'book, 'p, W: io::Write> SerializeBlock<'a, 'book, 'p, W> {
     /// Header - level (integer) and text (inlines)
     pub fn serialize_header(
         self,
-        level: usize,
+        level: u16,
         attrs: impl Attributes,
         inlines: impl FnOnce(&mut SerializeInlines<'a, 'book, 'p, W>) -> anyhow::Result<()>,
     ) -> anyhow::Result<()> {

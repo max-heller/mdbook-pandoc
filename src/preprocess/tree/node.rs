@@ -2,7 +2,7 @@ use std::fmt;
 
 use html5ever::{local_name, namespace_url, ns, tendril::StrTendril, Attribute, QualName};
 use indexmap::IndexMap;
-use pulldown_cmark::{Alignment, BlockQuoteKind, CodeBlockKind, CowStr, HeadingLevel, LinkType};
+use pulldown_cmark::{Alignment, BlockQuoteKind, CodeBlockKind, CowStr, LinkType};
 
 use crate::html;
 
@@ -47,7 +47,7 @@ pub enum MdElement<'a> {
     Text(CowStr<'a>),
     SoftBreak,
     Heading {
-        level: HeadingLevel,
+        level: u16,
         id: Option<CowStr<'a>>,
         classes: Vec<CowStr<'a>>,
         attrs: Vec<(CowStr<'a>, Option<CowStr<'a>>)>,
@@ -211,13 +211,15 @@ impl MdElement<'_> {
                 const H4: &QualName = &html::name!(html "h4");
                 const H5: &QualName = &html::name!(html "h5");
                 const H6: &QualName = &html::name!(html "h6");
+                const P: &QualName = &html::name!(html "p");
                 match level {
-                    HeadingLevel::H1 => H1,
-                    HeadingLevel::H2 => H2,
-                    HeadingLevel::H3 => H3,
-                    HeadingLevel::H4 => H4,
-                    HeadingLevel::H5 => H5,
-                    HeadingLevel::H6 => H6,
+                    1 => H1,
+                    2 => H2,
+                    3 => H3,
+                    4 => H4,
+                    5 => H5,
+                    6 => H6,
+                    _ => P,
                 }
             }
             MdElement::BlockQuote(_) => {

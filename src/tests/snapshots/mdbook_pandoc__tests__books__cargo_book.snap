@@ -160,11 +160,6 @@ DEBUG mdbook_pandoc::preprocess: Preprocessing 'Credential Provider Protocol'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Running a Registry'    
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Registry Index'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/primitive.char.html#method.is_alphanumeric' in chapter 'reference/registry-index.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../std/primitive.char.html'    
- WARN mdbook_pandoc::preprocess: Heading (level h4) converted to paragraph in chapter: Registry Index    
- WARN mdbook_pandoc::preprocess: Heading (level h4) converted to paragraph in chapter: Registry Index    
- WARN mdbook_pandoc::preprocess: Heading (level h4) converted to paragraph in chapter: Registry Index    
- WARN mdbook_pandoc::preprocess: Heading (level h4) converted to paragraph in chapter: Registry Index    
- WARN mdbook_pandoc::preprocess: Heading (level h4) converted to paragraph in chapter: Registry Index    
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Registry Web API'    
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'SemVer Compatibility'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/items.html' in chapter 'reference/semver.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/items.html'    
