@@ -66,7 +66,6 @@ pub enum MdElement<'a> {
     },
     Emphasis,
     Strong,
-    Strikethrough,
     InlineMath(CowStr<'a>),
     DisplayMath(CowStr<'a>),
     Link {
@@ -237,10 +236,6 @@ impl MdElement<'_> {
             MdElement::Strong => {
                 const STRONG: &QualName = &html::name!(html "strong");
                 STRONG
-            }
-            MdElement::Strikethrough => {
-                const S: &QualName = &html::name!(html "s");
-                S
             }
             MdElement::Image { .. } => {
                 // <img> is a void element in HTML (can have no children),

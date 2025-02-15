@@ -59,6 +59,12 @@ struct MarkdownExtensionConfig {
     /// Enable [`pulldown_cmark::Options::ENABLE_DEFINITION_LIST`].
     #[serde(default = "defaults::disabled")]
     pub definition_lists: bool,
+    /// Enable [`pulldown_cmark::Options::ENABLE_SUPERSCRIPT`].
+    #[serde(default = "defaults::disabled")]
+    pub superscript: bool,
+    /// Enable [`pulldown_cmark::Options::ENABLE_SUBSCRIPT`].
+    #[serde(default = "defaults::disabled")]
+    pub subscript: bool,
 }
 
 /// Configuration for tweaking how code blocks are rendered.

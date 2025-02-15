@@ -497,13 +497,6 @@ impl<'book> Emitter<'book> {
                         })
                     })
                 }),
-                MdElement::Strikethrough => serializer.serialize_inlines(|inlines| {
-                    inlines.serialize_element()?.serialize_strikeout(|inlines| {
-                        inlines.serialize_nested(|serializer| {
-                            self.serialize_children(node, serializer)
-                        })
-                    })
-                }),
                 MdElement::InlineMath(math) => serializer.serialize_inlines(|inlines| {
                     inlines
                         .serialize_element()?
@@ -585,6 +578,35 @@ impl<'book> Emitter<'book> {
                                         self.serialize_children(node, serializer)
                                     })
                                 })
+                        })
+                    }
+                    local_name!("s") => {
+                        return serializer.serialize_inlines(|inlines| {
+                            inlines.serialize_element()?.serialize_strikeout(|inlines| {
+                                inlines.serialize_nested(|serializer| {
+                                    self.serialize_children(node, serializer)
+                                })
+                            })
+                        })
+                    }
+                    local_name!("sup") => {
+                        return serializer.serialize_inlines(|inlines| {
+                            inlines
+                                .serialize_element()?
+                                .serialize_superscript(|inlines| {
+                                    inlines.serialize_nested(|serializer| {
+                                        self.serialize_children(node, serializer)
+                                    })
+                                })
+                        })
+                    }
+                    local_name!("sub") => {
+                        return serializer.serialize_inlines(|inlines| {
+                            inlines.serialize_element()?.serialize_subscript(|inlines| {
+                                inlines.serialize_nested(|serializer| {
+                                    self.serialize_children(node, serializer)
+                                })
+                            })
                         })
                     }
                     local_name!("div") => {

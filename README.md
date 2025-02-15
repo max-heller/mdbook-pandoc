@@ -70,6 +70,8 @@ hosted-html = "https://doc.rust-lang.org/book" # URL of a HTML version of the bo
 gfm = false # enable pulldown-cmark's GitHub Flavored Markdown extensions
 math = false # parse inline ($a^b$) and display ($$a^b$$) math
 definition-lists = false # parse definition lists
+superscript = false # parse superscripted text (^this is superscripted^)
+subscript = false # parse subscripted text (~this is subscripted~)
 
 [output.pandoc.code]
 # Display hidden lines in code blocks (e.g., lines in Rust blocks prefixed by '#').
@@ -120,9 +122,11 @@ variable-name = "value"
   - [x] [Definition Lists](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_DEFINITION_LIST)
     (Enable by setting `output.pandoc.markdown.extensions.definition-lists` to `true`)
 
-  - [ ] [Superscript](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_SUPERSCRIPT)
+  - [x] [Superscript](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_SUPERSCRIPT)
+    (Enable by setting `output.pandoc.markdown.extensions.superscript` to `true`)
 
-  - [ ] [Subscript](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_SUBSCRIPT)
+  - [x] [Subscript](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_SUBSCRIPT)
+    (Enable by setting `output.pandoc.markdown.extensions.subscript` to `true`)
 
 - [x] Table of contents
 
