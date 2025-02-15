@@ -630,6 +630,8 @@ impl<'book> Parser<'book> {
                 gfm,
                 math,
                 definition_lists,
+                superscript,
+                subscript,
             } = extensions;
             if gfm {
                 options |= Options::ENABLE_GFM;
@@ -639,6 +641,12 @@ impl<'book> Parser<'book> {
             }
             if definition_lists {
                 options |= Options::ENABLE_DEFINITION_LIST;
+            }
+            if superscript {
+                options |= Options::ENABLE_SUPERSCRIPT;
+            }
+            if subscript {
+                options |= Options::ENABLE_SUBSCRIPT;
             }
             options
         };
@@ -898,7 +906,9 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     Tag::CodeBlock(kind) => push_element(self, tree, MdElement::CodeBlock(kind)),
                     Tag::Emphasis => push_element(self, tree, MdElement::Emphasis),
                     Tag::Strong => push_element(self, tree, MdElement::Strong),
-                    Tag::Strikethrough => push_element(self, tree, MdElement::Strikethrough),
+                    Tag::Strikethrough => push_html_element(self, tree, local_name!("s")),
+                    Tag::Superscript => push_html_element(self, tree, local_name!("sup")),
+                    Tag::Subscript => push_html_element(self, tree, local_name!("sub")),
                     Tag::Image {
                         link_type,
                         dest_url,
@@ -924,8 +934,6 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         }
                         return Ok(());
                     }
-                    // Not enabled
-                    Tag::Superscript | Tag::Subscript => unreachable!(),
                 }?;
                 Ok(())
             }

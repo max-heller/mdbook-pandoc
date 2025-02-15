@@ -106,7 +106,11 @@ fn matched_html_tags() {
     // introduces newlines and breaks the original structure
     let output = MDBook::init()
         .config(Config::markdown())
-        .chapter(Chapter::new("Chapter", "2<sup>n - 1</sup>", "chapter.md"))
+        .chapter(Chapter::new(
+            "Chapter",
+            "he is <del>four</del><ins>five</ins> years old",
+            "chapter.md",
+        ))
         .build();
     insta::assert_snapshot!(output, @r"
     ├─ log output
@@ -114,7 +118,7 @@ fn matched_html_tags() {
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
     ├─ markdown/book.md
-    │ 2`<sup>`{=html}n - 1`</sup>`{=html}
+    │ he is `<del>`{=html}four`</del>`{=html}`<ins>`{=html}five`</ins>`{=html} years old
     ");
 }
 
@@ -252,9 +256,9 @@ fn regression_malformed_html() {
         .config(Config::latex())
         .chapter(Chapter::new(
             "",
-            // These tags are mismatched (the second should be </sup> to close the first)
+            // These tags are mismatched (the second should be </del> to close the first)
             // but we should be able to handle this in a reasonable way
-            "**<sup>foo<sup>**",
+            "**<del>foo<del>**",
             "chapter.md",
         ))
         .build();
@@ -266,7 +270,7 @@ fn regression_malformed_html() {
     ├─ latex/output.tex
     │ \textbf{{foo}}
     ├─ latex/src/chapter.md
-    │ [Para [Strong [RawInline (Format "html") "<sup>", Span ("", [], []) [Str "foo", RawInline (Format "html") "<sup>", RawInline (Format "html") "</sup>"], RawInline (Format "html") "</sup>"]]]
+    │ [Para [Strong [RawInline (Format "html") "<del>", Span ("", [], []) [Str "foo", RawInline (Format "html") "<del>", RawInline (Format "html") "</del>"], RawInline (Format "html") "</del>"]]]
     "#);
 }
 

@@ -586,6 +586,28 @@ impl<'book, 'p, W: io::Write> SerializeInline<'_, 'book, 'p, W> {
         serializer.finish()
     }
 
+    /// Superscripted text (list of inlines)
+    pub fn serialize_superscript(
+        self,
+        inlines: impl FnOnce(&mut SerializeInlines<'_, 'book, 'p, W>) -> anyhow::Result<()>,
+    ) -> anyhow::Result<()> {
+        write!(self.serializer.unescaped(), "Superscript ")?;
+        let mut serializer = SerializeList::new(self.serializer, Inline)?;
+        inlines(&mut serializer)?;
+        serializer.finish()
+    }
+
+    /// Subscripted text (list of inlines)
+    pub fn serialize_subscript(
+        self,
+        inlines: impl FnOnce(&mut SerializeInlines<'_, 'book, 'p, W>) -> anyhow::Result<()>,
+    ) -> anyhow::Result<()> {
+        write!(self.serializer.unescaped(), "Subscript ")?;
+        let mut serializer = SerializeList::new(self.serializer, Inline)?;
+        inlines(&mut serializer)?;
+        serializer.finish()
+    }
+
     /// Inline code (literal)
     pub fn serialize_code(self, attrs: impl Attributes, code: &str) -> anyhow::Result<()> {
         write!(self.serializer.unescaped(), "Code ")?;
