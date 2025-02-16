@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.0] - 2025-02-16
+
+### Changes
+
+- [**breaking**] Do not attempt to download remote images (#161)
+- Increase MSRV to 1.77 (#163)
+- Upgrade `pulldown-cmark` to 0.13.0 (#165)
+- Match mdbook's log format (#169)
+
+### Documentation
+
+- Document output.pandoc.markdown.extensions.math (#167)
+- Update README (#172)
+
+### Features
+
+- Support block quote tags e.g. [!NOTE] (#138)
+- Support mathematical expressions (#166)
+- Support definition lists (#168)
+- Support superscripted and subscripted text (#171)
+
+### Refactor
+
+- Simplify heading shrinking (#170)
+
+
 ## [0.9.3] - 2025-01-18
 
 ### Documentation
