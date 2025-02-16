@@ -3,7 +3,7 @@
 [Latest Version]: https://img.shields.io/crates/v/mdbook-pandoc.svg
 [crates.io]: https://crates.io/crates/mdbook-pandoc
 
-A [`mdbook`](https://github.com/rust-lang/mdBook) backend that outsources most of the rendering process to [`pandoc`](https://pandoc.org).
+A [`pandoc`](https://pandoc.org)-powered [`mdbook`](https://github.com/rust-lang/mdBook) backend.
 By relying on pandoc, many output formats are supported, although this project was mainly developed with LaTeX in mind.
 
 See [Rendered Books](#rendered-books) for samples of rendered books.
@@ -28,8 +28,8 @@ See [Rendered Books](#rendered-books) for samples of rendered books.
 
 - [Install `pandoc`](https://pandoc.org/installing.html)
 
-  > **Note**: `mdbook-pandoc` works best with Pandoc 2.10.1 or newer.
-  > Older versions (as old as 2.8) are partially supported, but will result in degraded output.
+  > **Note**: `mdbook-pandoc` works best with Pandoc 2.10.1 (released July 2020) or newer -- ideally, the newest version you have access to.
+  > Older versions (as old as 2.8, released Nov 2019) are partially supported, but will result in degraded output.
   >
   > If you have an old version of Pandoc installed (in particular, Ubuntu releases before 23.04 have older-than-recommended Pandoc versions in their package repositories), consider downloading a newer version from Pandoc's installation page.
 
@@ -102,56 +102,69 @@ variable-name = "value"
 
 ## Features
 
-- [x] CommonMark + [extensions enabled by mdBook](https://rust-lang.github.io/mdBook/format/markdown.html#extensions)
-  - [x] [Strikethrough](https://rust-lang.github.io/mdBook/format/markdown.html#strikethrough) (e.g. `~~crossed out~~`)
-  - [x] [Footnotes](https://rust-lang.github.io/mdBook/format/markdown.html#footnotes)
-  - [x] [Tables](https://rust-lang.github.io/mdBook/format/markdown.html#tables)
-  - [x] [Task Lists](https://rust-lang.github.io/mdBook/format/markdown.html#task-lists) (e.g. `- [x] Complete task`)
-  - [x] [Heading Attributes](https://rust-lang.github.io/mdBook/format/markdown.html#heading-attributes) (e.g. `# Heading { #custom-heading }`)
-
-- [ ] `pulldown-cmark` Markdown extensions not yet enabled by mdBook.
+- [Markdown extensions supported by mdBook](https://rust-lang.github.io/mdBook/format/markdown.html#extensions)
+  - [Strikethrough](https://rust-lang.github.io/mdBook/format/markdown.html#strikethrough) (e.g. `~~crossed out~~`)
+  - [Footnotes](https://rust-lang.github.io/mdBook/format/markdown.html#footnotes)
+  - [Tables](https://rust-lang.github.io/mdBook/format/markdown.html#tables)
+  - [Task Lists](https://rust-lang.github.io/mdBook/format/markdown.html#task-lists) (e.g. `- [x] Complete task`)
+  - [Heading Attributes](https://rust-lang.github.io/mdBook/format/markdown.html#heading-attributes) (e.g. `# Heading { #custom-heading }`)
+- Markdown extensions not yet supported by mdBook
 
   These extensions are disabled by default for consistency with mdBook and must be explicitly enabled.
-  
-  - [x] [Blockquote tags](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_GFM)
-    (Enable by setting `output.pandoc.markdown.extensions.gfm` to `true`)
+  - [Blockquote tags](https://github.com/pulldown-cmark/pulldown-cmark/blob/v0.13.0/pulldown-cmark/specs/blockquotes_tags.txt)
+    (Enabled by `output.pandoc.markdown.extensions.gfm`)
+  - [Math](https://github.com/pulldown-cmark/pulldown-cmark/blob/v0.13.0/pulldown-cmark/specs/math.txt)
+    (Enabled by `output.pandoc.markdown.extensions.math`)
+  - [Definition Lists](https://github.com/pulldown-cmark/pulldown-cmark/blob/v0.13.0/pulldown-cmark/specs/definition_lists.txt)
+    (Enabled by `output.pandoc.markdown.extensions.definition-lists`)
+  - [Superscript](https://github.com/pulldown-cmark/pulldown-cmark/blob/v0.13.0/pulldown-cmark/specs/super_sub.txt)
+    (Enabled by `output.pandoc.markdown.extensions.superscript`)
+  - [Subscript](https://github.com/pulldown-cmark/pulldown-cmark/blob/v0.13.0/pulldown-cmark/specs/super_sub.txt)
+    (Enabled by `output.pandoc.markdown.extensions.subscript`)
+- Raw HTML (best effort, almost always lossy)
+  - Linking to HTML elements by `id`
+  - Strikthrough (`<s>`), superscript (`<sup>`), subscript (`<sub>`)
+  - Definition lists (`<dl>`, `<dt>`, `<dd>`)
+  - Images (`<img>`) with `width` and `height` attributes
+    - Class-based CSS styling (`width`/`height`)
+  - `<span>`s and `<div>`s
+  - Anchors (`<a>`)
+- Table of contents
+- Redirects ([`[output.html.redirect]`](https://rust-lang.github.io/mdBook/format/configuration/renderers.html#outputhtmlredirect))
+- Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`) (LaTeX output formats only)
 
-  - [x] [Math](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_MATH)
-    (Enable by setting `output.pandoc.markdown.extensions.math` to `true`)
+## Rendering Pipeline
 
-  - [x] [Definition Lists](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_DEFINITION_LIST)
-    (Enable by setting `output.pandoc.markdown.extensions.definition-lists` to `true`)
+To render a book, `mdbook-pandoc` parses the book's source ([Parsing](#parsing)), transforms it into Pandoc's native representation ([Preprocessing](#preprocessing)), then runs `pandoc` to render the book in the desired output format.
 
-  - [x] [Superscript](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_SUPERSCRIPT)
-    (Enable by setting `output.pandoc.markdown.extensions.superscript` to `true`)
+### Parsing
 
-  - [x] [Subscript](https://docs.rs/pulldown-cmark/0.13.0/pulldown_cmark/struct.Options.html#associatedconstant.ENABLE_SUBSCRIPT)
-    (Enable by setting `output.pandoc.markdown.extensions.subscript` to `true`)
+#### HTML
 
-- [x] Table of contents
+`mdbook-pandoc` does its best to support raw HTML embedded in Markdown documents, transformating it into relevant Pandoc AST elements where possible.
+Each chapter is parsed into a hybrid Markdown+HTML tree using [`pulldown-cmark`](https://crates.io/crates/pulldown-cmark) and the browser-grade [`html5ever`](https://crates.io/crates/html5ever) HTML parser.
+This approach captures the full structure of the document -- including implicitly closed elements and other HTML quirks -- and makes it possible to accurately render HTML elements containing Markdown elements containing HTML elements...
 
-- [x] Take [`[output.html.redirect]`](https://rust-lang.github.io/mdBook/format/configuration/renderers.html#outputhtmlredirect) into account when resolving links
-
-- [x] Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`) to LaTeX
+This approach *should* also make `mdbook-pandoc` better able to handle malformed HTML, since `html5ever` performs the same HTML sanitization magic that browsers do.
+However, the standard principle applies: garbage in, garbage out; for best results, write simple and obviously correct HTML.
 
 ### Preprocessing
 
-`mdbook-pandoc` performs a brief preprocessing pass before handing off a book to pandoc:
+#### Structural Changes
 
 - In order to make section numbers and the generated table of contents, if applicable, mirror the chapter hierarchy defined in `SUMMARY.md`:
   - Headings in nested chapters are shrunk one level per level of nesting
   - All headings except for H1s are marked as unnumbered and unlisted
 - Relative links within chapters are "rebased" to be relative to the source directory so a chapter `src/foo/foo.md` can link to `src/foo/bar.md` with `[bar](bar.md)`
-  - Pandoc implements this functionality in the [`rebase_relative_paths`](https://pandoc.org/MANUAL.html#extension-rebase_relative_paths) extension, but only for native markdown links/images, so `mdbook-pandoc` reimplements it to allow for supporting raw HTML links/images in the future
 
-### Known Issues
+## Known Issues
 
 - Linking to a chapter does not work unless the chapter contains a heading with a non-empty identifier (either auto-generated or explicitly specified).
   See: https://github.com/max-heller/mdbook-pandoc/pull/100
 
-### Comparison to alternatives
+## Comparison to alternatives
 
-#### Rendered books
+### Rendered books
 
 The following table links to sample books rendered with `mdbook-pandoc`.
 PDFs are rendered with LaTeX ([LuaTeX](https://en.wikipedia.org/wiki/LuaTeX)).
@@ -168,14 +181,14 @@ PDFs are rendered with LaTeX ([LuaTeX](https://en.wikipedia.org/wiki/LuaTeX)).
 | [Rust Reference](https://doc.rust-lang.org/reference/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rust-reference.pdf) |
 | [Rust Compiler Development Guide](https://rustc-dev-guide.rust-lang.org/) | [PDF](https://github.com/max-heller/mdbook-pandoc/releases/latest/download/rendered-rustc-dev-guide.pdf) |
 
-#### Rendering to PDF
+### Rendering to PDF
 
 - When `mdbook-pandoc` was initially written, existing `mdbook` LaTeX backends ([`mdbook-latex`](https://crates.io/crates/mdbook-latex), [`mdbook-tectonic`](https://crates.io/crates/mdbook-tectonic)) were not mature enough to render much besides the simplest books due to hand-rolling the markdown->LaTeX conversion step.
-  `mdbook-pandoc`, on the other hand, outsources this difficult step to pandoc, inheriting its maturity and configurability. 
+  `mdbook-pandoc`, on the other hand, delegates this difficult step to pandoc, inheriting its maturity and configurability.
 - "Print to PDF"-based backends like [`mdbook-pdf`](https://crates.io/crates/mdbook-pdf) are more mature, but produce less aesthetically-pleasing PDFs.
   Additionally, `mdbook-pdf` does not support intra-document links or generating a table of contents without using a [forked version of mdbook](https://github.com/rust-lang/mdBook/pull/1738).
 
-#### Rendering to other formats
+### Rendering to other formats
 
-- By outsourcing most of the rendering process to pandoc, `mdbook-pandoc` in theory supports many different output formats.
+- By delegating most of the difficult rendering work to pandoc, `mdbook-pandoc` supports [numerous output formats](https://pandoc.org/MANUAL.html#option--to).
   Most of these have not been tested, so feedback on how it performs on non-PDF formats is very welcome!
