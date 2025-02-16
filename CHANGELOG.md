@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.0] - 2025-02-16
+
+### Changes
+
+- Increase Minimum Supported Rust Version (MSRV) to 1.77 (#163)
+- Upgrade `pulldown-cmark` (Markdown parser) to 0.13.0 (#165)
+- [**breaking**] Removed a workaround for remote images (#161)
+
+  Removed a workaround for remote images served from URIs without standard image extensions (e.g., https://img.shields.io/github/actions/workflow/status/rust-lang/mdBook/main.yml hosts an SVG image despite its YAML extension).
+  `mdbook-pandoc` previously would download such images before handing off to Pandoc because Pandoc was not able to handle them as remote images, but Pandoc implemented a fix in jgm/pandoc#10557 (released in 3.6.3) so this workaround is no longer necessary.
+
+  Removing this workaround allows removing the dependency on an HTTP client, shrinking `mdbook-pandoc`'s dependency tree.
+
+  If your book no longer renders without this workaround, upgrade to Pandoc 3.6.3+ or find a URI for the image with an image-like extension.
+
+- Match mdbook's log format (#169)
+
+### Documentation
+
+- Update README to more accurately describe `mdbook-pandoc`'s rendering pipeline and features (#172)
+
+### Features
+
+- Support block quote tags e.g. [!NOTE] (#138)
+- Support mathematical expressions (#166)
+- Support definition lists (#168)
+- Support superscripted and subscripted text (#171)
+
+
 ## [0.9.3] - 2025-01-18
 
 ### Documentation
