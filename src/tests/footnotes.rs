@@ -10,7 +10,7 @@ fn footnotes() {
         .chapter(Chapter::new(
             "",
             indoc! {"
-                    hello[^1]
+                    hello[^1] world
 
                     [^1]: a footnote containing another footnote[^2]
                     [^2]: second footnote
@@ -20,15 +20,15 @@ fn footnotes() {
         .config(Config::latex())
         .build();
     insta::assert_snapshot!(book, @r#"
-        ├─ log output
-        │  INFO mdbook::book: Running the pandoc backend    
-        │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-        │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
-        ├─ latex/output.tex
-        │ hello\footnote{a footnote containing another footnote\footnotemark{}}
-        ├─ latex/src/chapter.md
-        │ [Para [Str "hello", Note [Para [Str "a footnote containing another footnote", Note [Para [Str "second footnote"]]]]]]
-        "#);
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    ├─ latex/output.tex
+    │ hello\footnote{a footnote containing another footnote\footnotemark{}} world
+    ├─ latex/src/chapter.md
+    │ [Para [Str "hello", Note [Para [Str "a footnote containing another footnote", Note [Para [Str "second footnote"]]]], Str " world"]]
+    "#);
 }
 
 #[test]

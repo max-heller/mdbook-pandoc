@@ -988,6 +988,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             }
             Event::FootnoteReference(label) => {
                 tree.create_element(MdElement::FootnoteReference(label))?;
+                tree.process_html("</sup>".into());
                 Ok(())
             }
             Event::SoftBreak => {
