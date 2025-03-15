@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.1] - 2025-03-15
+
+### Bug Fixes
+
+- Correctly parse text after footnote references (#174)
+
+
 ## [0.10.0] - 2025-02-16
 
 ### Changes
