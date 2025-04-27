@@ -558,7 +558,7 @@ impl<'book> Preprocess<'book> {
                     ))
                 }
                 _ => {
-                    log::warn!("Ignoring part separator: {}", name);
+                    log::warn!("Ignoring part separator: {name}");
                     Ok(None)
                 }
             },

@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.2] - 2025-04-27
+
+### Features
+
+- Emulate HTML renderer's mathjax support (#177)
+
+  When `output.html.mathjax-support = true`, the following patterns are parsed
+  as mathematical expressions and rendered using Pandoc's math nodes:
+  - `InlineMath`:  `\\(...\\)`
+  - `DisplayMath`: `\\[...\\]` and `$$...$$`
+
+  **Note:** the `pulldown-cmark`-based math support (`$...$` and `$$...$$`)
+  enabled by `output.pandoc.markdown.extensions.math = true` takes precedence
+  over MathJax emulation. Parsing behavior is slightly different between the
+  two--in particular, a line break is `\\` in the `pulldown-cmark` variant,
+  whereas it must be written as `\\\\` in the MathJax variant.
+
+
 ## [0.10.1] - 2025-03-15
 
 ### Bug Fixes

@@ -130,6 +130,18 @@ variable-name = "value"
   - `<span>`s and `<div>`s
   - Anchors (`<a>`)
 - Table of contents
+- MathJax emulation (TeX only)
+
+  When `output.html.mathjax-support = true`, the following patterns are parsed
+  as mathematical expressions and rendered using Pandoc's math nodes:
+  - `InlineMath`:  `\\(...\\)`
+  - `DisplayMath`: `\\[...\\]` and `$$...$$`
+
+  **Note:** the `pulldown-cmark`-based math support (`$...$` and `$$...$$`)
+  enabled by `output.pandoc.markdown.extensions.math = true` takes precedence
+  over MathJax emulation. Parsing behavior is slightly different between the
+  two--in particular, a line break is `\\` in the `pulldown-cmark` variant,
+  whereas it must be written as `\\\\` in the MathJax variant.
 - Redirects ([`[output.html.redirect]`](https://rust-lang.github.io/mdBook/format/configuration/renderers.html#outputhtmlredirect))
 - Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`) (LaTeX output formats only)
 
