@@ -15,7 +15,7 @@ use std::{
 
 use anyhow::{anyhow, Context};
 use ego_tree::NodeId;
-use html5ever::{expanded_name, local_name, namespace_url, ns, tendril::format_tendril};
+use html5ever::{expanded_name, local_name, ns, tendril::format_tendril};
 use log::log;
 use mdbook::{
     book::{BookItems, Chapter},

@@ -4,7 +4,6 @@ pub type Parser<'book> = html5ever::Parser<preprocess::tree::HtmlTreeSink<'book>
 
 macro_rules! name {
     (html $name:tt) => {{
-        use html5ever::namespace_url;
         html5ever::QualName {
             prefix: None,
             ns: html5ever::ns!(html),
@@ -12,7 +11,6 @@ macro_rules! name {
         }
     }};
     ($name:tt) => {{
-        use html5ever::namespace_url;
         html5ever::QualName {
             prefix: None,
             ns: html5ever::ns!(),
