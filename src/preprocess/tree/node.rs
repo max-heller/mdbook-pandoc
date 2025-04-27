@@ -1,6 +1,6 @@
 use std::fmt;
 
-use html5ever::{local_name, namespace_url, ns, tendril::StrTendril, Attribute, QualName};
+use html5ever::{local_name, ns, tendril::StrTendril, Attribute, QualName};
 use indexmap::IndexMap;
 use pulldown_cmark::{Alignment, BlockQuoteKind, CodeBlockKind, CowStr, LinkType};
 

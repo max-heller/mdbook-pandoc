@@ -148,6 +148,7 @@ impl<'i> cssparser::DeclarationParser<'i> for &Parser<'_> {
         &mut self,
         name: CowRcStr<'i>,
         input: &mut cssparser::Parser<'i, 't>,
+        _declaration_start: &cssparser::ParserState,
     ) -> Result<Self::Declaration, cssparser::ParseError<'i, Self::Error>> {
         input.skip_whitespace();
         let start = input.position();

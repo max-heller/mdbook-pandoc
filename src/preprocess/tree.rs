@@ -9,7 +9,7 @@ use aho_corasick::AhoCorasick;
 use anyhow::Context;
 use ego_tree::{NodeId, NodeRef};
 use html5ever::{
-    expanded_name, local_name, namespace_url, ns,
+    expanded_name, local_name, ns,
     serialize::Serializer,
     tendril::{fmt::UTF8, format_tendril, StrTendril, Tendril, TendrilSink},
     LocalName,
