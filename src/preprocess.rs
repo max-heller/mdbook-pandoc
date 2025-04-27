@@ -600,6 +600,7 @@ pub struct PreprocessChapter<'book, 'preprocessor> {
     stack: Vec<NodeId>,
     encountered_h1: bool,
     identifiers: HashMap<String, NonZeroU32>,
+    in_code: bool,
     in_table_head: bool,
 }
 
@@ -657,6 +658,16 @@ impl<'book> Parser<'book> {
         }
     }
 
+    fn next_if(&mut self, func: impl FnOnce(&Event<'book>) -> bool) -> Option<Event<'book>> {
+        if self.lookahead.is_empty() {
+            self.lookahead.push_back(self.parser.next()?);
+        }
+        match self.lookahead.front() {
+            Some((event, _)) if func(event) => self.lookahead.pop_front().map(|(event, _)| event),
+            _ => None,
+        }
+    }
+
     fn peek_until(
         &mut self,
         mut end: impl FnMut(&Event<'book>) -> bool,
@@ -705,6 +716,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             encountered_h1: false,
             identifiers: Default::default(),
             part_num,
+            in_code: false,
             in_table_head: false,
         }
     }
@@ -903,7 +915,10 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     }
                     Tag::Paragraph => push_element(self, tree, MdElement::Paragraph),
                     Tag::BlockQuote(kind) => push_element(self, tree, MdElement::BlockQuote(kind)),
-                    Tag::CodeBlock(kind) => push_element(self, tree, MdElement::CodeBlock(kind)),
+                    Tag::CodeBlock(kind) => {
+                        self.in_code = true;
+                        push_element(self, tree, MdElement::CodeBlock(kind))
+                    }
                     Tag::Emphasis => push_element(self, tree, MdElement::Emphasis),
                     Tag::Strong => push_element(self, tree, MdElement::Strong),
                     Tag::Strikethrough => push_html_element(self, tree, local_name!("s")),
@@ -952,6 +967,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         Element::Markdown(MdElement::List(_)) => {
                             self.preprocessor.ctx.cur_list_depth -= 1
                         }
+                        Element::Markdown(MdElement::CodeBlock(_)) => self.in_code = false,
                         Element::Html(element)
                             if element.name.expanded() == expanded_name!(html "dl") =>
                         {
@@ -977,9 +993,61 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 Ok(())
             }
             Event::Text(text) => {
-                tree.create_element(MdElement::Text(text))?;
-                tree.process_html("</span>".into());
-                Ok(())
+                let push_text = |tree: &mut TreeBuilder<'book>, text| {
+                    tree.create_element(MdElement::Text(text))?;
+                    tree.process_html("</span>".into());
+                    Ok::<_, anyhow::Error>(())
+                };
+                // Emulate the HTML renderer's mathjax support by parsing \[ and \( for display/inline
+                // math and generating pandoc DisplayMath/InlineMath nodes
+                if (self.preprocessor.ctx.html).is_some_and(|cfg| cfg.mathjax_support)
+                    && !self.in_code
+                    && text.contains("\\")
+                {
+                    static MATHJAX: Lazy<Regex> = Lazy::new(|| {
+                        Regex::new(r"(?s)(\\\[.*?\\\]|\$\$.*?\$\$|\\\(.*?\\\))").unwrap()
+                    });
+
+                    // Collect subsequent text events into a single string since pulldown-cmark tends
+                    // to split math-like expressions into multiple events
+                    let mut text = text.into_string();
+                    while let Some(event) = self
+                        .parser
+                        .next_if(|event| matches!(event, Event::Text(_) | Event::SoftBreak))
+                    {
+                        match event {
+                            Event::Text(t) => text.push_str(&t),
+                            Event::SoftBreak => text.push('\n'),
+                            _ => unreachable!(),
+                        }
+                    }
+
+                    // Separate math from text
+                    let mut pushed_up_to = 0;
+                    for mathjax in MATHJAX.find_iter(&text) {
+                        let preceding_text = &text[pushed_up_to..mathjax.start()];
+                        if !preceding_text.is_empty() {
+                            push_text(tree, preceding_text.to_owned().into())?;
+                        }
+                        let (delim, rest) = mathjax.as_str().split_at(2);
+                        let math = &rest[..rest.len() - 2];
+                        let kind = match delim {
+                            "\\(" => MdElement::InlineMath,
+                            "\\[" | "$$" => MdElement::DisplayMath,
+                            _ => unreachable!(),
+                        };
+                        tree.create_element(kind(math.to_owned().into()))?;
+                        tree.process_html("</span>".into());
+                        pushed_up_to = mathjax.end();
+                    }
+                    let remaining_text = &text[pushed_up_to..];
+                    if !remaining_text.is_empty() {
+                        push_text(tree, remaining_text.to_owned().into())?;
+                    }
+                    Ok(())
+                } else {
+                    push_text(tree, text)
+                }
             }
             Event::Code(code) => {
                 tree.create_element(MdElement::InlineCode(code))?;
