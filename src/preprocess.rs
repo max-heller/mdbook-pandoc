@@ -598,7 +598,7 @@ pub struct PreprocessChapter<'book, 'preprocessor> {
     part_num: usize,
     parser: Parser<'book>,
     stack: Vec<NodeId>,
-    encountered_h1: bool,
+    first_heading: Option<HeadingLevel>,
     identifiers: HashMap<String, NonZeroU32>,
     in_code: bool,
     in_table_head: bool,
@@ -713,7 +713,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             parser: Parser::new(&chapter.content, preprocessor.markdown.extensions),
             preprocessor,
             stack: Vec::new(),
-            encountered_h1: false,
+            first_heading: None,
             identifiers: Default::default(),
             part_num,
             in_code: false,
@@ -756,21 +756,21 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             }
         });
 
-        if let HeadingLevel::H1 = level {
-            // Number the first H1 in each numbered chapter, mirroring mdBook
-            if self.encountered_h1 {
-                classes.push(PANDOC_UNNUMBERED_CLASS.into());
-                classes.push(PANDOC_UNLISTED_CLASS.into());
-            } else if self.chapter.number.is_none() {
-                classes.push(PANDOC_UNNUMBERED_CLASS.into());
-            }
-            self.encountered_h1 = true;
-        } else {
+        // Number the first heading in each numbered chapter, allowing Pandoc to generate a
+        // table of contents that mirror's mdbook's. Unfortunately, it will not match exactly,
+        // since mdbook generates the TOC based on SUMMARY.md, but there's no obvious way to
+        // tell Pandoc to use those chapter names for the TOC instead of the heading names.
+        if self.chapter.number.is_none() || self.first_heading.is_some() {
             classes.push(PANDOC_UNNUMBERED_CLASS.into());
-            classes.push(PANDOC_UNLISTED_CLASS.into());
         }
+        let first_heading = if let Some(first_heading) = self.first_heading {
+            classes.push(PANDOC_UNLISTED_CLASS.into());
+            first_heading
+        } else {
+            *self.first_heading.insert(level)
+        };
 
-        let level: u16 = match level {
+        let to_int = |level| match level {
             HeadingLevel::H1 => 1,
             HeadingLevel::H2 => 2,
             HeadingLevel::H3 => 3,
@@ -779,7 +779,9 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             HeadingLevel::H6 => 6,
         };
         let num_parents = self.chapter.parent_names.len();
-        let level = level.saturating_add(num_parents.try_into().unwrap_or(u16::MAX));
+        let num_parents = num_parents.try_into().unwrap_or(u16::MAX);
+        let shrink_by = num_parents.saturating_sub(to_int(first_heading) - 1);
+        let level = to_int(level).saturating_add(shrink_by);
         MdElement::Heading {
             level,
             id,
