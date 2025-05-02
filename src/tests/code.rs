@@ -267,20 +267,21 @@ fn code_block_with_very_long_line_with_special_characters() {
 
 #[test]
 fn mdbook_rust_code_block_attributes() {
+    let code = indoc! {r#"
+        ```rust
+        fn main() {}
+        ```
+        ```rust,ignore
+        fn main() {}
+        ```
+        ```rust,compile_fail
+        fn main() {}
+        ```
+    "#};
+
     let book = MDBook::init()
         .config(Config::latex())
-        .chapter(Chapter::new(
-            "",
-            indoc! {r#"
-                ```rust
-                fn main() {}
-                ```
-                ```rust,ignore
-                fn main() {}
-                ```
-            "#},
-            "chapter.md",
-        ))
+        .chapter(Chapter::new("", code, "chapter.md"))
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
@@ -299,11 +300,36 @@ fn mdbook_rust_code_block_attributes() {
     │ \KeywordTok{fn}\NormalTok{ main() }\OperatorTok{\{\}}
     │ \end{Highlighting}
     │ \end{Shaded}
+    │ 
+    │ \begin{Shaded}
+    │ \begin{Highlighting}[]
+    │ \KeywordTok{fn}\NormalTok{ main() }\OperatorTok{\{\}}
+    │ \end{Highlighting}
+    │ \end{Shaded}
     ├─ latex/src/chapter.md
     │ [CodeBlock ("", ["rust"], []) "fn main() {}
-    │ ", CodeBlock ("", ["rust"], []) "fn main() {}
+    │ ", CodeBlock ("", ["rust", "ignore"], []) "fn main() {}
+    │ ", CodeBlock ("", ["rust", "compile_fail"], []) "fn main() {}
     │ "]
     "#);
+
+    let book = MDBook::init()
+        .config(Config::html())
+        .chapter(Chapter::new("", code, "chapter.md"))
+        .build();
+    insta::assert_snapshot!(book, @r##"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/html/book.html    
+    ├─ html/book.html
+    │ <div class="sourceCode" id="cb1"><pre
+    │ class="sourceCode rust"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{}</span></span></code></pre></div>
+    │ <div class="sourceCode" id="cb2"><pre
+    │ class="sourceCode rust ignore"><code class="sourceCode rust"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{}</span></span></code></pre></div>
+    │ <div class="sourceCode" id="cb3"><pre
+    │ class="sourceCode rust compile_fail"><code class="sourceCode rust"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{}</span></span></code></pre></div>
+    "##);
 }
 
 #[test]

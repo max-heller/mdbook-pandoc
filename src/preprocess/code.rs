@@ -2,9 +2,14 @@ use std::{borrow::Cow, iter, str};
 
 use pulldown_cmark::CodeBlockKind;
 
-use crate::CodeConfig;
+use crate::{pandoc, CodeConfig};
 
-pub enum CodeBlock<'book> {
+pub struct CodeBlock<'book> {
+    pub language: Language<'book>,
+    attributes: Vec<&'book str>,
+}
+
+pub enum Language<'book> {
     Rust,
     Other {
         language: Option<&'book str>,
@@ -18,7 +23,7 @@ impl<'book> CodeBlock<'book> {
         // Attributes are separated by a comma, space, or tab from the language name.
         // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
         // This processes and strips out the attributes.
-        let (language, mut attributes) = {
+        let (language, attributes) = {
             let info_string = match kind {
                 CodeBlockKind::Indented => "",
                 CodeBlockKind::Fenced(info_string) => info_string,
@@ -27,29 +32,44 @@ impl<'book> CodeBlock<'book> {
             (parts.next(), parts)
         };
 
-        match language {
-            Some("rust") => Self::Rust,
+        let mut hidelines_override = None;
+        let attributes = attributes
+            .filter(|attr| {
+                if let Some(hidelines) = attr.strip_prefix("hidelines=") {
+                    hidelines_override = Some(hidelines);
+                    false
+                } else {
+                    true
+                }
+            })
+            .collect();
+
+        let language = match language {
+            Some("rust") => Language::Rust,
             language => {
-                let hidelines_override =
-                    attributes.find_map(|attr| attr.strip_prefix("hidelines="));
                 let hidelines_prefix = hidelines_override.or_else(|| {
                     // Respect [output.html.code.hidelines]
                     Some(cfg?.hidelines.get(language?)?.as_str())
                 });
-                Self::Other {
+                Language::Other {
                     language,
                     hidelines_prefix,
                 }
             }
+        };
+
+        Self {
+            language,
+            attributes,
         }
     }
 }
 
 impl CodeBlock<'_> {
     pub fn language(&self) -> Option<&str> {
-        match self {
-            Self::Rust => Some("rust"),
-            Self::Other { language, .. } => *language,
+        match self.language {
+            Language::Rust => Some("rust"),
+            Language::Other { language, .. } => language,
         }
     }
 
@@ -91,11 +111,11 @@ impl CodeBlock<'_> {
         });
 
         // https://rust-lang.github.io/mdBook/format/mdbook.html#hiding-code-lines
-        match self {
-            Self::Rust => lines
+        match self.language {
+            Language::Rust => lines
                 .filter_map(|line| Self::displayed_rust_line(line, cfg))
                 .collect(),
-            Self::Other {
+            Language::Other {
                 hidelines_prefix, ..
             } => {
                 if let Some(prefix) = hidelines_prefix {
@@ -142,5 +162,21 @@ impl CodeBlock<'_> {
             },
             _ => Some(line.into()),
         }
+    }
+}
+
+impl pandoc::native::Attributes for CodeBlock<'_> {
+    fn id(&self) -> Option<&str> {
+        None
+    }
+
+    fn classes(&self) -> impl Iterator<Item = &str> {
+        self.language()
+            .into_iter()
+            .chain(self.attributes.iter().copied())
+    }
+
+    fn attrs(&self) -> impl Iterator<Item = (&str, &str)> {
+        std::iter::empty()
     }
 }

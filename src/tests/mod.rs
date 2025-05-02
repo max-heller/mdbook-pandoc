@@ -372,6 +372,18 @@ impl Config {
         .unwrap()
     }
 
+    fn html() -> Self {
+        toml! {
+            keep-preprocessed = false
+
+            [profile.html]
+            output-file = "book.html"
+            standalone = false
+        }
+        .try_into()
+        .unwrap()
+    }
+
     fn pandoc() -> Self {
         toml! {
             keep-preprocessed = false
