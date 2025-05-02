@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.3] - 2025-05-02
+
+### Bug Fixes
+
+- Correctly generate TOC when nested chapters don't contain H1s (#182)
+
+### Features
+
+- Add code block attributes as additional classes (#185)
+
+
 ## [0.10.2] - 2025-04-27
 
 ### Features
