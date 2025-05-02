@@ -414,7 +414,7 @@ impl<'book> Emitter<'book> {
                 MdElement::CodeBlock(kind) => {
                     let ctx = &serializer.preprocessor().preprocessor.ctx;
 
-                    let code_block = code::CodeBlock::new(kind, ctx.html.map(|cfg| &cfg.code));
+                    let mut code_block = code::CodeBlock::new(kind, ctx.html.map(|cfg| &cfg.code));
 
                     let lines = node.children().map(|node| {
                         match node.value() {
@@ -424,8 +424,6 @@ impl<'book> Emitter<'book> {
                     }).flat_map(|text| text.lines());
                     let lines = code_block.lines(lines, ctx.code);
 
-                    let mut language = code_block.language();
-
                     if let pandoc::OutputFormat::Latex { .. } =
                         serializer.preprocessor().preprocessor.ctx.output
                     {
@@ -433,7 +431,12 @@ impl<'book> Emitter<'book> {
 
                         // Pandoc+fvextra only wraps long lines in code blocks with info strings
                         // so fall back to "text"
-                        language = language.or(Some("text"));
+                        match &mut code_block.language {
+                            code::Language::Other { language, .. } => {
+                                *language = language.or(Some("text"))
+                            }
+                            code::Language::Rust => {}
+                        }
 
                         let overly_long_line = lines
                             .iter()
@@ -470,12 +473,10 @@ impl<'book> Emitter<'book> {
                         }
                     }
 
-                    let language = language.map(CowStr::Borrowed);
-                    let classes = language.as_slice();
                     serializer
                         .blocks()?
                         .serialize_element()?
-                        .serialize_code_block((None, &classes, &[]), |code| {
+                        .serialize_code_block(code_block, |code| {
                             for line in lines {
                                 code.serialize_code(&line)?;
                                 code.serialize_code("\n")?;
