@@ -85,10 +85,7 @@ fn matched_html_tags() {
     │         [ Plain [ Str "\n" ]
     │         , Header
     │             2
-    │             ( "book__markdown__src__chapter.md__heading"
-    │             , [ "unnumbered" , "unlisted" ]
-    │             , []
-    │             )
+    │             ( "book__markdown__src__chapter.md__heading" , [] , [] )
     │             [ Str "Heading" ]
     │         , Para [ Str "text" ]
     │         ]
@@ -344,7 +341,7 @@ fn noscript_element() {
     │ , Header
     │     2
     │     ( "book__markdown__src__chapter.md__no-scripting-enabled"
-    │     , [ "unnumbered" , "unlisted" ]
+    │     , []
     │     , []
     │     )
     │     [ Str "No scripting enabled" ]

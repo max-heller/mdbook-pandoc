@@ -55,6 +55,43 @@ fn nested_chapters() {
     ├─ latex/src/two.md
     │ [Header 1 ("two", [], []) [Str "Two"]]
     "#);
+
+    let book =
+        MDBook::init()
+            .chapter(Chapter::new("One", "# One", "one.md").child(
+                Chapter::new("One.One", "## Top\n### Another", "onepointone.md").child(
+                    Chapter::new("One.One.One", "### Top\n#### Another", "onepointoneone.md"),
+                ),
+            ))
+            .chapter(Chapter::new("Two", "# Two", "two.md"))
+            .config(Config::latex())
+            .build();
+    insta::assert_snapshot!(book, @r#"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    ├─ latex/output.tex
+    │ \chapter{One}\label{book__latex__src__one.md__one}
+    │ 
+    │ \section{Top}\label{book__latex__src__onepointone.md__top}
+    │ 
+    │ \subsection*{Another}\label{book__latex__src__onepointone.md__another}
+    │ 
+    │ \subsection{Top}\label{book__latex__src__onepointoneone.md__top}
+    │ 
+    │ \subsubsection*{Another}\label{book__latex__src__onepointoneone.md__another}
+    │ 
+    │ \chapter{Two}\label{book__latex__src__two.md__two}
+    ├─ latex/src/one.md
+    │ [Header 1 ("one", [], []) [Str "One"]]
+    ├─ latex/src/onepointone.md
+    │ [Header 2 ("top", [], []) [Str "Top"], Header 3 ("another", ["unnumbered", "unlisted"], []) [Str "Another"]]
+    ├─ latex/src/onepointoneone.md
+    │ [Header 3 ("top", [], []) [Str "Top"], Header 4 ("another", ["unnumbered", "unlisted"], []) [Str "Another"]]
+    ├─ latex/src/two.md
+    │ [Header 1 ("two", [], []) [Str "Two"]]
+    "#);
 }
 
 #[test]
