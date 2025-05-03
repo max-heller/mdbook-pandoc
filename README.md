@@ -165,8 +165,8 @@ However, the standard principle applies: garbage in, garbage out; for best resul
 #### Structural Changes
 
 - In order to make section numbers and the generated table of contents, if applicable, mirror the chapter hierarchy defined in `SUMMARY.md`:
-  - Headings in nested chapters are shrunk one level per level of nesting
-  - All headings except for H1s are marked as unnumbered and unlisted
+  - Heading levels are adjusted such that the largest heading in a top-level chapter is a H1, the largest heading in a singly-nested chapter is an H2, the largest heading in a doubly-nested chapter is an H3, etc.
+  - All headings except for the first in each chapter are excluded from numbering and the table of contents
 - Relative links within chapters are "rebased" to be relative to the source directory so a chapter `src/foo/foo.md` can link to `src/foo/bar.md` with `[bar](bar.md)`
 
 ## Known Issues
