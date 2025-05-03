@@ -1,5 +1,31 @@
 use std::collections::BTreeSet;
 
+use once_cell::sync::Lazy;
+use regex::Regex;
+
+/// Commands that define new macros, as supported by MathJax:
+/// <https://docs.mathjax.org/en/latest/input/tex/macros.html>
+pub static MACRO_DEFINITION: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(
+        &[
+            // \(re)newcommand
+            r"\\(?P<newcommand>(re)?newcommand) *(\\\w+|\{\\\w+\}) *(\[\d+\])* *\{.+\}",
+            // \def
+            r"\\def *\\\w+ *\{.+\}",
+            // \let
+            r"\\let *\\\w+ *=? *(.|\\\w+)",
+        ]
+        .join("|"),
+    )
+    .unwrap()
+});
+
+#[derive(Clone, Copy, Debug)]
+pub enum MathType {
+    Display,
+    Inline,
+}
+
 #[derive(Debug, Default)]
 pub struct Packages {
     needed: BTreeSet<Package>,

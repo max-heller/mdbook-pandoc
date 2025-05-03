@@ -96,6 +96,10 @@ fn mathjax_compatibility() {
             5
         \end{cases}
         $$
+
+        $$
+        \newcommand \foo {5}
+        $$
     "};
     let cfg = indoc! {r#"
         [output.html]
@@ -135,6 +139,10 @@ fn mathjax_compatibility() {
     │ 5
     │ \end{cases}
     │ \]
+    │ 
+    │ \[
+    │ \newcommand \foo {5}
+    │ \]
     ├─ latex/src/chapter.md
     │ [Para [Str "before ", Math InlineMath " \\int x dx = \\frac{x^2}{2} + C ", Str " middle ", Math InlineMath " 2 + 2 = 4 ", Str " after"], Para [Math InlineMath " \\begin{cases} \\frac 1 2 \\\\ \\frac 3 4 \\end{cases} ", Str "
     │ ", Math DisplayMath " \\begin{cases} \\frac 1 2 \\\\ \\frac 3 4 \\end{cases} "], Para [Math DisplayMath " \\mu = \\frac{1}{N} \\sum_{i=0} x_i ", Str "
@@ -150,6 +158,68 @@ fn mathjax_compatibility() {
     │ \\frac 3 4
     │ 5
     │ \\end{cases}
+    │ "], Para [Math DisplayMath "
+    │ \\newcommand \\foo {5}
     │ "]]
     "#);
+}
+
+#[test]
+fn latex_macros() {
+    let chapter = indoc! {r"
+        \\(
+        \def\RR{{\bf R}}
+        \def\bold#1{{\bf #1}}
+        \newcommand{\R}{\mathbb{R}}
+        \newcommand{\plusbinomial}[3][2]{(#2 + #3)^#1}
+        \newcommand \BAR {\mathrm{bar}}
+        \let\originalfoo\foo
+        \let \foo = 10
+        \\)
+
+        \\( \RR \bold{test} \R \plusbinomial{a}{b}{c} \foo \\)
+        \\( \R \\)
+        \\( \R \\)
+    "};
+    let cfg = indoc! {r#"
+        [output.html]
+        mathjax-support = true
+    "#};
+
+    let output = MDBook::init()
+        .chapter(Chapter::new("", chapter, "chapter.md"))
+        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .config(Config::markdown())
+        .build();
+    insta::assert_snapshot!(output, @r"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+    ├─ markdown/book.md
+    │ $
+    │ \def\RR{{\bf R}}
+    │ \def\bold#1{{\bf #1}}
+    │ \newcommand{\R}{\mathbb{R}}
+    │ \newcommand{\plusbinomial}[3][2]{(#2 + #3)^#1}
+    │ \newcommand \bar {\mathrm{bar}}
+    │ \let\originalfoo\foo
+    │ \let \foo = 10
+    │ $
+    │ 
+    │ $\def\RR{{\bf R}}
+    │ \newcommand{\R}{\mathbb{R}}
+    │ \newcommand{\plusbinomial}[3][2]{(#2 + #3)^#1}
+    │ \newcommand \bar {\mathrm{bar}}
+    │ \let\originalfoo\
+    │ \let \foo = 1
+    │  \RR \bold{test} \R \plusbinomial{a}{b}{c} \foo $
+    ");
+
+    let output = MDBook::init()
+        .chapter(Chapter::new("", chapter, "chapter.md"))
+        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .config(Config::pdf())
+        .build();
+    insta::assert_snapshot!(output, @r"");
 }

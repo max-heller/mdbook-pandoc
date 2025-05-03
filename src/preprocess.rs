@@ -28,6 +28,7 @@ use regex::Regex;
 use walkdir::WalkDir;
 
 use crate::{
+    latex,
     pandoc::{self, native::ColWidth, OutputFormat, RenderContext},
     MarkdownConfig, MarkdownExtensionConfig,
 };
@@ -602,6 +603,7 @@ pub struct PreprocessChapter<'book, 'preprocessor> {
     identifiers: HashMap<String, NonZeroU32>,
     in_code: bool,
     in_table_head: bool,
+    latex_macros: Vec<String>,
 }
 
 struct Parser<'book> {
@@ -718,6 +720,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             part_num,
             in_code: false,
             in_table_head: false,
+            latex_macros: Vec::new(),
         }
     }
 
@@ -1034,12 +1037,11 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         let (delim, rest) = mathjax.as_str().split_at(2);
                         let math = &rest[..rest.len() - 2];
                         let kind = match delim {
-                            "\\(" => MdElement::InlineMath,
-                            "\\[" | "$$" => MdElement::DisplayMath,
+                            "\\(" => latex::MathType::Inline,
+                            "\\[" | "$$" => latex::MathType::Display,
                             _ => unreachable!(),
                         };
-                        tree.create_element(kind(math.to_owned().into()))?;
-                        tree.process_html("</span>".into());
+                        self.create_math_node(math.to_owned().into(), kind, tree)?;
                         pushed_up_to = mathjax.end();
                     }
                     let remaining_text = &text[pushed_up_to..];
@@ -1077,17 +1079,35 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 tree.create_element(MdElement::TaskListMarker(checked))?;
                 Ok(())
             }
-            Event::InlineMath(math) => {
-                tree.create_element(MdElement::InlineMath(math))?;
-                tree.process_html("</span>".into());
-                Ok(())
-            }
-            Event::DisplayMath(math) => {
-                tree.create_element(MdElement::DisplayMath(math))?;
-                tree.process_html("</span>".into());
-                Ok(())
-            }
+            Event::InlineMath(math) => self.create_math_node(math, latex::MathType::Inline, tree),
+            Event::DisplayMath(math) => self.create_math_node(math, latex::MathType::Display, tree),
         }
+    }
+
+    fn create_math_node(
+        &mut self,
+        math: CowStr<'book>,
+        kind: latex::MathType,
+        tree: &mut TreeBuilder<'book>,
+    ) -> anyhow::Result<()> {
+        let extract_macros = |this: &mut Self, math| {
+            latex::MACRO_DEFINITION.replace_all(math, |captures: &regex::Captures<'_>| {
+                let definition = captures[0].replace(r"\newcommand", r"\providecommand");
+                this.latex_macros.push(dbg!(definition.clone()));
+                definition
+            })
+        };
+        let math = if self.latex_macros.is_empty() {
+            extract_macros(self, &math);
+            math
+        } else {
+            let macros = self.latex_macros.join("\n");
+            extract_macros(self, &math);
+            format!("{macros}\n{math}").into()
+        };
+        tree.create_element(MdElement::Math(kind, math))?;
+        tree.process_html("</span>".into());
+        Ok(())
     }
 
     pub fn resolve_image_url<'url>(

@@ -9,16 +9,14 @@ use html5ever::serialize::HtmlSerializer;
 use indexmap::IndexSet;
 use pulldown_cmark::CowStr;
 
-use crate::preprocess::{self, PreprocessChapter};
+use crate::{
+    latex::MathType,
+    preprocess::{self, PreprocessChapter},
+};
 
 use super::OutputFormat;
 
 pub mod escape;
-
-pub enum MathType {
-    Display,
-    Inline,
-}
 
 /// Alignment of a table column.
 pub enum Alignment {
