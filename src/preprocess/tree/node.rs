@@ -4,7 +4,7 @@ use html5ever::{local_name, ns, tendril::StrTendril, Attribute, QualName};
 use indexmap::IndexMap;
 use pulldown_cmark::{Alignment, BlockQuoteKind, CodeBlockKind, CowStr, LinkType};
 
-use crate::html;
+use crate::{html, latex};
 
 /// A node in the tree.
 pub enum Node<'book> {
@@ -66,8 +66,7 @@ pub enum MdElement<'a> {
     },
     Emphasis,
     Strong,
-    InlineMath(CowStr<'a>),
-    DisplayMath(CowStr<'a>),
+    Math(latex::MathType, CowStr<'a>),
     Link {
         dest_url: CowStr<'a>,
         title: CowStr<'a>,
@@ -253,7 +252,7 @@ impl MdElement<'_> {
                 const INPUT: &QualName = &html::name!(html "input");
                 INPUT
             }
-            MdElement::InlineMath(_) | MdElement::DisplayMath(_) => {
+            MdElement::Math(..) => {
                 const SPAN: &QualName = &html::name!(html "span");
                 SPAN
             }
