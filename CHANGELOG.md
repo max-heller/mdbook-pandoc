@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.4] - 2025-05-17
+
+### Bug Fixes
+
+- Correctly parse multiline $$-delimited MathJax math (#186)
+
+
 ## [0.10.3] - 2025-05-02
 
 ### Bug Fixes
