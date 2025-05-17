@@ -1086,27 +1086,34 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
 
     fn create_math_node(
         &mut self,
-        math: CowStr<'book>,
+        mut math: CowStr<'book>,
         kind: latex::MathType,
         tree: &mut TreeBuilder<'book>,
     ) -> anyhow::Result<()> {
-        let extract_macros = |this: &mut Self, math| {
-            latex::MACRO_DEFINITION.replace_all(math, |captures: &regex::Captures<'_>| {
-                let definition = captures[0].replace(r"\newcommand", r"\providecommand");
-                this.latex_macros.push(dbg!(definition.clone()));
-                definition
-            })
-        };
-        let math = if self.latex_macros.is_empty() {
-            extract_macros(self, &math);
-            math
-        } else {
-            let macros = self.latex_macros.join("\n");
-            extract_macros(self, &math);
-            format!("{macros}\n{math}").into()
-        };
-        tree.create_element(MdElement::Math(kind, math))?;
-        tree.process_html("</span>".into());
+        if matches!(self.preprocessor.ctx.output, OutputFormat::Latex { .. }) {
+            let mut macros = Vec::new();
+            math = latex::MACRO_DEFINITION
+                .replace_all(&math, |captures: &regex::Captures<'_>| {
+                    macros.extend([
+                        captures[0].replace(r"\newcommand", r"\providecommand"),
+                        captures[0].replace(r"\newcommand", r"\renewcommand"),
+                    ]);
+                    ""
+                })
+                .into_owned()
+                .into();
+            if !macros.is_empty() {
+                tree.create_element(MdElement::RawBlock {
+                    format: "latex",
+                    raw: macros.join("\n").into(),
+                })?;
+                tree.process_html("</pre>".into());
+            }
+        }
+        if !math.trim().is_empty() {
+            tree.create_element(MdElement::Math(kind, math))?;
+            tree.process_html("</span>".into());
+        }
         Ok(())
     }
 

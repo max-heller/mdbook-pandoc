@@ -55,6 +55,10 @@ pub enum MdElement<'a> {
     BlockQuote(Option<BlockQuoteKind>),
     InlineCode(CowStr<'a>),
     CodeBlock(CodeBlockKind<'a>),
+    RawBlock {
+        format: &'static str,
+        raw: CowStr<'a>,
+    },
     List(Option<u64>),
     Item,
     TaskListMarker(bool),
@@ -224,7 +228,7 @@ impl MdElement<'_> {
                 const BLOCKQUOTE: &QualName = &html::name!(html "blockquote");
                 BLOCKQUOTE
             }
-            MdElement::CodeBlock(_) => {
+            MdElement::CodeBlock(_) | MdElement::RawBlock { .. } => {
                 const PRE: &QualName = &html::name!(html "pre");
                 PRE
             }
