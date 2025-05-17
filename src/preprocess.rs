@@ -1000,11 +1000,11 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     tree.process_html("</span>".into());
                     Ok::<_, anyhow::Error>(())
                 };
-                // Emulate the HTML renderer's mathjax support by parsing \[ and \( for display/inline
+                // Emulate the HTML renderer's mathjax support by parsing \[, $$, and \( delimited
                 // math and generating pandoc DisplayMath/InlineMath nodes
                 if (self.preprocessor.ctx.html).is_some_and(|cfg| cfg.mathjax_support)
                     && !self.in_code
-                    && text.contains("\\")
+                    && text.contains(['\\', '$'])
                 {
                     static MATHJAX: Lazy<Regex> = Lazy::new(|| {
                         Regex::new(r"(?s)(\\\[.*?\\\]|\$\$.*?\$\$|\\\(.*?\\\))").unwrap()

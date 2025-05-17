@@ -88,6 +88,14 @@ fn mathjax_compatibility() {
             5
         \end{cases}
         \\]
+
+        $$
+        \begin{cases}
+            \frac 1 2 \\\\
+            \frac 3 4
+            5
+        \end{cases}
+        $$
     "};
     let cfg = indoc! {r#"
         [output.html]
@@ -119,10 +127,24 @@ fn mathjax_compatibility() {
     │ 5
     │ \end{cases}
     │ \]
+    │ 
+    │ \[
+    │ \begin{cases}
+    │ \frac 1 2 \\
+    │ \frac 3 4
+    │ 5
+    │ \end{cases}
+    │ \]
     ├─ latex/src/chapter.md
     │ [Para [Str "before ", Math InlineMath " \\int x dx = \\frac{x^2}{2} + C ", Str " middle ", Math InlineMath " 2 + 2 = 4 ", Str " after"], Para [Math InlineMath " \\begin{cases} \\frac 1 2 \\\\ \\frac 3 4 \\end{cases} ", Str "
     │ ", Math DisplayMath " \\begin{cases} \\frac 1 2 \\\\ \\frac 3 4 \\end{cases} "], Para [Math DisplayMath " \\mu = \\frac{1}{N} \\sum_{i=0} x_i ", Str "
     │ ", Math DisplayMath " \\mu = \\frac{1}{N} \\sum_{i=0} x_i "], Para [Math DisplayMath "
+    │ \\begin{cases}
+    │ \\frac 1 2 \\\\
+    │ \\frac 3 4
+    │ 5
+    │ \\end{cases}
+    │ "], Para [Math DisplayMath "
     │ \\begin{cases}
     │ \\frac 1 2 \\\\
     │ \\frac 3 4
