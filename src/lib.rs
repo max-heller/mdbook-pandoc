@@ -1,9 +1,7 @@
-use std::{
-    collections::HashMap,
-    fs::{self, File},
-};
+use std::fs::{self, File};
 
 use anyhow::{anyhow, Context as _};
+use indexmap::IndexMap;
 use mdbook::config::HtmlConfig;
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
@@ -23,7 +21,7 @@ use preprocess::Preprocessor;
 #[serde(rename_all = "kebab-case")]
 struct Config {
     #[serde(rename = "profile", default = "Default::default")]
-    pub profiles: HashMap<String, pandoc::Profile>,
+    pub profiles: IndexMap<String, pandoc::Profile>,
     #[serde(default = "defaults::enabled")]
     pub keep_preprocessed: bool,
     pub hosted_html: Option<String>,

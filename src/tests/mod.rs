@@ -359,6 +359,12 @@ impl Config {
         .unwrap()
     }
 
+    fn pdf_and_latex() -> Self {
+        let mut config = Self::pdf();
+        config.profiles.extend(Self::latex().profiles);
+        config
+    }
+
     fn markdown() -> Self {
         toml! {
             keep-preprocessed = false

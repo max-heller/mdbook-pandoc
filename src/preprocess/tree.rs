@@ -484,6 +484,13 @@ impl<'book> Emitter<'book> {
                             Ok(())
                         })
                 }
+                MdElement::RawInline { format, raw } => serializer.serialize_inlines(|inlines| {
+                    inlines
+                        .serialize_element()?
+                        .serialize_raw_inline(format, |serializer| {
+                            serializer.write_all(raw.as_bytes())
+                        })
+                }),
                 MdElement::Emphasis => serializer.serialize_inlines(|inlines| {
                     inlines.serialize_element()?.serialize_emph(|inlines| {
                         inlines.serialize_nested(|serializer| {
@@ -498,15 +505,8 @@ impl<'book> Emitter<'book> {
                         })
                     })
                 }),
-                MdElement::InlineMath(math) => serializer.serialize_inlines(|inlines| {
-                    inlines
-                        .serialize_element()?
-                        .serialize_math(pandoc::native::MathType::Inline, math)
-                }),
-                MdElement::DisplayMath(math) => serializer.serialize_inlines(|inlines| {
-                    inlines
-                        .serialize_element()?
-                        .serialize_math(pandoc::native::MathType::Display, math)
+                MdElement::Math(kind, math) => serializer.serialize_inlines(|inlines| {
+                    inlines.serialize_element()?.serialize_math(*kind, math)
                 }),
                 MdElement::Image {
                     link_type,

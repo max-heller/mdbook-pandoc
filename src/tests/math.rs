@@ -153,3 +153,188 @@ fn mathjax_compatibility() {
     │ "]]
     "#);
 }
+
+#[test]
+fn tex_newcommand() {
+    let chapter = indoc! {r"
+        \\(
+        \newcommand{\R}{\mathbb{R}}
+        \renewcommand{\R}{\mathbb{R}}
+        \newcommand{\plusbinomial}[3][2]{(#2 + #3)^#1}
+        \newcommand \BAR {\mathrm{bar}}
+        \\)
+
+        \\( \R \plusbinomial{a}{b}{c} \\)
+        \\( \R \BAR \\)
+        \\( \R \\)
+    "};
+    let cfg = indoc! {r#"
+        [output.html]
+        mathjax-support = true
+    "#};
+
+    let output = MDBook::init()
+        .chapter(Chapter::new("", chapter, "chapter.md"))
+        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .config(Config::latex())
+        .build();
+    insta::assert_snapshot!(output, @r#"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    ├─ latex/output.tex
+    │ \providecommand{\R}{}\renewcommand{\R}{\mathbb{R}}
+    │ \renewcommand{\R}{\mathbb{R}}
+    │ \providecommand{\plusbinomial}{}\renewcommand{\plusbinomial}[3][2]{(#2 + #3)^#1}
+    │ \providecommand\BAR{}\renewcommand\BAR{\mathrm{bar}}
+    │ 
+    │ \( \R \plusbinomial{a}{b}{c} \)
+    │ \( \R \BAR \)
+    │ \( \R \)
+    ├─ latex/src/chapter.md
+    │ [Para [RawInline (Format "latex") "\\providecommand{\\R}{}\\renewcommand{\\R}{\\mathbb{R}}
+    │ \\renewcommand{\\R}{\\mathbb{R}}
+    │ \\providecommand{\\plusbinomial}{}\\renewcommand{\\plusbinomial}[3][2]{(#2 + #3)^#1}
+    │ \\providecommand\\BAR{}\\renewcommand\\BAR{\\mathrm{bar}}"], Para [Math InlineMath " \\R \\plusbinomial{a}{b}{c} ", Str "
+    │ ", Math InlineMath " \\R \\BAR ", Str "
+    │ ", Math InlineMath " \\R "]]
+    "#);
+}
+
+#[test]
+fn tex_def() {
+    let chapter = indoc! {r"
+        \\(
+        \def\RR{{\bf R}}
+        \\)
+
+        \\( \RR \\)
+    "};
+    let cfg = indoc! {r#"
+        [output.html]
+        mathjax-support = true
+    "#};
+
+    let output = MDBook::init()
+        .chapter(Chapter::new("", chapter, "chapter.md"))
+        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .config(Config::latex())
+        .build();
+    insta::assert_snapshot!(output, @r#"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    ├─ latex/output.tex
+    │ \def\RR{{\bf R}}
+    │ 
+    │ \( \RR \)
+    ├─ latex/src/chapter.md
+    │ [Para [RawInline (Format "latex") "\\def\\RR{{\\bf R}}"], Para [Math InlineMath " \\RR "]]
+    "#);
+}
+
+#[test]
+fn tex_let() {
+    // \let\bar = 50 seems to be correctly parsed as \let\bar = 5 followed by 0
+    let chapter = indoc! {r"
+        \\(
+        \def\foo{5}
+        \let\originalfoo\foo
+        \let\bar = 50
+        \\)
+
+        \\( \foo \bar \\)
+    "};
+    let cfg = indoc! {r#"
+        [output.html]
+        mathjax-support = true
+    "#};
+
+    let output = MDBook::init()
+        .chapter(Chapter::new("", chapter, "chapter.md"))
+        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .config(Config::latex())
+        .build();
+    insta::assert_snapshot!(output, @r#"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    ├─ latex/output.tex
+    │ \def\foo{5}
+    │ \let\originalfoo\foo
+    │ \let\bar = 5 \(0\)
+    │ 
+    │ \( \foo \bar \)
+    ├─ latex/src/chapter.md
+    │ [Para [RawInline (Format "latex") "\\def\\foo{5}
+    │ \\let\\originalfoo\\foo
+    │ \\let\\bar = 5", SoftBreak, Math InlineMath "0"], Para [Math InlineMath " \\foo \\bar "]]
+    "#);
+}
+
+#[test]
+#[ignore = "slow"]
+fn tex_macros_pdf() {
+    let chapter = indoc! {r"
+        \\(
+        \newcommand{\R}{\mathbb{R}}
+        \renewcommand{\R}{\mathbb{R2}}
+        \newcommand{\plusbinomial}[3][2]{(#2 + #3)^#1}
+        \newcommand \BAR {\mathrm{bar}}
+        \def\foo{5}
+        \let\originalfoo\foo
+        \let\bar = 6
+        \\)
+
+        \\(
+        \R
+        \BAR
+        \foo
+        \bar
+        \originalfoo
+        \\)
+        \\( \plusbinomial{a}{b}{c} \\)
+        \\( \R \BAR \\)
+    "};
+    let cfg = indoc! {r#"
+        [output.html]
+        mathjax-support = true
+    "#};
+
+    let output = MDBook::init()
+        .chapter(Chapter::new("", chapter, "chapter.md"))
+        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .config(Config::pdf_and_latex())
+        .build();
+    insta::assert_snapshot!(output, @r"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
+    ├─ latex/output.tex
+    │ \providecommand{\R}{}\renewcommand{\R}{\mathbb{R}}
+    │ \renewcommand{\R}{\mathbb{R2}}
+    │ \providecommand{\plusbinomial}{}\renewcommand{\plusbinomial}[3][2]{(#2 + #3)^#1}
+    │ \providecommand\BAR{}\renewcommand\BAR{\mathrm{bar}}
+    │ \def\foo{5}
+    │ \let\originalfoo\foo
+    │ \let\bar = 6
+    │ 
+    │ \(
+    │ \R
+    │ \BAR
+    │ \foo
+    │ \bar
+    │ \originalfoo
+    │ \)
+    │ \( \plusbinomial{a}{b}{c} \)
+    │ \( \R \BAR \)
+    ├─ pdf/book.pdf
+    │ <INVALID UTF8>
+    ");
+}

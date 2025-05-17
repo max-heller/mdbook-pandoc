@@ -28,6 +28,7 @@ use regex::Regex;
 use walkdir::WalkDir;
 
 use crate::{
+    latex,
     pandoc::{self, native::ColWidth, OutputFormat, RenderContext},
     MarkdownConfig, MarkdownExtensionConfig,
 };
@@ -1034,12 +1035,11 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         let (delim, rest) = mathjax.as_str().split_at(2);
                         let math = &rest[..rest.len() - 2];
                         let kind = match delim {
-                            "\\(" => MdElement::InlineMath,
-                            "\\[" | "$$" => MdElement::DisplayMath,
+                            "\\(" => latex::MathType::Inline,
+                            "\\[" | "$$" => latex::MathType::Display,
                             _ => unreachable!(),
                         };
-                        tree.create_element(kind(math.to_owned().into()))?;
-                        tree.process_html("</span>".into());
+                        self.create_math_node(math.to_owned().into(), kind, tree)?;
                         pushed_up_to = mathjax.end();
                     }
                     let remaining_text = &text[pushed_up_to..];
@@ -1077,17 +1077,54 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 tree.create_element(MdElement::TaskListMarker(checked))?;
                 Ok(())
             }
-            Event::InlineMath(math) => {
-                tree.create_element(MdElement::InlineMath(math))?;
-                tree.process_html("</span>".into());
-                Ok(())
+            Event::InlineMath(math) => self.create_math_node(math, latex::MathType::Inline, tree),
+            Event::DisplayMath(math) => self.create_math_node(math, latex::MathType::Display, tree),
+        }
+    }
+
+    fn create_math_node(
+        &mut self,
+        mut math: CowStr<'book>,
+        kind: latex::MathType,
+        tree: &mut TreeBuilder<'book>,
+    ) -> anyhow::Result<()> {
+        if matches!(self.preprocessor.ctx.output, OutputFormat::Latex { .. }) {
+            // Extract TeX macro definitions into a latex raw block to mirror the behavior of MathJax
+            // where macros defined within a math inline/block are available in other inlines/blocks
+            let mut macros = Vec::new();
+            let without_macros =
+                latex::MACRO_DEFINITION.replace_all(&math, |caps: &regex::Captures<'_>| {
+                    if caps.name("newcommand").is_some() {
+                        // Replace each \newcommand with a \providecommand + \renewcommand
+                        // to avoid errors when the same command is defined in multiple chapters
+                        let (command, definition) = (&caps["command"], &caps["definition"]);
+                        macros.push(format!(
+                            r"\providecommand{command}{{}}\renewcommand{command}{definition}"
+                        ));
+                    } else {
+                        macros.push(caps[0].to_string());
+                    }
+                    "" // Remove macro definitions from the math block
+                });
+            if let Cow::Owned(without_macros) = without_macros {
+                math = without_macros.trim().to_string().into();
             }
-            Event::DisplayMath(math) => {
-                tree.create_element(MdElement::DisplayMath(math))?;
+            if !macros.is_empty() {
+                tree.create_element(MdElement::RawInline {
+                    format: "latex",
+                    raw: macros.join("\n").into(),
+                })?;
                 tree.process_html("</span>".into());
-                Ok(())
+                if !math.is_empty() {
+                    tree.create_element(MdElement::SoftBreak)?;
+                }
             }
         }
+        if !math.trim().is_empty() {
+            tree.create_element(MdElement::Math(kind, math))?;
+            tree.process_html("</span>".into());
+        }
+        Ok(())
     }
 
     pub fn resolve_image_url<'url>(

@@ -20,7 +20,7 @@ chrono = { version = "0.4.24", default-features = false, features = ["clock"] }
 cssparser = "0.35.0"
 env_logger = "0.11.0"
 html5ever = "0.31.0"
-indexmap = "2.7.0"
+indexmap = { version = "2.7.0", features = ["serde"] }
 log = "0.4.0"
 mdbook = { version = "0.4.35", default-features = false }
 normpath = "1.0.0"
