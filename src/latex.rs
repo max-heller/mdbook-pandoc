@@ -9,11 +9,11 @@ pub static MACRO_DEFINITION: Lazy<Regex> = Lazy::new(|| {
     Regex::new(
         &[
             // \(re)newcommand
-            r"\\(?P<newcommand>(re)?newcommand) *(\\\w+|\{\\\w+\}) *(\[\d+\])* *\{.+\}",
+            r"\\((?P<newcommand>newcommand)|renewcommand) *(?P<command>\\\w+|\{\\\w+\}) *(?P<definition>(\[\d+\])* *\{.+\})",
             // \def
             r"\\def *\\\w+ *\{.+\}",
             // \let
-            r"\\let *\\\w+ *=? *(.|\\\w+)",
+            r"\\let *\\\w+ *(= *(\\\w+|\S)|(\\\w+|\S))",
         ]
         .join("|"),
     )

@@ -603,7 +603,6 @@ pub struct PreprocessChapter<'book, 'preprocessor> {
     identifiers: HashMap<String, NonZeroU32>,
     in_code: bool,
     in_table_head: bool,
-    latex_macros: Vec<String>,
 }
 
 struct Parser<'book> {
@@ -720,7 +719,6 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             part_num,
             in_code: false,
             in_table_head: false,
-            latex_macros: Vec::new(),
         }
     }
 
@@ -1086,27 +1084,46 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
 
     fn create_math_node(
         &mut self,
-        math: CowStr<'book>,
+        mut math: CowStr<'book>,
         kind: latex::MathType,
         tree: &mut TreeBuilder<'book>,
     ) -> anyhow::Result<()> {
-        let extract_macros = |this: &mut Self, math| {
-            latex::MACRO_DEFINITION.replace_all(math, |captures: &regex::Captures<'_>| {
-                let definition = captures[0].replace(r"\newcommand", r"\providecommand");
-                this.latex_macros.push(dbg!(definition.clone()));
-                definition
-            })
-        };
-        let math = if self.latex_macros.is_empty() {
-            extract_macros(self, &math);
-            math
-        } else {
-            let macros = self.latex_macros.join("\n");
-            extract_macros(self, &math);
-            format!("{macros}\n{math}").into()
-        };
-        tree.create_element(MdElement::Math(kind, math))?;
-        tree.process_html("</span>".into());
+        if matches!(self.preprocessor.ctx.output, OutputFormat::Latex { .. }) {
+            // Extract TeX macro definitions into a latex raw block to mirror the behavior of MathJax
+            // where macros defined within a math inline/block are available in other inlines/blocks
+            let mut macros = Vec::new();
+            let without_macros =
+                latex::MACRO_DEFINITION.replace_all(&math, |caps: &regex::Captures<'_>| {
+                    if caps.name("newcommand").is_some() {
+                        // Replace each \newcommand with a \providecommand + \renewcommand
+                        // to avoid errors when the same command is defined in multiple chapters
+                        let (command, definition) = (&caps["command"], &caps["definition"]);
+                        macros.push(format!(
+                            r"\providecommand{command}{{}}\renewcommand{command}{definition}"
+                        ));
+                    } else {
+                        macros.push(caps[0].to_string());
+                    }
+                    "" // Remove macro definitions from the math block
+                });
+            if let Cow::Owned(without_macros) = without_macros {
+                math = without_macros.trim().to_string().into();
+            }
+            if !macros.is_empty() {
+                tree.create_element(MdElement::RawInline {
+                    format: "latex",
+                    raw: macros.join("\n").into(),
+                })?;
+                tree.process_html("</span>".into());
+                if !math.is_empty() {
+                    tree.create_element(MdElement::SoftBreak)?;
+                }
+            }
+        }
+        if !math.trim().is_empty() {
+            tree.create_element(MdElement::Math(kind, math))?;
+            tree.process_html("</span>".into());
+        }
         Ok(())
     }
 

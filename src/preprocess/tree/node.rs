@@ -55,6 +55,10 @@ pub enum MdElement<'a> {
     BlockQuote(Option<BlockQuoteKind>),
     InlineCode(CowStr<'a>),
     CodeBlock(CodeBlockKind<'a>),
+    RawInline {
+        format: &'static str,
+        raw: CowStr<'a>,
+    },
     List(Option<u64>),
     Item,
     TaskListMarker(bool),
@@ -252,7 +256,7 @@ impl MdElement<'_> {
                 const INPUT: &QualName = &html::name!(html "input");
                 INPUT
             }
-            MdElement::Math(..) => {
+            MdElement::Math(..) | MdElement::RawInline { .. } => {
                 const SPAN: &QualName = &html::name!(html "span");
                 SPAN
             }

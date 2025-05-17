@@ -484,6 +484,13 @@ impl<'book> Emitter<'book> {
                             Ok(())
                         })
                 }
+                MdElement::RawInline { format, raw } => serializer.serialize_inlines(|inlines| {
+                    inlines
+                        .serialize_element()?
+                        .serialize_raw_inline(format, |serializer| {
+                            serializer.write_all(raw.as_bytes())
+                        })
+                }),
                 MdElement::Emphasis => serializer.serialize_inlines(|inlines| {
                     inlines.serialize_element()?.serialize_emph(|inlines| {
                         inlines.serialize_nested(|serializer| {
