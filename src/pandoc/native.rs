@@ -390,6 +390,17 @@ impl SerializeElement for Text {
     }
 }
 
+impl SerializeElement for TableBody {
+    type Serializer<'a, 'book: 'a, 'p: 'a + 'book, W: io::Write + 'a> =
+        SerializeTableBody<'a, 'book, 'p, W>;
+
+    fn serializer<'a, 'book, 'p, W: io::Write>(
+        &mut self,
+        serializer: &'a mut Serializer<'p, 'book, W>,
+    ) -> Self::Serializer<'a, 'book, 'p, W> {
+        SerializeTableBody { serializer }
+    }
+}
 impl SerializeElement for Row {
     type Serializer<'a, 'book: 'a, 'p: 'a + 'book, W: io::Write + 'a> =
         SerializeRow<'a, 'book, 'p, W>;
@@ -483,6 +494,8 @@ pub struct Text;
 #[derive(Copy, Clone)]
 pub struct List<T>(T);
 #[derive(Copy, Clone)]
+pub struct TableBody;
+#[derive(Copy, Clone)]
 pub struct Row;
 #[derive(Copy, Clone)]
 pub struct Cell;
@@ -491,6 +504,7 @@ pub struct DefinitionListItem;
 
 pub type SerializeBlocks<'a, 'book, 'p, W> = SerializeList<'a, 'book, 'p, W, Block>;
 pub type SerializeInlines<'a, 'book, 'p, W> = SerializeList<'a, 'book, 'p, W, Inline>;
+pub type SerializeTableBodies<'a, 'book, 'p, W> = SerializeList<'a, 'book, 'p, W, TableBody>;
 pub type SerializeRows<'a, 'book, 'p, W> = SerializeList<'a, 'book, 'p, W, Row>;
 pub type SerializeCells<'a, 'book, 'p, W> = SerializeList<'a, 'book, 'p, W, Cell>;
 
@@ -516,6 +530,11 @@ pub struct SerializeText<'a, 'book, 'p, W: io::Write> {
 
 #[must_use]
 pub struct SerializeCode<'a, 'book, 'p, W: io::Write> {
+    serializer: &'a mut Serializer<'p, 'book, W>,
+}
+
+#[must_use]
+pub struct SerializeTableBody<'a, 'book, 'p, W: io::Write> {
     serializer: &'a mut Serializer<'p, 'book, W>,
 }
 
@@ -892,10 +911,7 @@ impl<'a, 'book, 'p, W: io::Write> SerializeBlock<'a, 'book, 'p, W> {
             impl Attributes,
             impl FnOnce(&mut SerializeRows<'_, 'book, 'p, W>) -> anyhow::Result<()>,
         ),
-        body: (
-            impl Attributes,
-            impl FnOnce(&mut SerializeRows<'_, 'book, 'p, W>) -> anyhow::Result<()>,
-        ),
+        bodies: impl FnOnce(&mut SerializeTableBodies<'_, 'book, 'p, W>) -> anyhow::Result<()>,
     ) -> anyhow::Result<()> {
         write!(self.serializer.unescaped(), "Table ")?;
 
@@ -939,14 +955,10 @@ impl<'a, 'book, 'p, W: io::Write> SerializeBlock<'a, 'book, 'p, W> {
 
         // Bodies: [TableBody Attr RowHeadColumns [Row] [Row]]
         {
-            let (attrs, rows) = body;
-            write!(self.serializer.unescaped(), " [(TableBody ")?;
-            self.serializer.write_attributes(attrs)?;
-            write!(self.serializer.unescaped(), " (RowHeadColumns 0) [] ")?;
-            let mut serializer = SerializeList::new(self.serializer, Row)?;
-            rows(&mut serializer)?;
+            write!(self.serializer.unescaped(), " ")?;
+            let mut serializer = SerializeList::new(self.serializer, TableBody)?;
+            bodies(&mut serializer)?;
             serializer.finish()?;
-            write!(self.serializer.unescaped(), ")]")?;
         }
 
         // Foot
@@ -984,6 +996,24 @@ impl<W: io::Write> SerializeAttribute<'_, '_, '_, W> {
         writer.write_all(val.as_bytes())?;
         writer.end_text()?;
         self.serializer.unescaped().write_all(b")")?;
+        Ok(())
+    }
+}
+
+impl<'book, 'p, W: io::Write> SerializeTableBody<'_, 'book, 'p, W> {
+    /// TableBody Attr RowHeadColumns [Row] [Row]
+    pub fn serialize_body(
+        &mut self,
+        attrs: impl Attributes,
+        rows: impl FnOnce(&mut SerializeRows<'_, 'book, 'p, W>) -> anyhow::Result<()>,
+    ) -> anyhow::Result<()> {
+        write!(self.serializer.unescaped(), "(TableBody ")?;
+        self.serializer.write_attributes(attrs)?;
+        write!(self.serializer.unescaped(), " (RowHeadColumns 0) [] ")?;
+        let mut serializer = SerializeList::new(self.serializer, Row)?;
+        rows(&mut serializer)?;
+        serializer.finish()?;
+        write!(self.serializer.unescaped(), ")")?;
         Ok(())
     }
 }
