@@ -3,7 +3,39 @@ use indoc::indoc;
 use super::{Chapter, Config, MDBook};
 
 #[test]
-fn tables() {
+fn empty() {
+    let book = MDBook::init()
+        .chapter(Chapter::new(
+            "",
+            indoc! {"
+                | Header1 | Header2 |
+                |---------|---------|
+            "},
+            "chapter.md",
+        ))
+        .config(Config::latex())
+        .build();
+    insta::assert_snapshot!(book, @r#"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    ├─ latex/output.tex
+    │ \begin{longtable}[]{@{}ll@{}}
+    │ \toprule\noalign{}
+    │ Header1 & Header2 \\
+    │ \midrule\noalign{}
+    │ \endhead
+    │ \bottomrule\noalign{}
+    │ \endlastfoot
+    │ \end{longtable}
+    ├─ latex/src/chapter.md
+    │ [Table ("", [], []) (Caption Nothing []) [(AlignDefault, ColWidthDefault), (AlignDefault, ColWidthDefault)] (TableHead ("", [], []) [Row ("", [], []) [Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header1"]], Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header2"]]]]) [(TableBody ("", [], []) (RowHeadColumns 0) [] [])] (TableFoot ("", [], []) [])]
+    "#);
+}
+
+#[test]
+fn basic() {
     let book = MDBook::init()
         .chapter(Chapter::new(
             "",
@@ -37,7 +69,7 @@ fn tables() {
 }
 
 #[test]
-fn wide_table() {
+fn wide() {
     let book = MDBook::init()
         .chapter(Chapter::new(
             "",
