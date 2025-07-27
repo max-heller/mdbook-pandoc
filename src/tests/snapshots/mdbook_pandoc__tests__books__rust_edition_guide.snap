@@ -1,9 +1,9 @@
 ---
-source: src/lib.rs
+source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
- INFO mdbook::book: Running the pandoc backend    
+ INFO mdbook_driver::mdbook: Running the pandoc backend    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../../cargo/reference/source-replacement.html' in chapter '$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/cargo-can-use-a-local-registry-replacement.html', linking to hosted HTML book at 'https://doc.rust-lang.org/edition-guide/$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/../../../cargo/reference/source-replacement.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../../cargo/commands/cargo-check.html' in chapter '$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/cargo-check-for-faster-checking.html', linking to hosted HTML book at 'https://doc.rust-lang.org/edition-guide/$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/../../../cargo/commands/cargo-check.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../../cargo/commands/cargo-install.html' in chapter '$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/cargo-install-for-easy-installation-of-tools.html', linking to hosted HTML book at 'https://doc.rust-lang.org/edition-guide/$ROOT/book/pdf/src/rust-2018/cargo-and-crates-io/../../../cargo/commands/cargo-install.html'    

@@ -23,7 +23,7 @@ pub struct Context<'book> {
     pub output: OutputFormat,
     pub destination: PathBuf,
     pub book: &'book Book<'book>,
-    pub mdbook_cfg: &'book mdbook::Config,
+    pub mdbook_cfg: &'book mdbook::config::Config,
     pub columns: usize,
     pub cur_list_depth: usize,
     pub max_list_depth: usize,

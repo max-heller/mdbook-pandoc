@@ -102,7 +102,7 @@ impl mdbook::Renderer for Renderer {
         Self::NAME
     }
 
-    fn render(&self, ctx: &mdbook::renderer::RenderContext) -> anyhow::Result<()> {
+    fn render(&self, ctx: &mdbook::RenderContext) -> anyhow::Result<()> {
         // If we're compiled against mdbook version I.J.K, require ^I.J
         // This allows using a version of mdbook with an earlier patch version as a server
         static MDBOOK_VERSION_REQ: Lazy<semver::VersionReq> = Lazy::new(|| {
@@ -112,8 +112,10 @@ impl mdbook::Renderer for Renderer {
                     op: semver::Op::Caret,
                     major: compiled_mdbook_version.major,
                     minor: Some(compiled_mdbook_version.minor),
-                    patch: None,
-                    pre: Default::default(),
+                    // Preleases are only compatible with identical patch versions
+                    patch: (!compiled_mdbook_version.pre.is_empty())
+                        .then_some(compiled_mdbook_version.patch),
+                    pre: compiled_mdbook_version.pre,
                 }],
             }
         });
@@ -129,7 +131,7 @@ impl mdbook::Renderer for Renderer {
 
         let cfg: Config = ctx
             .config
-            .get_deserialized_opt(Self::CONFIG_KEY)
+            .get(Self::CONFIG_KEY)
             .with_context(|| format!("Unable to deserialize {}", Self::CONFIG_KEY))?
             .ok_or(anyhow!("No {} table found", Self::CONFIG_KEY))?;
 
@@ -140,10 +142,7 @@ impl mdbook::Renderer for Renderer {
 
         pandoc::check_compatibility()?;
 
-        let html_cfg: Option<HtmlConfig> = ctx
-            .config
-            .get_deserialized_opt("output.html")
-            .unwrap_or_default();
+        let html_cfg: Option<HtmlConfig> = ctx.config.get("output.html").unwrap_or_default();
 
         let book = Book::new(ctx)?;
 

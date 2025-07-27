@@ -17,7 +17,7 @@ fn main() {
 fn try_main() -> anyhow::Result<()> {
     init_logger();
 
-    let ctx = mdbook::renderer::RenderContext::from_json(io::stdin().lock())
+    let ctx = mdbook::RenderContext::from_json(io::stdin().lock())
         .context("unable to parse mdBook context")?;
     mdbook_pandoc::Renderer::new().render(&ctx)
 }

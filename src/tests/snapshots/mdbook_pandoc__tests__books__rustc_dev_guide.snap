@@ -1,13 +1,13 @@
 ---
-source: src/lib.rs
+source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
- WARN mdbook::preprocess::cmd: The command wasn't found, is the "mermaid" preprocessor installed?    
- WARN mdbook::preprocess::cmd: 	Command: mdbook-mermaid    
- WARN mdbook::preprocess::cmd: The command wasn't found, is the "toc" preprocessor installed?    
- WARN mdbook::preprocess::cmd: 	Command: mdbook-toc    
- INFO mdbook::book: Running the pandoc backend    
+ WARN mdbook_driver::builtin_preprocessors::cmd: The command wasn't found, is the "mermaid" preprocessor installed?    
+ WARN mdbook_driver::builtin_preprocessors::cmd: 	Command: mdbook-mermaid    
+ WARN mdbook_driver::builtin_preprocessors::cmd: The command wasn't found, is the "toc" preprocessor installed?    
+ WARN mdbook_driver::builtin_preprocessors::cmd: 	Command: mdbook-toc    
+ INFO mdbook_driver::mdbook: Running the pandoc backend    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../early-late-bound-params/early-late-bound-summary.md' in chapter 'ty_module/param_ty_const_regions.md', linking to hosted HTML book at 'https://rustc-dev-guide.rust-lang.org/ty_module/../early-late-bound-params/early-late-bound-summary.md'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../early-late-bound-params/early-late-bound-summary.md' in chapter 'ty_module/param_ty_const_regions.md', linking to hosted HTML book at 'https://rustc-dev-guide.rust-lang.org/ty_module/../early-late-bound-params/early-late-bound-summary.md'    
  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    

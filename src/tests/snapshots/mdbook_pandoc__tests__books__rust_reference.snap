@@ -1,9 +1,9 @@
 ---
-source: src/lib.rs
+source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
- INFO mdbook::book: Running the pandoc backend    
+ INFO mdbook_driver::mdbook: Running the pandoc backend    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../book/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../book/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/index.html'    

@@ -10,7 +10,7 @@ pub struct Book<'book> {
 }
 
 impl<'book> Book<'book> {
-    pub fn new(ctx: &'book mdbook::renderer::RenderContext) -> anyhow::Result<Self> {
+    pub fn new(ctx: &'book mdbook::RenderContext) -> anyhow::Result<Self> {
         let root = ctx.root.normalize()?.into_path_buf();
         let source_dir = ctx.source_dir().normalize()?.into_path_buf();
 
