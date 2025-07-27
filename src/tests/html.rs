@@ -187,14 +187,14 @@ fn link_to_element_by_id() {
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
     ├─ latex/output.tex
-    │ \phantomsection\label{book__latex__src__chapter.md__test}{some text here}
-    │ \phantomsection\label{book__latex__src__chapter.md__test2}{some text here}
+    │ \protect\phantomsection\label{book__latex__src__chapter.md__test}{some text here}
+    │ \protect\phantomsection\label{book__latex__src__chapter.md__test2}{some text here}
     │ 
-    │ \phantomsection\label{book__latex__src__chapter.md__test3}
+    │ \protect\phantomsection\label{book__latex__src__chapter.md__test3}
     │ 
     │ some text here
     │ 
-    │ \phantomsection\label{book__latex__src__chapter.md__test4}
+    │ \protect\phantomsection\label{book__latex__src__chapter.md__test4}
     │ some text here
     │ 
     │ \hyperref[book__latex__src__chapter.md__test]{test link}
@@ -233,9 +233,9 @@ fn rust_reference_regression_nested_elements() {
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
     ├─ latex/output.tex
-    │ \phantomsection\label{book__latex__src__chapter.md__my-div}
+    │ \protect\phantomsection\label{book__latex__src__chapter.md__my-div}
     │ 
-    │ \phantomsection\label{book__latex__src__chapter.md__my-a}\hyperref[book__latex__src__chapter.md__my-div]{{[}some text here{]}}
+    │ \protect\phantomsection\label{book__latex__src__chapter.md__my-a}\hyperref[book__latex__src__chapter.md__my-div]{{[}some text here{]}}
     │ 
     │ \hyperref[book__latex__src__chapter.md__my-div]{div}
     │ \hyperref[book__latex__src__chapter.md__my-a]{a}
@@ -313,7 +313,7 @@ fn attach_id_to_div_of_stripped_html_elements() {
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
     ├─ latex/output.tex
-    │ \phantomsection\label{book__latex__src__chapter.md__foo=bar}
+    │ \protect\phantomsection\label{book__latex__src__chapter.md__foo=bar}
     │ \hyperref[book__latex__src__chapter.md__foo=bar]{}something here
     ├─ latex/src/chapter.md
     │ [RawBlock (Format "html") "<dt id=\"foo=bar\">", Div ("foo=bar", [], []) [Plain [Link ("", [], [("href", "#foo=bar")]) [] ("#foo=bar", ""), Str "something here"]], RawBlock (Format "html") "</dt>"]
