@@ -7,7 +7,7 @@ use std::{
 };
 
 use anyhow::Context;
-use mdbook::{BookItem, Renderer as _};
+use mdbook::{book::BookItem, Renderer as _};
 use normpath::PathExt;
 use regex::Regex;
 use tempfile::{tempfile, TempDir};
@@ -17,7 +17,7 @@ use tracing_subscriber::layer::SubscriberExt;
 use crate::{CodeConfig, Config, Renderer};
 
 pub struct MDBook {
-    book: mdbook::MDBook,
+    book: mdbook_driver::MDBook,
     _root: Option<TempDir>,
     _logger: tracing::subscriber::DefaultGuard,
     logfile: File,
@@ -45,7 +45,9 @@ impl Options {
     pub fn init(self) -> MDBook {
         // Initialize a book directory
         let root = TempDir::new().unwrap();
-        let mut book = mdbook::book::BookBuilder::new(root.path()).build().unwrap();
+        let mut book = mdbook_driver::init::BookBuilder::new(root.path())
+            .build()
+            .unwrap();
 
         // Clear out the stub files
         let src = book.source_dir();
@@ -65,7 +67,7 @@ impl Options {
     }
 
     pub fn load(self, path: impl Into<PathBuf>) -> MDBook {
-        MDBook::new(mdbook::MDBook::load(path).unwrap(), None, self)
+        MDBook::new(mdbook_driver::MDBook::load(path).unwrap(), None, self)
     }
 
     pub fn max_log_level(
@@ -90,7 +92,7 @@ impl MDBook {
         Options::default()
     }
 
-    fn new(mut book: mdbook::MDBook, tempdir: Option<TempDir>, options: Options) -> Self {
+    fn new(mut book: mdbook_driver::MDBook, tempdir: Option<TempDir>, options: Options) -> Self {
         // Initialize logger to captures `log` output and redirect it to a tempfile
         let logfile = tempfile().unwrap();
         let _logger = tracing::subscriber::set_default(
@@ -129,7 +131,7 @@ impl MDBook {
         }
     }
 
-    pub fn mdbook_config(mut self, config: mdbook::Config) -> Self {
+    pub fn mdbook_config(mut self, config: mdbook::config::Config) -> Self {
         self.book.config = config;
         self
     }

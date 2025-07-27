@@ -19,7 +19,7 @@ fn images() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend    
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
     ├─ latex/output.tex
@@ -51,7 +51,7 @@ fn remote_images() {
         .build();
     insta::assert_snapshot!(book, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend    
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
     ├─ pdf/book.pdf
