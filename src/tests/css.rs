@@ -35,7 +35,7 @@ fn css() {
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
     ├─ latex/output.tex
-    │ \includegraphics[width=1.04167in,height=0.52083in]{book/latex/src/img/image.png}
+    │ \includegraphics[width=1.04167in,height=0.52083in,alt={alt text}]{book/latex/src/img/image.png}
     ├─ latex/src/chapter.md
     │ [Plain [Image ("", ["ferris-explain"], [("height", "50"), ("width", "100px")]) [Str "alt text"] ("book/latex/src/img/image.png", "a title")]]
     ├─ latex/src/img/image.png

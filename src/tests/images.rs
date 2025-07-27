@@ -23,9 +23,9 @@ fn images() {
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
     ├─ latex/output.tex
-    │ \pandocbounded{\includegraphics[keepaspectratio]{book/latex/src/img/image.png}}
-    │ \includegraphics[width=0.52083in,height=1.04167in]{book/latex/src/img/image.png}
-    │ \includegraphics[width=0.52083in,height=1.04167in]{book/latex/src/img/image.png}
+    │ \pandocbounded{\includegraphics[keepaspectratio,alt={alt text}]{book/latex/src/img/image.png}}
+    │ \includegraphics[width=0.52083in,height=1.04167in,alt={alt text}]{book/latex/src/img/image.png}
+    │ \includegraphics[width=0.52083in,height=1.04167in,alt={alt text}]{book/latex/src/img/image.png}
     ├─ latex/src/chapter.md
     │ [Para [Image ("", [], []) [Str "alt text"] ("book/latex/src/img/image.png", "a title"), SoftBreak, Image ("", ["foo", "bar"], [("height", "100"), ("width", "50")]) [Str "alt text"] ("book/latex/src/img/image.png", "a title"), SoftBreak, Image ("", ["foo", "bar"], [("width", "50"), ("height", "100")]) [Str "alt text"] ("book/latex/src/img/image.png", "a title")]]
     ├─ latex/src/img/image.png

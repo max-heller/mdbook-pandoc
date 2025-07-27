@@ -74,7 +74,7 @@ fn dt_attributes() {
     ├─ latex/output.tex
     │ \begin{description}
     │ \tightlist
-    │ \item[\phantomsection\label{book__latex__src__chapter.md__term1}{term 1}]
+    │ \item[\protect\phantomsection\label{book__latex__src__chapter.md__term1}{term 1}]
     │ definition 1
     │ \end{description}
     │ 
