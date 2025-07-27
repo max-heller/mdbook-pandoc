@@ -233,7 +233,8 @@ impl<'book> Emitter<'book> {
                     let preprocessor = serializer.preprocessor();
                     let column_widths = preprocessor.column_widths(source);
                     let mut children = node.children();
-                    let (head, body) = (children.next().unwrap(), children.next().unwrap());
+                    let head = children.next().unwrap();
+                    let body = children.next();
                     debug_assert!(children.next().is_none());
 
                     let thead = match head.value() {
@@ -244,100 +245,88 @@ impl<'book> Emitter<'book> {
                         }
                         event => anyhow::bail!("expected table head, got {event:?}"),
                     };
-                    let tbody = match body.value() {
-                        Node::Element(Element::Html(element))
-                            if element.name.expanded() == expanded_name!(html "tbody") =>
-                        {
-                            element
-                        }
-                        event => anyhow::bail!("expected table body, got {event:?}"),
-                    };
+                    let body = body
+                        .map(|node| match node.value() {
+                            Node::Element(Element::Html(element))
+                                if element.name.expanded() == expanded_name!(html "tbody") =>
+                            {
+                                Ok((node, element))
+                            }
+                            event => anyhow::bail!("expected table body, got {event:?}"),
+                        })
+                        .transpose()?;
 
                     serializer.blocks()?.serialize_element()?.serialize_table(
                         (),
                         (alignment.iter().copied().map(Into::into)).zip(column_widths),
                         (&thead.attrs, |serializer| {
                             for row in head.children() {
-                                match row.value() {
-                                    Node::Element(Element::Html(element)) if element.name.expanded() == expanded_name!(html "tr") => {
-                                        serializer.serialize_element()?.serialize_row(&element.attrs, |cells| {
+                                let tr = match row.value() {
+                                    Node::Element(Element::Html(e)) if e.name.expanded() == expanded_name!(html "tr") => e,
+                                    event => anyhow::bail!("expected table row, got {event:?}"),
+                                };
+                                serializer.serialize_element()?.serialize_row(&tr.attrs, |cells| {
+                                    for cell in row.children() {
+                                        let th = match cell.value() {
+                                            Node::Element(Element::Html(e)) if e.name.expanded() == expanded_name!(html "th") => e,
+                                            event => anyhow::bail!("expected table cell, got {event:?}"),
+                                        };
+                                        for node in cell.children() {
+                                            cells.serialize_element()?.serialize_cell(
+                                                &th.attrs,
+                                                |blocks| {
+                                                    blocks.serialize_nested(|serializer| {
+                                                        self.serialize_node(node, serializer)
+                                                    })
+                                                },
+                                            )?;
+                                        }
+                                    }
+                                    Ok(())
+                                })?
+                            }
+                            Ok(())
+                        }),
+                        |serializer| {
+                            let Some((body, tbody)) = body else {
+                                return Ok(())
+                            };
+                            serializer.serialize_element()?.serialize_body(&tbody.attrs, |serializer| {
+                                for row in body.children() {
+                                    let tr = match row.value() {
+                                        Node::Element(Element::Html(e))
+                                            if e.name.expanded() == expanded_name!(html "tr") => e,
+                                        event => anyhow::bail!("expected table row, got {event:?}"),
+                                    };
+                                    serializer.serialize_element()?.serialize_row(
+                                        &tr.attrs,
+                                        |cells| {
                                             for cell in row.children() {
-                                                match cell.value() {
-                                                    Node::Element(Element::Html(element)) if element.name.expanded() == expanded_name!(html "th") => {
-                                                        for node in cell.children() {
-                                                            cells.serialize_element()?.serialize_cell(
-                                                                &element.attrs,
-                                                                |blocks| {
-                                                                    blocks.serialize_nested(|serializer| {
-                                                                        self.serialize_node(
-                                                                            node, serializer,
-                                                                        )
-                                                                    })
-                                                                },
-                                                            )?;
-                                                        }
-                                                    }
-                                                    event => {
-                                                        anyhow::bail!("expected table cell, got {event:?}")
-                                                    }
-                                                }
+                                                let td = match cell.value() {
+                                                    Node::Element(Element::Html(e))
+                                                        if e.name.expanded() == expanded_name!(html "td") => e,
+                                                    event => anyhow::bail!("expected table data (<td>), got {event:?}"),
+                                                };
+                                                cells
+                                                    .serialize_element()?
+                                                    .serialize_cell(&td.attrs, |blocks| {
+                                                        blocks.serialize_nested(
+                                                            |serializer| {
+                                                                for node in cell.children() {
+                                                                    self.serialize_node(node, serializer)?;
+                                                                }
+                                                                Ok(())
+                                                            },
+                                                        )
+                                                    })?
                                             }
                                             Ok(())
-                                        })?
-                                    }
-                                    event => anyhow::bail!("expected table row, got {event:?}"),
+                                        },
+                                    )?
                                 }
-                            }
-                            Ok(())
-                        }),
-                        (&tbody.attrs, |serializer| {
-                            for row in body.children() {
-                                match row.value() {
-                                    Node::Element(Element::Html(element))
-                                        if element.name.expanded() == expanded_name!(html "tr") =>
-                                    {
-                                        serializer.serialize_element()?.serialize_row(
-                                            &element.attrs,
-                                            |cells| {
-                                                for cell in row.children() {
-                                                    match cell.value() {
-                                                        Node::Element(Element::Html(element))
-                                                            if element.name.expanded()
-                                                                == expanded_name!(html "td") =>
-                                                        {
-                                                            cells
-                                                                .serialize_element()?
-                                                                .serialize_cell(&element.attrs, |blocks| {
-                                                                    blocks.serialize_nested(
-                                                                        |serializer| {
-                                                                            for node in
-                                                                                cell.children()
-                                                                            {
-                                                                                self.serialize_node(
-                                                                                    node, serializer,
-                                                                                )?;
-                                                                            }
-                                                                            Ok(())
-                                                                        },
-                                                                    )
-                                                                })?
-                                                        }
-                                                        event => {
-                                                            anyhow::bail!(
-                                                                "expected table data (<td>), got {event:?}"
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                                Ok(())
-                                            },
-                                        )?
-                                    }
-                                    event => anyhow::bail!("expected table row, got {event:?}"),
-                                }
-                            }
-                            Ok(())
-                        }),
+                                Ok(())
+                            })
+                        }
                     )
                 }
                 MdElement::FootnoteDefinition => Ok(()),
