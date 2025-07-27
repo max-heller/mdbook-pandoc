@@ -147,7 +147,7 @@ impl<'book> Emitter<'book> {
             }
             Node::HtmlText(text) => {
                 let none_or_element = |node: Option<NodeRef<_>>| {
-                    node.map_or(true, |node| matches!(node.value(), Node::Element(..)))
+                    node.is_none_or(|node| matches!(node.value(), Node::Element(..)))
                 };
                 // Drop newlines between elements
                 if text.as_ref() == "\n"
