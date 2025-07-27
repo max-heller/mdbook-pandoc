@@ -1,11 +1,7 @@
-use std::{
-    env,
-    io::{self, Write},
-    process,
-};
+use std::{io, process};
 
 use anyhow::Context;
-use mdbook::Renderer;
+use mdbook_renderer::Renderer;
 
 fn main() {
     if let Err(err) = try_main() {
@@ -17,35 +13,42 @@ fn main() {
 fn try_main() -> anyhow::Result<()> {
     init_logger();
 
-    let ctx = mdbook::renderer::RenderContext::from_json(io::stdin().lock())
+    let ctx = mdbook_renderer::RenderContext::from_json(io::stdin().lock())
         .context("unable to parse mdBook context")?;
     mdbook_pandoc::Renderer::new().render(&ctx)
 }
 
 // Adapted from mdbook's main.rs for consistency in log format
+#[expect(clippy::unnecessary_map_or)]
 fn init_logger() {
-    let mut builder = env_logger::Builder::new();
+    let filter = tracing_subscriber::EnvFilter::builder()
+        .with_env_var("MDBOOK_LOG")
+        .with_default_directive(tracing_subscriber::filter::LevelFilter::INFO.into())
+        .from_env_lossy();
+    let log_env = std::env::var("MDBOOK_LOG");
+    // Silence some particularly noisy dependencies unless the user
+    // specifically asks for them.
+    let silence_unless_specified = |filter: tracing_subscriber::EnvFilter, target| {
+        if !log_env.as_ref().map_or(false, |s| {
+            s.split(',').any(|directive| directive.starts_with(target))
+        }) {
+            filter.add_directive(format!("{target}=warn").parse().unwrap())
+        } else {
+            filter
+        }
+    };
+    let filter = silence_unless_specified(filter, "handlebars");
+    let filter = silence_unless_specified(filter, "html5ever");
 
-    builder.format(|formatter, record| {
-        let style = formatter.default_level_style(record.level());
-        writeln!(
-            formatter,
-            "{} [{style}{}{style:#}] ({}): {}",
-            chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
-            record.level(),
-            record.target(),
-            record.args()
-        )
-    });
+    // Don't show the target by default, since it generally isn't useful
+    // unless you are overriding the level.
+    let with_target = log_env.is_ok();
 
-    if let Ok(var) = env::var("RUST_LOG") {
-        builder.parse_filters(&var);
-    } else {
-        // if no RUST_LOG provided, default to logging at the Info level
-        builder.filter(None, log::LevelFilter::Info);
-        // Filter extraneous html5ever not-implemented messages
-        builder.filter(Some("html5ever"), log::LevelFilter::Error);
-    }
-
-    builder.init();
+    tracing_subscriber::fmt()
+        .without_time()
+        .with_ansi(std::io::IsTerminal::is_terminal(&std::io::stderr()))
+        .with_writer(std::io::stderr)
+        .with_env_filter(filter)
+        .with_target(with_target)
+        .init();
 }

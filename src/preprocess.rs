@@ -16,11 +16,7 @@ use std::{
 use anyhow::{anyhow, Context};
 use ego_tree::NodeId;
 use html5ever::{expanded_name, local_name, ns, tendril::format_tendril};
-use log::log;
-use mdbook::{
-    book::{BookItems, Chapter},
-    BookItem,
-};
+use mdbook::book::{BookItem, BookItems, Chapter};
 use normpath::PathExt;
 use once_cell::sync::Lazy;
 use pulldown_cmark::{CowStr, Event, HeadingLevel, LinkType, Tag, TagEnd};
@@ -139,7 +135,7 @@ impl<'book> Preprocessor<'book> {
         redirects
             .into_iter()
             .map(|entry @ (src, dst)| {
-                log::debug!("Processing redirect: {src} => {dst}");
+                tracing::debug!("Processing redirect: {src} => {dst}");
 
                 let res = (|| {
                     let src_rel_path = src.trim_start_matches('/');
@@ -170,7 +166,7 @@ impl<'book> Preprocessor<'book> {
             .map(|(res, entry)| {
                 res.and_then(|(src, dst)| {
                     let dst = self
-                        .normalize_link(&src, src.parent().unwrap(), LinkType::Autolink, dst.into())
+                        .normalize_link(&src, LinkType::Autolink, dst.into())
                         .map_err(|(err, _)| err)
                         .context("Unable to normalize redirect destination")?;
                     let src = self
@@ -178,7 +174,7 @@ impl<'book> Preprocessor<'book> {
                         .context("Unable to normalize redirect source")?
                         .preprocessed_path_relative_to_root;
 
-                    log::debug!("Registered redirect: {} => {dst}", src.display());
+                    tracing::debug!("Registered redirect: {} => {dst}", src.display());
                     self.redirects.insert(src, dst.into_string());
                     Ok(())
                 })
@@ -186,7 +182,7 @@ impl<'book> Preprocessor<'book> {
             })
             .filter_map(Result::err)
             .for_each(|(err, (src, dst))| {
-                log::warn!("Failed to resolve redirect: {src} => {dst}: {err:#}")
+                tracing::warn!("Failed to resolve redirect: {src} => {dst}: {err:#}")
             })
     }
 
@@ -208,13 +204,12 @@ impl<'book> Preprocessor<'book> {
         link_type: LinkType,
         link: CowStr<'link>,
     ) -> CowStr<'link> {
-        let Some(chapter_path) = &chapter.path else {
+        let Some(chapter_path) = &chapter.source_path else {
             return link;
         };
-        let chapter_dir = chapter_path.parent().unwrap();
-        self.normalize_link(chapter_path, chapter_dir, link_type, link)
+        self.normalize_link(chapter_path, link_type, link)
             .unwrap_or_else(|(err, link)| {
-                log::warn!(
+                tracing::warn!(
                     "Unable to normalize link '{}' in chapter '{}': {err:#}",
                     link,
                     chapter.name,
@@ -226,7 +221,6 @@ impl<'book> Preprocessor<'book> {
     fn normalize_link<'link>(
         &mut self,
         chapter_path: &Path,
-        chapter_dir: &Path,
         link_type: LinkType,
         link: CowStr<'link>,
     ) -> Result<CowStr<'link>, (anyhow::Error, CowStr<'link>)> {
@@ -276,6 +270,7 @@ impl<'book> Preprocessor<'book> {
             let path = if let Ok(relative_to_root) = link_path.strip_prefix("/") {
                 self.preprocessed.join(relative_to_root)
             } else {
+                let chapter_dir = chapter_path.parent().unwrap();
                 chapter_dir.join(link_path)
             };
 
@@ -327,7 +322,7 @@ impl<'book> Preprocessor<'book> {
                                 let chapter = self.chapters.get_mut(relative_path);
                                 match chapter {
                                     None => {
-                                        log::trace!(
+                                        tracing::trace!(
                                             "Not recognized as a chapter: {}",
                                             relative_path.display(),
                                         );
@@ -386,20 +381,24 @@ impl<'book> Preprocessor<'book> {
                             self.unresolved_links = true;
                             err
                         })
-                        .and_then(|uri| {
-                            let mut hosted = OsString::from(uri.trim_end_matches('/'));
+                        .and_then(|hosted_html_uri| {
+                            let mut hosted = OsString::from(hosted_html_uri.trim_end_matches('/'));
                             hosted.push("/");
-                            hosted.push(&path);
+                            hosted.push(
+                                path.strip_prefix(&self.ctx.book.source_dir)
+                                    .or(path.strip_prefix(&self.preprocessed))
+                                    .unwrap_or(&path),
+                            );
                             let hosted = os_to_utf8(hosted)?;
-                            log!(
+                            tracing::event!(
                                 // In tests, log at a higher level to detect link breakage
                                 if cfg!(test) {
-                                    log::Level::Info
+                                    tracing::Level::INFO
                                 } else {
-                                    log::Level::Debug
+                                    tracing::Level::DEBUG
                                 },
                                 "Failed to resolve link '{original_link}' in chapter '{}', \
-                                    linking to hosted HTML book at '{hosted}'",
+                                 linking to hosted HTML book at '{hosted}'",
                                 chapter_path.display(),
                             );
                             Ok(hosted)
@@ -520,15 +519,15 @@ impl<'book> Preprocess<'book> {
                 if let Err(err) = res {
                     match fs::read_to_string(normalized.preprocessed_absolute_path) {
                         Ok(preprocessed) => {
-                            log::error!(
+                            tracing::error!(
                                 "Failed to preprocess chapter '{}' with content:\n{}",
                                 chapter.name,
                                 chapter.content,
                             );
-                            log::error!("Partially preprocessed chapter: {preprocessed}")
+                            tracing::error!("Partially preprocessed chapter: {preprocessed}")
                         }
                         Err(err) => {
-                            log::error!("Failed to read partially preprocessed chapter: {err}")
+                            tracing::error!("Failed to read partially preprocessed chapter: {err}")
                         }
                     }
                     return Err(err);
@@ -536,7 +535,7 @@ impl<'book> Preprocess<'book> {
                 Ok(Some(normalized.preprocessed_path_relative_to_root))
             }
             BookItem::Separator => {
-                log::debug!("Ignoring separator");
+                tracing::debug!("Ignoring separator");
                 Ok(None)
             }
             BookItem::PartTitle(name) => match self.preprocessor.ctx.output {
@@ -559,7 +558,7 @@ impl<'book> Preprocess<'book> {
                     ))
                 }
                 _ => {
-                    log::warn!("Ignoring part separator: {name}");
+                    tracing::warn!("Ignoring part separator: {name}");
                     Ok(None)
                 }
             },
@@ -571,10 +570,10 @@ impl<'book> Preprocess<'book> {
         chapter: &'book Chapter,
         out: impl io::Write,
     ) -> anyhow::Result<()> {
-        if log::log_enabled!(log::Level::Trace) {
-            log::debug!("Preprocessing '{}':\n{}", chapter.name, chapter.content);
+        if tracing::enabled!(tracing::Level::TRACE) {
+            tracing::debug!("Preprocessing '{}':\n{}", chapter.name, chapter.content);
         } else {
-            log::debug!("Preprocessing '{}'", chapter.name);
+            tracing::debug!("Preprocessing '{}'", chapter.name);
         }
         let preprocessed = PreprocessChapter::new(&mut self.preprocessor, chapter, self.part_num);
         preprocessed.preprocess(out)
@@ -611,38 +610,36 @@ struct Parser<'book> {
 }
 
 impl<'book> Parser<'book> {
-    fn new(md: &'book str, extensions: MarkdownExtensionConfig) -> Self {
+    fn new(
+        md: &'book str,
+        config: &mdbook::config::HtmlConfig,
+        extensions: MarkdownExtensionConfig,
+    ) -> Self {
         use pulldown_cmark::Options;
 
-        /// Markdown extensions supported by mdBook
-        ///
-        /// See https://rust-lang.github.io/mdBook/format/markdown.html#extensions
-        const PARSER_OPTIONS: Options = {
-            Options::empty()
-                .union(Options::ENABLE_STRIKETHROUGH)
-                .union(Options::ENABLE_FOOTNOTES)
-                .union(Options::ENABLE_TABLES)
-                .union(Options::ENABLE_TASKLISTS)
-                .union(Options::ENABLE_HEADING_ATTRIBUTES)
-        };
-
+        // See https://rust-lang.github.io/mdBook/format/markdown.html#extensions
         let options = {
-            let mut options = PARSER_OPTIONS;
+            let mut options = Options::empty()
+                .union(Options::ENABLE_TABLES)
+                .union(Options::ENABLE_FOOTNOTES)
+                .union(Options::ENABLE_STRIKETHROUGH)
+                .union(Options::ENABLE_TASKLISTS)
+                .union(Options::ENABLE_HEADING_ATTRIBUTES);
+
             let MarkdownExtensionConfig {
-                gfm,
                 math,
-                definition_lists,
                 superscript,
                 subscript,
             } = extensions;
-            if gfm {
+
+            if config.definition_lists {
+                options |= Options::ENABLE_DEFINITION_LIST;
+            }
+            if config.admonitions {
                 options |= Options::ENABLE_GFM;
             }
             if math {
                 options |= Options::ENABLE_MATH;
-            }
-            if definition_lists {
-                options |= Options::ENABLE_DEFINITION_LIST;
             }
             if superscript {
                 options |= Options::ENABLE_SUPERSCRIPT;
@@ -711,7 +708,11 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
     ) -> Self {
         Self {
             chapter,
-            parser: Parser::new(&chapter.content, preprocessor.markdown.extensions),
+            parser: Parser::new(
+                &chapter.content,
+                preprocessor.ctx.html,
+                preprocessor.markdown.extensions,
+            ),
             preprocessor,
             stack: Vec::new(),
             first_heading: None,
@@ -827,7 +828,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         }
         let events = tree.finish();
 
-        log::trace!("Writing Pandoc AST for chapter '{}'", self.chapter.name);
+        tracing::trace!("Writing Pandoc AST for chapter '{}'", self.chapter.name);
         pandoc::native::Serializer::serialize(writer, self, |blocks| events.emit(blocks))
     }
 
@@ -837,7 +838,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         range: Range<usize>,
         tree: &mut TreeBuilder<'book>,
     ) -> anyhow::Result<()> {
-        log::trace!("Preprocessing event: {event:?}");
+        tracing::trace!("Preprocessing event: {event:?}");
         match event {
             Event::Start(tag) => {
                 let push_element = |this: &mut Self, tree: &mut TreeBuilder<'book>, element| {
@@ -945,7 +946,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                     ),
                     Tag::HtmlBlock => return Ok(()),
                     Tag::MetadataBlock(_) => {
-                        log::warn!("Ignoring metadata block");
+                        tracing::warn!("Ignoring metadata block");
                         for (event, _) in &mut self.parser {
                             if let Event::End(TagEnd::MetadataBlock(_)) = event {
                                 break;
@@ -1004,7 +1005,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                 };
                 // Emulate the HTML renderer's mathjax support by parsing \[, $$, and \( delimited
                 // math and generating pandoc DisplayMath/InlineMath nodes
-                if (self.preprocessor.ctx.html).is_some_and(|cfg| cfg.mathjax_support)
+                if self.preprocessor.ctx.html.mathjax_support
                     && !self.in_code
                     && text.contains(['\\', '$'])
                 {
@@ -1133,18 +1134,17 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         dest_url: CowStr<'url>,
         link_type: LinkType,
     ) -> CowStr<'url> {
-        let resolved = match self.chapter.path.as_ref() {
+        let resolved = match self.chapter.source_path.as_ref() {
             None => Err((anyhow!("chapter has no path"), dest_url)),
             Some(chapter_path) => {
-                let chapter_dir = chapter_path.parent().unwrap();
                 self.preprocessor
-                    .normalize_link(chapter_path, chapter_dir, link_type, dest_url)
+                    .normalize_link(chapter_path, link_type, dest_url)
             }
         };
         match resolved {
             Ok(link) => link,
             Err((err, link)) => {
-                log::warn!(
+                tracing::warn!(
                     "Failed to resolve image link '{link}' in chapter '{}': {err:#}",
                     self.chapter.name,
                 );
@@ -1175,7 +1175,7 @@ impl<'book> ChapterAnchors<'book> {
             }))
         };
         if beginning.is_none() {
-            log::warn!(
+            tracing::warn!(
                 "Failed to determine suitable anchor for beginning of chapter '{}'\
                 --does it contain any headings?",
                 chapter.name,
@@ -1256,6 +1256,15 @@ mod tests {
                 "# has-hyphens",
                 "# Unicode Σ",
                 "# Running `mdbook` in Continuous Integration",
+                "# `--passes`: add more rustdoc passes",
+                "# Method-call 🐙 expressions \u{1f47c}",
+                "# _-_12345",
+                "# 12345",
+                "# 中文",
+                "# にほんご",
+                "# 한국어",
+                "# 中文標題 CJK title",
+                "# Über",
             ]
             .map(convert),
             @r###"
@@ -1271,6 +1280,15 @@ mod tests {
                 "has-hyphens",
                 "unicode-σ",
                 "running-mdbook-in-continuous-integration",
+                "--passes-add-more-rustdoc-passes",
+                "method-call--expressions-",
+                "_-_12345",
+                "12345",
+                "中文",
+                "にほんご",
+                "한국어",
+                "中文標題-cjk-title",
+                "über",
             ]
             "###
         );

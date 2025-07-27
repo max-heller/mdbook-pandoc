@@ -15,7 +15,7 @@ jobs:
       - name: Install dependencies
         run: ./scripts/install-ci-deps
       - name: nextest
-        run: cargo nextest run --run-ignored all
+        run: cargo nextest run --no-fail-fast --run-ignored all
       - name: doctest
         run: cargo test --doc
       - name: Archive rendered books

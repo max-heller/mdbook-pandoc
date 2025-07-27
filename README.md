@@ -105,15 +105,13 @@ variable-name = "value"
   - [Tables](https://rust-lang.github.io/mdBook/format/markdown.html#tables)
   - [Task Lists](https://rust-lang.github.io/mdBook/format/markdown.html#task-lists) (e.g. `- [x] Complete task`)
   - [Heading Attributes](https://rust-lang.github.io/mdBook/format/markdown.html#heading-attributes) (e.g. `# Heading { #custom-heading }`)
+  - [Definition Lists](https://rust-lang.github.io/mdBook/format/markdown.html#definition-lists)
+  - [Admonitions](https://rust-lang.github.io/mdBook/format/markdown.html#admonitions)
 - Markdown extensions not yet supported by mdBook
 
   These extensions are disabled by default for consistency with mdBook and must be explicitly enabled.
-  - [Blockquote tags](https://github.com/pulldown-cmark/pulldown-cmark/blob/v0.13.0/pulldown-cmark/specs/blockquotes_tags.txt)
-    (Enabled by `output.pandoc.markdown.extensions.gfm`)
   - [Math](https://github.com/pulldown-cmark/pulldown-cmark/blob/v0.13.0/pulldown-cmark/specs/math.txt)
     (Enabled by `output.pandoc.markdown.extensions.math`)
-  - [Definition Lists](https://github.com/pulldown-cmark/pulldown-cmark/blob/v0.13.0/pulldown-cmark/specs/definition_lists.txt)
-    (Enabled by `output.pandoc.markdown.extensions.definition-lists`)
   - [Superscript](https://github.com/pulldown-cmark/pulldown-cmark/blob/v0.13.0/pulldown-cmark/specs/super_sub.txt)
     (Enabled by `output.pandoc.markdown.extensions.superscript`)
   - [Subscript](https://github.com/pulldown-cmark/pulldown-cmark/blob/v0.13.0/pulldown-cmark/specs/super_sub.txt)
@@ -140,9 +138,8 @@ variable-name = "value"
   two--in particular, a line break is `\\` in the `pulldown-cmark` variant,
   whereas it must be written as `\\\\` in the MathJax variant.
 - Redirects ([`[output.html.redirect]`](https://rust-lang.github.io/mdBook/format/configuration/renderers.html#outputhtmlredirect))
-- Font Awesome icons
-  - Font Awesome 6.2.0 icons (e.g. `<i class="fas fa-github"></i>`)
-  - Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`) (LaTeX output formats only)
+- Font Awesome 6.2.0 icons (e.g. `<i class="fas fa-github"></i>`)
+  - Best effort support for Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`)
 
 ## Rendering Pipeline
 

@@ -3,7 +3,7 @@ source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
- INFO mdbook::book: Running the pandoc backend
+ INFO mdbook_driver::mdbook: Running the pandoc backend
  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
 [WARNING] [makePDF] LaTeX Warning: Label
   `book__pandoc__pdf__src__traits__goals-and-clauses.md__domain-goals'

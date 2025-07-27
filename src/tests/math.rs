@@ -103,12 +103,12 @@ fn mathjax_compatibility() {
     "#};
     let output = MDBook::init()
         .chapter(Chapter::new("", math, "chapter.md"))
-        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .mdbook_config(mdbook::config::Config::from_str(cfg).unwrap())
         .config(Config::latex())
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
@@ -175,12 +175,12 @@ fn tex_newcommand() {
 
     let output = MDBook::init()
         .chapter(Chapter::new("", chapter, "chapter.md"))
-        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .mdbook_config(mdbook::config::Config::from_str(cfg).unwrap())
         .config(Config::latex())
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
@@ -218,12 +218,12 @@ fn tex_def() {
 
     let output = MDBook::init()
         .chapter(Chapter::new("", chapter, "chapter.md"))
-        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .mdbook_config(mdbook::config::Config::from_str(cfg).unwrap())
         .config(Config::latex())
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
@@ -254,12 +254,12 @@ fn tex_let() {
 
     let output = MDBook::init()
         .chapter(Chapter::new("", chapter, "chapter.md"))
-        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .mdbook_config(mdbook::config::Config::from_str(cfg).unwrap())
         .config(Config::latex())
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
@@ -306,12 +306,12 @@ fn tex_macros_pdf() {
 
     let output = MDBook::init()
         .chapter(Chapter::new("", chapter, "chapter.md"))
-        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .mdbook_config(mdbook::config::Config::from_str(cfg).unwrap())
         .config(Config::pdf_and_latex())
         .build();
     insta::assert_snapshot!(output, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
