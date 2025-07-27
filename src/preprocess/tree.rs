@@ -59,12 +59,14 @@ impl<'book> TreeBuilder<'book> {
             // If this is enabled (the default) then the contents of <noscript> elements get parsed
             // as text, which doesn't play nice with the assumptions that the tree builder makes
             // about the creation of new elements when HTML tags are parsed.
-            opts.tree_builder.scripting_enabled = false;
+            let scripting_allowed = false;
+            opts.tree_builder.scripting_enabled = scripting_allowed;
             html5ever::driver::parse_fragment(
                 HtmlTreeSink::new(),
                 opts,
                 html::name!(html "body"),
                 Vec::new(),
+                scripting_allowed,
             )
         };
         Self {
