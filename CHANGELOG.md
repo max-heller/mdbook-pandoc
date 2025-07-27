@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.5] - 2025-07-27
+
+### Bug Fixes
+
+- Don't panic on empty tables ([#190](https://github.com/max-heller/mdbook-pandoc/pull/190))
+
+
 ## [0.10.4] - 2025-05-17
 
 ### Changes
