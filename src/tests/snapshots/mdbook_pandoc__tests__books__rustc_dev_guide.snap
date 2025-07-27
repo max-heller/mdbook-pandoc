@@ -3,8 +3,36 @@ source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
+<<<<<<< HEAD
+||||||| parent of 4c7cc1c (chore(deps)!: upgrade mdbook to v0.5.0)
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "mermaid" preprocessor installed?
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-mermaid
+=======
+<<<<<<< HEAD
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "mermaid" preprocessor installed?
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-mermaid
+>>>>>>> 4c7cc1c (chore(deps)!: upgrade mdbook to v0.5.0)
  INFO mdbook::book: Running the pandoc backend
  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+||||||| parent of 8c10a4f (chore(deps)!: upgrade mdbook to v0.5.0)
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "mermaid" preprocessor installed?    
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-mermaid    
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "toc" preprocessor installed?    
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-toc    
+ INFO mdbook::book: Running the pandoc backend    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../early-late-bound-params/early-late-bound-summary.md' in chapter 'ty_module/param_ty_const_regions.md', linking to hosted HTML book at 'https://rustc-dev-guide.rust-lang.org/ty_module/../early-late-bound-params/early-late-bound-summary.md'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../early-late-bound-params/early-late-bound-summary.md' in chapter 'ty_module/param_ty_const_regions.md', linking to hosted HTML book at 'https://rustc-dev-guide.rust-lang.org/ty_module/../early-late-bound-params/early-late-bound-summary.md'    
+ INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+=======
+ WARN mdbook_driver::builtin_preprocessors::cmd: The command wasn't found, is the "mermaid" preprocessor installed?    
+ WARN mdbook_driver::builtin_preprocessors::cmd: 	Command: mdbook-mermaid    
+ WARN mdbook_driver::builtin_preprocessors::cmd: The command wasn't found, is the "toc" preprocessor installed?    
+ WARN mdbook_driver::builtin_preprocessors::cmd: 	Command: mdbook-toc    
+ INFO mdbook_driver::mdbook: Running the pandoc backend    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../early-late-bound-params/early-late-bound-summary.md' in chapter 'ty_module/param_ty_const_regions.md', linking to hosted HTML book at 'https://rustc-dev-guide.rust-lang.org/ty_module/../early-late-bound-params/early-late-bound-summary.md'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../early-late-bound-params/early-late-bound-summary.md' in chapter 'ty_module/param_ty_const_regions.md', linking to hosted HTML book at 'https://rustc-dev-guide.rust-lang.org/ty_module/../early-late-bound-params/early-late-bound-summary.md'    
+ INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+>>>>>>> 8c10a4f (chore(deps)!: upgrade mdbook to v0.5.0)
 [WARNING] [makePDF] LaTeX Warning: Label
   `book__pandoc__pdf__src__traits__goals-and-clauses.md__domain-goals'
   multiply defined.
