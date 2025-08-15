@@ -7,7 +7,9 @@ use std::{
 
 use aho_corasick::AhoCorasick;
 use anyhow::Context;
+use base64::Engine as _;
 use ego_tree::{NodeId, NodeRef};
+use font_awesome_as_a_crate as fa;
 use html5ever::{
     expanded_name, local_name, ns,
     serialize::Serializer,
@@ -637,6 +639,7 @@ impl<'book> Emitter<'book> {
                     local_name!("i") => {
                         let Attributes { id, classes, rest } = &element.attrs;
                         if id.is_none() && rest.is_empty() {
+                            // Check for Font Awesome 4 icons (supported only in LaTeX formats)
                             if let Some(icon) = classes.strip_prefix("fa fa-") {
                                 let ctx = &mut serializer.preprocessor().preprocessor.ctx;
                                 if let pandoc::OutputFormat::Latex { packages } = &mut ctx.output {
@@ -650,6 +653,49 @@ impl<'book> Emitter<'book> {
                                                 })
                                         });
                                     }
+                                }
+                            }
+
+                            // Check for Font Awesome 6 icons (supported in all formats)
+                            let fa6 = {
+                                let mut type_ = fa::Type::Regular;
+                                let mut icon = None;
+                                let classes = classes
+                                    .split_ascii_whitespace()
+                                    .filter(|&class| {
+                                        if let Some(name) = class.strip_prefix("fa-") {
+                                            icon = Some(name);
+                                            false
+                                        } else if class == "fa" {
+                                            type_ = fa::Type::Regular;
+                                            false
+                                        } else if class == "fas" {
+                                            type_ = fa::Type::Solid;
+                                            false
+                                        } else if class == "fab" {
+                                            type_ = fa::Type::Brands;
+                                            false
+                                        } else {
+                                            true
+                                        }
+                                    })
+                                    .map(CowStr::Borrowed)
+                                    .collect::<Vec<_>>();
+                                icon.map(|icon| (type_, icon, classes))
+                            };
+                            if let Some((type_, icon, classes)) = fa6 {
+                                if let Ok(svg) = fa::svg(type_, icon) {
+                                    let mut data_url = String::from("data:image/svg+xml;base64,");
+                                    base64::engine::general_purpose::STANDARD
+                                        .encode_string(svg, &mut data_url);
+                                    return serializer.serialize_inlines(|inlines| {
+                                        inlines.serialize_element()?.serialize_image(
+                                            (id.as_deref(), classes.as_slice(), &[]),
+                                            |_alt| Ok(()),
+                                            &data_url,
+                                            "",
+                                        )
+                                    });
                                 }
                             }
                         }

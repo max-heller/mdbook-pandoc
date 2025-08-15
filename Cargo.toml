@@ -16,9 +16,11 @@ include = ["/src", "!/src/tests", "/CHANGELOG.md", "/LICENSE-*", "/README.md"]
 [dependencies]
 aho-corasick = "1.0.0"
 anyhow = "1.0.47"
+base64 = { version = "0.22.1", default-features = false, features = ["alloc"] }
 chrono = { version = "0.4.24", default-features = false, features = ["clock"] }
 cssparser = "0.35.0"
 env_logger = "0.11.0"
+font-awesome-as-a-crate = "0.3.0"
 html5ever = "0.35.0"
 indexmap = { version = "2.7.0", features = ["serde"] }
 log = "0.4.0"
