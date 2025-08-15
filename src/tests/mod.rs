@@ -352,6 +352,7 @@ impl Config {
               "NotoColorEmoji:mode=harf",
               "NotoSansMath:",
               "NotoSansMonoCJKSC:",
+              "NotoSansArabic:",
             ]
             geometry = ["margin=1.25in"]
         }
