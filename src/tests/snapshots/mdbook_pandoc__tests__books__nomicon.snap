@@ -1,5 +1,5 @@
 ---
-source: src/lib.rs
+source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
@@ -41,12 +41,11 @@ snapshot_kind: text
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/mem/fn.transmute.html' in chapter 'transmutes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../std/mem/fn.transmute.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/mem/fn.transmute_copy.html' in chapter 'transmutes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../std/mem/fn.transmute_copy.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/mem/union.MaybeUninit.html' in chapter 'unchecked-uninit.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../core/mem/union.MaybeUninit.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/mem/union.MaybeUninit.html#method.assume_init' in chapter 'unchecked-uninit.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../core/mem/union.MaybeUninit.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/ptr/index.html' in chapter 'unchecked-uninit.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../core/ptr/index.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/ptr/fn.write.html' in chapter 'unchecked-uninit.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../core/ptr/fn.write.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/ptr/fn.copy.html' in chapter 'unchecked-uninit.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../std/ptr/fn.copy.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/ptr/fn.copy_nonoverlapping.html' in chapter 'unchecked-uninit.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../std/ptr/fn.copy_nonoverlapping.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/ptr/macro.addr_of_mut.html' in chapter 'unchecked-uninit.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../core/ptr/macro.addr_of_mut.html'    
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/types/pointer.html#r-type.pointer.raw.constructor' in chapter 'unchecked-uninit.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../reference/types/pointer.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/ptr/struct.NonNull.html' in chapter 'vec/vec-layout.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/vec/../../std/ptr/struct.NonNull.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../alloc/alloc/fn.alloc.html' in chapter 'vec/vec-alloc.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/vec/../../alloc/alloc/fn.alloc.html'    
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../alloc/alloc/fn.realloc.html' in chapter 'vec/vec-alloc.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/vec/../../alloc/alloc/fn.realloc.html'    

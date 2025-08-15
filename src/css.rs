@@ -168,4 +168,27 @@ impl<'i> cssparser::AtRuleParser<'i> for &Parser<'_> {
     type Prelude = Selectors<'i>;
     type AtRule = DeclOrRule<'i>;
     type Error = anyhow::Error;
+
+    fn parse_prelude<'t>(
+        &mut self,
+        _name: CowRcStr<'i>,
+        input: &mut cssparser::Parser<'i, 't>,
+    ) -> Result<Self::Prelude, cssparser::ParseError<'i, Self::Error>> {
+        while !input.is_exhausted() {
+            input.next()?;
+        }
+        Ok(Vec::new())
+    }
+
+    fn parse_block<'t>(
+        &mut self,
+        prelude: Self::Prelude,
+        _start: &cssparser::ParserState,
+        input: &mut cssparser::Parser<'i, 't>,
+    ) -> Result<Self::AtRule, cssparser::ParseError<'i, Self::Error>> {
+        while !input.is_exhausted() {
+            input.next()?;
+        }
+        Ok(DeclOrRule::Rule(prelude, HashMap::new()))
+    }
 }
