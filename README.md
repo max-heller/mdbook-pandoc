@@ -140,7 +140,9 @@ variable-name = "value"
   two--in particular, a line break is `\\` in the `pulldown-cmark` variant,
   whereas it must be written as `\\\\` in the MathJax variant.
 - Redirects ([`[output.html.redirect]`](https://rust-lang.github.io/mdBook/format/configuration/renderers.html#outputhtmlredirect))
-- Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`) (LaTeX output formats only)
+- Font Awesome icons
+  - Font Awesome 6.2.0 icons (e.g. `<i class="fas fa-github"></i>`)
+  - Font Awesome 4 icons (e.g. `<i class="fa fa-github"></i>`) (LaTeX output formats only)
 
 ## Rendering Pipeline
 
