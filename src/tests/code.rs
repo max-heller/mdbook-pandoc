@@ -31,9 +31,9 @@ fn code_escaping() {
         .build();
     insta::assert_snapshot!(book, @r###"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
     │ [ CodeBlock
     │     ( "" , [ "rust" ] , [] )
@@ -89,9 +89,9 @@ fn code_block_with_hidden_lines() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
     │ ``` rust
     │ println!("Hello, world!");
@@ -113,9 +113,9 @@ fn code_block_with_hidden_lines() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
     │ ``` rust
     │ fn main() {
@@ -156,9 +156,9 @@ fn non_rust_code_block_with_hidden_lines() {
         .build();
     insta::assert_snapshot!(book, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
     │ ``` python
     │ nothidden():
@@ -177,9 +177,9 @@ fn non_rust_code_block_with_hidden_lines() {
         .build();
     insta::assert_snapshot!(book, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
     │ ``` python
     │ hidden()
@@ -208,9 +208,9 @@ fn code_block_hidelines_override() {
         .build();
     insta::assert_snapshot!(book, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
     │ ``` python
     │ nothidden():
@@ -234,9 +234,9 @@ fn code_block_with_very_long_line() {
         .build();
     insta::assert_snapshot!(book, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf
     ├─ pdf/book.pdf
     │ <INVALID UTF8>
     ");
@@ -257,9 +257,9 @@ fn code_block_with_very_long_line_with_special_characters() {
         .build();
     insta::assert_snapshot!(book, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf
     ├─ pdf/book.pdf
     │ <INVALID UTF8>
     ");
@@ -285,9 +285,9 @@ fn mdbook_rust_code_block_attributes() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \begin{Shaded}
     │ \begin{Highlighting}[]
@@ -319,9 +319,9 @@ fn mdbook_rust_code_block_attributes() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/html/book.html    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/html/book.html
     ├─ html/book.html
     │ <div class="sourceCode" id="cb1"><pre
     │ class="sourceCode rust"><code class="sourceCode rust"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">fn</span> main() <span class="op">{}</span></span></code></pre></div>
@@ -345,9 +345,9 @@ fn regression_inline_code_newline() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
     │ [ BulletList
     │     [ [ Plain

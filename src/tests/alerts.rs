@@ -28,8 +28,8 @@ fn alerts() {
     let latex = diff(alert, Config::latex());
     insta::assert_snapshot!(latex, @r#"
     @@ -3,9 +3,8 @@
-     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
      ├─ latex/output.tex
     -│ \begin{quote}
     -│ {[}!NOTE{]}\\
@@ -44,8 +44,8 @@ fn alerts() {
     let markdown = diff(alert, Config::markdown());
     insta::assert_snapshot!(markdown, @r"
     @@ -3,5 +3,5 @@
-     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
      ├─ markdown/book.md
     -│ > \[!NOTE\]  
     +│ > [!NOTE]

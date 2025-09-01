@@ -12,9 +12,9 @@ fn heading_attributes() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \chapter{Heading}\label{book__latex__src__chapter.md__custom-heading}
     │ 
@@ -37,9 +37,9 @@ fn nested_chapters() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \chapter{One}\label{book__latex__src__one.md__one}
     │ 
@@ -68,9 +68,9 @@ fn nested_chapters() {
             .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \chapter{One}\label{book__latex__src__one.md__one}
     │ 
@@ -112,9 +112,9 @@ fn repeated_identifiers() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
     │ [ Header
     │     1
@@ -186,9 +186,9 @@ fn parts() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \chapter{One}\label{book__latex__src__one.md__one}
     │ 

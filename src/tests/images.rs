@@ -19,9 +19,9 @@ fn images() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \pandocbounded{\includegraphics[keepaspectratio,alt={alt text}]{book/latex/src/img/image.png}}
     │ \includegraphics[width=0.52083in,height=1.04167in,alt={alt text}]{book/latex/src/img/image.png}
@@ -51,9 +51,9 @@ fn remote_images() {
         .build();
     insta::assert_snapshot!(book, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf
     ├─ pdf/book.pdf
     │ <INVALID UTF8>
     ");

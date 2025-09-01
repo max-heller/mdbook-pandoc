@@ -10,9 +10,9 @@ fn html_comments() {
         .build();
     insta::assert_snapshot!(output, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
     │ <!-- Comment -->
     ");
@@ -33,9 +33,9 @@ fn noncontiguous_html() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
     │ [ BlockQuote
     │     [ RawBlock (Format "html") "<!-- hello\n\nworld -->"
@@ -72,9 +72,9 @@ fn matched_html_tags() {
         .build();
     insta::assert_snapshot!(ast, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
     │ [ RawBlock (Format "html") "<details>"
     │ , Div
@@ -111,9 +111,9 @@ fn matched_html_tags() {
         .build();
     insta::assert_snapshot!(output, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
     │ he is `<del>`{=html}four`</del>`{=html}`<ins>`{=html}five`</ins>`{=html} years old
     ");
@@ -137,9 +137,9 @@ fn implicitly_closed_tags() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \begin{itemize}
     │ \tightlist
@@ -183,9 +183,9 @@ fn link_to_element_by_id() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \protect\phantomsection\label{book__latex__src__chapter.md__test}{some text here}
     │ \protect\phantomsection\label{book__latex__src__chapter.md__test2}{some text here}
@@ -229,9 +229,9 @@ fn rust_reference_regression_nested_elements() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \protect\phantomsection\label{book__latex__src__chapter.md__my-div}
     │ 
@@ -261,9 +261,9 @@ fn regression_malformed_html() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \textbf{{foo}}
     ├─ latex/src/chapter.md
@@ -284,9 +284,9 @@ fn regression_inline_html_newlines() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \begin{itemize}
     │ \item
@@ -309,9 +309,9 @@ fn attach_id_to_div_of_stripped_html_elements() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \protect\phantomsection\label{book__latex__src__chapter.md__foo=bar}
     │ \hyperref[book__latex__src__chapter.md__foo=bar]{}something here
@@ -332,9 +332,9 @@ fn noscript_element() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
     │ [ RawBlock (Format "html") "<noscript>"
     │ , Plain [ Str "\n" ]

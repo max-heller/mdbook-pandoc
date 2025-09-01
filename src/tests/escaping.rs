@@ -8,9 +8,9 @@ fn preserve_escapes() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
     │ [ Para
     │     [ Str "["
