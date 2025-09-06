@@ -3,10 +3,10 @@ source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
- WARN mdbook::preprocess::cmd: The command wasn't found, is the "mermaid" preprocessor installed?    
- WARN mdbook::preprocess::cmd: 	Command: mdbook-mermaid    
- INFO mdbook::book: Running the pandoc backend    
- INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "mermaid" preprocessor installed?
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-mermaid
+ INFO mdbook::book: Running the pandoc backend
+ INFO mdbook_pandoc::pandoc::renderer: Running pandoc
 [WARNING] [makePDF] LaTeX Warning: Label
   `book__pandoc__pdf__src__traits__goals-and-clauses.md__domain-goals'
   multiply defined.

@@ -39,8 +39,8 @@ fn math() {
     let latex = diff(math, Config::latex());
     insta::assert_snapshot!(latex, @r#"
     @@ -3,12 +3,22 @@
-     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
      ├─ latex/output.tex
     -│ \$\$I(x)=I\_0e\^{}\{-ax\}\textbackslash another line\$\$
     +│ \[I(x)=I_0e^{-ax}\\another line\]
@@ -108,9 +108,9 @@ fn mathjax_compatibility() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ before \( \int x dx = \frac{x^2}{2} + C \) middle \( 2 + 2 = 4 \) after
     │ 
@@ -180,9 +180,9 @@ fn tex_newcommand() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \providecommand{\R}{}\renewcommand{\R}{\mathbb{R}}
     │ \renewcommand{\R}{\mathbb{R}}
@@ -223,9 +223,9 @@ fn tex_def() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \def\RR{{\bf R}}
     │ 
@@ -259,9 +259,9 @@ fn tex_let() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \def\foo{5}
     │ \let\originalfoo\foo
@@ -311,11 +311,11 @@ fn tex_macros_pdf() {
         .build();
     insta::assert_snapshot!(output, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf
     ├─ latex/output.tex
     │ \providecommand{\R}{}\renewcommand{\R}{\mathbb{R}}
     │ \renewcommand{\R}{\mathbb{R2}}

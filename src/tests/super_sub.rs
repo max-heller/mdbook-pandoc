@@ -28,8 +28,8 @@ fn basic() {
     let latex = diff(source, Config::latex());
     insta::assert_snapshot!(latex, @r#"
     @@ -3,6 +3,6 @@
-     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
      ├─ latex/output.tex
     -│ \^{}This is super\^{} \st{This is sub}
     +│ \textsuperscript{This is super} \textsubscript{This is sub}

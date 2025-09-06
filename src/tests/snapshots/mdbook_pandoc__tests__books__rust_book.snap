@@ -3,46 +3,46 @@ source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
- WARN mdbook::preprocess::cmd: The command wasn't found, is the "trpl-listing" preprocessor installed?    
- WARN mdbook::preprocess::cmd: 	Command: mdbook-trpl-listing    
- WARN mdbook::preprocess::cmd: The command wasn't found, is the "trpl-note" preprocessor installed?    
- WARN mdbook::preprocess::cmd: 	Command: mdbook-trpl-note    
- INFO mdbook::book: Running the pandoc backend    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/prelude/index.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/prelude/index.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/string/struct.String.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/string/struct.String.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/io/struct.Stdin.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/io/struct.Stdin.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/io/struct.Stdin.html#method.read_line' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/io/struct.Stdin.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/result/enum.Result.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/result/enum.Result.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/result/enum.Result.html#method.expect' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/result/enum.Result.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/primitive.str.html#method.parse' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/primitive.str.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/const_eval.html' in chapter 'ch03-01-variables-and-mutability.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/const_eval.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/ops/trait.Drop.html#tymethod.drop' in chapter 'ch04-01-what-is-ownership.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/ops/trait.Drop.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/macro.println.html' in chapter 'ch05-02-example-structs.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/macro.println.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/macro.dbg.html' in chapter 'ch05-02-example-structs.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/macro.dbg.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/attributes.html' in chapter 'ch05-02-example-structs.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/attributes.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/net/enum.IpAddr.html' in chapter 'ch06-01-defining-an-enum.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/net/enum.IpAddr.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/option/enum.Option.html' in chapter 'ch06-01-defining-an-enum.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/option/enum.Option.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/option/enum.Option.html' in chapter 'ch06-01-defining-an-enum.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/option/enum.Option.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/prelude/index.html#other-preludes' in chapter 'ch07-04-bringing-paths-into-scope-with-the-use-keyword.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/prelude/index.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/collections/index.html' in chapter 'ch08-00-common-collections.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/collections/index.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../nomicon/vec/vec.html' in chapter 'ch08-01-vectors.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../nomicon/vec/vec.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/vec/struct.Vec.html' in chapter 'ch08-01-vectors.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/vec/struct.Vec.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/process/trait.Termination.html' in chapter 'ch09-02-recoverable-errors-with-result.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/process/trait.Termination.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/index.html' in chapter 'ch10-03-lifetime-syntax.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/index.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../unstable-book/library-features/test.html' in chapter 'ch11-01-writing-tests.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../unstable-book/library-features/test.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/option/enum.Option.html#method.unwrap_or_else' in chapter 'ch13-01-closures.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/option/enum.Option.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../nomicon/index.html' in chapter 'ch15-06-reference-cycles.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../nomicon/index.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/sync/atomic/index.html' in chapter 'ch16-03-shared-state.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/sync/atomic/index.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/sync/atomic/index.html' in chapter 'ch16-03-shared-state.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/sync/atomic/index.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../nomicon/index.html' in chapter 'ch16-04-extensible-concurrency-sync-and-send.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../nomicon/index.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/items/external-blocks.html#abi' in chapter 'ch20-01-unsafe-rust.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/items/external-blocks.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/items/unions.html' in chapter 'ch20-01-unsafe-rust.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/items/unions.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/macros-by-example.html' in chapter 'ch20-05-macros.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/macros-by-example.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/thread/struct.Builder.html' in chapter 'ch21-02-multithreaded.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/thread/struct.Builder.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/thread/struct.Builder.html#method.spawn' in chapter 'ch21-02-multithreaded.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/thread/struct.Builder.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/items/unions.html' in chapter 'appendix-01-keywords.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/items/unions.html'    
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/index.html' in chapter 'appendix-03-derivable-traits.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/index.html'    
- INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "trpl-listing" preprocessor installed?
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-trpl-listing
+ WARN mdbook::preprocess::cmd: The command wasn't found, is the "trpl-note" preprocessor installed?
+ WARN mdbook::preprocess::cmd: 	Command: mdbook-trpl-note
+ INFO mdbook::book: Running the pandoc backend
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/prelude/index.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/prelude/index.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/string/struct.String.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/string/struct.String.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/io/struct.Stdin.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/io/struct.Stdin.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/io/struct.Stdin.html#method.read_line' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/io/struct.Stdin.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/result/enum.Result.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/result/enum.Result.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/result/enum.Result.html#method.expect' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/result/enum.Result.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/primitive.str.html#method.parse' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/primitive.str.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/const_eval.html' in chapter 'ch03-01-variables-and-mutability.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/const_eval.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/ops/trait.Drop.html#tymethod.drop' in chapter 'ch04-01-what-is-ownership.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/ops/trait.Drop.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/macro.println.html' in chapter 'ch05-02-example-structs.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/macro.println.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/macro.dbg.html' in chapter 'ch05-02-example-structs.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/macro.dbg.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/attributes.html' in chapter 'ch05-02-example-structs.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/attributes.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/net/enum.IpAddr.html' in chapter 'ch06-01-defining-an-enum.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/net/enum.IpAddr.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/option/enum.Option.html' in chapter 'ch06-01-defining-an-enum.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/option/enum.Option.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/option/enum.Option.html' in chapter 'ch06-01-defining-an-enum.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/option/enum.Option.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/prelude/index.html#other-preludes' in chapter 'ch07-04-bringing-paths-into-scope-with-the-use-keyword.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/prelude/index.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/collections/index.html' in chapter 'ch08-00-common-collections.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/collections/index.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../nomicon/vec/vec.html' in chapter 'ch08-01-vectors.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../nomicon/vec/vec.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/vec/struct.Vec.html' in chapter 'ch08-01-vectors.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/vec/struct.Vec.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/process/trait.Termination.html' in chapter 'ch09-02-recoverable-errors-with-result.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/process/trait.Termination.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/index.html' in chapter 'ch10-03-lifetime-syntax.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/index.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../unstable-book/library-features/test.html' in chapter 'ch11-01-writing-tests.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../unstable-book/library-features/test.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/option/enum.Option.html#method.unwrap_or_else' in chapter 'ch13-01-closures.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/option/enum.Option.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../nomicon/index.html' in chapter 'ch15-06-reference-cycles.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../nomicon/index.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/sync/atomic/index.html' in chapter 'ch16-03-shared-state.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/sync/atomic/index.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/sync/atomic/index.html' in chapter 'ch16-03-shared-state.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/sync/atomic/index.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../nomicon/index.html' in chapter 'ch16-04-extensible-concurrency-sync-and-send.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../nomicon/index.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/items/external-blocks.html#abi' in chapter 'ch20-01-unsafe-rust.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/items/external-blocks.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/items/unions.html' in chapter 'ch20-01-unsafe-rust.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/items/unions.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/macros-by-example.html' in chapter 'ch20-05-macros.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/macros-by-example.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/thread/struct.Builder.html' in chapter 'ch21-02-multithreaded.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/thread/struct.Builder.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/thread/struct.Builder.html#method.spawn' in chapter 'ch21-02-multithreaded.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/thread/struct.Builder.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/items/unions.html' in chapter 'appendix-01-keywords.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/items/unions.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/index.html' in chapter 'appendix-03-derivable-traits.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/index.html'
+ INFO mdbook_pandoc::pandoc::renderer: Running pandoc
 [WARNING] Missing character: There is no ש (U+05E9) (U+05E9) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no ל (U+05DC) (U+05DC) in font NotoSansMono:mode=node;script
 [WARNING] Missing character: There is no ו (U+05D5) (U+05D5) in font NotoSansMono:mode=node;script

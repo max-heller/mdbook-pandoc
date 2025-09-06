@@ -32,8 +32,8 @@ fn basic() {
     let latex = diff(source, Config::latex());
     insta::assert_snapshot!(latex, @r#"
     @@ -3,8 +3,14 @@
-     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
      ├─ latex/output.tex
     -│ title 1 : definition 1
     +│ \begin{description}
@@ -68,9 +68,9 @@ fn dt_attributes() {
         .build();
     insta::assert_snapshot!(latex, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend    
-    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
-    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex    
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \begin{description}
     │ \tightlist

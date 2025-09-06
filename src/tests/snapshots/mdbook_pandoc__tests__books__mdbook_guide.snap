@@ -3,6 +3,6 @@ source: src/lib.rs
 expression: logs
 snapshot_kind: text
 ---
- INFO mdbook::book: Running the pandoc backend    
- INFO mdbook_pandoc::pandoc::renderer: Running pandoc    
+ INFO mdbook::book: Running the pandoc backend
+ INFO mdbook_pandoc::pandoc::renderer: Running pandoc
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf
