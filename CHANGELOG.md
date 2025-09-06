@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.6] - 2025-09-06
+
+### Features
+
+- Consider `output.html.site-url` when replacing broken relative links ([#207](https://github.com/max-heller/mdbook-pandoc/pull/207))
+
+### Miscellaneous Tasks
+
+- Update example books ([#197](https://github.com/max-heller/mdbook-pandoc/pull/197))
+
+
 ## [0.10.5] - 2025-07-27
 
 ### Bug Fixes
