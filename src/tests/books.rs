@@ -10,10 +10,8 @@ static BOOKS: Lazy<PathBuf> = Lazy::new(|| Path::new(env!("CARGO_MANIFEST_DIR"))
 #[ignore]
 fn mdbook_guide() {
     let logs = MDBook::load(BOOKS.join("mdBook/guide"))
-        .config(Config {
-            hosted_html: Some("https://rust-lang.github.io/mdBook/".into()),
-            ..Config::pdf()
-        })
+        .config(Config::pdf())
+        .site_url("https://rust-lang.github.io/mdBook/")
         .build()
         .logs;
     insta::assert_snapshot!(logs);
@@ -25,10 +23,8 @@ fn cargo_book() {
     let logs = MDBook::options()
         .max_log_level(tracing::Level::DEBUG)
         .load(BOOKS.join("cargo/src/doc"))
-        .config(Config {
-            hosted_html: Some("https://doc.rust-lang.org/cargo/".into()),
-            ..Config::pdf()
-        })
+        .config(Config::pdf())
+        .site_url("https://doc.rust-lang.org/cargo/")
         .build()
         .logs;
     insta::assert_snapshot!(logs);
@@ -38,10 +34,8 @@ fn cargo_book() {
 #[ignore]
 fn rust_book() {
     let logs = MDBook::load(BOOKS.join("rust-book"))
-        .config(Config {
-            hosted_html: Some("https://doc.rust-lang.org/book/".into()),
-            ..Config::pdf()
-        })
+        .config(Config::pdf())
+        .site_url("https://doc.rust-lang.org/book/")
         .build()
         .logs;
     insta::assert_snapshot!(logs);
@@ -51,10 +45,8 @@ fn rust_book() {
 #[ignore]
 fn nomicon() {
     let logs = MDBook::load(BOOKS.join("nomicon"))
-        .config(Config {
-            hosted_html: Some("https://doc.rust-lang.org/nomicon/".into()),
-            ..Config::pdf()
-        })
+        .config(Config::pdf())
+        .site_url("https://doc.rust-lang.org/nomicon/")
         .build()
         .logs;
     insta::assert_snapshot!(logs);
@@ -64,10 +56,8 @@ fn nomicon() {
 #[ignore]
 fn rust_by_example() {
     let logs = MDBook::load(BOOKS.join("rust-by-example"))
-        .config(Config {
-            hosted_html: Some("https://doc.rust-lang.org/rust-by-example/".into()),
-            ..Config::pdf()
-        })
+        .config(Config::pdf())
+        .site_url("https://doc.rust-lang.org/rust-by-example/")
         .build()
         .logs;
     insta::assert_snapshot!(logs);
@@ -77,10 +67,8 @@ fn rust_by_example() {
 #[ignore]
 fn rust_edition_guide() {
     let logs = MDBook::load(BOOKS.join("rust-edition-guide"))
-        .config(Config {
-            hosted_html: Some("https://doc.rust-lang.org/edition-guide/".into()),
-            ..Config::pdf()
-        })
+        .config(Config::pdf())
+        .site_url("https://doc.rust-lang.org/edition-guide/")
         .build()
         .logs;
     insta::assert_snapshot!(logs);
@@ -90,10 +78,8 @@ fn rust_edition_guide() {
 #[ignore]
 fn rust_embedded() {
     let logs = MDBook::load(BOOKS.join("rust-embedded"))
-        .config(Config {
-            hosted_html: Some("https://docs.rust-embedded.org/book/".into()),
-            ..Config::pdf()
-        })
+        .config(Config::pdf())
+        .site_url("https://docs.rust-embedded.org/book/")
         .build()
         .logs;
     insta::assert_snapshot!(logs);
@@ -103,10 +89,8 @@ fn rust_embedded() {
 #[ignore]
 fn rust_reference() {
     let logs = MDBook::load(BOOKS.join("rust-reference"))
-        .config(Config {
-            hosted_html: Some("https://doc.rust-lang.org/reference/".into()),
-            ..Config::pdf()
-        })
+        .config(Config::pdf())
+        .site_url("https://doc.rust-lang.org/reference/")
         .build()
         .logs;
     insta::assert_snapshot!(logs);
@@ -116,10 +100,8 @@ fn rust_reference() {
 #[ignore]
 fn rustc_dev_guide() {
     let logs = MDBook::load(BOOKS.join("rustc-dev-guide"))
-        .config(Config {
-            hosted_html: Some("https://rustc-dev-guide.rust-lang.org/".into()),
-            ..Config::pdf()
-        })
+        .config(Config::pdf())
+        .site_url("https://rustc-dev-guide.rust-lang.org/")
         .build()
         .logs;
     insta::assert_snapshot!(logs);

@@ -173,7 +173,11 @@ impl mdbook::Renderer for Renderer {
             // Preprocess book
             let mut preprocessor = Preprocessor::new(ctx, &cfg.markdown)?;
 
-            if let Some(uri) = cfg.hosted_html.as_deref() {
+            if let Some(uri) = cfg
+                .hosted_html
+                .as_deref()
+                .or(html_cfg.as_ref().and_then(|cfg| cfg.site_url.as_deref()))
+            {
                 preprocessor.hosted_html(uri);
             }
 
@@ -205,8 +209,8 @@ impl mdbook::Renderer for Renderer {
 
             if preprocessed.unresolved_links() {
                 log::warn!(
-                    "Unable to resolve one or more relative links within the book, \
-                    consider setting the `hosted-html` option in `[output.pandoc]`"
+                    "Failed to resolve one or more relative links within the book; \
+                    consider setting the `site-url` option in `[output.html]`"
                 );
             }
 

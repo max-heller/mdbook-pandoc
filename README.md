@@ -63,9 +63,6 @@ A subset of the available options are described below:
 > Therefore, relative paths in the configuration (e.g. values for `include-in-header`, `reference-doc`) should be written relative to the book's root directory.
 
 ```toml
-[output.pandoc]
-hosted-html = "https://doc.rust-lang.org/book" # URL of a HTML version of the book
-
 [output.pandoc.markdown.extensions] # enable additional Markdown extensions
 gfm = false # enable pulldown-cmark's GitHub Flavored Markdown extensions
 math = false # parse inline ($a^b$) and display ($$a^b$$) math

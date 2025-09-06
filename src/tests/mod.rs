@@ -139,6 +139,11 @@ impl MDBook {
         self
     }
 
+    pub fn site_url(mut self, url: &str) -> Self {
+        self.book.config.set("output.html.site-url", url).unwrap();
+        self
+    }
+
     pub fn chapter(mut self, Chapter { mut chapter }: Chapter) -> Self {
         use mdbook::book::SectionNumber;
         let number = (self.book.book.sections.iter())
