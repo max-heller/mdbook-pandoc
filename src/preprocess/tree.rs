@@ -133,7 +133,7 @@ impl<'book> Emitter<'book> {
         node: NodeRef<'_, Node>,
         serializer: &mut pandoc::native::SerializeNested<'_, '_, 'book, '_, impl io::Write>,
     ) -> anyhow::Result<()> {
-        log::trace!("Writing Pandoc AST for {:?}", node.value());
+        tracing::trace!("Writing Pandoc AST for {:?}", node.value());
         match node.value() {
             Node::Document => unreachable!(),
             Node::HtmlComment(comment) => {
@@ -334,13 +334,13 @@ impl<'book> Emitter<'book> {
                 MdElement::FootnoteDefinition => Ok(()),
                 MdElement::FootnoteReference(label) => match self.footnotes.get(label) {
                     None => {
-                        log::warn!("Undefined footnote: {label}");
+                        tracing::warn!("Undefined footnote: {label}");
                         Ok(())
                     }
                     Some(definition) => {
                         let open_footnotes = &mut serializer.serializer().footnotes;
                         if open_footnotes.contains(label.as_ref()) {
-                            log::warn!(
+                            tracing::warn!(
                                 "Cycle in footnote definitions: {:?}",
                                 FootnoteCycle(&serializer.serializer().footnotes, label)
                             );

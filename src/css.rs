@@ -25,7 +25,7 @@ pub fn read_stylesheets<'a>(
         match fs::read_to_string(book.root.join(stylesheet)) {
             Ok(css) => Some((stylesheet.as_path(), css)),
             Err(err) => {
-                log::warn!(
+                tracing::warn!(
                     "Failed to read CSS stylesheet '{}': {err}",
                     stylesheet.display()
                 );
@@ -69,7 +69,7 @@ struct Parser<'a> {
 
 impl Parser<'_> {
     fn warn_invalid_css(&self, err: cssparser::ParseError<'_, anyhow::Error>, css: &str) {
-        log::warn!(
+        tracing::warn!(
             "Failed to parse CSS from '{stylesheet}': {err}: {css}",
             stylesheet = self.stylesheet.display()
         )

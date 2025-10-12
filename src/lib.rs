@@ -1,3 +1,5 @@
+extern crate mdbook_renderer as mdbook;
+
 use std::fs::{self, File};
 
 use anyhow::{anyhow, Context as _};
@@ -102,7 +104,7 @@ impl mdbook::Renderer for Renderer {
         Self::NAME
     }
 
-    fn render(&self, ctx: &mdbook::renderer::RenderContext) -> anyhow::Result<()> {
+    fn render(&self, ctx: &mdbook::RenderContext) -> anyhow::Result<()> {
         // If we're compiled against mdbook version I.J.K, require ^I.J
         // This allows using a version of mdbook with an earlier patch version as a server
         static MDBOOK_VERSION_REQ: Lazy<semver::VersionReq> = Lazy::new(|| {
@@ -112,14 +114,16 @@ impl mdbook::Renderer for Renderer {
                     op: semver::Op::Caret,
                     major: compiled_mdbook_version.major,
                     minor: Some(compiled_mdbook_version.minor),
-                    patch: None,
-                    pre: Default::default(),
+                    // Preleases are only compatible with identical patch versions
+                    patch: (!compiled_mdbook_version.pre.is_empty())
+                        .then_some(compiled_mdbook_version.patch),
+                    pre: compiled_mdbook_version.pre,
                 }],
             }
         });
         let mdbook_server_version = semver::Version::parse(&ctx.version).unwrap();
         if !MDBOOK_VERSION_REQ.matches(&mdbook_server_version) {
-            log::warn!(
+            tracing::warn!(
                 "{} is semver-incompatible with mdbook {} (requires {})",
                 env!("CARGO_PKG_NAME"),
                 mdbook_server_version,
@@ -129,21 +133,18 @@ impl mdbook::Renderer for Renderer {
 
         let cfg: Config = ctx
             .config
-            .get_deserialized_opt(Self::CONFIG_KEY)
+            .get(Self::CONFIG_KEY)
             .with_context(|| format!("Unable to deserialize {}", Self::CONFIG_KEY))?
             .ok_or(anyhow!("No {} table found", Self::CONFIG_KEY))?;
 
         if cfg.disabled {
-            log::info!("Skipping rendering since `disabled` is set");
+            tracing::info!("Skipping rendering since `disabled` is set");
             return Ok(());
         }
 
         pandoc::check_compatibility()?;
 
-        let html_cfg: Option<HtmlConfig> = ctx
-            .config
-            .get_deserialized_opt("output.html")
-            .unwrap_or_default();
+        let html_cfg: Option<HtmlConfig> = ctx.config.get("output.html").unwrap_or_default();
 
         let book = Book::new(ctx)?;
 
@@ -183,7 +184,7 @@ impl mdbook::Renderer for Renderer {
 
             if let Some(redirects) = html_cfg.as_ref().map(|cfg| &cfg.redirect) {
                 if !redirects.is_empty() {
-                    log::debug!("Processing redirects in [output.html.redirect]");
+                    tracing::debug!("Processing redirects in [output.html.redirect]");
                     let redirects = redirects
                         .iter()
                         .map(|(src, dst)| (src.as_str(), dst.as_str()));
@@ -208,7 +209,7 @@ impl mdbook::Renderer for Renderer {
             }
 
             if preprocessed.unresolved_links() {
-                log::warn!(
+                tracing::warn!(
                     "Failed to resolve one or more relative links within the book; \
                     consider setting the `site-url` option in `[output.html]`"
                 );

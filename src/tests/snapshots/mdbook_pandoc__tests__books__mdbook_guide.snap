@@ -1,8 +1,8 @@
 ---
-source: src/lib.rs
+source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
- INFO mdbook::book: Running the pandoc backend
+ INFO mdbook_driver::mdbook: Running the pandoc backend
  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf

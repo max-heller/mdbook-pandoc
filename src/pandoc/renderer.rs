@@ -23,7 +23,7 @@ pub struct Context<'book> {
     pub output: OutputFormat,
     pub destination: PathBuf,
     pub book: &'book Book<'book>,
-    pub mdbook_cfg: &'book mdbook::Config,
+    pub mdbook_cfg: &'book mdbook::config::Config,
     pub columns: usize,
     pub cur_list_depth: usize,
     pub max_list_depth: usize,
@@ -97,8 +97,8 @@ impl Renderer {
         }
         if let Some(text_direction) = ctx.mdbook_cfg.book.text_direction {
             let dir = match text_direction {
-                mdbook::config::TextDirection::LeftToRight => "ltr",
                 mdbook::config::TextDirection::RightToLeft => "rtl",
+                mdbook::config::TextDirection::LeftToRight | _ => "ltr",
             };
             default_variables.push(("dir", dir.into()));
         }
@@ -239,10 +239,10 @@ impl Renderer {
             _dummy_tempfile_guard = dummy.into_temp_path();
         }
 
-        if log::log_enabled!(log::Level::Trace) {
-            log::trace!("Running pandoc with profile: {profile:#?}");
+        if tracing::enabled!(tracing::Level::TRACE) {
+            tracing::trace!("Running pandoc with profile: {profile:#?}");
         } else {
-            log::info!("Running pandoc");
+            tracing::info!("Running pandoc");
         }
         let status = pandoc
             .stdin(Stdio::null())
@@ -252,7 +252,7 @@ impl Renderer {
 
         let outfile = &profile.output_file;
         let outfile = outfile.strip_prefix(&ctx.book.root).unwrap_or(outfile);
-        log::info!("Wrote output to {}", outfile.display());
+        tracing::info!("Wrote output to {}", outfile.display());
 
         Ok(())
     }

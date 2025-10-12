@@ -106,7 +106,7 @@ impl Profile {
                     {
                         false
                     } else {
-                        log::warn!(
+                        tracing::warn!(
                             "Assuming pdf-engine '{}' uses LaTeX; if it doesn't, specify the output format explicitly",
                             engine.display()
                         );
