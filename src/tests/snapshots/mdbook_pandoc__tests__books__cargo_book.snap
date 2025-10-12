@@ -11,10 +11,114 @@ DEBUG mdbook_pandoc::preprocess: Processing redirect: /commands/cargo-git-checko
 DEBUG mdbook_pandoc::preprocess: Processing redirect: /commands/cargo-read-manifest.html => ./deprecated-and-removed.html
 DEBUG mdbook_pandoc::preprocess: Processing redirect: /commands/cargo-verify-project.html => ./deprecated-and-removed.html
 DEBUG mdbook_pandoc::preprocess: Processing redirect: /guide/build-cache.html => ../reference/build-cache.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#building-dynamic-or-static-libraries => cargo-targets.html#the-crate-type-field
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#configuring-a-target => cargo-targets.html#configuring-a-target
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#examples => cargo-targets.html#examples
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#integration-tests => cargo-targets.html#integration-tests
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#package-build => manifest.html#the-build-field
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#package-metadata => manifest.html#the-package-section
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#package-selection => workspaces.html#package-selection
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#rules => features.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#rust-version => rust-version.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#target-auto-discovery => cargo-targets.html#target-auto-discovery
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#tests => cargo-targets.html#tests
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-authors-field-optional => manifest.html#the-authors-field
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-build-field-optional => manifest.html#the-build-field
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-documentation-field-optional => manifest.html#the-documentation-field
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-edition-field-optional => manifest.html#the-edition-field
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-exclude-and-include-fields-optional => manifest.html#the-exclude-and-include-fields
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-features-section => features.html#the-features-section
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-links-field-optional => manifest.html#the-links-field
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-metadata-table-optional => manifest.html#the-metadata-table
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-patch-section => overriding-dependencies.html#the-patch-section
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-project-layout => ../guide/project-layout.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-publish--field-optional => manifest.html#the-publish-field
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-replace-section => overriding-dependencies.html#the-replace-section
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-required-features-field-optional => cargo-targets.html#the-required-features-field
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-workspace--field-optional => manifest.html#the-workspace-field
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#the-workspace-section => workspaces.html#the-workspace-section
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#usage-in-end-products => features.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#usage-in-packages => features.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#using-patch-with-multiple-versions => overriding-dependencies.html#using-patch-with-multiple-versions
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/manifest.html#virtual-workspace => workspaces.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#index-format => registry-index.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#login => registry-web-api.html#login
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#owners => registry-web-api.html#owners
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#owners-add => registry-web-api.html#owners-add
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#owners-list => registry-web-api.html#owners-list
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#owners-remove => registry-web-api.html#owners-remove
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#publish => registry-web-api.html#publish
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#running-a-registry => running-a-registry.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#search => registry-web-api.html#search
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#unyank => registry-web-api.html#unyank
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#web-api => registry-web-api.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/registries.html#yank => registry-web-api.html#yank
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/resolver.html#other-constraints => #constraints-and-heuristics
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/resolver.html#pre-releases => specifying-dependencies.html#pre-releases
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/resolver.html#version-metadata => specifying-dependencies.html#version-metadata
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/specifying-dependencies.html#overriding-dependencies => overriding-dependencies.html
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/specifying-dependencies.html#overriding-repository-url => overriding-dependencies.html#overriding-repository-url
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/specifying-dependencies.html#overriding-with-local-dependencies => overriding-dependencies.html#paths-overrides
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/specifying-dependencies.html#prepublishing-a-breaking-change => overriding-dependencies.html#prepublishing-a-breaking-change
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/specifying-dependencies.html#testing-a-bugfix => overriding-dependencies.html#testing-a-bugfix
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/specifying-dependencies.html#working-with-an-unpublished-minor-version => overriding-dependencies.html#working-with-an-unpublished-minor-version
+DEBUG mdbook_pandoc::preprocess: Processing redirect: /reference/workspaces.html#virtual-manifest => workspaces.html#virtual-workspace
 DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/commands/cargo-git-checkout.html => book/pdf/src/commands/deprecated-and-removed.md#deprecated-and-removed-commands
 DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/commands/cargo-read-manifest.html => book/pdf/src/commands/deprecated-and-removed.md#deprecated-and-removed-commands
 DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/commands/cargo-verify-project.html => book/pdf/src/commands/deprecated-and-removed.md#deprecated-and-removed-commands
 DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/guide/build-cache.html => book/pdf/src/reference/build-cache.md#build-cache
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#building-dynamic-or-static-libraries => book/pdf/src/reference/cargo-targets.md#the-crate-type-field
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#configuring-a-target => book/pdf/src/reference/cargo-targets.md#configuring-a-target
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#examples => book/pdf/src/reference/cargo-targets.md#examples
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#integration-tests => book/pdf/src/reference/cargo-targets.md#integration-tests
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#package-build => book/pdf/src/reference/manifest.md#the-build-field
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#package-metadata => book/pdf/src/reference/manifest.md#the-package-section
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#package-selection => book/pdf/src/reference/workspaces.md#package-selection
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#rules => book/pdf/src/reference/features.md#features
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#rust-version => book/pdf/src/reference/rust-version.md#rust-version
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#target-auto-discovery => book/pdf/src/reference/cargo-targets.md#target-auto-discovery
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#tests => book/pdf/src/reference/cargo-targets.md#tests
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-authors-field-optional => book/pdf/src/reference/manifest.md#the-authors-field
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-build-field-optional => book/pdf/src/reference/manifest.md#the-build-field
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-documentation-field-optional => book/pdf/src/reference/manifest.md#the-documentation-field
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-edition-field-optional => book/pdf/src/reference/manifest.md#the-edition-field
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-exclude-and-include-fields-optional => book/pdf/src/reference/manifest.md#the-exclude-and-include-fields
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-features-section => book/pdf/src/reference/features.md#the-features-section
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-links-field-optional => book/pdf/src/reference/manifest.md#the-links-field
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-metadata-table-optional => book/pdf/src/reference/manifest.md#the-metadata-table
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-patch-section => book/pdf/src/reference/overriding-dependencies.md#the-patch-section
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-project-layout => book/pdf/src/guide/project-layout.md#package-layout
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-publish--field-optional => book/pdf/src/reference/manifest.md#the-publish-field
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-replace-section => book/pdf/src/reference/overriding-dependencies.md#the-replace-section
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-required-features-field-optional => book/pdf/src/reference/cargo-targets.md#the-required-features-field
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-workspace--field-optional => book/pdf/src/reference/manifest.md#the-workspace-field
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#the-workspace-section => book/pdf/src/reference/workspaces.md#the-workspace-section
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#usage-in-end-products => book/pdf/src/reference/features.md#features
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#usage-in-packages => book/pdf/src/reference/features.md#features
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#using-patch-with-multiple-versions => book/pdf/src/reference/overriding-dependencies.md#using-patch-with-multiple-versions
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/manifest.html#virtual-workspace => book/pdf/src/reference/workspaces.md#workspaces
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#index-format => book/pdf/src/reference/registry-index.md#index-format
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#login => book/pdf/src/reference/registry-web-api.md#login
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#owners => book/pdf/src/reference/registry-web-api.md#owners
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#owners-add => book/pdf/src/reference/registry-web-api.md#owners-add
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#owners-list => book/pdf/src/reference/registry-web-api.md#owners-list
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#owners-remove => book/pdf/src/reference/registry-web-api.md#owners-remove
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#publish => book/pdf/src/reference/registry-web-api.md#publish
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#running-a-registry => book/pdf/src/reference/running-a-registry.md#running-a-registry
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#search => book/pdf/src/reference/registry-web-api.md#search
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#unyank => book/pdf/src/reference/registry-web-api.md#unyank
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#web-api => book/pdf/src/reference/registry-web-api.md#web-api
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/registries.html#yank => book/pdf/src/reference/registry-web-api.md#yank
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/resolver.html#other-constraints => #constraints-and-heuristics
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/resolver.html#pre-releases => book/pdf/src/reference/specifying-dependencies.md#pre-releases
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/resolver.html#version-metadata => book/pdf/src/reference/specifying-dependencies.md#version-metadata
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/specifying-dependencies.html#overriding-dependencies => book/pdf/src/reference/overriding-dependencies.md#overriding-dependencies
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/specifying-dependencies.html#overriding-repository-url => book/pdf/src/reference/overriding-dependencies.md#overriding-repository-url
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/specifying-dependencies.html#overriding-with-local-dependencies => book/pdf/src/reference/overriding-dependencies.md#paths-overrides
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/specifying-dependencies.html#prepublishing-a-breaking-change => book/pdf/src/reference/overriding-dependencies.md#prepublishing-a-breaking-change
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/specifying-dependencies.html#testing-a-bugfix => book/pdf/src/reference/overriding-dependencies.md#testing-a-bugfix
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/specifying-dependencies.html#working-with-an-unpublished-minor-version => book/pdf/src/reference/overriding-dependencies.md#working-with-an-unpublished-minor-version
+DEBUG mdbook_pandoc::preprocess: Registered redirect: book/pdf/src/reference/workspaces.html#virtual-manifest => book/pdf/src/reference/workspaces.md#virtual-workspace
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Introduction'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Getting Started'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Installation'
@@ -33,6 +137,7 @@ DEBUG mdbook_pandoc::preprocess: Preprocessing 'Tests'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Continuous Integration'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Publishing on crates.io'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Cargo Home'
+DEBUG mdbook_pandoc::preprocess: Preprocessing 'Optimizing Build Performance'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Cargo Reference'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'The Manifest Format'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/primitive.char.html#method.is_alphanumeric' in chapter 'reference/manifest.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../std/primitive.char.html'
@@ -104,6 +209,7 @@ DEBUG mdbook_pandoc::preprocess: Preprocessing 'Profiles'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/codegen-options/index.html#codegen-units' in chapter 'reference/profiles.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../rustc/codegen-options/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/codegen-options/index.html#rpath' in chapter 'reference/profiles.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../rustc/codegen-options/index.html'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Configuration'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/targets/custom.html#custom-target-lookup-path' in chapter 'reference/config.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../rustc/targets/custom.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/conditional-compilation.html' in chapter 'reference/config.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/conditional-compilation.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/codegen-options/index.md#linker' in chapter 'reference/config.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../rustc/codegen-options/index.md'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../reference/conditional-compilation.html' in chapter 'reference/config.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../reference/conditional-compilation.html'
@@ -224,6 +330,7 @@ DEBUG mdbook_pandoc::preprocess: Preprocessing 'Lints'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Unstable Features'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../book/appendix-07-nightly-rust.html' in chapter 'reference/unstable.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../book/appendix-07-nightly-rust.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/lints/listing/warn-by-default.html#exported-private-dependencies' in chapter 'reference/unstable.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../rustc/lints/listing/warn-by-default.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../../rustc/codegen-options/index.html#panic' in chapter 'reference/unstable.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../rustc/codegen-options/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../edition-guide/index.html' in chapter 'reference/unstable.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../edition-guide/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../edition-guide/index.html' in chapter 'reference/unstable.md', linking to hosted HTML book at 'https://doc.rust-lang.org/cargo/reference/../../edition-guide/index.html'
 DEBUG mdbook_pandoc::preprocess: Preprocessing 'Cargo Commands'
