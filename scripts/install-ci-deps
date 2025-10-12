@@ -23,4 +23,5 @@ sudo apt-get install -y librsvg2-bin
 sudo apt-get install -y texlive texlive-luatex texlive-lang-cjk texlive-lang-arabic texlive-fonts-extra fonts-font-awesome fonts-noto fonts-noto-cjk fonts-noto-color-emoji
 
 # mdBook preprocessors needed by example books
-cargo install mdbook-i18n-helpers --locked
+cargo install mdbook-i18n-helpers --locked --version 0.3.4
+cargo install mdbook-mermaid --locked --version 0.16.2
