@@ -28,7 +28,7 @@ snapshot_kind: text
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../nomicon/vec/vec.html' in chapter 'ch08-01-vectors.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../nomicon/vec/vec.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/vec/struct.Vec.html' in chapter 'ch08-01-vectors.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/vec/struct.Vec.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/process/trait.Termination.html' in chapter 'ch09-02-recoverable-errors-with-result.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/process/trait.Termination.html'
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/index.html' in chapter 'ch10-03-lifetime-syntax.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/index.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/trait-bounds.html' in chapter 'ch10-03-lifetime-syntax.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../reference/trait-bounds.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../unstable-book/library-features/test.html' in chapter 'ch11-01-writing-tests.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../unstable-book/library-features/test.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/option/enum.Option.html#method.unwrap_or_else' in chapter 'ch13-01-closures.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/option/enum.Option.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../nomicon/index.html' in chapter 'ch15-06-reference-cycles.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../nomicon/index.html'
@@ -79,4 +79,9 @@ snapshot_kind: text
 [WARNING] Missing character: There is no ไ (U+0E44) (U+0E44) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ท (U+0E17) (U+0E17) in font NotoSerif:mode=node;script=l
 [WARNING] Missing character: There is no ย (U+0E22) (U+0E22) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ব (U+09AC) (U+09AC) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no া (U+09BE) (U+09BE) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ং (U+0982) (U+0982) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no ল (U+09B2) (U+09B2) in font NotoSerif:mode=node;script=l
+[WARNING] Missing character: There is no া (U+09BE) (U+09BE) in font NotoSerif:mode=node;script=l
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf
