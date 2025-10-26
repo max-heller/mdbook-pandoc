@@ -349,3 +349,57 @@ fn noscript_element() {
     │ ]
     "#);
 }
+
+#[test]
+fn figures() {
+    let book = MDBook::init()
+        .config(Config::pandoc())
+        .chapter(Chapter::new(
+            "",
+            indoc! {r##"
+                <figure>
+                <img src="fig.png">
+                <figcaption> caption one </figcaption>
+                </figure>
+
+                <figure>
+                <figcaption>caption two</figcaption>
+                <s>figure contents</s>
+                </figure>
+            "##},
+            "chapter.md",
+        ))
+        .file_in_src("fig.png", "")
+        .build();
+    insta::assert_snapshot!(book, @r#"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
+    ├─ markdown/pandoc-ir
+    │ [ Figure
+    │     ( "" , [] , [] )
+    │     (Caption Nothing [ Plain [ Str " caption one " ] ])
+    │     [ Plain
+    │         [ Str "\n"
+    │         , Image
+    │             ( "" , [] , [] ) [] ( "book/markdown/src/fig.png" , "" )
+    │         , Str "\n"
+    │         , Str "\n"
+    │         ]
+    │     ]
+    │ , Plain [ Str "\n" ]
+    │ , Figure
+    │     ( "" , [] , [] )
+    │     (Caption Nothing [ Plain [ Str "caption two" ] ])
+    │     [ Plain
+    │         [ Str "\n"
+    │         , Str "\n"
+    │         , Strikeout [ Str "figure contents" ]
+    │         , Str "\n"
+    │         ]
+    │     ]
+    │ , Plain [ Str "\n" ]
+    │ ]
+    "#);
+}

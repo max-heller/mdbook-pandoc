@@ -969,6 +969,25 @@ impl<'a, 'book, 'p, W: io::Write> SerializeBlock<'a, 'book, 'p, W> {
         Ok(())
     }
 
+    /// Figure, with attributes, caption, and content (list of blocks)
+    pub fn serialize_figure(
+        self,
+        attrs: impl Attributes,
+        caption: impl FnOnce(&mut SerializeBlocks<'_, 'book, 'p, W>) -> anyhow::Result<()>,
+        content: impl FnOnce(&mut SerializeBlocks<'_, 'book, 'p, W>) -> anyhow::Result<()>,
+    ) -> anyhow::Result<()> {
+        write!(self.serializer.unescaped(), "Figure ")?;
+        self.serializer.write_attributes(attrs)?;
+        write!(self.serializer.unescaped(), " (Caption Nothing ")?;
+        let mut caption_serializer = SerializeList::new(self.serializer, Block)?;
+        caption(&mut caption_serializer)?;
+        caption_serializer.finish()?;
+        write!(self.serializer.unescaped(), ") ")?;
+        let mut content_serializer = SerializeList::new(self.serializer, Block)?;
+        content(&mut content_serializer)?;
+        content_serializer.finish()
+    }
+
     /// Generic block container with attributes
     pub fn serialize_div(
         self,
