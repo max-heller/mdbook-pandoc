@@ -140,6 +140,16 @@ impl<'book> Emitter<'book> {
                 serializer.serialize_raw_html(|serializer| serializer.write_comment(comment))
             }
             Node::HtmlText(text) => {
+                let none_or_element = |node: Option<NodeRef<_>>| {
+                    node.map_or(true, |node| matches!(node.value(), Node::Element(..)))
+                };
+                // Drop newlines between elements
+                if text.as_ref() == "\n"
+                    && (none_or_element(node.prev_sibling())
+                        || none_or_element(node.next_sibling()))
+                {
+                    return Ok(());
+                }
                 if matches!(
                     serializer.preprocessor().preprocessor.ctx.output,
                     pandoc::OutputFormat::HtmlLike

@@ -38,9 +38,7 @@ fn noncontiguous_html() {
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
     │ [ BlockQuote
-    │     [ RawBlock (Format "html") "<!-- hello\n\nworld -->"
-    │     , Plain [ Str "\n" ]
-    │     ]
+    │     [ RawBlock (Format "html") "<!-- hello\n\nworld -->" ]
     │ ]
     "#);
 }
@@ -79,22 +77,19 @@ fn matched_html_tags() {
     │ [ RawBlock (Format "html") "<details>"
     │ , Div
     │     ( "" , [] , [] )
-    │     [ Plain [ Str "\n" , RawInline (Format "html") "<summary>" ]
+    │     [ RawBlock (Format "html") "<summary>"
     │     , Div
     │         ( "" , [] , [] )
-    │         [ Plain [ Str "\n" ]
-    │         , Header
+    │         [ Header
     │             2
     │             ( "book__markdown__src__chapter.md__heading" , [] , [] )
     │             [ Str "Heading" ]
     │         , Para [ Str "text" ]
     │         ]
     │     , RawBlock (Format "html") "</summary>"
-    │     , Plain [ Str "\n" ]
     │     , Para [ Str "more " , Strong [ Str "markdown" ] ]
     │     ]
     │ , RawBlock (Format "html") "</details>"
-    │ , Plain [ Str "\n" ]
     │ , Para [ Str "outside divs" ]
     │ ]
     "#);
@@ -204,9 +199,7 @@ fn link_to_element_by_id() {
     ├─ latex/src/chapter.md
     │ [Para [Span ("test", [], []) [Str "some text here"], SoftBreak, Span ("test2", [], []) [Str "some text here"]], Div ("test3", [], []) [Plain [Str "
     │ some text here
-    │ "]], Plain [Str "
-    │ "], Div ("test4", [], []) [Plain [Str "some text here"]], Plain [Str "
-    │ "], Para [Link ("", [], []) [Str "test link"] ("#test", ""), SoftBreak, Link ("", [], []) [Str "test2 link"] ("#test2", ""), SoftBreak, Link ("", [], []) [Str "test3 link"] ("#test3", ""), SoftBreak, Link ("", [], []) [Str "test4 link"] ("#test4", "")]]
+    │ "]], Div ("test4", [], []) [Plain [Str "some text here"]], Para [Link ("", [], []) [Str "test link"] ("#test", ""), SoftBreak, Link ("", [], []) [Str "test2 link"] ("#test2", ""), SoftBreak, Link ("", [], []) [Str "test3 link"] ("#test3", ""), SoftBreak, Link ("", [], []) [Str "test4 link"] ("#test4", "")]]
     "##);
 }
 
@@ -234,16 +227,12 @@ fn rust_reference_regression_nested_elements() {
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
     │ \protect\phantomsection\label{book__latex__src__chapter.md__my-div}
-    │ 
     │ \protect\phantomsection\label{book__latex__src__chapter.md__my-a}\hyperref[book__latex__src__chapter.md__my-div]{{[}some text here{]}}
     │ 
     │ \hyperref[book__latex__src__chapter.md__my-div]{div}
     │ \hyperref[book__latex__src__chapter.md__my-a]{a}
     ├─ latex/src/chapter.md
-    │ [Div ("my-div", [], []) [Plain [Str "
-    │ ", Link ("my-a", [], [("href", "#my-div")]) [Str "[some text here]"] ("#my-div", ""), Str "
-    │ "]], Plain [Str "
-    │ "], Para [Link ("", [], []) [Str "div"] ("#my-div", ""), SoftBreak, Link ("", [], []) [Str "a"] ("#my-a", "")]]
+    │ [Div ("my-div", [], []) [Plain [Link ("my-a", [], [("href", "#my-div")]) [Str "[some text here]"] ("#my-div", "")]], Para [Link ("", [], []) [Str "div"] ("#my-div", ""), SoftBreak, Link ("", [], []) [Str "a"] ("#my-a", "")]]
     "##);
 }
 
@@ -337,7 +326,6 @@ fn noscript_element() {
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
     │ [ RawBlock (Format "html") "<noscript>"
-    │ , Plain [ Str "\n" ]
     │ , Header
     │     2
     │     ( "book__markdown__src__chapter.md__no-scripting-enabled"
@@ -381,25 +369,14 @@ fn figures() {
     │     ( "" , [] , [] )
     │     (Caption Nothing [ Plain [ Str " caption one " ] ])
     │     [ Plain
-    │         [ Str "\n"
-    │         , Image
+    │         [ Image
     │             ( "" , [] , [] ) [] ( "book/markdown/src/fig.png" , "" )
-    │         , Str "\n"
-    │         , Str "\n"
     │         ]
     │     ]
-    │ , Plain [ Str "\n" ]
     │ , Figure
     │     ( "" , [] , [] )
     │     (Caption Nothing [ Plain [ Str "caption two" ] ])
-    │     [ Plain
-    │         [ Str "\n"
-    │         , Str "\n"
-    │         , Strikeout [ Str "figure contents" ]
-    │         , Str "\n"
-    │         ]
-    │     ]
-    │ , Plain [ Str "\n" ]
+    │     [ Plain [ Strikeout [ Str "figure contents" ] ] ]
     │ ]
     "#);
 }

@@ -80,7 +80,6 @@ fn dt_attributes() {
     │ 
     │ \hyperref[book__latex__src__chapter.md__term1]{link to term 1}
     ├─ latex/src/chapter.md
-    │ [DefinitionList [([Span ("term1", [], []) [Str "term 1"]], [[Plain [Str "definition 1"]]])], Plain [Str "
-    │ "], Para [Link ("", [], []) [Str "link to term 1"] ("#term1", "")]]
+    │ [DefinitionList [([Span ("term1", [], []) [Str "term 1"]], [[Plain [Str "definition 1"]]])], Para [Link ("", [], []) [Str "link to term 1"] ("#term1", "")]]
     "##);
 }
