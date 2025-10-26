@@ -136,3 +136,32 @@ fn inter_chapter_links() {
     │ [Header 1 ("two", [], []) [Str "Two"], Para [Link ("", [], []) [Str "One"] ("book/latex/src/one/one.md#one", ""), SoftBreak, Link ("", [], []) [Str "also one"] ("book/latex/src/one/one.md#one", ""), SoftBreak, Link ("", [], []) [Str "Three"] ("../three.md", "")]]
     "#);
 }
+
+#[test]
+fn percent_encoding() {
+    let book = MDBook::init()
+        .chapter(Chapter::new(
+            "One",
+            "# One\n[Two](../two/chapter%20two.md)",
+            "one/one.md",
+        ))
+        .chapter(Chapter::new("Two", "# Two", "two/chapter two.md"))
+        .config(Config::latex())
+        .build();
+    insta::assert_snapshot!(book, @r#"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
+    ├─ latex/output.tex
+    │ \chapter{One}\label{book__latex__src__one__one.md__one}
+    │ 
+    │ \hyperref[book__latex__src__two__chapter-two.md__two]{Two}
+    │ 
+    │ \chapter{Two}\label{book__latex__src__two__chapter-two.md__two}
+    ├─ latex/src/one/one.md
+    │ [Header 1 ("one", [], []) [Str "One"], Para [Link ("", [], []) [Str "Two"] ("book/latex/src/two/chapter%20two.md#two", "")]]
+    ├─ latex/src/two/chapter two.md
+    │ [Header 1 ("two", [], []) [Str "Two"]]
+    "#);
+}

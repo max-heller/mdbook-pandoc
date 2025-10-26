@@ -33,6 +33,34 @@ fn images() {
 }
 
 #[test]
+fn percent_encoding() {
+    let book = MDBook::init()
+        .config(Config::latex())
+        .file_in_src("img dir/image.png", "")
+        .chapter(Chapter::new(
+            "",
+            indoc! {r#"
+                ![](img%20dir/image.png)
+                <img src="img%20dir/image.png">
+            "#},
+            "chapter.md",
+        ))
+        .build();
+    insta::assert_snapshot!(book, @r#"
+    ├─ log output
+    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
+    ├─ latex/output.tex
+    │ \pandocbounded{\includegraphics[keepaspectratio]{book/latex/src/img dir/image.png}}
+    │ \pandocbounded{\includegraphics[keepaspectratio]{book/latex/src/img dir/image.png}}
+    ├─ latex/src/chapter.md
+    │ [Para [Image ("", [], []) [] ("book/latex/src/img%20dir/image.png", ""), SoftBreak, Image ("", [], []) [] ("book/latex/src/img%20dir/image.png", "")]]
+    ├─ latex/src/img dir/image.png
+    "#);
+}
+
+#[test]
 #[ignore]
 fn remote_images() {
     let book = MDBook::init()

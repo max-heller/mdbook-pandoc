@@ -17,7 +17,7 @@ use html5ever::{
 use indexmap::IndexSet;
 use pulldown_cmark::{BlockQuoteKind, CowStr, LinkType};
 
-use crate::{html, latex, pandoc};
+use crate::{html, latex, pandoc, url};
 
 mod node;
 pub use node::{Attributes, Element, MdElement, Node, QualNameExt};
@@ -505,14 +505,14 @@ impl<'book> Emitter<'book> {
                     title,
                     id,
                 } => serializer.serialize_inlines(|inlines| {
-                    let dest_url = inlines
-                        .serializer
-                        .preprocessor
-                        .resolve_image_url(dest_url.as_ref().into(), *link_type);
+                    let dest_url = inlines.serializer.preprocessor.resolve_image_url(
+                        url::best_effort_decode(dest_url.as_ref().into()),
+                        *link_type,
+                    );
                     inlines.serialize_element()?.serialize_image(
                         (Some(id.as_ref()), &[], &[]),
                         |alt| alt.serialize_nested(|alt| self.serialize_children(node, alt)),
-                        &dest_url,
+                        &url::encode(dest_url),
                         title,
                     )
                 }),
@@ -617,9 +617,10 @@ impl<'book> Emitter<'book> {
                             [html::name!("src"), html::name!("alt"), html::name!("title")]
                                 .map(|attr| attrs.rest.swap_remove(&attr));
                         let Some(src) = src else { return Ok(()) };
-                        let src = serializer
-                            .preprocessor()
-                            .resolve_image_url(src.as_ref().into(), LinkType::Inline);
+                        let src = serializer.preprocessor().resolve_image_url(
+                            url::best_effort_decode(src.as_ref().into()),
+                            LinkType::Inline,
+                        );
                         return serializer.serialize_inlines(|inlines| {
                             inlines.serialize_element()?.serialize_image(
                                 &attrs,
@@ -629,7 +630,7 @@ impl<'book> Emitter<'book> {
                                     }
                                     None => Ok(()),
                                 },
-                                &src,
+                                &url::encode(src),
                                 title.as_ref().map_or("", |s| s.as_ref()),
                             )
                         });

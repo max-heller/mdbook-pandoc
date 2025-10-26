@@ -65,7 +65,7 @@ jobs:
 
   msrv:
     runs-on: ubuntu-latest
-    container: foresterre/cargo-msrv:latest
+    container: foresterre/cargo-msrv:sha-a3857fa
     steps:
       - uses: actions/checkout@v4
       - name: Verify MSRV
