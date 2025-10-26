@@ -611,6 +611,37 @@ impl<'book> Emitter<'book> {
                             },
                         );
                     }
+                    local_name!("figure") => {
+                        let is_figcaption = |node: &NodeRef<_>| {
+                            matches!(
+                                node.value(),
+                                Node::Element(Element::Html(element))
+                                    if matches!(element.name.expanded(), expanded_name!(html "figcaption"))
+                            )
+                        };
+                        let caption = node.children().find(is_figcaption);
+                        return serializer.blocks()?.serialize_element()?.serialize_figure(
+                            &element.attrs,
+                            |caption_blocks| {
+                                if let Some(caption) = caption {
+                                    caption_blocks.serialize_nested(|serializer| {
+                                        self.serialize_children(caption, serializer)
+                                    })
+                                } else {
+                                    Ok(())
+                                }
+                            },
+                            |content_blocks| {
+                                content_blocks.serialize_nested(|serializer| {
+                                    for node in node.children().filter(|node| !is_figcaption(node))
+                                    {
+                                        self.serialize_node(node, serializer)?;
+                                    }
+                                    Ok(())
+                                })
+                            },
+                        );
+                    }
                     local_name!("img") => {
                         let mut attrs = element.attrs.clone();
                         let [src, alt, title] =
