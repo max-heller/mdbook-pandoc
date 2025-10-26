@@ -30,7 +30,7 @@ use walkdir::WalkDir;
 use crate::{
     latex,
     pandoc::{self, native::ColWidth, OutputFormat, RenderContext},
-    MarkdownConfig, MarkdownExtensionConfig,
+    url, MarkdownConfig, MarkdownExtensionConfig,
 };
 
 mod code;
@@ -909,11 +909,12 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
                         title,
                         id: _,
                     } => {
-                        let dest_url = self.preprocessor.normalize_link_or_leave_as_is(
-                            self.chapter,
-                            link_type,
-                            dest_url,
-                        );
+                        let dest_url =
+                            url::encode(self.preprocessor.normalize_link_or_leave_as_is(
+                                self.chapter,
+                                link_type,
+                                url::best_effort_decode(dest_url),
+                            ));
                         push_element(self, tree, MdElement::Link { dest_url, title })
                     }
                     Tag::Paragraph => push_element(self, tree, MdElement::Paragraph),

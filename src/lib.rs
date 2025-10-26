@@ -13,6 +13,7 @@ mod css;
 mod html;
 mod latex;
 mod pandoc;
+mod url;
 
 mod preprocess;
 use preprocess::Preprocessor;

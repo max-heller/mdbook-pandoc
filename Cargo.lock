@@ -708,6 +708,7 @@ dependencies = [
  "mdbook",
  "normpath",
  "once_cell",
+ "percent-encoding",
  "pulldown-cmark 0.13.0",
  "regex",
  "replace_with",
@@ -815,6 +816,12 @@ dependencies = [
  "smallvec",
  "windows-targets 0.52.6",
 ]
+
+[[package]]
+name = "percent-encoding"
+version = "2.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b4f627cb1b25917193a259e49bdad08f671f8d9708acfd5fe0a8c1455d87220"
 
 [[package]]
 name = "pest"
