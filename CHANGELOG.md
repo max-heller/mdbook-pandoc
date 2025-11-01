@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 
 - Consider `output.html.site-url` when replacing broken relative links ([#207](https://github.com/max-heller/mdbook-pandoc/pull/207))
 - Support HTML figures ([#213](https://github.com/max-heller/mdbook-pandoc/pull/213))
-- Hide HTML elements tagged with display:none ([#215](https://github.com/max-heller/mdbook-pandoc/pull/215))
+- Hide HTML elements tagged with `display: none` ([#215](https://github.com/max-heller/mdbook-pandoc/pull/215))
 - Support Font Awesome 6 icons ([#216](https://github.com/max-heller/mdbook-pandoc/pull/216))
 
 ### Miscellaneous Tasks
@@ -22,7 +22,6 @@ All notable changes to this project will be documented in this file.
 ### Refactor
 
 - Strip newlines between HTML elements ([#214](https://github.com/max-heller/mdbook-pandoc/pull/214))
-
 
 
 ## [0.10.5] - 2025-07-27

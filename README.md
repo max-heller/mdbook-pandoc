@@ -124,7 +124,7 @@ variable-name = "value"
   - Definition lists (`<dl>`, `<dt>`, `<dd>`)
   - Images (`<img>`) with `width` and `height` attributes
     - Class-based CSS styling (`width`/`height`)
-  - `<span>`s and `<div>`s
+  - `<span>`s, `<div>`s, and `<figure>`s
   - Anchors (`<a>`)
 - Table of contents
 - MathJax emulation (TeX only)
