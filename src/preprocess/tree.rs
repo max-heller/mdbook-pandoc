@@ -17,7 +17,11 @@ use html5ever::{
 use indexmap::IndexSet;
 use pulldown_cmark::{BlockQuoteKind, CowStr, LinkType};
 
-use crate::{html, latex, pandoc, url};
+use crate::{
+    html, latex,
+    pandoc::{self, native::Attributes as _},
+    url,
+};
 
 mod node;
 pub use node::{Attributes, Element, MdElement, Node, QualNameExt};
@@ -528,6 +532,15 @@ impl<'book> Emitter<'book> {
                 }),
             },
             Node::Element(Element::Html(element)) => {
+                let ctx = &mut serializer.preprocessor().preprocessor.ctx;
+                if !matches!(ctx.output, pandoc::OutputFormat::HtmlLike) {
+                    for (prop, val) in element.attrs.css_properties(&ctx.css.styles) {
+                        // Don't render elements with display: none
+                        if prop == "display" && val == "none" {
+                            return Ok(());
+                        }
+                    }
+                }
                 match element.name.local {
                     local_name!("thead")
                     | local_name!("th")
