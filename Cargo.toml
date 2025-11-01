@@ -1,7 +1,7 @@
 [package]
 name = "mdbook-pandoc"
 description = "A pandoc-powered mdbook backend"
-version = "0.10.5"
+version = "0.10.6"
 rust-version = "1.81.0"
 edition = "2021"
 authors = ["Max Heller <max.a.heller@gmail.com>"]
