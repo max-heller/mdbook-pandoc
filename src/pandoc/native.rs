@@ -10,6 +10,7 @@ use indexmap::IndexSet;
 use pulldown_cmark::CowStr;
 
 use crate::{
+    css,
     latex::MathType,
     preprocess::{self, PreprocessChapter},
 };
@@ -33,6 +34,26 @@ pub trait Attributes {
     fn id(&self) -> Option<&str>;
     fn classes(&self) -> impl Iterator<Item = &str>;
     fn attrs(&self) -> impl Iterator<Item = (&str, &str)>;
+
+    fn css_properties<'a>(
+        &'a self,
+        css: &'a css::Styles,
+    ) -> impl Iterator<Item = (&'a str, &'a str)> {
+        self.attrs()
+            .filter_map(|(attr, val)| {
+                (attr == "style").then_some(
+                    val.split(';')
+                        .flat_map(|decl| decl.split_once(':'))
+                        .map(|(attr, val)| (attr.trim(), val.trim())),
+                )
+            })
+            .flatten()
+            .chain(
+                self.classes()
+                    .filter_map(|class| css.classes.get(class))
+                    .flat_map(|props| props.iter().map(|(k, v)| (k.as_ref(), *v))),
+            )
+    }
 }
 
 impl Attributes for () {
@@ -72,7 +93,7 @@ where
     }
 }
 
-impl Attributes for &preprocess::tree::Attributes {
+impl Attributes for preprocess::tree::Attributes {
     fn id(&self) -> Option<&str> {
         self.id.as_deref()
     }
@@ -88,6 +109,20 @@ impl Attributes for &preprocess::tree::Attributes {
         self.rest
             .iter()
             .map(|(name, value)| (name.local.as_ref(), value.as_ref()))
+    }
+}
+
+impl<T: Attributes> Attributes for &T {
+    fn id(&self) -> Option<&str> {
+        (*self).id()
+    }
+
+    fn classes(&self) -> impl Iterator<Item = &str> {
+        (*self).classes()
+    }
+
+    fn attrs(&self) -> impl Iterator<Item = (&str, &str)> {
+        (*self).attrs()
     }
 }
 
@@ -165,35 +200,19 @@ impl<'p, 'book, W: io::Write> Serializer<'p, 'book, W> {
                     .serialize_attribute(attr, val)?;
             }
         } else {
-            let include_prop_as_attr = |prop| matches!(prop, "width" | "height");
-            for (attr, val) in attrs.attrs() {
-                if attr == "style" {
-                    let style = val
-                        .split(';')
-                        .flat_map(|decl| decl.split_once(':'))
-                        .map(|(attr, val)| (attr.trim(), val.trim()));
-                    for (prop, val) in style {
-                        if include_prop_as_attr(prop) {
-                            attributes
-                                .serialize_element()?
-                                .serialize_attribute(prop, val)?;
-                        }
-                    }
-                } else {
-                    attributes
-                        .serialize_element()?
-                        .serialize_attribute(attr, val)?;
-                }
-            }
             let css = attributes.serializer.preprocessor.preprocessor.ctx.css;
-            for (prop, val) in attrs
-                .classes()
-                .flat_map(|class| css.styles.classes.get(class).into_iter().flatten())
-            {
-                if include_prop_as_attr(prop) {
+            for (prop, val) in attrs.css_properties(&css.styles) {
+                if matches!(prop, "width" | "height") {
                     attributes
                         .serialize_element()?
                         .serialize_attribute(prop, val)?;
+                }
+            }
+            for (attr, val) in attrs.attrs() {
+                if attr != "style" {
+                    attributes
+                        .serialize_element()?
+                        .serialize_attribute(attr, val)?;
                 }
             }
         }

@@ -292,4 +292,1893 @@ snapshot_kind: text
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/alloc/global/trait.GlobalAlloc.html' in chapter 'runtime.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../core/alloc/global/trait.GlobalAlloc.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/prelude/v1/index.html' in chapter 'runtime.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../core/prelude/v1/index.html'
  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__input-format.md__railroad-CHAR' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__input-format.md__railroad-NUL' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__identifiers.md__railroad-IDENTIFIER_OR_KEYWORD'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__identifiers.md__railroad-XID_Start' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__identifiers.md__railroad-XID_Continue' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__identifiers.md__railroad-RAW_IDENTIFIER' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__identifiers.md__railroad-NON_KEYWORD_IDENTIFIER'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__identifiers.md__railroad-IDENTIFIER' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__identifiers.md__railroad-RESERVED_RAW_IDENTIFIER'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__comments.md__railroad-LINE_COMMENT' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__comments.md__railroad-BLOCK_COMMENT' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__comments.md__railroad-INNER_LINE_DOC' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__comments.md__railroad-INNER_BLOCK_DOC' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__comments.md__railroad-OUTER_LINE_DOC' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__comments.md__railroad-OUTER_BLOCK_DOC' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__comments.md__railroad-BLOCK_COMMENT_OR_DOC'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__whitespace.md__railroad-WHITESPACE' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__whitespace.md__railroad-TAB' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__whitespace.md__railroad-LF' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__whitespace.md__railroad-CR' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-Token' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-SUFFIX' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-SUFFIX_NO_E' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-CHAR_LITERAL' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-QUOTE_ESCAPE' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-ASCII_ESCAPE' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-UNICODE_ESCAPE' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-STRING_LITERAL' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-STRING_CONTINUE' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RAW_STRING_LITERAL' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RAW_STRING_CONTENT' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-BYTE_LITERAL' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-ASCII_FOR_CHAR' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-BYTE_ESCAPE' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-BYTE_STRING_LITERAL' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-ASCII_FOR_STRING' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RAW_BYTE_STRING_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RAW_BYTE_STRING_CONTENT'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-ASCII_FOR_RAW' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-C_STRING_LITERAL' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RAW_C_STRING_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RAW_C_STRING_CONTENT'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-INTEGER_LITERAL' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-DEC_LITERAL' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-BIN_LITERAL' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-OCT_LITERAL' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-HEX_LITERAL' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-BIN_DIGIT' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-OCT_DIGIT' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-DEC_DIGIT' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-HEX_DIGIT' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-TUPLE_INDEX' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-FLOAT_LITERAL' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-FLOAT_EXPONENT' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RESERVED_NUMBER' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-LIFETIME_TOKEN' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-LIFETIME_OR_LABEL' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RAW_LIFETIME' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RESERVED_RAW_LIFETIME'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-PUNCTUATION' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RESERVED_TOKEN' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RESERVED_TOKEN_DOUBLE_QUOTE'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RESERVED_TOKEN_SINGLE_QUOTE'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RESERVED_TOKEN_POUND'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RESERVED_TOKEN_LIFETIME'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RESERVED_GUARDED_STRING_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__tokens.md__railroad-RESERVED_POUNDS' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros.md__railroad-MacroInvocation' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros.md__railroad-DelimTokenTree' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros.md__railroad-TokenTree' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros.md__railroad-MacroInvocationSemi' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros-by-example.md__railroad-MacroRulesDefinition'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros-by-example.md__railroad-MacroRulesDef'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros-by-example.md__railroad-MacroRules'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros-by-example.md__railroad-MacroRule'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros-by-example.md__railroad-MacroMatcher'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros-by-example.md__railroad-MacroMatch'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros-by-example.md__railroad-MacroFragSpec'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros-by-example.md__railroad-MacroRepSep'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros-by-example.md__railroad-MacroRepOp'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__macros-by-example.md__railroad-MacroTranscriber'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__procedural-macros.md__railroad-ProcMacroDeriveAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__procedural-macros.md__railroad-DeriveMacroName'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__procedural-macros.md__railroad-DeriveMacroAttributes'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__crates-and-source-files.md__railroad-Crate'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__conditional-compilation.md__railroad-ConfigurationPredicate'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__conditional-compilation.md__railroad-ConfigurationOption'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__conditional-compilation.md__railroad-ConfigurationAll'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__conditional-compilation.md__railroad-ConfigurationAny'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__conditional-compilation.md__railroad-ConfigurationNot'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__conditional-compilation.md__railroad-ConfigurationPredicateList'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__conditional-compilation.md__railroad-CfgAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__conditional-compilation.md__railroad-CfgAttrAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__conditional-compilation.md__railroad-CfgAttrs'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items.md__railroad-Item' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items.md__railroad-VisItem' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items.md__railroad-MacroItem' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__modules.md__railroad-Module' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__extern-crates.md__railroad-ExternCrate'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__extern-crates.md__railroad-CrateRef'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__extern-crates.md__railroad-AsClause'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__use-declarations.md__railroad-UseDeclaration'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__use-declarations.md__railroad-UseTree'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-Function' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-FunctionQualifiers'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-ItemSafety'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-Abi' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-FunctionParameters'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-SelfParam' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-ShorthandSelf'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-TypedSelf' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-FunctionParam'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-FunctionParamPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__functions.md__railroad-FunctionReturnType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__type-aliases.md__railroad-TypeAlias'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__structs.md__railroad-Struct' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__structs.md__railroad-StructStruct'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__structs.md__railroad-TupleStruct' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__structs.md__railroad-StructFields'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__structs.md__railroad-StructField' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__structs.md__railroad-TupleFields' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__structs.md__railroad-TupleField' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__enumerations.md__railroad-Enumeration'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__enumerations.md__railroad-EnumVariants'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__enumerations.md__railroad-EnumVariant'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__enumerations.md__railroad-EnumVariantTuple'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__enumerations.md__railroad-EnumVariantStruct'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__enumerations.md__railroad-EnumVariantDiscriminant'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__unions.md__railroad-Union' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__constant-items.md__railroad-ConstantItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__static-items.md__railroad-StaticItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__traits.md__railroad-Trait' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__implementations.md__railroad-Implementation'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__implementations.md__railroad-InherentImpl'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__implementations.md__railroad-TraitImpl'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__external-blocks.md__railroad-ExternBlock'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__external-blocks.md__railroad-ExternalItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__generics.md__railroad-GenericParams'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__generics.md__railroad-GenericParam'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__generics.md__railroad-LifetimeParam'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__generics.md__railroad-TypeParam' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__generics.md__railroad-ConstParam' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__generics.md__railroad-WhereClause'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__generics.md__railroad-WhereClauseItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__generics.md__railroad-LifetimeWhereClauseItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__generics.md__railroad-TypeBoundWhereClauseItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__items__associated-items.md__railroad-AssociatedItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-InnerAttribute' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-OuterAttribute' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-Attr' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-AttrInput' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-MetaItem' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-MetaSeq' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-MetaItemInner' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-MetaWord' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-MetaNameValueStr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-MetaListPaths' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-MetaListIdents' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes.md__railroad-MetaListNameValueStr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes__codegen.md__railroad-InlineAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes__debugger.md__railroad-CollapseDebuginfoAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__attributes__debugger.md__railroad-CollapseDebuginfoOption'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__statements.md__railroad-Statement' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__statements.md__railroad-LetStatement' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__statements.md__railroad-ExpressionStatement'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions.md__railroad-Expression' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions.md__railroad-ExpressionWithoutBlock'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions.md__railroad-ExpressionWithBlock'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__literal-expr.md__railroad-LiteralExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__path-expr.md__railroad-PathExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__block-expr.md__railroad-BlockExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__block-expr.md__railroad-Statements'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__block-expr.md__railroad-AsyncBlockExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__block-expr.md__railroad-ConstBlockExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__block-expr.md__railroad-UnsafeBlockExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-OperatorExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-BorrowExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-DereferenceExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-TryPropagationExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-NegationExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-ArithmeticOrLogicalExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-ComparisonExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-LazyBooleanExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-TypeCastExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-AssignmentExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__operator-expr.md__railroad-CompoundAssignmentExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__grouped-expr.md__railroad-GroupedExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__array-expr.md__railroad-ArrayExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__array-expr.md__railroad-ArrayElements'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__array-expr.md__railroad-IndexExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__tuple-expr.md__railroad-TupleExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__tuple-expr.md__railroad-TupleElements'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__tuple-expr.md__railroad-TupleIndexingExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__struct-expr.md__railroad-StructExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__struct-expr.md__railroad-StructExprFields'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__struct-expr.md__railroad-StructExprField'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__struct-expr.md__railroad-StructBase'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__call-expr.md__railroad-CallExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__call-expr.md__railroad-CallParams'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__method-call-expr.md__railroad-MethodCallExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__field-expr.md__railroad-FieldExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__closure-expr.md__railroad-ClosureExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__closure-expr.md__railroad-ClosureParameters'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__closure-expr.md__railroad-ClosureParam'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__loop-expr.md__railroad-LoopExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__loop-expr.md__railroad-InfiniteLoopExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__loop-expr.md__railroad-PredicateLoopExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__loop-expr.md__railroad-IteratorLoopExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__loop-expr.md__railroad-LoopLabel'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__loop-expr.md__railroad-BreakExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__loop-expr.md__railroad-LabelBlockExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__loop-expr.md__railroad-ContinueExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__range-expr.md__railroad-RangeExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__range-expr.md__railroad-RangeExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__range-expr.md__railroad-RangeFromExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__range-expr.md__railroad-RangeToExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__range-expr.md__railroad-RangeFullExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__range-expr.md__railroad-RangeInclusiveExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__range-expr.md__railroad-RangeToInclusiveExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__if-expr.md__railroad-IfExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__if-expr.md__railroad-Conditions'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__if-expr.md__railroad-LetChain'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__if-expr.md__railroad-LetChainCondition'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__if-expr.md__railroad-ExcludedConditions'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__match-expr.md__railroad-MatchExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__match-expr.md__railroad-Scrutinee'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__match-expr.md__railroad-MatchArms'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__match-expr.md__railroad-MatchArm'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__match-expr.md__railroad-MatchArmGuard'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__return-expr.md__railroad-ReturnExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__await-expr.md__railroad-AwaitExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__expressions__underscore-expr.md__railroad-UnderscoreExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-Pattern' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-PatternNoTopAlt' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-PatternWithoutRange'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-LiteralPattern' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-IdentifierPattern' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-WildcardPattern' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-RestPattern' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-RangePattern' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-RangeExclusivePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-RangeInclusivePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-RangeFromPattern' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-RangeToExclusivePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-RangeToInclusivePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-ObsoleteRangePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-RangePatternBound' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-ReferencePattern' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-StructPattern' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-StructPatternElements'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-StructPatternFields'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-StructPatternField'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-StructPatternEtCetera'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-TupleStructPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-TupleStructItems' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-TuplePattern' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-TuplePatternItems' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-GroupedPattern' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-SlicePattern' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-SlicePatternItems' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__patterns.md__railroad-PathPattern' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types.md__railroad-Type' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types.md__railroad-TypeNoBounds' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types.md__railroad-ParenthesizedType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__never.md__railroad-NeverType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__tuple.md__railroad-TupleType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__array.md__railroad-ArrayType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__slice.md__railroad-SliceType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__pointer.md__railroad-ReferenceType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__pointer.md__railroad-RawPointerType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__function-pointer.md__railroad-BareFunctionType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__function-pointer.md__railroad-FunctionTypeQualifiers'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__function-pointer.md__railroad-BareFunctionReturnType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__function-pointer.md__railroad-FunctionParametersMaybeNamedVariadic'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__function-pointer.md__railroad-MaybeNamedFunctionParameters'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__function-pointer.md__railroad-MaybeNamedParam'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__function-pointer.md__railroad-MaybeNamedFunctionParametersVariadic'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__trait-object.md__railroad-TraitObjectType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__trait-object.md__railroad-TraitObjectTypeOneBound'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__impl-trait.md__railroad-ImplTraitType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__impl-trait.md__railroad-ImplTraitTypeOneBound'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__types__inferred.md__railroad-InferredType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__trait-bounds.md__railroad-TypeParamBounds'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__trait-bounds.md__railroad-TypeParamBound'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__trait-bounds.md__railroad-TraitBound' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__trait-bounds.md__railroad-LifetimeBounds'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__trait-bounds.md__railroad-Lifetime' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__trait-bounds.md__railroad-UseBound' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__trait-bounds.md__railroad-UseBoundGenericArgs'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__trait-bounds.md__railroad-UseBoundGenericArg'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__trait-bounds.md__railroad-ForLifetimes' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-SimplePath' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-SimplePathSegment' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-PathInExpression' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-PathExprSegment' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-PathIdentSegment' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-GenericArgs' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-GenericArg' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-GenericArgsConst' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-GenericArgsBinding' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-GenericArgsBounds' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-QualifiedPathInExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-QualifiedPathType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-QualifiedPathInType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-TypePath' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-TypePathSegment' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-TypePathFn' on $PAGE
+  undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__paths.md__railroad-TypePathFnInputs' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__visibility-and-privacy.md__railroad-Visibility'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-AsmArgs' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-FormatString'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-AsmOperand' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-ClobberAbi' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-AsmOptions' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-AsmOption' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-RegOperand' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-ParamName' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-DualDirSpecExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-RegSpec' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-RegisterClass'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-ExplicitRegister'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-DirSpec' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-DualDirSpec'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CHAR' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-NUL' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-IDENTIFIER_OR_KEYWORD'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-XID_Start' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-XID_Continue'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RAW_IDENTIFIER'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-NON_KEYWORD_IDENTIFIER'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-IDENTIFIER' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RESERVED_RAW_IDENTIFIER'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LINE_COMMENT'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BLOCK_COMMENT'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-INNER_LINE_DOC'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-INNER_BLOCK_DOC'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-OUTER_LINE_DOC'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-OUTER_BLOCK_DOC'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BLOCK_COMMENT_OR_DOC'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-WHITESPACE' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TAB' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LF' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CR' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Token' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-SUFFIX' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-SUFFIX_NO_E'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CHAR_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-QUOTE_ESCAPE'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ASCII_ESCAPE'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-UNICODE_ESCAPE'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-STRING_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-STRING_CONTINUE'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RAW_STRING_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RAW_STRING_CONTENT'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BYTE_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ASCII_FOR_CHAR'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BYTE_ESCAPE'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BYTE_STRING_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ASCII_FOR_STRING'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RAW_BYTE_STRING_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RAW_BYTE_STRING_CONTENT'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ASCII_FOR_RAW'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-C_STRING_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RAW_C_STRING_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RAW_C_STRING_CONTENT'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-INTEGER_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-DEC_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BIN_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-OCT_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-HEX_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BIN_DIGIT' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-OCT_DIGIT' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-DEC_DIGIT' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-HEX_DIGIT' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TUPLE_INDEX'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FLOAT_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FLOAT_EXPONENT'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RESERVED_NUMBER'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LIFETIME_TOKEN'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LIFETIME_OR_LABEL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RAW_LIFETIME'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RESERVED_RAW_LIFETIME'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-PUNCTUATION'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RESERVED_TOKEN'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RESERVED_TOKEN_DOUBLE_QUOTE'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RESERVED_TOKEN_SINGLE_QUOTE'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RESERVED_TOKEN_POUND'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RESERVED_TOKEN_LIFETIME'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RESERVED_GUARDED_STRING_LITERAL'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RESERVED_POUNDS'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroInvocation'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-DelimTokenTree'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TokenTree' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroInvocationSemi'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroRulesDefinition'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroRulesDef'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroRules' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroRule' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroMatcher'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroMatch' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroFragSpec'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroRepSep'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroRepOp' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroTranscriber'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ProcMacroDeriveAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-DeriveMacroName'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-DeriveMacroAttributes'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-InnerAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-OuterAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Attr' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AttrInput' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MetaItem' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MetaSeq' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MetaItemInner'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MetaWord' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MetaNameValueStr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MetaListPaths'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MetaListIdents'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MetaListNameValueStr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-InlineAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CollapseDebuginfoAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CollapseDebuginfoOption'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Crate' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Item' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-VisItem' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MacroItem' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Module' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ExternCrate'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CrateRef' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AsClause' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-UseDeclaration'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-UseTree' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Function' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FunctionQualifiers'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ItemSafety' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Abi' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FunctionParameters'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-SelfParam' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ShorthandSelf'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypedSelf' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FunctionParam'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FunctionParamPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FunctionReturnType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypeAlias' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Struct' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructStruct'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TupleStruct'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructFields'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructField'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TupleFields'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TupleField' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Enumeration'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-EnumVariants'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-EnumVariant'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-EnumVariantTuple'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-EnumVariantStruct'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-EnumVariantDiscriminant'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Union' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ConstantItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StaticItem' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Trait' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Implementation'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-InherentImpl'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TraitImpl' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ExternBlock'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ExternalItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-GenericParams'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-GenericParam'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LifetimeParam'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypeParam' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ConstParam' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-WhereClause'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-WhereClauseItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LifetimeWhereClauseItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypeBoundWhereClauseItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AssociatedItem'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Visibility' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ConfigurationPredicate'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ConfigurationOption'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ConfigurationAll'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ConfigurationAny'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ConfigurationNot'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ConfigurationPredicateList'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CfgAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CfgAttrAttribute'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CfgAttrs' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Statement' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LetStatement'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ExpressionStatement'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Expression' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ExpressionWithoutBlock'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ExpressionWithBlock'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LiteralExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-PathExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BlockExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Statements' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AsyncBlockExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ConstBlockExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-UnsafeBlockExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-OperatorExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BorrowExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-DereferenceExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TryPropagationExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-NegationExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ArithmeticOrLogicalExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ComparisonExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LazyBooleanExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypeCastExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AssignmentExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CompoundAssignmentExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-GroupedExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ArrayExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ArrayElements'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-IndexExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TupleExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TupleElements'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TupleIndexingExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructExprFields'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructExprField'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructBase' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CallExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-CallParams' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MethodCallExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FieldExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ClosureExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ClosureParameters'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ClosureParam'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LoopExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-InfiniteLoopExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-PredicateLoopExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-IteratorLoopExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LoopLabel' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BreakExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LabelBlockExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ContinueExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeExpr' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeFromExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeToExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeFullExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeInclusiveExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeToInclusiveExpr'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-IfExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Conditions' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LetChain' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LetChainCondition'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ExcludedConditions'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MatchExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Scrutinee' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MatchArms' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MatchArm' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MatchArmGuard'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ReturnExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AwaitExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-UnderscoreExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Pattern' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-PatternNoTopAlt'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-PatternWithoutRange'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LiteralPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-IdentifierPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-WildcardPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RestPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeExclusivePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeInclusivePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeFromPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeToExclusivePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangeToInclusivePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ObsoleteRangePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RangePatternBound'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ReferencePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructPatternElements'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructPatternFields'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructPatternField'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-StructPatternEtCetera'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TupleStructPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TupleStructItems'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TuplePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TuplePatternItems'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-GroupedPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-SlicePattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-SlicePatternItems'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-PathPattern'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Type' on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypeNoBounds'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ParenthesizedType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-NeverType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TupleType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ArrayType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-SliceType' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ReferenceType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RawPointerType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BareFunctionType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FunctionTypeQualifiers'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-BareFunctionReturnType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FunctionParametersMaybeNamedVariadic'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MaybeNamedFunctionParameters'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MaybeNamedParam'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-MaybeNamedFunctionParametersVariadic'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TraitObjectType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TraitObjectTypeOneBound'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ImplTraitType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ImplTraitTypeOneBound'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-InferredType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypeParamBounds'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypeParamBound'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TraitBound' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-LifetimeBounds'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-Lifetime' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-UseBound' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-UseBoundGenericArgs'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-UseBoundGenericArg'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ForLifetimes'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-SimplePath' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-SimplePathSegment'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-PathInExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-PathExprSegment'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-PathIdentSegment'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-GenericArgs'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-GenericArg' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-GenericArgsConst'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-GenericArgsBinding'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-GenericArgsBounds'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-QualifiedPathInExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-QualifiedPathType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-QualifiedPathInType'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypePath' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypePathSegment'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypePathFn' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-TypePathFnInputs'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AsmArgs' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-FormatString'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AsmOperand' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ClobberAbi' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AsmOptions' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AsmOption' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RegOperand' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ParamName' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-DualDirSpecExpression'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RegSpec' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-RegisterClass'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-ExplicitRegister'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-DirSpec' on
+  $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-DualDirSpec'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: There were undefined references.
  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/pdf/book.pdf

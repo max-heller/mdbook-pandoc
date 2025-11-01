@@ -8,24 +8,32 @@ use super::{Chapter, Config, MDBook};
 fn css() {
     let cfg = indoc! {r#"
         [output.html]
-        additional-css = ["ferris.css"]
+        additional-css = ["custom.css"]
     "#};
     let book = MDBook::init()
         .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
         .config(Config::latex())
         .file_in_src("img/image.png", "")
         .file_in_root(
-            "ferris.css",
+            "custom.css",
             indoc! {"
                 .ferris-explain {
                   width: 100px;
                   height: 50;
                 }
+
+                .foo-hidden {
+                    display: none;
+                }
             "},
         )
         .chapter(Chapter::new(
             "",
-            r#"<img class="ferris-explain" src="img/image.png" alt="alt text" title = "a title">"#,
+            indoc! {r#"
+                <img class="ferris-explain" src="img/image.png" alt="alt text" title = "a title">
+                <div class="foo-hidden">should be hidden</div>
+                <div style="display:none">should also be hidden</div>
+           "#},
             "chapter.md",
         ))
         .build();
