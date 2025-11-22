@@ -11,7 +11,7 @@ fn css() {
         additional-css = ["custom.css"]
     "#};
     let book = MDBook::init()
-        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .mdbook_config(mdbook_core::config::Config::from_str(cfg).unwrap())
         .config(Config::latex())
         .file_in_src("img/image.png", "")
         .file_in_root(
@@ -39,11 +39,14 @@ fn css() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
-    │ \includegraphics[width=1.04167in,height=0.52083in,alt={alt text}]{book/latex/src/img/image.png}
+    │ \hypertarget{book__latex__src__chapter.md}{}
+    │ \includegraphics[width=1.04167in,height=0.52083in]{book/latex/src/img/image.png}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [Plain [Image ("", ["ferris-explain"], [("height", "50"), ("width", "100px")]) [Str "alt text"] ("book/latex/src/img/image.png", "a title")]]
     ├─ latex/src/img/image.png

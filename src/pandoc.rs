@@ -117,7 +117,7 @@ mod tests {
         Type  H <return>  for immediate help.
          ...                                              
                                                           
-        l.74         \begin{itemize}
+        l.78         \begin{itemize}
 
         "#);
     }

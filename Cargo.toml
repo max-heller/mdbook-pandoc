@@ -2,7 +2,7 @@
 name = "mdbook-pandoc"
 description = "A pandoc-powered mdbook backend"
 version = "0.10.6"
-rust-version = "1.81.0"
+rust-version = "1.88.0"
 edition = "2021"
 authors = ["Max Heller <max.a.heller@gmail.com>"]
 license = "MIT OR Apache-2.0"
@@ -24,7 +24,9 @@ font-awesome-as-a-crate = "0.3.0"
 html5ever = "0.35.0"
 indexmap = { version = "2.7.0", features = ["serde"] }
 log = "0.4.0"
-mdbook = { version = "0.4.35", default-features = false }
+mdbook-core = { version = "0.5.1", default-features = false }                   # I'm kinda anxious about it as they say it's for internal use, examples still outdated
+mdbook-driver = { version = "0.5.1", default-features = false }
+mdbook-renderer = { version = "0.5.1", default-features = false }
 normpath = "1.0.0"
 once_cell = "1.0.0"
 pulldown-cmark = { version = "0.13.0", default-features = false }
@@ -46,7 +48,10 @@ insta = { version = "1.36.0" }
 similar = { version = "2.5.0", features = ["text"] }
 tracing = { version = "0.1.0", default-features = false, features = ["std"] }
 tracing-log = "0.2.0"
-tracing-subscriber = { version = "0.3.20", default-features = false, features = ["fmt", "tracing-log"] }
+tracing-subscriber = { version = "0.3.20", default-features = false, features = [
+    "fmt",
+    "tracing-log",
+] }
 
 [profile.dev.package]
 insta.opt-level = 3

@@ -10,11 +10,16 @@ fn html_comments() {
         .build();
     insta::assert_snapshot!(output, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
+    │ ::: {#book__markdown__src__chapter.md}
     │ <!-- Comment -->
+    │ :::
+    │ 
+    │ ::: {#book__markdown__dummy}
+    │ :::
     ");
 }
 
@@ -33,12 +38,16 @@ fn noncontiguous_html() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
-    │ [ BlockQuote
-    │     [ RawBlock (Format "html") "<!-- hello\n\nworld -->" ]
+    │ [ Div
+    │     ( "book__markdown__src__chapter.md" , [] , [] )
+    │     [ BlockQuote
+    │         [ RawBlock (Format "html") "<!-- hello\n\nworld -->" ]
+    │     ]
+    │ , Div ( "book__markdown__dummy" , [] , [] ) []
     │ ]
     "#);
 }
@@ -70,27 +79,31 @@ fn matched_html_tags() {
         .build();
     insta::assert_snapshot!(ast, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
-    │ [ RawBlock (Format "html") "<details>"
-    │ , Div
-    │     ( "" , [] , [] )
-    │     [ RawBlock (Format "html") "<summary>"
+    │ [ Div
+    │     ( "book__markdown__src__chapter.md" , [] , [] )
+    │     [ RawBlock (Format "html") "<details>"
     │     , Div
     │         ( "" , [] , [] )
-    │         [ Header
-    │             2
-    │             ( "book__markdown__src__chapter.md__heading" , [] , [] )
-    │             [ Str "Heading" ]
-    │         , Para [ Str "text" ]
+    │         [ RawBlock (Format "html") "<summary>"
+    │         , Div
+    │             ( "" , [] , [] )
+    │             [ Header
+    │                 2
+    │                 ( "book__markdown__src__chapter.md__heading" , [] , [] )
+    │                 [ Str "Heading" ]
+    │             , Para [ Str "text" ]
+    │             ]
+    │         , RawBlock (Format "html") "</summary>"
+    │         , Para [ Str "more " , Strong [ Str "markdown" ] ]
     │         ]
-    │     , RawBlock (Format "html") "</summary>"
-    │     , Para [ Str "more " , Strong [ Str "markdown" ] ]
+    │     , RawBlock (Format "html") "</details>"
+    │     , Para [ Str "outside divs" ]
     │     ]
-    │ , RawBlock (Format "html") "</details>"
-    │ , Para [ Str "outside divs" ]
+    │ , Div ( "book__markdown__dummy" , [] , [] ) []
     │ ]
     "#);
 
@@ -132,21 +145,25 @@ fn implicitly_closed_tags() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
+    │ \hypertarget{book__latex__src__chapter.md}{}
     │ \begin{itemize}
     │ \tightlist
     │ \item
     │   before
     │ \item
-    │   \hyperref[book__latex__src__chapter.md__foo]{Box}
+    │   \protect\hyperlink{book__latex__src__chapter.md__foo}{Box}
     │ \item
     │   after
     │ \end{itemize}
     │ 
-    │ \chapter{Foo}\label{book__latex__src__chapter.md__foo}
+    │ \hypertarget{book__latex__src__chapter.md__foo}{%
+    │ \chapter{Foo}\label{book__latex__src__chapter.md__foo}}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [BulletList [[Plain [Str "before"]], [Plain [Link ("", [], []) [Str "Box", RawInline (Format "html") "<t>", RawInline (Format "html") "</t>"] ("#foo", "")]], [Plain [Str "after"]]], Header 1 ("foo", [], []) [Str "Foo"]]
     "##);
@@ -178,24 +195,27 @@ fn link_to_element_by_id() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
-    │ \protect\phantomsection\label{book__latex__src__chapter.md__test}{some text here}
-    │ \protect\phantomsection\label{book__latex__src__chapter.md__test2}{some text here}
+    │ \leavevmode\vadjust pre{\hypertarget{book__latex__src__chapter.md}{}}%
+    │ \protect\hypertarget{book__latex__src__chapter.md__test}{}{some text here}
+    │ \protect\hypertarget{book__latex__src__chapter.md__test2}{}{some text here}
     │ 
-    │ \protect\phantomsection\label{book__latex__src__chapter.md__test3}
+    │ \hypertarget{book__latex__src__chapter.md__test3}{}
     │ 
     │ some text here
     │ 
-    │ \protect\phantomsection\label{book__latex__src__chapter.md__test4}
+    │ \hypertarget{book__latex__src__chapter.md__test4}{}
     │ some text here
     │ 
-    │ \hyperref[book__latex__src__chapter.md__test]{test link}
-    │ \hyperref[book__latex__src__chapter.md__test2]{test2 link}
-    │ \hyperref[book__latex__src__chapter.md__test3]{test3 link}
-    │ \hyperref[book__latex__src__chapter.md__test4]{test4 link}
+    │ \protect\hyperlink{book__latex__src__chapter.md__test}{test link}
+    │ \protect\hyperlink{book__latex__src__chapter.md__test2}{test2 link}
+    │ \protect\hyperlink{book__latex__src__chapter.md__test3}{test3 link}
+    │ \protect\hyperlink{book__latex__src__chapter.md__test4}{test4 link}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [Para [Span ("test", [], []) [Str "some text here"], SoftBreak, Span ("test2", [], []) [Str "some text here"]], Div ("test3", [], []) [Plain [Str "
     │ some text here
@@ -222,15 +242,18 @@ fn rust_reference_regression_nested_elements() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
-    │ \protect\phantomsection\label{book__latex__src__chapter.md__my-div}
-    │ \protect\phantomsection\label{book__latex__src__chapter.md__my-a}\hyperref[book__latex__src__chapter.md__my-div]{{[}some text here{]}}
+    │ \hypertarget{book__latex__src__chapter.md}{}
+    │ \hypertarget{book__latex__src__chapter.md__my-div}{}
+    │ \protect\hypertarget{book__latex__src__chapter.md__my-a}{\protect\hyperlink{book__latex__src__chapter.md__my-div}{{[}some text here{]}}}
     │ 
-    │ \hyperref[book__latex__src__chapter.md__my-div]{div}
-    │ \hyperref[book__latex__src__chapter.md__my-a]{a}
+    │ \protect\hyperlink{book__latex__src__chapter.md__my-div}{div}
+    │ \protect\hyperlink{book__latex__src__chapter.md__my-a}{a}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [Div ("my-div", [], []) [Plain [Link ("my-a", [], [("href", "#my-div")]) [Str "[some text here]"] ("#my-div", "")]], Para [Link ("", [], []) [Str "div"] ("#my-div", ""), SoftBreak, Link ("", [], []) [Str "a"] ("#my-a", "")]]
     "##);
@@ -250,11 +273,14 @@ fn regression_malformed_html() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
+    │ \leavevmode\vadjust pre{\hypertarget{book__latex__src__chapter.md}{}}%
     │ \textbf{{foo}}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [Para [Strong [RawInline (Format "html") "<del>", Span ("", [], []) [Str "foo", RawInline (Format "html") "<del>", RawInline (Format "html") "</del>"], RawInline (Format "html") "</del>"]]]
     "#);
@@ -273,14 +299,17 @@ fn regression_inline_html_newlines() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
+    │ \hypertarget{book__latex__src__chapter.md}{}
     │ \begin{itemize}
     │ \item
     │   Arrow-Left: Navigate to the previous page.
     │ \end{itemize}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [BulletList [[RawBlock (Format "html") "<kbd>", Plain [Str "Arrow-Left", RawInline (Format "html") "</kbd>", Str ": Navigate to the previous page."]]]]
     "#);
@@ -298,12 +327,15 @@ fn attach_id_to_div_of_stripped_html_elements() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
-    │ \protect\phantomsection\label{book__latex__src__chapter.md__foo=bar}
-    │ \hyperref[book__latex__src__chapter.md__foo=bar]{}something here
+    │ \hypertarget{book__latex__src__chapter.md}{}
+    │ \hypertarget{book__latex__src__chapter.md__foo=bar}{}
+    │ \protect\hyperlink{book__latex__src__chapter.md__foo=bar}{}something here
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [RawBlock (Format "html") "<dt id=\"foo=bar\">", Div ("foo=bar", [], []) [Plain [Link ("", [], [("href", "#foo=bar")]) [] ("#foo=bar", ""), Str "something here"]], RawBlock (Format "html") "</dt>"]
     "##);
@@ -321,19 +353,23 @@ fn noscript_element() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
-    │ [ RawBlock (Format "html") "<noscript>"
-    │ , Header
-    │     2
-    │     ( "book__markdown__src__chapter.md__no-scripting-enabled"
-    │     , []
-    │     , []
-    │     )
-    │     [ Str "No scripting enabled" ]
-    │ , RawBlock (Format "html") "</noscript>"
+    │ [ Div
+    │     ( "book__markdown__src__chapter.md" , [] , [] )
+    │     [ RawBlock (Format "html") "<noscript>"
+    │     , Header
+    │         2
+    │         ( "book__markdown__src__chapter.md__no-scripting-enabled"
+    │         , []
+    │         , []
+    │         )
+    │         [ Str "No scripting enabled" ]
+    │     , RawBlock (Format "html") "</noscript>"
+    │     ]
+    │ , Div ( "book__markdown__dummy" , [] , [] ) []
     │ ]
     "#);
 }
@@ -361,22 +397,26 @@ fn figures() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
-    │ [ Figure
-    │     ( "" , [] , [] )
-    │     (Caption Nothing [ Plain [ Str " caption one " ] ])
-    │     [ Plain
-    │         [ Image
-    │             ( "" , [] , [] ) [] ( "book/markdown/src/fig.png" , "" )
+    │ [ Div
+    │     ( "book__markdown__src__chapter.md" , [] , [] )
+    │     [ Figure
+    │         ( "" , [] , [] )
+    │         (Caption Nothing [ Plain [ Str " caption one " ] ])
+    │         [ Plain
+    │             [ Image
+    │                 ( "" , [] , [] ) [] ( "book/markdown/src/fig.png" , "" )
+    │             ]
     │         ]
+    │     , Figure
+    │         ( "" , [] , [] )
+    │         (Caption Nothing [ Plain [ Str "caption two" ] ])
+    │         [ Plain [ Strikeout [ Str "figure contents" ] ] ]
     │     ]
-    │ , Figure
-    │     ( "" , [] , [] )
-    │     (Caption Nothing [ Plain [ Str "caption two" ] ])
-    │     [ Plain [ Strikeout [ Str "figure contents" ] ] ]
+    │ , Div ( "book__markdown__dummy" , [] , [] ) []
     │ ]
     "#);
 }

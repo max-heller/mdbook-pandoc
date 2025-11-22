@@ -19,7 +19,7 @@ fn redirects() {
     let output = MDBook::options()
         .max_log_level(tracing::Level::DEBUG)
         .init()
-        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .mdbook_config(mdbook_core::config::Config::from_str(cfg).unwrap())
         .chapter(Chapter::new(
             "",
             "[bar](foo/bar.md)\n[bib](appendices/bibliography.html)",
@@ -29,9 +29,9 @@ fn redirects() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │ DEBUG mdbook::book: Running the index preprocessor.
-    │ DEBUG mdbook::book: Running the links preprocessor.
-    │  INFO mdbook::book: Running the pandoc backend
+    │ DEBUG mdbook_driver::mdbook: Running the index preprocessor.
+    │ DEBUG mdbook_driver::mdbook: Running the links preprocessor.
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │ DEBUG mdbook_pandoc: Processing redirects in [output.html.redirect]
     │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /appendices/bibliography.html => https://rustc-dev-guide.rust-lang.org/appendix/bibliography.html
     │ DEBUG mdbook_pandoc::preprocess: Processing redirect: /foo/bar.html => ../new bar.html

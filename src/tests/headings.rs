@@ -12,13 +12,17 @@ fn heading_attributes() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
-    │ \chapter{Heading}\label{book__latex__src__chapter.md__custom-heading}
+    │ \hypertarget{book__latex__src__chapter.md}{}
+    │ \hypertarget{book__latex__src__chapter.md__custom-heading}{%
+    │ \chapter{Heading}\label{book__latex__src__chapter.md__custom-heading}}
     │ 
-    │ \hyperref[book__latex__src__chapter.md__custom-heading]{heading}
+    │ \protect\hyperlink{book__latex__src__chapter.md__custom-heading}{heading}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [Header 1 ("custom-heading", [], []) [Str "Heading"], Para [Link ("", [], []) [Str "heading"] ("#custom-heading", "")]]
     "##);
@@ -37,17 +41,24 @@ fn nested_chapters() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
-    │ \chapter{One}\label{book__latex__src__one.md__one}
+    │ \hypertarget{book__latex__src__one.md}{}
+    │ \hypertarget{book__latex__src__one.md__one}{%
+    │ \chapter{One}\label{book__latex__src__one.md__one}}
     │ 
-    │ \section{Top}\label{book__latex__src__onepointone.md__top}
+    │ \hypertarget{book__latex__src__onepointone.md}{}
+    │ \hypertarget{book__latex__src__onepointone.md__top}{%
+    │ \section{Top}\label{book__latex__src__onepointone.md__top}}
     │ 
-    │ \subsection*{Another}\label{book__latex__src__onepointone.md__another}
+    │ \hypertarget{book__latex__src__onepointone.md__another}{%
+    │ \subsection*{Another}\label{book__latex__src__onepointone.md__another}}
     │ 
-    │ \chapter{Two}\label{book__latex__src__two.md__two}
+    │ \hypertarget{book__latex__src__two.md}{}
+    │ \hypertarget{book__latex__src__two.md__two}{%
+    │ \chapter{Two}\label{book__latex__src__two.md__two}}
     ├─ latex/src/one.md
     │ [Header 1 ("one", [], []) [Str "One"]]
     ├─ latex/src/onepointone.md
@@ -112,65 +123,74 @@ fn repeated_identifiers() {
         .build();
     insta::assert_snapshot!(book, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
-    │ [ Header
-    │     1
-    │     ( "book__markdown__src__chapter.md__hello" , [] , [] )
-    │     [ Str "Hello" ]
-    │ , Header
-    │     1
-    │     ( "book__markdown__src__chapter.md__hello-1"
-    │     , [ "unnumbered" , "unlisted" ]
-    │     , []
-    │     )
-    │     [ Str "Hello" ]
-    │ , Para
-    │     [ Link
-    │         ( "" , [] , [] )
-    │         [ Str "first" ]
-    │         ( "#book__markdown__src__chapter.md__hello" , "" )
-    │     , Link
-    │         ( "" , [] , [] )
-    │         [ Str "second" ]
-    │         ( "#book__markdown__src__chapter.md__hello-1" , "" )
+    │ [ Div
+    │     ( "book__markdown__src__chapter.md" , [] , [] )
+    │     [ Header
+    │         1
+    │         ( "book__markdown__src__chapter.md__hello" , [] , [] )
+    │         [ Str "Hello" ]
+    │     , Header
+    │         1
+    │         ( "book__markdown__src__chapter.md__hello-1"
+    │         , [ "unnumbered" , "unlisted" ]
+    │         , []
+    │         )
+    │         [ Str "Hello" ]
+    │     , Para
+    │         [ Link
+    │             ( "" , [] , [] )
+    │             [ Str "first" ]
+    │             ( "#book__markdown__src__chapter.md__hello" , "" )
+    │         , Link
+    │             ( "" , [] , [] )
+    │             [ Str "second" ]
+    │             ( "#book__markdown__src__chapter.md__hello-1" , "" )
+    │         ]
     │     ]
-    │ , Header
-    │     1
-    │     ( "book__markdown__src__chapter2.md__hello" , [] , [] )
-    │     [ Str "Hello" ]
-    │ , Header
-    │     1
-    │     ( "book__markdown__src__chapter2.md__hello-1"
-    │     , [ "unnumbered" , "unlisted" ]
-    │     , []
-    │     )
-    │     [ Str "Hello" ]
-    │ , Para
-    │     [ Link
-    │         ( "" , [] , [] )
-    │         [ Str "first" ]
-    │         ( "#book__markdown__src__chapter2.md__hello" , "" )
-    │     , Link
-    │         ( "" , [] , [] )
-    │         [ Str "second" ]
-    │         ( "#book__markdown__src__chapter2.md__hello-1" , "" )
+    │ , Div
+    │     ( "book__markdown__src__chapter2.md" , [] , [] )
+    │     [ Header
+    │         1
+    │         ( "book__markdown__src__chapter2.md__hello" , [] , [] )
+    │         [ Str "Hello" ]
+    │     , Header
+    │         1
+    │         ( "book__markdown__src__chapter2.md__hello-1"
+    │         , [ "unnumbered" , "unlisted" ]
+    │         , []
+    │         )
+    │         [ Str "Hello" ]
+    │     , Para
+    │         [ Link
+    │             ( "" , [] , [] )
+    │             [ Str "first" ]
+    │             ( "#book__markdown__src__chapter2.md__hello" , "" )
+    │         , Link
+    │             ( "" , [] , [] )
+    │             [ Str "second" ]
+    │             ( "#book__markdown__src__chapter2.md__hello-1" , "" )
+    │         ]
     │     ]
-    │ , Header 1 ( "" , [] , [] ) [ Str "?" ]
-    │ , Header
-    │     1
-    │     ( "book__markdown__src__weird-ids.md__-1"
-    │     , [ "unnumbered" , "unlisted" ]
-    │     , []
-    │     )
-    │     [ Str "?" ]
-    │ , Para
-    │     [ Link
-    │         ( "" , [] , [] )
-    │         [ Str "second" ]
-    │         ( "#book__markdown__src__weird-ids.md__-1" , "" )
+    │ , Div
+    │     ( "book__markdown__src__weird-ids.md" , [] , [] )
+    │     [ Header 1 ( "" , [] , [] ) [ Str "?" ]
+    │     , Header
+    │         1
+    │         ( "book__markdown__src__weird-ids.md__-1"
+    │         , [ "unnumbered" , "unlisted" ]
+    │         , []
+    │         )
+    │         [ Str "?" ]
+    │     , Para
+    │         [ Link
+    │             ( "" , [] , [] )
+    │             [ Str "second" ]
+    │             ( "#book__markdown__src__weird-ids.md__-1" , "" )
+    │         ]
     │     ]
     │ ]
     "##);
@@ -186,15 +206,20 @@ fn parts() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
-    │ \chapter{One}\label{book__latex__src__one.md__one}
+    │ \hypertarget{book__latex__src__one.md}{}
+    │ \hypertarget{book__latex__src__one.md__one}{%
+    │ \chapter{One}\label{book__latex__src__one.md__one}}
     │ 
+    │ \leavevmode\vadjust pre{\hypertarget{book__latex__src__part-1-part-two.md}{}}%
     │ \part{part two}
     │ 
-    │ \chapter{Two}\label{book__latex__src__two.md__two}
+    │ \hypertarget{book__latex__src__two.md}{}
+    │ \hypertarget{book__latex__src__two.md__two}{%
+    │ \chapter{Two}\label{book__latex__src__two.md__two}}
     ├─ latex/src/one.md
     │ [Header 1 ("one", [], []) [Str "One"]]
     ├─ latex/src/part-1-part-two.md

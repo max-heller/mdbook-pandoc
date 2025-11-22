@@ -18,7 +18,7 @@ pub struct Styles<'i> {
 }
 
 pub fn read_stylesheets<'a>(
-    config: &'a mdbook::config::HtmlConfig,
+    config: &'a mdbook_core::config::HtmlConfig,
     book: &'a crate::Book,
 ) -> impl Iterator<Item = (&'a Path, String)> {
     config.additional_css.iter().flat_map(|stylesheet| {

@@ -31,11 +31,13 @@ fn basic() {
     "};
     let latex = diff(source, Config::latex());
     insta::assert_snapshot!(latex, @r#"
-    @@ -3,8 +3,14 @@
+    @@ -3,11 +3,17 @@
      │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
      │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
      ├─ latex/output.tex
+    -│ \leavevmode\vadjust pre{\hypertarget{book__latex__src__chapter.md}{}}%
     -│ title 1 : definition 1
+    +│ \hypertarget{book__latex__src__chapter.md}{}
     +│ \begin{description}
     +│ \tightlist
     +│ \item[title 1]
@@ -46,6 +48,8 @@ fn basic() {
     -│ title 2 : definition 2 a : definition 2 b
     +│ definition 2 b
     +│ \end{description}
+     │ 
+     │ \hypertarget{book__latex__dummy}{}
      ├─ latex/src/chapter.md
     -│ [Para [Str "title 1", SoftBreak, Str ": definition 1"], Para [Str "title 2", SoftBreak, Str ": definition 2 a", SoftBreak, Str ": definition 2 b"]]
     +│ [DefinitionList [([Str "title 1"], [[Plain [Str "definition 1"]]]), ([Str "title 2"], [[Plain [Str "definition 2 a"]], [Plain [Str "definition 2 b"]]])]]
@@ -68,17 +72,20 @@ fn dt_attributes() {
         .build();
     insta::assert_snapshot!(latex, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
+    │ \hypertarget{book__latex__src__chapter.md}{}
     │ \begin{description}
     │ \tightlist
-    │ \item[\protect\phantomsection\label{book__latex__src__chapter.md__term1}{term 1}]
+    │ \item[\protect\hypertarget{book__latex__src__chapter.md__term1}{}{term 1}]
     │ definition 1
     │ \end{description}
     │ 
-    │ \hyperref[book__latex__src__chapter.md__term1]{link to term 1}
+    │ \protect\hyperlink{book__latex__src__chapter.md__term1}{link to term 1}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [DefinitionList [([Span ("term1", [], []) [Str "term 1"]], [[Plain [Str "definition 1"]]])], Para [Link ("", [], []) [Str "link to term 1"] ("#term1", "")]]
     "##);

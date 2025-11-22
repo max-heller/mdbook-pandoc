@@ -2,7 +2,7 @@ use std::fs::{self, File};
 
 use anyhow::{anyhow, Context as _};
 use indexmap::IndexMap;
-use mdbook::config::HtmlConfig;
+use mdbook_core::config::HtmlConfig;
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 
@@ -98,16 +98,17 @@ impl Renderer {
     const CONFIG_KEY: &'static str = "output.pandoc";
 }
 
-impl mdbook::Renderer for Renderer {
+impl mdbook_renderer::Renderer for Renderer {
     fn name(&self) -> &str {
         Self::NAME
     }
 
-    fn render(&self, ctx: &mdbook::renderer::RenderContext) -> anyhow::Result<()> {
+    fn render(&self, ctx: &mdbook_renderer::RenderContext) -> anyhow::Result<()> {
         // If we're compiled against mdbook version I.J.K, require ^I.J
         // This allows using a version of mdbook with an earlier patch version as a server
         static MDBOOK_VERSION_REQ: Lazy<semver::VersionReq> = Lazy::new(|| {
-            let compiled_mdbook_version = semver::Version::parse(mdbook::MDBOOK_VERSION).unwrap();
+            let compiled_mdbook_version =
+                semver::Version::parse(mdbook_core::MDBOOK_VERSION).unwrap();
             semver::VersionReq {
                 comparators: vec![semver::Comparator {
                     op: semver::Op::Caret,
@@ -130,7 +131,7 @@ impl mdbook::Renderer for Renderer {
 
         let cfg: Config = ctx
             .config
-            .get_deserialized_opt(Self::CONFIG_KEY)
+            .get(Self::CONFIG_KEY)
             .with_context(|| format!("Unable to deserialize {}", Self::CONFIG_KEY))?
             .ok_or(anyhow!("No {} table found", Self::CONFIG_KEY))?;
 
@@ -141,10 +142,7 @@ impl mdbook::Renderer for Renderer {
 
         pandoc::check_compatibility()?;
 
-        let html_cfg: Option<HtmlConfig> = ctx
-            .config
-            .get_deserialized_opt("output.html")
-            .unwrap_or_default();
+        let html_cfg: Option<HtmlConfig> = ctx.config.get("output.html").unwrap_or_default();
 
         let book = Book::new(ctx)?;
 

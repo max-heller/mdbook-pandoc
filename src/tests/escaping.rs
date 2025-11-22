@@ -8,19 +8,23 @@ fn preserve_escapes() {
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
-    │ [ Para
-    │     [ Str "["
-    │     , Str "Prefix @fig:1"
-    │     , Str "]"
-    │     , Str " "
-    │     , Str "["
-    │     , Str "-@fig:1"
-    │     , Str "]"
+    │ [ Div
+    │     ( "book__markdown__src__chapter.md" , [] , [] )
+    │     [ Para
+    │         [ Str "["
+    │         , Str "Prefix @fig:1"
+    │         , Str "]"
+    │         , Str " "
+    │         , Str "["
+    │         , Str "-@fig:1"
+    │         , Str "]"
+    │         ]
     │     ]
+    │ , Div ( "book__markdown__dummy" , [] , [] ) []
     │ ]
     "#);
 }

@@ -31,36 +31,40 @@ fn code_escaping() {
         .build();
     insta::assert_snapshot!(book, @r###"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
-    │ [ CodeBlock
-    │     ( "" , [ "rust" ] , [] )
-    │     "\"foo\"; r\"foo\";                     // foo\n\"\\\"foo\\\"\"; r#\"\"foo\"\"#;             // \"foo\"\n\n\"foo #\\\"# bar\";\nr##\"foo #\"# bar\"##;                // foo #\"# bar\n\n\"\\x52\"; \"R\"; r\"R\";                 // R\n\"\\\\x52\"; r\"\\x52\";                  // \\x52\n"
-    │ , Para
-    │     [ Code
-    │         ( "" , [] , [] )
-    │         "\"foo\"; r\"foo\";                     // foo"
-    │     , SoftBreak
-    │     , Code
-    │         ( "" , [] , [] )
-    │         "\"\\\"foo\\\"\"; r#\"\"foo\"\"#;             // \"foo\""
-    │     , SoftBreak
-    │     , Code ( "" , [] , [] ) "\"foo #\\\"# bar\";"
-    │     , SoftBreak
-    │     , Code
-    │         ( "" , [] , [] )
-    │         "r##\"foo #\"# bar\"##;                // foo #\"# bar"
-    │     , SoftBreak
-    │     , Code
-    │         ( "" , [] , [] )
-    │         "\"\\x52\"; \"R\"; r\"R\";                 // R"
-    │     , SoftBreak
-    │     , Code
-    │         ( "" , [] , [] )
-    │         "\"\\\\x52\"; r\"\\x52\";                  // \\x52"
+    │ [ Div
+    │     ( "book__markdown__src__chapter.md" , [] , [] )
+    │     [ CodeBlock
+    │         ( "" , [ "rust" ] , [] )
+    │         "\"foo\"; r\"foo\";                     // foo\n\"\\\"foo\\\"\"; r#\"\"foo\"\"#;             // \"foo\"\n\n\"foo #\\\"# bar\";\nr##\"foo #\"# bar\"##;                // foo #\"# bar\n\n\"\\x52\"; \"R\"; r\"R\";                 // R\n\"\\\\x52\"; r\"\\x52\";                  // \\x52\n"
+    │     , Para
+    │         [ Code
+    │             ( "" , [] , [] )
+    │             "\"foo\"; r\"foo\";                     // foo"
+    │         , SoftBreak
+    │         , Code
+    │             ( "" , [] , [] )
+    │             "\"\\\"foo\\\"\"; r#\"\"foo\"\"#;             // \"foo\""
+    │         , SoftBreak
+    │         , Code ( "" , [] , [] ) "\"foo #\\\"# bar\";"
+    │         , SoftBreak
+    │         , Code
+    │             ( "" , [] , [] )
+    │             "r##\"foo #\"# bar\"##;                // foo #\"# bar"
+    │         , SoftBreak
+    │         , Code
+    │             ( "" , [] , [] )
+    │             "\"\\x52\"; \"R\"; r\"R\";                 // R"
+    │         , SoftBreak
+    │         , Code
+    │             ( "" , [] , [] )
+    │             "\"\\\\x52\"; r\"\\x52\";                  // \\x52"
+    │         ]
     │     ]
+    │ , Div ( "book__markdown__dummy" , [] , [] ) []
     │ ]
     "###);
 }
@@ -89,10 +93,11 @@ fn code_block_with_hidden_lines() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
+    │ ::: {#book__markdown__src__chapter.md}
     │ ``` rust
     │ println!("Hello, world!");
     │     #foo
@@ -101,6 +106,10 @@ fn code_block_with_hidden_lines() {
     │     #[test]
     │     #![test]
     │ ```
+    │ :::
+    │ 
+    │ ::: {#book__markdown__dummy}
+    │ :::
     "#);
     let book = MDBook::init()
         .config(Config {
@@ -156,14 +165,19 @@ fn non_rust_code_block_with_hidden_lines() {
         .build();
     insta::assert_snapshot!(book, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
+    │ ::: {#book__markdown__src__chapter.md}
     │ ``` python
     │ nothidden():
     │     nothidden()
     │ ```
+    │ :::
+    │ 
+    │ ::: {#book__markdown__dummy}
+    │ :::
     ");
     let book = MDBook::init()
         .mdbook_config(cfg.parse().unwrap())
@@ -208,14 +222,19 @@ fn code_block_hidelines_override() {
         .build();
     insta::assert_snapshot!(book, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/book.md
     ├─ markdown/book.md
+    │ ::: {#book__markdown__src__chapter.md}
     │ ``` python
     │ nothidden():
     │     nothidden()
     │ ```
+    │ :::
+    │ 
+    │ ::: {#book__markdown__dummy}
+    │ :::
     ");
 }
 
@@ -285,10 +304,11 @@ fn mdbook_rust_code_block_attributes() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
+    │ \hypertarget{book__latex__src__chapter.md}{}
     │ \begin{Shaded}
     │ \begin{Highlighting}[]
     │ \KeywordTok{fn}\NormalTok{ main() }\OperatorTok{\{\}}
@@ -306,6 +326,8 @@ fn mdbook_rust_code_block_attributes() {
     │ \KeywordTok{fn}\NormalTok{ main() }\OperatorTok{\{\}}
     │ \end{Highlighting}
     │ \end{Shaded}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [CodeBlock ("", ["rust"], []) "fn main() {}
     │ ", CodeBlock ("", ["rust", "ignore"], []) "fn main() {}
@@ -345,17 +367,21 @@ fn regression_inline_code_newline() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
-    │ [ BulletList
-    │     [ [ Plain
-    │           [ Str "Writing a program that prints "
-    │           , Code ( "" , [] , [] ) "Hello, world!"
+    │ [ Div
+    │     ( "book__markdown__src__chapter.md" , [] , [] )
+    │     [ BulletList
+    │         [ [ Plain
+    │               [ Str "Writing a program that prints "
+    │               , Code ( "" , [] , [] ) "Hello, world!"
+    │               ]
     │           ]
-    │       ]
+    │         ]
     │     ]
+    │ , Div ( "book__markdown__dummy" , [] , [] ) []
     │ ]
     "#);
 }

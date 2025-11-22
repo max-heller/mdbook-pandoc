@@ -17,10 +17,7 @@ use anyhow::{anyhow, Context};
 use ego_tree::NodeId;
 use html5ever::{expanded_name, local_name, ns, tendril::format_tendril};
 use log::log;
-use mdbook::{
-    book::{BookItems, Chapter},
-    BookItem,
-};
+use mdbook_core::book::{BookItem, BookItems, Chapter};
 use normpath::PathExt;
 use once_cell::sync::Lazy;
 use pulldown_cmark::{CowStr, Event, HeadingLevel, LinkType, Tag, TagEnd};
@@ -109,7 +106,7 @@ impl<'book> Preprocessor<'book> {
             ) = section
             {
                 let chapter = IndexedChapter {
-                    chapter,
+                    chapter: &chapter,
                     anchors: Default::default(),
                 };
                 chapters.insert(path.as_path(), chapter);

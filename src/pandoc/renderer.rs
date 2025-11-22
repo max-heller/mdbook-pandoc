@@ -7,8 +7,8 @@ use std::{
     process::{Command, Stdio},
 };
 
-use anyhow::Context as _;
-use mdbook::config::TextDirection;
+use anyhow::{bail, Context as _};
+use mdbook_core::config::TextDirection;
 use normpath::PathExt;
 use tempfile::NamedTempFile;
 
@@ -23,11 +23,11 @@ pub struct Context<'book> {
     pub output: OutputFormat,
     pub destination: PathBuf,
     pub book: &'book Book<'book>,
-    pub mdbook_cfg: &'book mdbook::Config,
+    pub mdbook_cfg: &'book mdbook_core::config::Config,
     pub columns: usize,
     pub cur_list_depth: usize,
     pub max_list_depth: usize,
-    pub html: Option<&'book mdbook::config::HtmlConfig>,
+    pub html: Option<&'book mdbook_core::config::HtmlConfig>,
     pub(crate) code: &'book CodeConfig,
     pub css: &'book css::Css<'book>,
 }
@@ -97,8 +97,9 @@ impl Renderer {
         }
         if let Some(text_direction) = ctx.mdbook_cfg.book.text_direction {
             let dir = match text_direction {
-                mdbook::config::TextDirection::LeftToRight => "ltr",
-                mdbook::config::TextDirection::RightToLeft => "rtl",
+                mdbook_core::config::TextDirection::LeftToRight => "ltr",
+                mdbook_core::config::TextDirection::RightToLeft => "rtl",
+                _ => bail!("Unsupported text direction."),
             };
             default_variables.push(("dir", dir.into()));
         }

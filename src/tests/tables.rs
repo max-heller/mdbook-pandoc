@@ -17,10 +17,11 @@ fn empty() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
+    │ \hypertarget{book__latex__src__chapter.md}{}
     │ \begin{longtable}[]{@{}ll@{}}
     │ \toprule\noalign{}
     │ Header1 & Header2 \\
@@ -29,6 +30,8 @@ fn empty() {
     │ \bottomrule\noalign{}
     │ \endlastfoot
     │ \end{longtable}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [Table ("", [], []) (Caption Nothing []) [(AlignDefault, ColWidthDefault), (AlignDefault, ColWidthDefault)] (TableHead ("", [], []) [Row ("", [], []) [Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header1"]], Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header2"]]]]) [] (TableFoot ("", [], []) [])]
     "#);
@@ -50,10 +53,11 @@ fn basic() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
+    │ \hypertarget{book__latex__src__chapter.md}{}
     │ \begin{longtable}[]{@{}ll@{}}
     │ \toprule\noalign{}
     │ Header1 & Header2 \\
@@ -63,6 +67,8 @@ fn basic() {
     │ \endlastfoot
     │ abc & def \\
     │ \end{longtable}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [Table ("", [], []) (Caption Nothing []) [(AlignDefault, ColWidthDefault), (AlignDefault, ColWidthDefault)] (TableHead ("", [], []) [Row ("", [], []) [Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header1"]], Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header2"]]]]) [(TableBody ("", [], []) (RowHeadColumns 0) [] [Row ("", [], []) [Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "abc"]], Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "def"]]]])] (TableFoot ("", [], []) [])]
     "#);
@@ -84,13 +90,14 @@ fn wide() {
         .build();
     insta::assert_snapshot!(book, @r#"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex
+    │ \hypertarget{book__latex__src__chapter.md}{}
     │ \begin{longtable}[]{@{}
-    │   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.0986}}
-    │   >{\raggedright\arraybackslash}p{(\linewidth - 2\tabcolsep) * \real{0.9014}}@{}}
+    │   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.0986}}
+    │   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.9014}}@{}}
     │ \toprule\noalign{}
     │ \begin{minipage}[b]{\linewidth}\raggedright
     │ Header1
@@ -104,6 +111,8 @@ fn wide() {
     │ abc &
     │ long long long long long long long long long long long long long \\
     │ \end{longtable}
+    │ 
+    │ \hypertarget{book__latex__dummy}{}
     ├─ latex/src/chapter.md
     │ [Table ("", [], []) (Caption Nothing []) [(AlignDefault, (ColWidth 0.09859154929577464)), (AlignLeft, (ColWidth 0.9014084507042254))] (TableHead ("", [], []) [Row ("", [], []) [Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header1"]], Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "Header2"]]]]) [(TableBody ("", [], []) (RowHeadColumns 0) [] [Row ("", [], []) [Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "abc"]], Cell ("", [], []) AlignDefault (RowSpan 0) (ColSpan 0) [Plain [Str "long long long long long long long long long long long long long"]]]])] (TableFoot ("", [], []) [])]
     "#);
