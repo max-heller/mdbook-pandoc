@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.11.0] - 2025-11-22
+
+### Changes
+
+- Increase MSRV to 1.88 ([#195](https://github.com/max-heller/mdbook-pandoc/pull/195))
+
+
+
 ## [0.10.6] - 2025-11-01
 
 ### Bug Fixes
