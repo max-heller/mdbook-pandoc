@@ -6,8 +6,16 @@ All notable changes to this project will be documented in this file.
 
 ### Changes
 
-- Increase MSRV to 1.88 ([#195](https://github.com/max-heller/mdbook-pandoc/pull/195))
+- Increased Minimum Supported Rust Version (MSRV) to 1.88 ([#195](https://github.com/max-heller/mdbook-pandoc/pull/195))
 
+- [**breaking**] Upgraded to `mdbook` v0.5 ([#194](https://github.com/max-heller/mdbook-pandoc/pull/194))
+
+  For consistency with the new mdbook version:
+  - Switched logging from `log` to `tracing`
+  - Definition lists and admonitions (aka blockquote tags) are now enabled by default
+  - Font Awesome 4 icons are soft-deprecated in favor of Font Awesome 6
+    icons, which are usable in more output formats. FA4 icons are mapped
+    to FA6 icons when possible.
 
 
 ## [0.10.6] - 2025-11-01

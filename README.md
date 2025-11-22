@@ -64,9 +64,7 @@ A subset of the available options are described below:
 
 ```toml
 [output.pandoc.markdown.extensions] # enable additional Markdown extensions
-gfm = false # enable pulldown-cmark's GitHub Flavored Markdown extensions
 math = false # parse inline ($a^b$) and display ($$a^b$$) math
-definition-lists = false # parse definition lists
 superscript = false # parse superscripted text (^this is superscripted^)
 subscript = false # parse subscripted text (~this is subscripted~)
 
