@@ -3,7 +3,8 @@ source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
- INFO mdbook::book: Running the pandoc backend
+ INFO mdbook_driver::mdbook: Running the pandoc backend
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../rustdoc/the-doc-attribute.html' in chapter '$ROOT/book/pdf/src/attributes.html#documentation', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../rustdoc/the-doc-attribute.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../book/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../book/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/index.html' in chapter 'introduction.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/index.html'
@@ -248,11 +249,6 @@ snapshot_kind: text
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../std/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../alloc/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../alloc/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../test/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../test/index.html'
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../std/index.html'
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../core/index.html'
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../std/index.html'
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../std/index.html'
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../../core/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../core/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../../std/index.html' in chapter 'names/preludes.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/names/../../std/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/ptr/index.html#provenance' in chapter 'memory-model.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../core/ptr/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/macro.panic.html' in chapter 'panic.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/macro.panic.html'

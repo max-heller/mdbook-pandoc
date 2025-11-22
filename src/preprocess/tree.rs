@@ -16,11 +16,11 @@ use html5ever::{
     tendril::{fmt::UTF8, format_tendril, StrTendril, Tendril, TendrilSink},
     LocalName,
 };
-use indexmap::IndexSet;
+use indexmap::{IndexMap, IndexSet};
 use pulldown_cmark::{BlockQuoteKind, CowStr, LinkType};
 
 use crate::{
-    html, latex,
+    html,
     pandoc::{self, native::Attributes as _},
     url,
 };
@@ -139,7 +139,7 @@ impl<'book> Emitter<'book> {
         node: NodeRef<'_, Node>,
         serializer: &mut pandoc::native::SerializeNested<'_, '_, 'book, '_, impl io::Write>,
     ) -> anyhow::Result<()> {
-        log::trace!("Writing Pandoc AST for {:?}", node.value());
+        tracing::trace!("Writing Pandoc AST for {:?}", node.value());
         match node.value() {
             Node::Document => unreachable!(),
             Node::HtmlComment(comment) => {
@@ -350,13 +350,13 @@ impl<'book> Emitter<'book> {
                 MdElement::FootnoteDefinition => Ok(()),
                 MdElement::FootnoteReference(label) => match self.footnotes.get(label) {
                     None => {
-                        log::warn!("Undefined footnote: {label}");
+                        tracing::warn!("Undefined footnote: {label}");
                         Ok(())
                     }
                     Some(definition) => {
                         let open_footnotes = &mut serializer.serializer().footnotes;
                         if open_footnotes.contains(label.as_ref()) {
-                            log::warn!(
+                            tracing::warn!(
                                 "Cycle in footnote definitions: {:?}",
                                 FootnoteCycle(&serializer.serializer().footnotes, label)
                             );
@@ -421,7 +421,7 @@ impl<'book> Emitter<'book> {
                 MdElement::CodeBlock(kind) => {
                     let ctx = &serializer.preprocessor().preprocessor.ctx;
 
-                    let mut code_block = code::CodeBlock::new(kind, ctx.html.map(|cfg| &cfg.code));
+                    let mut code_block = code::CodeBlock::new(kind, &ctx.html.code);
 
                     let lines = node.children().map(|node| {
                         match node.value() {
@@ -691,87 +691,73 @@ impl<'book> Emitter<'book> {
                             )
                         });
                     }
-                    local_name!("i") => {
+                    local_name!("i") if !node.has_children() => {
                         let Attributes { id, classes, rest } = &element.attrs;
-                        if id.is_none() && rest.is_empty() {
-                            // Check for Font Awesome 4 icons (supported only in LaTeX formats)
-                            if let Some(icon) = classes.strip_prefix("fa fa-") {
-                                let ctx = &mut serializer.preprocessor().preprocessor.ctx;
-                                if let pandoc::OutputFormat::Latex { packages } = &mut ctx.output {
-                                    if !node.has_children() {
-                                        packages.need(latex::Package::FontAwesome);
-                                        return serializer.serialize_inlines(|inlines| {
-                                            inlines
-                                                .serialize_element()?
-                                                .serialize_raw_inline("latex", |raw| {
-                                                    write!(raw, r"\faicon{{{icon}}}")
-                                                })
-                                        });
-                                    }
-                                }
-                            }
 
-                            // Check for Font Awesome 6 icons (supported in all formats)
-                            let fa6 = {
-                                let mut type_ = fa::Type::Regular;
-                                let mut icon = None;
-                                let classes = classes
-                                    .split_ascii_whitespace()
-                                    .filter(|&class| {
-                                        if let Some(name) = class.strip_prefix("fa-") {
-                                            icon = Some(name);
-                                            false
-                                        } else if class == "fa" {
-                                            type_ = fa::Type::Regular;
-                                            false
-                                        } else if class == "fas" {
-                                            type_ = fa::Type::Solid;
-                                            false
-                                        } else if class == "fab" {
-                                            type_ = fa::Type::Brands;
-                                            false
-                                        } else {
-                                            true
-                                        }
-                                    })
-                                    .map(CowStr::Borrowed)
-                                    .collect::<Vec<_>>();
-                                icon.map(|icon| (type_, icon, classes))
-                            };
-                            if let Some((type_, icon, classes)) = fa6 {
-                                if let Ok(svg) = fa::svg(type_, icon) {
-                                    let data_url = {
-                                        let mut data = String::from("data:image/svg+xml;base64,");
-                                        base64::engine::general_purpose::STANDARD
-                                            .encode_string(svg, &mut data);
-                                        data
+                        // Check for Font Awesome icons
+                        let font_awesome_icon = {
+                            let mut type_ = fa::Type::Regular;
+                            let mut icon = None;
+                            let classes = classes
+                                .split_ascii_whitespace()
+                                .filter(|&class| {
+                                    if matches!(class, "fa" | "fa-regular") {
+                                        type_ = fa::Type::Regular;
+                                        false
+                                    } else if matches!(class, "fas" | "fa-solid") {
+                                        type_ = fa::Type::Solid;
+                                        false
+                                    } else if matches!(class, "fab" | "fa-brands") {
+                                        type_ = fa::Type::Brands;
+                                        false
+                                    } else if let Some(class) = class.strip_prefix("fa-") {
+                                        icon = Some(class);
+                                        false
+                                    } else {
+                                        true
+                                    }
+                                })
+                                .map(CowStr::Borrowed)
+                                .collect::<Vec<_>>()
+                                .join(" ");
+                            icon.map(|icon| (type_, icon, classes))
+                        };
+                        if let Some((type_, icon, classes)) = font_awesome_icon {
+                            if let Ok(svg) = fa::svg(type_, icon) {
+                                let data_url = {
+                                    let mut data = String::from("data:image/svg+xml;base64,");
+                                    base64::engine::general_purpose::STANDARD
+                                        .encode_string(svg, &mut data);
+                                    data
+                                };
+                                // If the icon does not already have a width/height specified,
+                                // assign it one matching the text height
+                                let attrs = {
+                                    let mut attrs = Attributes {
+                                        id: id.clone(),
+                                        classes: classes.into(),
+                                        rest: rest.clone(),
                                     };
-                                    // If the icon does not already have a width/height specified,
-                                    // assign it one matching the text height
-                                    let attrs = {
-                                        let mut attrs =
-                                            (id.as_deref(), classes.as_slice(), [].as_slice());
-                                        let css = serializer.preprocessor().preprocessor.ctx.css;
-                                        if !attrs
-                                            .css_properties(&css.styles)
-                                            .any(|(prop, _)| matches!(prop, "width" | "height"))
-                                        {
-                                            attrs.2 = &[(
-                                                CowStr::Borrowed("height"),
-                                                Some(CowStr::Borrowed("1em")),
-                                            )];
-                                        }
-                                        attrs
-                                    };
-                                    return serializer.serialize_inlines(|inlines| {
-                                        inlines.serialize_element()?.serialize_image(
-                                            attrs,
-                                            |_alt| Ok(()),
-                                            &data_url,
-                                            "",
-                                        )
-                                    });
-                                }
+                                    let css = serializer.preprocessor().preprocessor.ctx.css;
+                                    if !attrs
+                                        .css_properties(&css.styles)
+                                        .any(|(prop, _)| matches!(prop, "width" | "height"))
+                                    {
+                                        attrs.rest = IndexMap::from_iter([(
+                                            html::name!("height"),
+                                            "1em".into(),
+                                        )]);
+                                    }
+                                    attrs
+                                };
+                                return serializer.serialize_inlines(|inlines| {
+                                    inlines.serialize_element()?.serialize_image(
+                                        attrs,
+                                        |_alt| Ok(()),
+                                        &data_url,
+                                        "",
+                                    )
+                                });
                             }
                         }
                     }

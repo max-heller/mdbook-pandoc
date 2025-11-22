@@ -3,7 +3,7 @@ source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
- INFO mdbook::book: Running the pandoc backend
+ INFO mdbook_driver::mdbook: Running the pandoc backend
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../book/index.html' in chapter 'intro.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../book/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../book/index.html' in chapter 'intro.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../book/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../reference/index.html' in chapter 'intro.md', linking to hosted HTML book at 'https://doc.rust-lang.org/nomicon/../reference/index.html'

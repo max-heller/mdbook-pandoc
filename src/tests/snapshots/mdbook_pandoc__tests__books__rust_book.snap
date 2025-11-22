@@ -3,11 +3,7 @@ source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
- WARN mdbook::preprocess::cmd: The command wasn't found, is the "trpl-listing" preprocessor installed?
- WARN mdbook::preprocess::cmd: 	Command: mdbook-trpl-listing
- WARN mdbook::preprocess::cmd: The command wasn't found, is the "trpl-note" preprocessor installed?
- WARN mdbook::preprocess::cmd: 	Command: mdbook-trpl-note
- INFO mdbook::book: Running the pandoc backend
+ INFO mdbook_driver::mdbook: Running the pandoc backend
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/prelude/index.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/prelude/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/string/struct.String.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/string/struct.String.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/io/struct.Stdin.html' in chapter 'ch02-00-guessing-game-tutorial.md', linking to hosted HTML book at 'https://doc.rust-lang.org/book/../std/io/struct.Stdin.html'

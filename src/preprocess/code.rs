@@ -18,7 +18,7 @@ pub enum Language<'book> {
 }
 
 impl<'book> CodeBlock<'book> {
-    pub fn new(kind: &'book CodeBlockKind<'_>, cfg: Option<&'book mdbook::config::Code>) -> Self {
+    pub fn new(kind: &'book CodeBlockKind<'_>, cfg: &'book mdbook::config::Code) -> Self {
         // MdBook supports custom attributes in code block info strings.
         // Attributes are separated by a comma, space, or tab from the language name.
         // See https://rust-lang.github.io/mdBook/format/mdbook.html#rust-code-block-attributes
@@ -49,7 +49,7 @@ impl<'book> CodeBlock<'book> {
             language => {
                 let hidelines_prefix = hidelines_override.or_else(|| {
                     // Respect [output.html.code.hidelines]
-                    Some(cfg?.hidelines.get(language?)?.as_str())
+                    Some(cfg.hidelines.get(language?)?.as_str())
                 });
                 Language::Other {
                     language,

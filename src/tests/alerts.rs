@@ -4,19 +4,14 @@ use super::{Chapter, Config, MDBook};
 
 #[test]
 fn alerts() {
-    let diff = |source: &str, mut config: Config| {
+    let diff = |source: &str, config: Config| {
         let chapter = Chapter::new("", source, "chapter.md");
         let without = MDBook::init()
             .chapter(chapter.clone())
+            .mdbook_config("output.html.admonitions = false".parse().unwrap())
             .config(config.clone())
             .build();
-        let with = MDBook::init()
-            .chapter(chapter)
-            .config({
-                config.markdown.extensions.gfm = true;
-                config
-            })
-            .build();
+        let with = MDBook::init().chapter(chapter).config(config).build();
         similar::TextDiff::from_lines(&without.to_string(), &with.to_string())
             .unified_diff()
             .to_string()

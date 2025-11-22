@@ -1,3 +1,5 @@
+extern crate mdbook_renderer as mdbook;
+
 use std::fs::{self, File};
 
 use anyhow::{anyhow, Context as _};
@@ -49,15 +51,9 @@ struct MarkdownConfig {
 #[derive(Clone, Copy, Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 struct MarkdownExtensionConfig {
-    /// Enable [`pulldown_cmark::Options::ENABLE_GFM`].
-    #[serde(default = "defaults::disabled")]
-    pub gfm: bool,
     /// Enable [`pulldown_cmark::Options::ENABLE_MATH`].
     #[serde(default = "defaults::disabled")]
     pub math: bool,
-    /// Enable [`pulldown_cmark::Options::ENABLE_DEFINITION_LIST`].
-    #[serde(default = "defaults::disabled")]
-    pub definition_lists: bool,
     /// Enable [`pulldown_cmark::Options::ENABLE_SUPERSCRIPT`].
     #[serde(default = "defaults::disabled")]
     pub superscript: bool,
@@ -103,7 +99,7 @@ impl mdbook::Renderer for Renderer {
         Self::NAME
     }
 
-    fn render(&self, ctx: &mdbook::renderer::RenderContext) -> anyhow::Result<()> {
+    fn render(&self, ctx: &mdbook::RenderContext) -> anyhow::Result<()> {
         // If we're compiled against mdbook version I.J.K, require ^I.J
         // This allows using a version of mdbook with an earlier patch version as a server
         static MDBOOK_VERSION_REQ: Lazy<semver::VersionReq> = Lazy::new(|| {
@@ -113,14 +109,16 @@ impl mdbook::Renderer for Renderer {
                     op: semver::Op::Caret,
                     major: compiled_mdbook_version.major,
                     minor: Some(compiled_mdbook_version.minor),
-                    patch: None,
-                    pre: Default::default(),
+                    // Preleases are only compatible with identical patch versions
+                    patch: (!compiled_mdbook_version.pre.is_empty())
+                        .then_some(compiled_mdbook_version.patch),
+                    pre: compiled_mdbook_version.pre,
                 }],
             }
         });
         let mdbook_server_version = semver::Version::parse(&ctx.version).unwrap();
         if !MDBOOK_VERSION_REQ.matches(&mdbook_server_version) {
-            log::warn!(
+            tracing::warn!(
                 "{} is semver-incompatible with mdbook {} (requires {})",
                 env!("CARGO_PKG_NAME"),
                 mdbook_server_version,
@@ -130,31 +128,29 @@ impl mdbook::Renderer for Renderer {
 
         let cfg: Config = ctx
             .config
-            .get_deserialized_opt(Self::CONFIG_KEY)
+            .get(Self::CONFIG_KEY)
             .with_context(|| format!("Unable to deserialize {}", Self::CONFIG_KEY))?
             .ok_or(anyhow!("No {} table found", Self::CONFIG_KEY))?;
 
         if cfg.disabled {
-            log::info!("Skipping rendering since `disabled` is set");
+            tracing::info!("Skipping rendering since `disabled` is set");
             return Ok(());
         }
 
         pandoc::check_compatibility()?;
 
-        let html_cfg: Option<HtmlConfig> = ctx
+        let html_cfg: HtmlConfig = ctx
             .config
-            .get_deserialized_opt("output.html")
+            .get("output.html")
+            .unwrap_or_default()
             .unwrap_or_default();
 
         let book = Book::new(ctx)?;
 
-        let stylesheets;
+        let stylesheets = css::read_stylesheets(&html_cfg, &book).collect::<Vec<_>>();
         let mut css = css::Css::default();
-        if let Some(cfg) = &html_cfg {
-            stylesheets = css::read_stylesheets(cfg, &book).collect::<Vec<_>>();
-            for (stylesheet, stylesheet_css) in &stylesheets {
-                css.load(stylesheet, stylesheet_css);
-            }
+        for (stylesheet, stylesheet_css) in &stylesheets {
+            css.load(stylesheet, stylesheet_css);
         }
 
         for (name, profile) in cfg.profiles {
@@ -167,34 +163,28 @@ impl mdbook::Renderer for Renderer {
                 cur_list_depth: 0,
                 max_list_depth: 0,
                 code: &cfg.code,
-                html: html_cfg.as_ref(),
+                html: &html_cfg,
                 css: &css,
             };
 
             // Preprocess book
             let mut preprocessor = Preprocessor::new(ctx, &cfg.markdown)?;
 
-            if let Some(uri) = cfg
-                .hosted_html
-                .as_deref()
-                .or(html_cfg.as_ref().and_then(|cfg| cfg.site_url.as_deref()))
-            {
+            if let Some(uri) = cfg.hosted_html.as_deref().or(html_cfg.site_url.as_deref()) {
                 preprocessor.hosted_html(uri);
             }
 
-            if let Some(redirects) = html_cfg.as_ref().map(|cfg| &cfg.redirect) {
-                if !redirects.is_empty() {
-                    log::debug!("Processing redirects in [output.html.redirect]");
-                    let redirects = redirects
-                        .iter()
-                        .map(|(src, dst)| (src.as_str(), dst.as_str()));
-                    // In tests, sort redirect map to ensure stable log output
-                    #[cfg(test)]
-                    let redirects = redirects
-                        .collect::<std::collections::BTreeMap<_, _>>()
-                        .into_iter();
-                    preprocessor.add_redirects(redirects);
-                }
+            if !html_cfg.redirect.is_empty() {
+                tracing::debug!("Processing redirects in [output.html.redirect]");
+                let redirects = (html_cfg.redirect)
+                    .iter()
+                    .map(|(src, dst)| (src.as_str(), dst.as_str()));
+                // In tests, sort redirect map to ensure stable log output
+                #[cfg(test)]
+                let redirects = redirects
+                    .collect::<std::collections::BTreeMap<_, _>>()
+                    .into_iter();
+                preprocessor.add_redirects(redirects);
             }
 
             let mut preprocessed = preprocessor.preprocess();
@@ -209,7 +199,7 @@ impl mdbook::Renderer for Renderer {
             }
 
             if preprocessed.unresolved_links() {
-                log::warn!(
+                tracing::warn!(
                     "Failed to resolve one or more relative links within the book; \
                     consider setting the `site-url` option in `[output.html]`"
                 );

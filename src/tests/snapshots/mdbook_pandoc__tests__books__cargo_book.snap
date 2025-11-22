@@ -3,9 +3,9 @@ source: src/tests/books.rs
 expression: logs
 snapshot_kind: text
 ---
-DEBUG mdbook::book: Running the index preprocessor.
-DEBUG mdbook::book: Running the links preprocessor.
- INFO mdbook::book: Running the pandoc backend
+DEBUG mdbook_driver::mdbook: Running the index preprocessor.
+DEBUG mdbook_driver::mdbook: Running the links preprocessor.
+ INFO mdbook_driver::mdbook: Running the pandoc backend
 DEBUG mdbook_pandoc: Processing redirects in [output.html.redirect]
 DEBUG mdbook_pandoc::preprocess: Processing redirect: /commands/cargo-git-checkout.html => ./deprecated-and-removed.html
 DEBUG mdbook_pandoc::preprocess: Processing redirect: /commands/cargo-read-manifest.html => ./deprecated-and-removed.html

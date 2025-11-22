@@ -4,19 +4,14 @@ use super::{Chapter, Config, MDBook};
 
 #[test]
 fn basic() {
-    let diff = |source: &str, mut config: Config| {
+    let diff = |source: &str, config: Config| {
         let chapter = Chapter::new("", source, "chapter.md");
         let without = MDBook::init()
             .chapter(chapter.clone())
+            .mdbook_config("output.html.definition-lists = false".parse().unwrap())
             .config(config.clone())
             .build();
-        let with = MDBook::init()
-            .chapter(chapter)
-            .config({
-                config.markdown.extensions.definition_lists = true;
-                config
-            })
-            .build();
+        let with = MDBook::init().chapter(chapter).config(config).build();
         similar::TextDiff::from_lines(&without.to_string(), &with.to_string())
             .unified_diff()
             .to_string()
@@ -68,7 +63,7 @@ fn dt_attributes() {
         .build();
     insta::assert_snapshot!(latex, @r##"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
     ├─ latex/output.tex

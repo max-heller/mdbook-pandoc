@@ -11,11 +11,11 @@ fn disabled() {
         disabled = true
     "#};
     let output = MDBook::init()
-        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .mdbook_config(mdbook::config::Config::from_str(cfg).unwrap())
         .build();
     insta::assert_snapshot!(output, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc: Skipping rendering since `disabled` is set
     ")
 }
@@ -33,7 +33,7 @@ fn pandoc_working_dir_is_root() {
         .build();
     insta::assert_snapshot!(book, @r"
     ├─ log output
-    │  INFO mdbook::book: Running the pandoc backend
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/foo/foo.md
     ├─ foo/foo.md
@@ -73,13 +73,13 @@ fn raw_opts() {
     let output = MDBook::options()
         .max_log_level(tracing::Level::TRACE)
         .init()
-        .mdbook_config(mdbook::Config::from_str(cfg).unwrap())
+        .mdbook_config(mdbook::config::Config::from_str(cfg).unwrap())
         .build();
     insta::assert_snapshot!(output, @r#"
     ├─ log output
-    │ DEBUG mdbook::book: Running the index preprocessor.
-    │ DEBUG mdbook::book: Running the links preprocessor.
-    │  INFO mdbook::book: Running the pandoc backend
+    │ DEBUG mdbook_driver::mdbook: Running the index preprocessor.
+    │ DEBUG mdbook_driver::mdbook: Running the links preprocessor.
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
     │ TRACE mdbook_pandoc::pandoc::renderer: Running pandoc with profile: Profile {
     │     columns: 72,
     │     file_scope: true,
