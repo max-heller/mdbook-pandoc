@@ -11,13 +11,16 @@ use base64::Engine as _;
 use ego_tree::{NodeId, NodeRef};
 use font_awesome_as_a_crate as fa;
 use html5ever::{
-    expanded_name, local_name, ns,
+    expanded_name,
+    interface::ElemName,
+    local_name, ns,
     serialize::Serializer,
     tendril::{fmt::UTF8, format_tendril, StrTendril, Tendril, TendrilSink},
     LocalName,
 };
 use indexmap::{IndexMap, IndexSet};
 use pulldown_cmark::{BlockQuoteKind, CowStr, LinkType};
+use tracing::trace;
 
 use crate::{
     html,
@@ -666,6 +669,64 @@ impl<'book> Emitter<'book> {
                                 })
                             },
                         );
+                    }
+                    local_name!("svg") => {
+                        let mut svg_attrs = element.attrs.clone();
+                        let [_xmlns, _alt, title] = [
+                            html::name!("xmlns"),
+                            html::name!("alt"),
+                            html::name!("title"),
+                        ]
+                        .map(|attr| svg_attrs.rest.swap_remove(&attr));
+
+                        trace!("element: {:?}", element);
+                        let svg_tag = format!("{:?}", element); // TODO: risky business
+
+                        fn extract_content(n: NodeRef<'_, Node<'_>>) -> String {
+                            n.children()
+                                .map(|child| match child.value() {
+                                    Node::Document => todo!(),
+                                    Node::HtmlComment(_) => "".to_string(),
+                                    Node::HtmlText(tendril) => tendril.to_string(),
+                                    Node::Element(element) => format!(
+                                        "{:?}{}</{}>",
+                                        element,
+                                        extract_content(child),
+                                        element
+                                            .name()
+                                            .local_name()
+                                            .to_lowercase()
+                                            .chars()
+                                            .filter(|c| c != &'"')
+                                            .collect::<String>()
+                                    ),
+                                })
+                                .collect()
+                        }
+                        let svg_subcontent = extract_content(node);
+                        // .descendants()
+                        // .map(|v| match v.value() {
+                        //     Node::Document => todo!(),
+                        //     Node::HtmlComment(_) => "".to_string(),
+                        //     Node::HtmlText(tendril) => tendril.to_string(),
+                        //     Node::Element(element) => format!("{:?}", element),
+                        // })
+                        // .collect::<Vec<String>>()
+                        // .join("");
+                        // trace!("svg_subcontent: {}", svg_subcontent);
+                        let content = format!("{}{}</svg>", svg_tag, svg_subcontent);
+                        trace!("content: {}", content);
+                        let content = base64::engine::general_purpose::STANDARD.encode(content);
+                        let data_uri = format!("data:image/svg+xml;base64,{}", content);
+                        trace!("data_uri: {}", data_uri);
+                        return serializer.serialize_inlines(|inlines| {
+                            inlines.serialize_element()?.serialize_image(
+                                &svg_attrs,
+                                |_serializer| Ok(()),
+                                &url::encode(data_uri.into()),
+                                title.as_ref().map_or("", |s| s.as_ref()),
+                            )
+                        });
                     }
                     local_name!("img") => {
                         let mut attrs = element.attrs.clone();
