@@ -26,7 +26,7 @@ use walkdir::WalkDir;
 use crate::{
     latex,
     pandoc::{self, native::ColWidth, OutputFormat, RenderContext},
-    url, MarkdownConfig, MarkdownExtensionConfig,
+    url, CommonConfig as Config, MarkdownExtensionConfig,
 };
 
 mod code;
@@ -40,7 +40,7 @@ pub struct Preprocessor<'book> {
     preprocessed_relative_to_root: PathBuf,
     redirects: HashMap<PathBuf, String>,
     hosted_html: Option<&'book str>,
-    markdown: &'book MarkdownConfig,
+    cfg: &'book Config,
     unresolved_links: bool,
     chapters: HashMap<&'book Path, IndexedChapter<'book>>,
 }
@@ -70,7 +70,7 @@ struct NormalizedPath {
 }
 
 impl<'book> Preprocessor<'book> {
-    pub fn new(ctx: RenderContext<'book>, markdown: &'book MarkdownConfig) -> anyhow::Result<Self> {
+    pub fn new(ctx: RenderContext<'book>, cfg: &'book Config) -> anyhow::Result<Self> {
         let preprocessed = ctx.destination.join("src");
 
         if preprocessed.try_exists()? {
@@ -120,7 +120,7 @@ impl<'book> Preprocessor<'book> {
             preprocessed,
             redirects: Default::default(),
             hosted_html: Default::default(),
-            markdown,
+            cfg,
             unresolved_links: false,
             chapters,
             ctx,
@@ -711,7 +711,7 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
             parser: Parser::new(
                 &chapter.content,
                 preprocessor.ctx.html,
-                preprocessor.markdown.extensions,
+                preprocessor.cfg.markdown.extensions,
             ),
             preprocessor,
             stack: Vec::new(),
@@ -741,6 +741,8 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         const PANDOC_UNNUMBERED_CLASS: &str = "unnumbered";
         const PANDOC_UNLISTED_CLASS: &str = "unlisted";
 
+        let cfg = &self.preprocessor.cfg;
+
         let id = Some(match id {
             Some(id) => id,
             None => {
@@ -762,11 +764,15 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         // table of contents that mirror's mdbook's. Unfortunately, it will not match exactly,
         // since mdbook generates the TOC based on SUMMARY.md, but there's no obvious way to
         // tell Pandoc to use those chapter names for the TOC instead of the heading names.
-        if self.chapter.number.is_none() || self.first_heading.is_some() {
+        if (self.chapter.number.is_none() || self.first_heading.is_some())
+            && !cfg.number_internal_headings
+        {
             classes.push(PANDOC_UNNUMBERED_CLASS.into());
         }
         let first_heading = if let Some(first_heading) = self.first_heading {
-            classes.push(PANDOC_UNLISTED_CLASS.into());
+            if !cfg.list_internal_headings {
+                classes.push(PANDOC_UNLISTED_CLASS.into());
+            }
             first_heading
         } else {
             *self.first_heading.insert(level)

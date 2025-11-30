@@ -1,6 +1,6 @@
 use indoc::indoc;
 
-use super::{Chapter, CodeConfig, Config, MDBook};
+use super::{Chapter, Config, MDBook};
 
 #[test]
 fn code_escaping() {
@@ -103,11 +103,10 @@ fn code_block_with_hidden_lines() {
     │ ```
     "#);
     let book = MDBook::init()
-        .config(Config {
-            code: CodeConfig {
-                show_hidden_lines: true,
-            },
-            ..Config::markdown()
+        .config({
+            let mut config = Config::markdown();
+            config.common.code.show_hidden_lines = true;
+            config
         })
         .chapter(Chapter::new("", content, "chapter.md"))
         .build();
@@ -167,11 +166,10 @@ fn non_rust_code_block_with_hidden_lines() {
     ");
     let book = MDBook::init()
         .mdbook_config(cfg.parse().unwrap())
-        .config(Config {
-            code: CodeConfig {
-                show_hidden_lines: true,
-            },
-            ..Config::markdown()
+        .config({
+            let mut config = Config::markdown();
+            config.common.code.show_hidden_lines = true;
+            config
         })
         .chapter(Chapter::new("", content, "chapter.md"))
         .build();

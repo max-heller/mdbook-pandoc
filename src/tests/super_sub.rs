@@ -13,8 +13,8 @@ fn basic() {
         let with = MDBook::init()
             .chapter(chapter)
             .config({
-                config.markdown.extensions.superscript = true;
-                config.markdown.extensions.subscript = true;
+                config.common.markdown.extensions.superscript = true;
+                config.common.markdown.extensions.subscript = true;
                 config
             })
             .build();

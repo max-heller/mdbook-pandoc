@@ -15,7 +15,7 @@ fn math() {
         let with = MDBook::init()
             .chapter(chapter)
             .config({
-                config.markdown.extensions.math = true;
+                config.common.markdown.extensions.math = true;
                 config
             })
             .build();
