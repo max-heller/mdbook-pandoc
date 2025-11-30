@@ -63,6 +63,10 @@ A subset of the available options are described below:
 > Therefore, relative paths in the configuration (e.g. values for `include-in-header`, `reference-doc`) should be written relative to the book's root directory.
 
 ```toml
+[output.pandoc]
+number-internal-headings = false # number headings inside of chapters
+list-internal-headings = false # list internal headings in the table of contents
+
 [output.pandoc.markdown.extensions] # enable additional Markdown extensions
 math = false # parse inline ($a^b$) and display ($$a^b$$) math
 superscript = false # parse superscripted text (^this is superscripted^)

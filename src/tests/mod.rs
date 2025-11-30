@@ -14,7 +14,7 @@ use tempfile::{tempfile, TempDir};
 use toml::toml;
 use tracing_subscriber::layer::SubscriberExt;
 
-use crate::{CodeConfig, Config, Renderer};
+use crate::{Config, Renderer};
 
 pub struct MDBook {
     book: mdbook_driver::MDBook,
