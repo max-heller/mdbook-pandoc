@@ -24,19 +24,32 @@ use preprocess::Preprocessor;
 #[serde(rename_all = "kebab-case")]
 struct Config {
     #[serde(rename = "profile", default = "Default::default")]
-    pub profiles: IndexMap<String, pandoc::Profile>,
+    profiles: IndexMap<String, pandoc::Profile>,
+    #[serde(flatten)]
+    common: CommonConfig,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+struct CommonConfig {
     #[serde(default = "defaults::enabled")]
-    pub keep_preprocessed: bool,
-    pub hosted_html: Option<String>,
+    keep_preprocessed: bool,
+    hosted_html: Option<String>,
     /// Code block related configuration.
     #[serde(default = "Default::default")]
-    pub code: CodeConfig,
+    code: CodeConfig,
     /// Skip running the renderer.
     #[serde(default = "Default::default")]
-    pub disabled: bool,
+    disabled: bool,
     /// Markdown-related configuration.
     #[serde(default = "Default::default")]
-    pub markdown: MarkdownConfig,
+    markdown: MarkdownConfig,
+    /// Number headings within chapters.
+    #[serde(default = "Default::default")]
+    number_internal_headings: bool,
+    /// List headings within chapters in the table of contents.
+    #[serde(default = "Default::default")]
+    list_internal_headings: bool,
 }
 
 /// Configuration for customizing how Markdown is parsed.
@@ -44,7 +57,7 @@ struct Config {
 #[serde(rename_all = "kebab-case")]
 struct MarkdownConfig {
     /// Enable additional Markdown extensions.
-    pub extensions: MarkdownExtensionConfig,
+    extensions: MarkdownExtensionConfig,
 }
 
 /// [`pulldown_cmark`] Markdown extensions not enabled by default by [`mdbook`].
@@ -53,20 +66,20 @@ struct MarkdownConfig {
 struct MarkdownExtensionConfig {
     /// Enable [`pulldown_cmark::Options::ENABLE_MATH`].
     #[serde(default = "defaults::disabled")]
-    pub math: bool,
+    math: bool,
     /// Enable [`pulldown_cmark::Options::ENABLE_SUPERSCRIPT`].
     #[serde(default = "defaults::disabled")]
-    pub superscript: bool,
+    superscript: bool,
     /// Enable [`pulldown_cmark::Options::ENABLE_SUBSCRIPT`].
     #[serde(default = "defaults::disabled")]
-    pub subscript: bool,
+    subscript: bool,
 }
 
 /// Configuration for tweaking how code blocks are rendered.
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 struct CodeConfig {
-    pub show_hidden_lines: bool,
+    show_hidden_lines: bool,
 }
 
 mod defaults {
@@ -126,7 +139,10 @@ impl mdbook::Renderer for Renderer {
             );
         }
 
-        let cfg: Config = ctx
+        let Config {
+            profiles,
+            common: cfg,
+        } = ctx
             .config
             .get(Self::CONFIG_KEY)
             .with_context(|| format!("Unable to deserialize {}", Self::CONFIG_KEY))?
@@ -153,7 +169,7 @@ impl mdbook::Renderer for Renderer {
             css.load(stylesheet, stylesheet_css);
         }
 
-        for (name, profile) in cfg.profiles {
+        for (name, profile) in profiles {
             let ctx = pandoc::RenderContext {
                 book: &book,
                 mdbook_cfg: &ctx.config,
@@ -168,7 +184,7 @@ impl mdbook::Renderer for Renderer {
             };
 
             // Preprocess book
-            let mut preprocessor = Preprocessor::new(ctx, &cfg.markdown)?;
+            let mut preprocessor = Preprocessor::new(ctx, &cfg)?;
 
             if let Some(uri) = cfg.hosted_html.as_deref().or(html_cfg.site_url.as_deref()) {
                 preprocessor.hosted_html(uri);

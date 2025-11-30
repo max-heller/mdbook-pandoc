@@ -203,3 +203,93 @@ fn parts() {
     │ [Header 1 ("two", [], []) [Str "Two"]]
     "#);
 }
+
+#[test]
+fn internal_headings() {
+    let build = |modify_cfg: fn(&mut Config)| {
+        MDBook::init()
+            .chapter(Chapter::new("One", "# One", "one.md").child(Chapter::new(
+                "One.One",
+                "# Top\n## Another",
+                "onepointone.md",
+            )))
+            .chapter(Chapter::new("Two", "# Two", "two.md"))
+            .config({
+                let mut config = Config::latex();
+                modify_cfg(&mut config);
+                config
+            })
+            .build()
+    };
+
+    let number_internal_headings = |cfg: &mut Config| cfg.common.number_internal_headings = true;
+    let list_internal_headings = |cfg: &mut Config| cfg.common.list_internal_headings = true;
+    let number_and_list_internal_headings = |cfg: &mut Config| {
+        cfg.common.number_internal_headings = true;
+        cfg.common.list_internal_headings = true;
+    };
+
+    insta::assert_snapshot!(build(number_internal_headings), @r#"
+    ├─ log output
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
+    ├─ latex/output.tex
+    │ \chapter{One}\label{book__latex__src__one.md__one}
+    │ 
+    │ \section{Top}\label{book__latex__src__onepointone.md__top}
+    │ 
+    │ \subsection{Another}\label{book__latex__src__onepointone.md__another}
+    │ 
+    │ \chapter{Two}\label{book__latex__src__two.md__two}
+    ├─ latex/src/one.md
+    │ [Header 1 ("one", [], []) [Str "One"]]
+    ├─ latex/src/onepointone.md
+    │ [Header 2 ("top", [], []) [Str "Top"], Header 3 ("another", ["unlisted"], []) [Str "Another"]]
+    ├─ latex/src/two.md
+    │ [Header 1 ("two", [], []) [Str "Two"]]
+    "#);
+
+    insta::assert_snapshot!(build(list_internal_headings), @r#"
+    ├─ log output
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
+    ├─ latex/output.tex
+    │ \chapter{One}\label{book__latex__src__one.md__one}
+    │ 
+    │ \section{Top}\label{book__latex__src__onepointone.md__top}
+    │ 
+    │ \subsection*{Another}\label{book__latex__src__onepointone.md__another}
+    │ \addcontentsline{toc}{subsection}{Another}
+    │ 
+    │ \chapter{Two}\label{book__latex__src__two.md__two}
+    ├─ latex/src/one.md
+    │ [Header 1 ("one", [], []) [Str "One"]]
+    ├─ latex/src/onepointone.md
+    │ [Header 2 ("top", [], []) [Str "Top"], Header 3 ("another", ["unnumbered"], []) [Str "Another"]]
+    ├─ latex/src/two.md
+    │ [Header 1 ("two", [], []) [Str "Two"]]
+    "#);
+
+    insta::assert_snapshot!(build(number_and_list_internal_headings), @r#"
+    ├─ log output
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/latex/output.tex
+    ├─ latex/output.tex
+    │ \chapter{One}\label{book__latex__src__one.md__one}
+    │ 
+    │ \section{Top}\label{book__latex__src__onepointone.md__top}
+    │ 
+    │ \subsection{Another}\label{book__latex__src__onepointone.md__another}
+    │ 
+    │ \chapter{Two}\label{book__latex__src__two.md__two}
+    ├─ latex/src/one.md
+    │ [Header 1 ("one", [], []) [Str "One"]]
+    ├─ latex/src/onepointone.md
+    │ [Header 2 ("top", [], []) [Str "Top"], Header 3 ("another", [], []) [Str "Another"]]
+    ├─ latex/src/two.md
+    │ [Header 1 ("two", [], []) [Str "Two"]]
+    "#);
+}
