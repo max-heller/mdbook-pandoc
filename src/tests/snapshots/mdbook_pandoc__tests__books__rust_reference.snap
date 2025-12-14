@@ -1,7 +1,6 @@
 ---
 source: src/tests/books.rs
 expression: logs
-snapshot_kind: text
 ---
  INFO mdbook_driver::mdbook: Running the pandoc backend
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../rustdoc/the-doc-attribute.html' in chapter '$ROOT/book/pdf/src/attributes.html#documentation', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../rustdoc/the-doc-attribute.html'
@@ -257,9 +256,9 @@ snapshot_kind: text
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/panicking/fn.set_hook.html' in chapter 'panic.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/panicking/fn.set_hook.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../rustc/codegen-options/index.html#panic' in chapter 'panic.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../rustc/codegen-options/index.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/panic/fn.catch_unwind.html' in chapter 'panic.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/panic/fn.catch_unwind.html'
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/thread/fn.spawn.html' in chapter 'panic.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/thread/fn.spawn.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/thread/functions/fn.spawn.html' in chapter 'panic.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/thread/functions/fn.spawn.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/panic/fn.catch_unwind.html' in chapter 'panic.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/panic/fn.catch_unwind.html'
- INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/thread/struct.JoinHandle.html#method.join' in chapter 'panic.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/thread/struct.JoinHandle.html'
+ INFO mdbook_pandoc::preprocess: Failed to resolve link '../std/thread/join_handle/struct.JoinHandle.html#method.join' in chapter 'panic.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../std/thread/join_handle/struct.JoinHandle.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../core/result/enum.Result.html#variant.Err' in chapter 'panic.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../core/result/enum.Result.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../book/ch19-01-unsafe-rust.html#using-extern-functions-to-call-external-code' in chapter 'linkage.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../book/ch19-01-unsafe-rust.html'
  INFO mdbook_pandoc::preprocess: Failed to resolve link '../cargo/reference/environment-variables.html#environment-variables-cargo-sets-for-build-scripts' in chapter 'linkage.md', linking to hosted HTML book at 'https://doc.rust-lang.org/reference/../cargo/reference/environment-variables.html'
@@ -1185,8 +1184,14 @@ snapshot_kind: text
   `book__pdf__src__inline-assembly.md__railroad-FormatString'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-AsmAttrFormatString'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__inline-assembly.md__railroad-AsmOperand' on
   $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__inline-assembly.md__railroad-AsmAttrOperand'
+  on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__inline-assembly.md__railroad-ClobberAbi' on
   $PAGE undefined on input $LINE.
@@ -2141,8 +2146,14 @@ snapshot_kind: text
   `book__pdf__src__grammar.md__railroad-summary-FormatString'
   on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AsmAttrFormatString'
+  on $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__grammar.md__railroad-summary-AsmOperand' on
   $PAGE undefined on input $LINE.
+[WARNING] [makePDF] LaTeX Warning: Hyper reference
+  `book__pdf__src__grammar.md__railroad-summary-AsmAttrOperand'
+  on $PAGE undefined on input $LINE.
 [WARNING] [makePDF] LaTeX Warning: Hyper reference
   `book__pdf__src__grammar.md__railroad-summary-ClobberAbi' on
   $PAGE undefined on input $LINE.
