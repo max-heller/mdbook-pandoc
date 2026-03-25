@@ -1083,7 +1083,7 @@ impl<'book, 'p, W: io::Write> SerializeCell<'_, 'book, 'p, W> {
         self.serializer.write_attributes(attrs)?;
         write!(
             self.serializer.unescaped(),
-            " {} (RowSpan 0) (ColSpan 0) ",
+            " {} (RowSpan 1) (ColSpan 1) ",
             Alignment::Default.to_native()
         )?;
         let mut serializer = SerializeList::new(self.serializer, Block)?;
