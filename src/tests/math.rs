@@ -59,7 +59,7 @@ fn math() {
     -│ inline \$a\^{}b\$ math
     +│ inline \(a^b\) math
      ├─ latex/src/chapter.md
-    -│ [Para [Str "$$I(x)=I_0e^{-ax}", Str "\\another line$$"], Para [Str "$$", SoftBreak, Str "\\begin{cases}", SoftBreak, Str "\\frac 1 2 ", Str "\\", SoftBreak, Str "\\frac 3 4", SoftBreak, Str "5", SoftBreak, Str "\\end{cases}", SoftBreak, Str "$$"], Para [Str "inline $a^b$ math"]]
+    -│ [Para [Str "$$I(x)=I_0e^{-ax}\\another line$$"], Para [Str "$$", SoftBreak, Str "\\begin{cases}", SoftBreak, Str "\\frac 1 2 \\", SoftBreak, Str "\\frac 3 4", SoftBreak, Str "5", SoftBreak, Str "\\end{cases}", SoftBreak, Str "$$"], Para [Str "inline $a^b$ math"]]
     +│ [Para [Math DisplayMath "I(x)=I_0e^{-ax}\\\\another line"], Para [Math DisplayMath "
     +│ \\begin{cases}
     +│     \\frac 1 2 \\\\
