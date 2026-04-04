@@ -606,7 +606,10 @@ pub struct PreprocessChapter<'book, 'preprocessor> {
 
 struct Parser<'book> {
     lookahead: VecDeque<(Event<'book>, Range<usize>)>,
-    parser: pulldown_cmark::OffsetIter<'book, pulldown_cmark::DefaultBrokenLinkCallback>,
+    parser: pulldown_cmark::utils::TextMergeWithOffset<
+        'book,
+        pulldown_cmark::OffsetIter<'book, pulldown_cmark::DefaultBrokenLinkCallback>,
+    >,
 }
 
 impl<'book> Parser<'book> {
@@ -652,7 +655,9 @@ impl<'book> Parser<'book> {
 
         Self {
             lookahead: Default::default(),
-            parser: pulldown_cmark::Parser::new_ext(md, options).into_offset_iter(),
+            parser: pulldown_cmark::utils::TextMergeWithOffset::new(
+                pulldown_cmark::Parser::new_ext(md, options).into_offset_iter(),
+            ),
         }
     }
 

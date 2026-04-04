@@ -12,15 +12,6 @@ fn preserve_escapes() {
     │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
     │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
     ├─ markdown/pandoc-ir
-    │ [ Para
-    │     [ Str "["
-    │     , Str "Prefix @fig:1"
-    │     , Str "]"
-    │     , Str " "
-    │     , Str "["
-    │     , Str "-@fig:1"
-    │     , Str "]"
-    │     ]
-    │ ]
+    │ [ Para [ Str "[Prefix @fig:1] [-@fig:1]" ] ]
     "#);
 }

@@ -33,7 +33,7 @@ fn alerts() {
      │ Highlights information that users should take into account, even when skimming.
     -│ \end{quote}
      ├─ latex/src/chapter.md
-    -│ [BlockQuote [Para [Str "[", Str "!NOTE", Str "]", LineBreak, Str "Highlights information that users should take into account, even when skimming."]]]
+    -│ [BlockQuote [Para [Str "[!NOTE]", LineBreak, Str "Highlights information that users should take into account, even when skimming."]]]
     +│ [Div ("", ["note"], []) [Div ("", ["title"], []) [Para [Str "Note"]], Para [Str "Highlights information that users should take into account, even when skimming."]]]
     "#);
     let markdown = diff(alert, Config::markdown());

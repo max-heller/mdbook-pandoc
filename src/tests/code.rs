@@ -357,3 +357,33 @@ fn regression_inline_code_newline() {
     │ ]
     "#);
 }
+
+/// Ensures that CRLF line endings in code blocks do not add extra empty lines (issue #231)
+#[test]
+fn crlf_line_endings() {
+    let book = MDBook::init()
+        .config(Config::pandoc())
+        .chapter(Chapter::new(
+            "",
+            indoc! {"
+                ```
+                fn main() {\n}
+                ```
+                ```
+                fn main() {\r\n}
+                ```
+            "},
+            "chapter.md",
+        ))
+        .build();
+    insta::assert_snapshot!(book, @r#"
+    ├─ log output
+    │  INFO mdbook_driver::mdbook: Running the pandoc backend
+    │  INFO mdbook_pandoc::pandoc::renderer: Running pandoc
+    │  INFO mdbook_pandoc::pandoc::renderer: Wrote output to book/markdown/pandoc-ir
+    ├─ markdown/pandoc-ir
+    │ [ CodeBlock ( "" , [ "" ] , [] ) "fn main() {\n}\n"
+    │ , CodeBlock ( "" , [ "" ] , [] ) "fn main() {\n}\n"
+    │ ]
+    "#);
+}
