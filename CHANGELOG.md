@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.11.1] - 2026-04-04
+
+### Bug Fixes
+
+- Specify non-zero row and column spans for table cells ([#230](https://github.com/max-heller/mdbook-pandoc/pull/230))
+- CRLF line endings in code blocks ([#232](https://github.com/max-heller/mdbook-pandoc/pull/232))
+
+### Features
+
+- Add options to number and list (in ToC) internal headings ([#223](https://github.com/max-heller/mdbook-pandoc/pull/223))
+
+
+
 ## [0.11.0] - 2025-11-22
 
 ### Changes
