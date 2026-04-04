@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.11.1] - 2026-06-27
+
+### Bug Fixes
+
+- Fix table conversion for DOCX and likely other formats ([#230](https://github.com/max-heller/mdbook-pandoc/pull/230))
+- Correctly handle CRLF line endings in code blocks ([#232](https://github.com/max-heller/mdbook-pandoc/pull/232))
+
+### Features
+
+- Add options to number and list (in ToC) internal headings ([#223](https://github.com/max-heller/mdbook-pandoc/pull/223))
+
+  ```toml
+  [output.pandoc]
+  number-internal-headings = false # number headings inside of chapters
+  list-internal-headings = false # list internal headings in the table of contents
+  ```
+
+
 ## [0.11.0] - 2025-11-22
 
 ### Changes
