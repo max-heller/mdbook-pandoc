@@ -16,24 +16,24 @@ include = ["/src", "!/src/tests", "/CHANGELOG.md", "/LICENSE-*", "/README.md"]
 [dependencies]
 aho-corasick = "1.0.0"
 anyhow = "1.0.47"
-base64 = { version = "0.22.1", default-features = false, features = ["alloc"] }
+base64 = { version = "0.23.0", default-features = false, features = ["alloc"] }
 chrono = { version = "0.4.24", default-features = false, features = ["clock"] }
-cssparser = "0.36.0"
+cssparser = "0.37.0"
 font-awesome-as-a-crate = "0.3.0"
-html5ever = "0.36.0"
+html5ever = "0.39.0"
 indexmap = { version = "2.7.0", features = ["serde"] }
 mdbook-renderer = { version = "0.5.2", default-features = false }
 normpath = "1.0.0"
 once_cell = "1.0.0"
 pulldown-cmark = { version = "0.13.0", default-features = false }
 regex = "1.5.5"
-ego-tree = "0.10.0"
+ego-tree = "0.11.0"
 replace_with = "0.1.7"
 semver = "1.0.0"
 serde = { version = "1.0.85", features = ["derive"] }
 serde_yaml = "0.9.0"
 tempfile = "3.0.0"
-toml = { version = "0.9.0", default-features = false, features = ["serde"] }
+toml = { version = "1.0.0", default-features = false, features = ["serde"] }
 utf8parse = "0.2.2"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.20", default-features = false, features = ["ansi", "env-filter", "fmt"] }
