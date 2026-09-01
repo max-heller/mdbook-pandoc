@@ -1,0 +1,22 @@
+[book]
+authors = ["Michał Fita"]
+language = "en"
+#multilingual = false
+src = "src"
+title = "Inline SVG test"
+
+[preprocessor.svgbob]
+
+# [output.epub]
+# additional-css = ["./css/book.css"]
+# use-default-css = true
+# curly-quotes = true
+# epub-version = 3
+# footnote-backrefs = true
+
+#[output.typst]
+#output = { format = "pdf" }
+
+[output.pandoc.profile.pdf]
+output-file = "Inline SVG test.pdf"
+to = "latex"
